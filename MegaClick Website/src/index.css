@@ -1,0 +1,164 @@
+@import "tailwindcss";
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  background: #ffffff;
+}
+html {
+  scroll-behavior: smooth;
+}
+@keyframes scroll {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+
+.animate-scroll {
+  animation: scroll 25s linear infinite;
+}
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-scroll {
+  animation: scroll 10s linear infinite;
+}
+
+.animate-scroll:hover {
+  animation-play-state: paused;
+}
+@keyframes testimonials {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(calc(-356px * 4));
+  }
+}
+
+.animate-testimonials {
+  display: flex;
+  width: max-content;
+  animation: testimonials 20s linear infinite;
+}
+
+.animate-testimonials:hover {
+  animation-play-state: paused;
+}
+
+@keyframes floatSlow {
+
+0%,100%{
+transform:translateY(0px);
+}
+
+50%{
+transform:translateY(-18px);
+}
+
+}
+
+
+@keyframes floatMedium {
+
+0%,100%{
+transform:translateY(0px);
+}
+
+50%{
+transform:translateY(-12px);
+}
+
+}
+
+
+@keyframes floatFast {
+
+0%,100%{
+transform:translateY(0px);
+}
+
+50%{
+transform:translateY(-10px);
+}
+
+}
+
+
+.animate-float-slow{
+animation:floatSlow 6s ease-in-out infinite;
+}
+
+
+.animate-float-medium{
+animation:floatMedium 5s ease-in-out infinite;
+}
+
+
+.animate-float-fast{
+animation:floatFast 4.8s ease-in-out infinite;
+}
+
+/* ================= FLOATING ANIMATIONS ================= */
+
+@keyframes float1 {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-18px);
+  }
+}
+
+@keyframes float2 {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(18px);
+  }
+}
+
+@keyframes float3 {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+.animate-float1 {
+  animation: float1 6s ease-in-out infinite;
+}
+
+.animate-float2 {
+  animation: float2 5.5s ease-in-out infinite;
+}
+
+.animate-float3 {
+  animation: float3 4.5s ease-in-out infinite;
+}
