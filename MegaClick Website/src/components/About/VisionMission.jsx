@@ -1,97 +1,354 @@
+
 import React, { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import {
   Eye,
   Target,
-  CheckCircle,
+  CheckCircle2,
+  ArrowRight,
 } from "lucide-react";
 
 const VisionMission = () => {
-  const ref = useRef(null);
+  const sectionRef = useRef(null);
 
-  const isInView = useInView(ref, {
+  const isInView = useInView(sectionRef, {
     once: false,
-    amount: 0.35,
+    amount: 0.2,
   });
 
   return (
     <section
-      ref={ref}
-      className="relative py-10 bg-gradient-to-br from-white via-blue-50 to-white overflow-hidden"
+      ref={sectionRef}
+      className="
+        relative
+        overflow-hidden
+        py-12
+        sm:py-14
+        lg:py-20
+        bg-blue-50
+      "
     >
-      {/* Background Glow */}
-      <div className="absolute -top-32 right-0 w-[420px] h-[420px] bg-blue-100 rounded-full blur-[120px] opacity-60" />
+      {/* Background Shapes */}
 
-      <div className="max-w-[1500px] mx-auto px-6 lg:px-24">
+      <div
+        className="
+          absolute
+          -top-32
+          -right-32
+          w-80
+          h-80
+          rounded-full
+          bg-blue-200
+          blur-3xl
+          opacity-50
+        "
+      />
 
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+      <div
+        className="
+          absolute
+          -bottom-32
+          -left-32
+          w-80
+          h-80
+          rounded-full
+          bg-green-100
+          blur-3xl
+          opacity-40
+        "
+      />
 
-          {/* LEFT CONTENT */}
+      <div
+        className="
+          relative
+          z-10
+          max-w-[1500px]
+          mx-auto
+          px-5
+          sm:px-8
+          lg:px-20
+          xl:px-24
+        "
+      >
 
-          <div>
+        {/* ================= HEADER ================= */}
 
-            <span className="inline-flex items-center gap-2 bg-[#0B4EA2] text-white px-5 py-2 rounded-full font-semibold">
-              <CheckCircle size={18} />
-              OUR PURPOSE
+        <motion.div
+          initial={{
+            opacity: 0,
+            y: 25,
+          }}
+          animate={
+            isInView
+              ? {
+                  opacity: 1,
+                  y: 0,
+                }
+              : {
+                  opacity: 0,
+                  y: 25,
+                }
+          }
+          transition={{
+            duration: 0.7,
+          }}
+          className="mb-10 lg:mb-14"
+        >
+          <span
+            className="
+              inline-flex
+              items-center
+              gap-2
+              bg-[#0B4EA2]
+              text-white
+              px-4
+              sm:px-5
+              py-2
+              rounded-full
+              text-xs
+              sm:text-sm
+              font-semibold
+            "
+          >
+            <CheckCircle2
+              size={16}
+              className="text-green-300"
+            />
+
+            OUR PURPOSE
+          </span>
+
+          <h2
+            className="
+              mt-5
+              text-3xl
+              sm:text-4xl
+              lg:text-5xl
+              font-bold
+              leading-tight
+            "
+          >
+            <span className="text-[#0B4EA2]">
+              Vision
             </span>
 
-            <h2 className="mt-6 text-4xl lg:text-5xl font-bold leading-tight text-[#0B4EA2]">
-              Vision
-              <span className="text-green-500">
-                {" "} & Mission
-              </span>
-            </h2>
+            <span className="text-gray-900">
+              {" & "}
+            </span>
 
-            <p className="mt-6 text-lg text-gray-600 leading-8 max-w-xl">
-              MegaClick is committed to simplifying legal,
-              financial and business compliance services
-              through innovation, transparency and trusted
-              professional support.
-            </p>
+            <span className="text-green-500">
+              Mission
+            </span>
+          </h2>
 
-            <div className="mt-10 space-y-7">
+          <div
+            className="
+              mt-4
+              w-20
+              h-1
+              rounded-full
+              bg-gradient-to-r
+              from-[#0B4EA2]
+              to-green-500
+            "
+          />
+        </motion.div>
 
-              <div className="flex gap-4">
 
-                <div className="w-11 h-11 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-                  <CheckCircle
-                    size={20}
-                    className="text-green-600"
-                  />
-                </div>
+        {/* =================================================
+            VISION + MISSION
+        ================================================= */}
 
-                <div>
-                  <h4 className="font-semibold text-lg">
-                    Trusted Professionals
-                  </h4>
+        <div
+          className="
+            grid
+            lg:grid-cols-2
+            gap-6
+            lg:gap-8
+          "
+        >
 
-                  <p className="text-gray-500 mt-1">
-                    Dedicated experts delivering reliable,
-                    affordable and compliant business solutions.
-                  </p>
+          {/* ================= VISION ================= */}
+
+          <motion.div
+            initial={{
+              opacity: 0,
+              x: -50,
+            }}
+            animate={
+              isInView
+                ? {
+                    opacity: 1,
+                    x: 0,
+                  }
+                : {
+                    opacity: 0,
+                    x: -50,
+                  }
+            }
+            transition={{
+              duration: 0.8,
+              delay: 0.15,
+            }}
+            className="
+              group
+              relative
+              overflow-hidden
+              rounded-2xl
+              border
+              border-blue-100
+              bg-[#D6E9FF]
+              p-6
+              sm:p-8
+              lg:p-10
+              hover:border-blue-300
+              hover:shadow-xl
+              transition-all
+              duration-500
+            "
+          >
+
+            <div
+              className="
+                absolute
+                top-0
+                left-0
+                w-1
+                h-full
+                bg-[#0B4EA2]
+              "
+            />
+
+            <div
+              className="
+                flex
+                flex-col
+                sm:flex-row
+                gap-6
+              "
+            >
+
+              {/* LEFT TITLE */}
+
+              <div
+                className="
+                  sm:w-[150px]
+                  lg:w-[170px]
+                  flex-shrink-0
+                "
+              >
+
+                <div
+                  className="
+                    flex
+                    sm:flex-col
+                    items-center
+                    sm:items-start
+                    gap-3
+                  "
+                >
+
+                  <motion.div
+                    whileHover={{
+                      scale: 1.08,
+                      rotate: 5,
+                    }}
+                    transition={{
+                      duration: 0.3,
+                    }}
+                    className="
+                      w-14
+                      h-14
+                      rounded-xl
+                      bg-white
+                      border
+                      border-blue-100
+                      flex
+                      items-center
+                      justify-center
+                      shadow-sm
+                    "
+                  >
+                    <Eye
+                      size={28}
+                      className="text-[#0B4EA2]"
+                    />
+                  </motion.div>
+
+                  <div>
+
+                    <p
+                      className="
+                        text-xs
+                        font-semibold
+                        uppercase
+                        tracking-widest
+                        text-gray-400
+                      "
+                    >
+                      Our
+                    </p>
+
+                    <h3
+                      className="
+                        text-2xl
+                        sm:text-3xl
+                        font-bold
+                        text-[#0B4EA2]
+                      "
+                    >
+                      Vision
+                    </h3>
+
+                  </div>
+
                 </div>
 
               </div>
 
-              <div className="flex gap-4">
 
-                <div className="w-11 h-11 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
-                  <CheckCircle
-                    size={20}
-                    className="text-[#0B4EA2]"
+              {/* RIGHT CONTENT */}
+
+              <div className="flex-1">
+
+                <p
+                  className="
+                    text-gray-600
+                    text-base
+                    sm:text-lg
+                    leading-7
+                    sm:leading-8
+                  "
+                >
+                  To become India's most trusted digital
+                  platform for legal, business and financial
+                  services by empowering entrepreneurs with
+                  innovative, transparent and hassle-free
+                  solutions.
+                </p>
+
+                <div
+                  className="
+                    mt-6
+                    flex
+                    items-center
+                    gap-2
+                    text-sm
+                    font-semibold
+                    text-[#0B4EA2]
+                  "
+                >
+                  <span
+                    className="
+                      w-8
+                      h-[2px]
+                      bg-[#0B4EA2]
+                    "
                   />
-                </div>
 
-                <div>
+                  Building a trusted future
 
-                  <h4 className="font-semibold text-lg">
-                    Transparent Process
-                  </h4>
-
-                  <p className="text-gray-500 mt-1">
-                    Fast execution with complete transparency.
-        
-                  </p>
+                  <ArrowRight size={15} />
 
                 </div>
 
@@ -99,211 +356,299 @@ const VisionMission = () => {
 
             </div>
 
-          </div>
-
-          {/* RIGHT SIDE */}
-
-          <div className="relative h-[520px] flex justify-center items-center">
+          </motion.div>
 
 
+          {/* ================= MISSION ================= */}
 
-                  {/* ================= VISION CARD ================= */}
-
-      <motion.div
-        initial={{
-          x: 0,
-          y: 0,
-          scale: 0.88,
-          rotate: -8,
-          opacity: 0,
-        }}
-        animate={
-          isInView
-            ? {
-                x: "-52%",
-                y: 0,
-                scale: 1,
-                rotate: 0,
-                opacity: 1,
-              }
-            : {}
-        }
-       transition={{
-  duration: 2.5,
-  delay: 0.2,
-  type: "spring",
-  stiffness: 35,
-  damping: 18,
-}}
-        className="absolute w-full max-w-[370px] z-20"
-      >
-        <div
-          className="
-            relative
-            bg-white
-            rounded-[28px]
-            border-2
-            border-blue-500
-            shadow-xl
-            hover:-translate-y-3
-            hover:shadow-2xl
-            transition-all
-            duration-500
-            p-8
-            pb-16
-            flex
-            flex-col
-          "
-        >
-          <div className="w-20 h-20 mx-auto rounded-full bg-blue-100 flex items-center justify-center">
-
-            <Eye
-              size={40}
-              className="text-[#0B4EA2]"
-            />
-
-          </div>
-
-          <h3 className="mt-8 text-center text-3xl font-bold text-[#0B4EA2]">
-            Our Vision
-          </h3>
-
-          <p className="mt-5 text-center text-gray-600 leading-8 flex-grow">
-            To become India's most trusted digital platform
-            for legal, business and financial services by
-            empowering entrepreneurs with innovative,
-            transparent and hassle-free solutions.
-          </p>
-
-          <div
+          <motion.div
+            initial={{
+              opacity: 0,
+              x: 50,
+            }}
+            animate={
+              isInView
+                ? {
+                    opacity: 1,
+                    x: 0,
+                  }
+                : {
+                    opacity: 0,
+                    x: 50,
+                  }
+            }
+            transition={{
+              duration: 0.8,
+              delay: 0.3,
+            }}
             className="
-              absolute
-              bottom-0
-              left-1/2
-              -translate-x-1/2
-              w-[100%]
-              h-14
-              bg-blue-500
-              rounded-b-[24px]
-              flex
-              items-center
-              justify-center
-              text-white
-              font-semibold
-              text-lg
+              group
+              relative
+              overflow-hidden
+              rounded-2xl
+              border
+              border-green-100
+              bg-[#D9F7E5]
+              p-6
+              sm:p-8
+              lg:p-10
+              hover:border-green-300
+              hover:shadow-xl
+              transition-all
+              duration-500
             "
           >
-            Vision
-          </div>
 
-        </div>
-      </motion.div>
-
-      {/* ================= MISSION CARD ================= */}
-
-      <motion.div
-        initial={{
-          x: 0,
-          y: 0,
-          scale: 0.88,
-          rotate: 8,
-          opacity: 0,
-        }}
-        animate={
-          isInView
-            ? {
-                x: "52%",
-                y: 0,
-                scale: 1,
-                rotate: 0,
-                opacity: 1,
-              }
-            : {}
-        }
-       transition={{
-  duration: 2.5,
-  delay: 0.5,
-  type: "spring",
-  stiffness: 35,
-  damping: 18,
-}}
-        className="absolute w-full max-w-[370px] z-10"
-      >
-        <div
-          className="
-            relative
-            bg-white
-            rounded-[28px]
-            border-2
-            border-green-500
-            shadow-xl
-            hover:-translate-y-3
-            hover:shadow-2xl
-            transition-all
-            duration-500
-            p-8
-            pb-16
-            flex
-            flex-col
-          "
-        >
-          <div className="w-20 h-20 mx-auto rounded-full bg-green-100 flex items-center justify-center">
-
-            <Target
-              size={40}
-              className="text-green-600"
+            <div
+              className="
+                absolute
+                top-0
+                left-0
+                w-1
+                h-full
+                bg-green-500
+              "
             />
 
-          </div>
+            <div
+              className="
+                flex
+                flex-col
+                sm:flex-row
+                gap-6
+              "
+            >
 
-          <h3 className="mt-8 text-center text-3xl font-bold text-green-600">
-            Our Mission
-          </h3>
+              {/* LEFT TITLE */}
 
-          <p className="mt-5 text-center text-gray-600 leading-8 flex-grow">
-            Deliver affordable, reliable and technology-driven
-            legal, taxation and compliance services while
-            ensuring transparency, efficiency and customer
-            satisfaction.
-          </p>
+              <div
+                className="
+                  sm:w-[150px]
+                  lg:w-[170px]
+                  flex-shrink-0
+                "
+              >
 
-          <div
-            className="
-              absolute
-              bottom-0
-              left-1/2
-              -translate-x-1/2
-              w-[100%]
-              h-14
-              bg-green-500
-              rounded-b-[24px]
-              flex
-              items-center
-              justify-center
-              text-white
-              font-semibold
-              text-lg
-            "
-          >
-            Mission
-          </div>
+                <div
+                  className="
+                    flex
+                    sm:flex-col
+                    items-center
+                    sm:items-start
+                    gap-3
+                  "
+                >
 
-        </div>
-      </motion.div>
+                  <motion.div
+                    whileHover={{
+                      scale: 1.08,
+                      rotate: -5,
+                    }}
+                    transition={{
+                      duration: 0.3,
+                    }}
+                    className="
+                      w-14
+                      h-14
+                      rounded-xl
+                      bg-white
+                      border
+                      border-green-100
+                      flex
+                      items-center
+                      justify-center
+                      shadow-sm
+                    "
+                  >
+                    <Target
+                      size={28}
+                      className="text-green-600"
+                    />
+                  </motion.div>
 
+                  <div>
+
+                    <p
+                      className="
+                        text-xs
+                        font-semibold
+                        uppercase
+                        tracking-widest
+                        text-gray-400
+                      "
+                    >
+                      Our
+                    </p>
+
+                    <h3
+                      className="
+                        text-2xl
+                        sm:text-3xl
+                        font-bold
+                        text-green-600
+                      "
+                    >
+                      Mission
+                    </h3>
+
+                  </div>
 
                 </div>
-          {/* END RIGHT SIDE */}
+
+              </div>
+
+
+              {/* RIGHT CONTENT */}
+
+              <div className="flex-1">
+
+                <p
+                  className="
+                    text-gray-600
+                    text-base
+                    sm:text-lg
+                    leading-7
+                    sm:leading-8
+                  "
+                >
+                  Deliver affordable, reliable and
+                  technology-driven legal, taxation and
+                  compliance services while ensuring
+                  transparency, efficiency and customer
+                  satisfaction.
+                </p>
+
+                <div
+                  className="
+                    mt-6
+                    flex
+                    items-center
+                    gap-2
+                    text-sm
+                    font-semibold
+                    text-green-600
+                  "
+                >
+                  <span
+                    className="
+                      w-8
+                      h-[2px]
+                      bg-green-500
+                    "
+                  />
+
+                  Making business simpler
+
+                  <ArrowRight size={15} />
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </motion.div>
 
         </div>
-        {/* END GRID */}
+
+
+        {/* ================= BOTTOM POINTS ================= */}
+
+        <motion.div
+          initial={{
+            opacity: 0,
+            y: 25,
+          }}
+          animate={
+            isInView
+              ? {
+                  opacity: 1,
+                  y: 0,
+                }
+              : {
+                  opacity: 0,
+                  y: 25,
+                }
+          }
+          transition={{
+            duration: 0.7,
+            delay: 0.45,
+          }}
+          className="
+            mt-8
+            grid
+            sm:grid-cols-2
+            gap-4
+            max-w-4xl
+          "
+        >
+
+          <div
+            className="
+              flex
+              items-center
+              gap-3
+              rounded-xl
+              bg-gray-50
+              border
+              border-gray-100
+              px-5
+              py-4
+            "
+          >
+            <CheckCircle2
+              size={20}
+              className="text-green-500 flex-shrink-0"
+            />
+
+            <span
+              className="
+                text-sm
+                sm:text-base
+                font-medium
+                text-gray-700
+              "
+            >
+              Trusted Professional Support
+            </span>
+          </div>
+
+
+          <div
+            className="
+              flex
+              items-center
+              gap-3
+              rounded-xl
+              bg-gray-50
+              border
+              border-gray-100
+              px-5
+              py-4
+            "
+          >
+            <CheckCircle2
+              size={20}
+              className="text-[#0B4EA2] flex-shrink-0"
+            />
+
+            <span
+              className="
+                text-sm
+                sm:text-base
+                font-medium
+                text-gray-700
+              "
+            >
+              Transparent & Reliable Process
+            </span>
+          </div>
+
+        </motion.div>
 
       </div>
-      {/* END CONTAINER */}
-
     </section>
   );
 };
 
 export default VisionMission;
-        

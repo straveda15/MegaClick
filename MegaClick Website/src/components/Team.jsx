@@ -42,7 +42,7 @@ const Team = () => {
 
     <section
       className="
-      py-20
+      py-10
       bg-blue-50
       "
     >

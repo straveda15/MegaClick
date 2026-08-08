@@ -6,188 +6,165 @@ import {
   ShieldCheck,
 } from "lucide-react";
 
-
-
 const TopBar = () => {
-
   return (
-
-    <div
-      className="
-      bg-blue-950
-      text-white
-      "
-    >
-
-<div className="
-  max-w-[1500px]
-  mx-auto
-  px-6
-  lg:px-24
-  py-1
-">
-
-    
-
+    <div className="bg-blue-950 text-white">
+      <div
+        className="
+          max-w-[1500px]
+          mx-auto
+          px-3
+          sm:px-6
+          lg:px-16
+          xl:px-24
+          py-1.5
+          sm:py-2
+        "
+      >
+        {/* =====================================================
+            MOBILE + DESKTOP CONTENT
+        ====================================================== */}
 
         <div
           className="
-          flex
-          items-center
-          justify-between
-          gap-5
+            flex
+            flex-col
+            sm:flex-row
+            items-center
+            justify-between
+            gap-1.5
+            sm:gap-4
           "
         >
-
-
-
-
-
-          {/* Contact Details */}
-
+          {/* =====================================================
+              CONTACT DETAILS
+          ====================================================== */}
 
           <div
             className="
-            flex
-            items-center
-            gap-6
-            text-sm
-            "
-          >
-
-
-
-
-            {/* Phone */}
-
-
-            <div
-              className="
               flex
               items-center
-              gap-2
-              "
-            >
+              justify-center
+              gap-3
+              sm:gap-5
+              w-full
+              sm:w-auto
+              min-w-0
+            "
+          >
+            {/* PHONE */}
 
-              <Phone
-                size={16}
-                className="
-                text-green-400
-                "
-              />
-
-
-              <span
-                className="
-                text-blue-100
-                font-semibold
-                "
-              >
-
-                +91 9921611911
-
-              </span>
-
-
-            </div>
-
-
-
-
-
-
-
-            {/* Email */}
-
-
-            <div
+            <a
+              href="tel:+919921611911"
               className="
-              hidden
-              sm:flex
-              items-center
-              gap-2
+                flex
+                items-center
+                gap-1
+                sm:gap-2
+                text-[10px]
+                xs:text-[11px]
+                sm:text-sm
+                whitespace-nowrap
+                min-w-0
+                hover:text-white
+                transition-colors
               "
             >
-
-
-              <Mail
-                size={16}
+              <Phone
+                size={13}
                 className="
-                text-green-400
+                  text-green-400
+                  sm:w-4
+                  sm:h-4
+                  flex-shrink-0
                 "
               />
 
+              <span
+                className="
+                  text-blue-100
+                  font-semibold
+                "
+              >
+                +91 9921611911
+              </span>
+            </a>
+
+            {/* EMAIL */}
+
+            <a
+              href="mailto:megaclickofficial@gmail.com"
+              className="
+                flex
+                items-center
+                gap-1
+                sm:gap-2
+                text-[9px]
+                xs:text-[10px]
+                sm:text-sm
+                whitespace-nowrap
+                min-w-0
+                hover:text-white
+                transition-colors
+              "
+            >
+              <Mail
+                size={13}
+                className="
+                  text-green-400
+                  sm:w-4
+                  sm:h-4
+                  flex-shrink-0
+                "
+              />
 
               <span
                 className="
-                text-blue-100
-                font-semibold
+                  text-blue-100
+                  font-semibold
                 "
               >
-
                 megaclickofficial@gmail.com
-
               </span>
-
-
-            </div>
-
-
-
+            </a>
           </div>
 
-
-
-
-
-
-
-
-
-          {/* Trust Text */}
-
+          {/* =====================================================
+              TRUST TEXT
+          ====================================================== */}
 
           <div
             className="
-            hidden
-            md:flex
-            items-center
-            gap-2
-            text-sm
-            text-blue-100
-            font-medium
+              flex
+              items-center
+              justify-center
+              gap-1.5
+              text-[9px]
+              sm:text-xs
+              lg:text-sm
+              text-blue-100
+              font-medium
+              whitespace-nowrap
             "
           >
-
             <ShieldCheck
-              size={17}
+              size={14}
               className="
-              text-green-400
+                text-green-400
+                sm:w-4
+                sm:h-4
+                flex-shrink-0
               "
             />
 
-
-            Trusted Business Solutions
-
-
+            <span>
+              Trusted Business Solutions
+            </span>
           </div>
-
-
-
-
-
         </div>
-
-
-
       </div>
-
-
     </div>
-
   );
-
 };
-
 
 export default TopBar;

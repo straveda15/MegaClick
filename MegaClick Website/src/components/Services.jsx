@@ -51,7 +51,7 @@ const Services = () => {
       className="
       relative
       overflow-hidden
-      py-10
+      py-5
       bg-white
     "
     >
