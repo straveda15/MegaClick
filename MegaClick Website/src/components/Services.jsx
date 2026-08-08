@@ -49,80 +49,106 @@ const Services = () => {
     <section
       id="services"
       className="
-      relative
-      overflow-hidden
-      py-5
-      bg-white
-    "
+        relative
+        w-full
+        overflow-hidden
+        py-5
+        sm:py-12
+        lg:py-14
+        bg-white
+      "
     >
       <div
         className="
-        max-w-[1500px]
-        mx-auto
-        px-6
-        lg:px-24
-        py-1
-      "
+          max-w-[1500px]
+          mx-auto
+          px-4
+          sm:px-6
+          md:px-10
+          lg:px-16
+          xl:px-24
+          2xl:px-32
+        "
       >
-        {/* Heading */}
+        {/* ================= HEADING ================= */}
 
-        <div className="mb-10">
+        <div
+          className="
+            mb-8
+            sm:mb-10
+            lg:mb-12
+            max-w-4xl
+          "
+        >
+          {/* Badge */}
+
           <span
             className="
-            inline-flex
-            items-center
-            gap-2
-            bg-[#0B4EA2]
-            text-white
-            px-4
-            py-2
-            rounded-full
-            text-xs
-            font-semibold
-            mb-4
-          "
+              inline-flex
+              items-center
+              gap-2
+              bg-[#0B4EA2]
+              text-white
+              px-3
+              sm:px-4
+              py-2
+              rounded-full
+              text-[11px]
+              sm:text-xs
+              font-semibold
+              mb-3
+              sm:mb-4
+            "
           >
             <Layers3
-              size={16}
-              className="text-green-300"
+              size={14}
+              className="text-green-300 sm:w-4 sm:h-4"
             />
 
             Our Services
           </span>
 
+          {/* Heading */}
+
           <h2
             className="
-            text-3xl
-            md:text-4xl
-            font-bold
-            leading-snug
-            text-black
-          "
+              text-3xl
+              sm:text-4xl
+              lg:text-5xl
+              font-bold
+              leading-tight
+              text-black
+            "
           >
             Complete Business Solutions
-            <br />
+            <br className="hidden sm:block" />
 
             <span
               className="
-              bg-gradient-to-r
-              from-blue-600
-              to-green-500
-              bg-clip-text
-              text-transparent
-            "
+                bg-gradient-to-r
+                from-blue-600
+                to-green-500
+                bg-clip-text
+                text-transparent
+              "
             >
               Under One Roof
             </span>
           </h2>
 
+          {/* Description */}
+
           <p
             className="
-            mt-4
-            text-black
-            text-base
-            leading-7
-            max-w-full
-          "
+              mt-3
+              sm:mt-4
+              text-sm
+              sm:text-base
+              text-gray-700
+              leading-6
+              sm:leading-7
+              max-w-4xl
+            "
           >
             We provide reliable legal, business and financial solutions with
             expert guidance to simplify your business journey. MegaClick
@@ -132,16 +158,19 @@ const Services = () => {
           </p>
         </div>
 
-        {/* Service Cards */}
+        {/* ================= SERVICE CARDS ================= */}
 
         <div
           className="
-          grid
-          grid-cols-1
-          md:grid-cols-2
-          lg:grid-cols-3
-          gap-6
-        "
+            grid
+            grid-cols-1
+            sm:grid-cols-2
+            lg:grid-cols-3
+            gap-5
+            sm:gap-6
+            lg:gap-7
+            xl:gap-8
+          "
         >
           {services.map((service, index) => {
             const Icon = service.icon;
@@ -150,83 +179,135 @@ const Services = () => {
               <div
                 key={index}
                 className="
-                bg-white
-                border
-                border-blue-300
-                rounded-2xl
-                overflow-hidden
-                shadow-md
-                hover:shadow-xl
-                hover:-translate-y-2
-                transition-all
-                duration-300
-              "
+                  group
+                  w-full
+                  bg-white
+                  border
+                  border-blue-200
+                  rounded-xl
+                  sm:rounded-2xl
+                  overflow-hidden
+                  shadow-[0_6px_25px_rgba(0,0,0,0.06)]
+                  hover:shadow-[0_15px_40px_rgba(11,78,162,0.14)]
+                  transition-all
+                  duration-300
+                  lg:hover:-translate-y-2
+                "
               >
-                {/* Image */}
+                {/* ================= IMAGE ================= */}
 
-                <div className="overflow-hidden">
+                <div
+                  className="
+                    relative
+                    w-full
+                    h-52
+                    sm:h-56
+                    md:h-60
+                    lg:h-56
+                    xl:h-60
+                    overflow-hidden
+                    bg-gray-100
+                  "
+                >
                   <img
                     src={service.image}
                     alt={service.title}
+                    loading="lazy"
                     className="
-                    w-full
-                    h-56
-                    object-cover
-                    transition-all
-                    duration-500
-                    hover:scale-105
-                  "
+                      w-full
+                      h-full
+                      object-cover
+                      transition-transform
+                      duration-500
+                      group-hover:scale-105
+                    "
+                  />
+
+                  {/* Image Overlay */}
+
+                  <div
+                    className="
+                      absolute
+                      inset-0
+                      bg-black/5
+                      group-hover:bg-black/10
+                      transition-colors
+                      duration-300
+                    "
                   />
                 </div>
 
-                {/* Content */}
+                {/* ================= CONTENT ================= */}
 
-                <div className="p-6">
-                  {/* Icon */}
-
+                <div
+                  className="
+                    p-5
+                    sm:p-6
+                    lg:p-6
+                  "
+                >
                   {/* Icon + Title */}
 
-<div className="flex items-center gap-4 mb-5">
-  <div
-    className="
-    w-12
-    h-12
-    rounded-xl
-    bg-blue-50
-    border
-    border-blue-200
-    flex
-    items-center
-    justify-center
-    flex-shrink-0
-    "
-  >
-    <Icon
-      size={26}
-      className="text-[#0B4EA2]"
-    />
-  </div>
+                  <div
+                    className="
+                      flex
+                      items-center
+                      gap-3
+                      sm:gap-4
+                      mb-4
+                      sm:mb-5
+                    "
+                  >
+                    {/* Icon */}
 
-  <h3
-    className="
-    text-2xl
-    font-bold
-    text-black
-    leading-tight
-    "
-  >
-    {service.title}
-  </h3>
-</div>
+                    <div
+                      className="
+                        w-11
+                        h-11
+                        sm:w-12
+                        sm:h-12
+                        rounded-xl
+                        bg-blue-50
+                        border
+                        border-blue-200
+                        flex
+                        items-center
+                        justify-center
+                        flex-shrink-0
+                      "
+                    >
+                      <Icon
+                        size={23}
+                        className="text-[#0B4EA2] sm:w-[26px] sm:h-[26px]"
+                      />
+                    </div>
+
+                    {/* Title */}
+
+                    <h3
+                      className="
+                        text-lg
+                        sm:text-xl
+                        lg:text-2xl
+                        font-bold
+                        text-black
+                        leading-tight
+                      "
+                    >
+                      {service.title}
+                    </h3>
+                  </div>
 
                   {/* Description */}
 
                   <p
                     className="
-                    text-base
-                    text-black
-                    leading-7
-                  "
+                      text-sm
+                      sm:text-base
+                      text-gray-700
+                      leading-6
+                      sm:leading-7
+                    "
                   >
                     {service.short}
                   </p>
@@ -236,29 +317,48 @@ const Services = () => {
           })}
         </div>
 
-        {/* View All Services Button */}
+        {/* ================= VIEW ALL BUTTON ================= */}
 
-        <div className="flex justify-center mt-12">
+        <div
+          className="
+            flex
+            justify-center
+            mt-8
+            sm:mt-10
+            lg:mt-12
+          "
+        >
           <button
             onClick={() => navigate("/services")}
             className="
               inline-flex
               items-center
+              justify-center
               gap-2
+              w-full
+              sm:w-auto
               bg-[#0B4EA2]
               hover:bg-blue-700
               text-white
-              px-8
-              py-3.5
+              px-7
+              sm:px-8
+              py-3
+              sm:py-3.5
               rounded-xl
+              text-sm
+              sm:text-base
               font-semibold
               transition-all
               duration-300
-              hover:scale-105
+              lg:hover:scale-105
             "
           >
             View All Services
-            <ArrowRight size={18} />
+
+            <ArrowRight
+              size={17}
+              className="sm:w-[18px] sm:h-[18px]"
+            />
           </button>
         </div>
       </div>

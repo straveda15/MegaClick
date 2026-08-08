@@ -1,3 +1,4 @@
+
 import { Routes, Route } from "react-router-dom";
 
 // Pages
@@ -14,71 +15,55 @@ import WhatsAppButton from "./components/WhatsAppButton";
 // Layout
 import MainLayout from "./layouts/MainLayout";
 
-
 function App() {
+  return (
+    <>
+      <Routes>
+        <Route element={<MainLayout />}>
 
-return (
-<>
+          {/* ================= HOME ================= */}
+          <Route
+            path="/"
+            element={<Home />}
+          />
 
-  <Routes>
+          {/* ================= ABOUT ================= */}
+          <Route
+            path="/about"
+            element={<About />}
+          />
 
-    <Route element={<MainLayout />}>
+          {/* ================= SERVICES ================= */}
+          <Route
+            path="/services"
+            element={<Services />}
+          />
 
-      {/* HOME */}
-      <Route 
-        path="/" 
-        element={<Home />} 
-      />
+          {/* ================= SERVICE DETAILS ================= */}
+          <Route
+            path="/services/:slug"
+            element={<ServiceDetails />}
+          />
 
+          {/* ================= ASSOCIATE WITH US ================= */}
+          <Route
+            path="/associate-with-us"
+            element={<AssociateWithUs />}
+          />
 
-      {/* ABOUT */}
-      <Route 
-        path="/about" 
-        element={<About />} 
-      />
+          {/* ================= CONTACT ================= */}
+          <Route
+            path="/contact"
+            element={<Contact />}
+          />
 
+        </Route>
+      </Routes>
 
-      {/* SERVICES */}
-      <Route 
-        path="/services" 
-        element={<Services />} 
-      />
-
-
-      {/* SERVICE DETAILS */}
-      <Route 
-        path="/services/:slug" 
-        element={<ServiceDetails />} 
-      />
-
-
-      {/* ASSOCIATE WITH US */}
-      <Route
-        path="/associate-with-us"
-        element={<AssociateWithUs />}
-      />
-
-
-      {/* CONTACT */}
-      <Route 
-        path="/contact" 
-        element={<Contact />} 
-      />
-
-    </Route>
-
-  </Routes>
-
-
-  {/* Floating WhatsApp Button */}
-  <WhatsAppButton />
-
-
-</>
-
-);
-
+      {/* ================= FLOATING WHATSAPP ================= */}
+      <WhatsAppButton />
+    </>
+  );
 }
-
 
 export default App;

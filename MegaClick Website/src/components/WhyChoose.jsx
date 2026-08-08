@@ -2,215 +2,238 @@ import React from "react";
 
 import {
   Users,
+  Lightbulb,
+  FileCheck2,
+  WalletCards,
   ShieldCheck,
+  Handshake,
   CheckCircle,
-  BadgeCheck,
-  IndianRupee,
-  Clock3,
-  Headphones,
 } from "lucide-react";
 
-import supportImg from "../assets/support.png";
-import exportImg from "../assets/export.png";
-import secureImg from "../assets/secure.jpg";
-import growthImg from "../assets/growth.jpg";
-
-const features = [
+const hexagonItems = [
   {
-    icon: BadgeCheck,
-    title: "Government Recognized",
-  },
-  {
+    title: (
+      <>
+        EXPERT
+        <br />
+        PROFESSIONAL
+        <br />
+        NETWORK
+      </>
+    ),
     icon: Users,
-    title: "15K+ Happy Clients",
+    color: "green",
   },
+
   {
+    title: (
+      <>
+        ONE-STOP
+        <br />
+        SOLUTION
+      </>
+    ),
+    icon: Lightbulb,
+    color: "blue",
+  },
+
+  {
+    title: (
+      <>
+        END-TO-END
+        <br />
+        PROFESSIONAL
+        <br />
+        SERVICE
+      </>
+    ),
+    icon: FileCheck2,
+    color: "green",
+  },
+
+  {
+    title: (
+      <>
+        TIME & COST
+        <br />
+        EFFICIENCY
+      </>
+    ),
+    icon: WalletCards,
+    color: "blue",
+  },
+
+  {
+    title: (
+      <>
+        TRANSPARENCY &
+        <br />
+        ACCOUNTABILITY
+      </>
+    ),
     icon: ShieldCheck,
-    title: "Data Security & Trust",
+    color: "green",
   },
-  {
-    icon: Users,
-    title: "Professional Experts",
-  },
-  {
-    icon: Clock3,
-    title: "On-Time Service",
-  },
-  {
-    icon: CheckCircle,
-    title: "Fast Processing",
-  },
-  {
-    icon: Headphones,
-    title: "24×7 Support",
-  },
-  {
-    icon: IndianRupee,
-    title: "Affordable Pricing",
-  },
-];
 
-const images = [
   {
-    image: supportImg,
-    title: "Business Support",
-    text: "Complete guidance for smooth business operations.",
-  },
-  {
-    image: exportImg,
-    title: "Export Solutions",
-    text: "Helping businesses expand globally with confidence.",
-  },
-  {
-    image: secureImg,
-    title: "Secure Services",
-    text: "Safe documentation and reliable solutions.",
-  },
-  {
-    image: growthImg,
-    title: "Business Growth",
-    text: "Strategies designed for long-term success.",
+    title: (
+      <>
+        BUILT FOR
+        <br />
+        EVERYONE
+      </>
+    ),
+    icon: Handshake,
+    color: "blue",
   },
 ];
 
 const WhyChoose = () => {
   return (
-    <section
-      className="
-        relative
-        overflow-hidden
-        bg-blue-50
-        py-12
-        sm:py-14
-        lg:py-16
-      "
-    >
+    <section className="w-full bg-blue-50 py-5 sm:py-10 lg:py-16 overflow-hidden">
       <div
         className="
           max-w-[1500px]
           mx-auto
           px-4
           sm:px-6
-          md:px-8
           lg:px-16
-          xl:px-28
+          xl:px-24
         "
       >
         {/* =====================================================
-            TOP SECTION
+            MAIN LAYOUT
         ====================================================== */}
 
         <div
           className="
             grid
             grid-cols-1
-            lg:grid-cols-2
+            lg:grid-cols-[0.85fr_1.15fr]
+            xl:grid-cols-[0.8fr_1.2fr]
+            items-center
             gap-10
             sm:gap-12
-            lg:gap-16
-            xl:gap-20
-            items-center
+            lg:gap-8
+            xl:gap-14
           "
         >
-          {/* ================= LEFT CONTENT ================= */}
+          {/* =====================================================
+              LEFT SIDE
+          ====================================================== */}
 
-          <div>
-            {/* BADGE */}
+          <div
+            className="
+              text-center
+              lg:text-left
+              max-w-xl
+              mx-auto
+              lg:mx-0
+            "
+          >
+            {/* Badge */}
 
-            <span
-              className="
-                inline-flex
-                items-center
-                gap-2
-                bg-[#0B4EA2]
-                text-white
-                px-3
-                sm:px-5
-                py-1.5
-                sm:py-2
-                rounded-full
-                text-xs
-                sm:text-sm
-                font-semibold
-              "
-            >
-              <CheckCircle
-                size={15}
-                className="sm:w-4 sm:h-4"
-              />
+   <span
+  className="
+    relative
+    -top-5
+    sm:-top-6
+    lg:-top-8
+    inline-flex
+    items-center
+    gap-2
+    bg-[#0B4EA2]
+    text-white
+    px-4
+    py-2
+    rounded-full
+    text-[11px]
+    sm:text-xs
+    font-semibold
+    tracking-wide
+  "
+>
+  <CheckCircle
+    size={15}
+    className="text-green-300"
+  />
 
-              Why Choose MegaClick
-            </span>
+  WHY CHOOSE US
+</span>
 
-            {/* HEADING */}
+            {/* =================================================
+                MAIN HEADING
+            ================================================== */}
+{/* Heading */}
 
-            <h2
-              className="
-                mt-5
-                sm:mt-6
-                text-3xl
-                sm:text-4xl
-                lg:text-5xl
-                font-bold
-                leading-tight
-              "
-            >
-              Your Trusted Partner For
+<h2
+  className="
+    text-3xl
+    sm:text-4xl
+    lg:text-5xl
+    font-bold
+    leading-tight
+    text-black
+  "
+>
+  Your Trusted
+  <br className="hidden sm:block" />
 
-              <span
-                className="
-                  block
-                  bg-gradient-to-r
-                  from-blue-600
-                  to-green-500
-                  bg-clip-text
-                  text-transparent
-                "
-              >
-                Business Growth
-              </span>
-            </h2>
+  <span
+    className="
+      bg-gradient-to-r
+      from-blue-600
+      to-green-500
+      bg-clip-text
+      text-transparent
+    "
+  >
+    Partner
+  </span>
+</h2>
 
-            {/* DESCRIPTION */}
+{/* Description */}
 
-            <p
-              className="
-                mt-4
-                sm:mt-6
-                text-gray-600
-                leading-7
-                sm:leading-8
-                text-sm
-                sm:text-base
-                lg:text-lg
-                max-w-xl
-              "
-            >
-              MegaClick provides complete company registration,
-              GST registration, compliance, taxation, trademark
-              and financial solutions with expert guidance and
-              fast processing.
-            </p>
-
-            {/* STATS */}
+<p
+  className="
+    mt-3
+    sm:mt-4
+    text-sm
+    sm:text-base
+    text-gray-700
+    leading-6
+    sm:leading-7
+    max-w-4xl
+  "
+>
+  MegaClick brings together trusted professionals, complete business
+  solutions and reliable support to simplify every step of your business
+  journey.
+</p>
+            {/* =================================================
+                STATS
+            ================================================== */}
 
             <div
               className="
+                mt-8
+                sm:mt-10
                 flex
+                justify-center
+                lg:justify-start
                 gap-8
                 sm:gap-12
-                md:gap-16
-                mt-7
-                sm:mt-10
+                lg:gap-10
               "
             >
+              {/* CLIENTS */}
+
               <div>
                 <h3
                   className="
                     text-3xl
                     sm:text-4xl
-                    lg:text-5xl
-                    font-bold
+                    font-extrabold
                     text-[#0B4EA2]
                   "
                 >
@@ -220,22 +243,24 @@ const WhyChoose = () => {
                 <p
                   className="
                     mt-1
-                    text-sm
-                    sm:text-base
-                    text-gray-600
+                    text-xs
+                    sm:text-sm
+                    font-medium
+                    text-gray-500
                   "
                 >
                   Happy Clients
                 </p>
               </div>
 
+              {/* SUCCESS RATE */}
+
               <div>
                 <h3
                   className="
                     text-3xl
                     sm:text-4xl
-                    lg:text-5xl
-                    font-bold
+                    font-extrabold
                     text-green-600
                   "
                 >
@@ -245,265 +270,329 @@ const WhyChoose = () => {
                 <p
                   className="
                     mt-1
-                    text-sm
-                    sm:text-base
-                    text-gray-600
+                    text-xs
+                    sm:text-sm
+                    font-medium
+                    text-gray-500
                   "
                 >
                   Success Rate
                 </p>
               </div>
+
+              {/* SERVICES */}
+
+              <div className="hidden sm:block">
+                <h3
+                  className="
+                    text-3xl
+                    sm:text-4xl
+                    font-extrabold
+                    text-[#0B4EA2]
+                  "
+                >
+                  25+
+                </h3>
+
+                <p
+                  className="
+                    mt-1
+                    text-xs
+                    sm:text-sm
+                    font-medium
+                    text-gray-500
+                  "
+                >
+                  Services
+                </p>
+              </div>
             </div>
           </div>
 
-          {/* ================= RIGHT FEATURES ================= */}
+          {/* =====================================================
+              RIGHT SIDE
+          ====================================================== */}
 
-          <div>
-            <div
-              className="
-                grid
-                grid-cols-1
-                sm:grid-cols-2
-                gap-5
-                sm:gap-6
-                lg:gap-x-10
-                lg:gap-y-7
-              "
-            >
-              {features.map((item, index) => {
-                const Icon = item.icon;
-
-                return (
-                  <div
-                    key={index}
-                    className="
-                      relative
-                      flex
-                      items-center
-                      group
-                      min-w-0
-                    "
-                  >
-                    {/* DIAMOND */}
-
-                    <div
-                      className="
-                        relative
-                        z-20
-                        flex-shrink-0
-                        w-14
-                        h-14
-                        sm:w-16
-                        sm:h-16
-                        lg:w-18
-                        lg:h-18
-                        bg-blue-400
-                        rotate-45
-                        rounded-xl
-                        shadow-lg
-                        flex
-                        items-center
-                        justify-center
-                        group-hover:bg-[#27496D]
-                        group-hover:scale-105
-                        transition-all
-                        duration-300
-                      "
-                    >
-                      <div className="-rotate-45">
-                        <Icon
-                          size={24}
-                          className="text-white sm:w-7 sm:h-7"
-                        />
-                      </div>
-                    </div>
-
-                    {/* RIBBON */}
-
-                    <div
-                      className="
-                        -ml-6
-                        flex-1
-                        min-w-0
-                        h-14
-                        sm:h-16
-                        lg:h-18
-                        bg-green-500
-                        text-white
-                        flex
-                        items-center
-                        pl-11
-                        sm:pl-13
-                        lg:pl-14
-                        pr-3
-                        sm:pr-5
-                        shadow-lg
-                        group-hover:bg-green-700
-                        transition
-                        duration-300
-                      "
-                      style={{
-                        clipPath:
-                          "polygon(0 0,92% 0,100% 50%,92% 100%,0 100%,5% 50%)",
-                      }}
-                    >
-                      <h3
-                        className="
-                          text-xs
-                          sm:text-sm
-                          lg:text-base
-                          font-semibold
-                          leading-5
-                          tracking-wide
-                        "
-                      >
-                        {item.title}
-                      </h3>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-
-        {/* =====================================================
-            PROFESSIONAL SERVICES / IMAGE CARDS
-        ====================================================== */}
-
-        <div
-          className="
-            mt-12
-            sm:mt-14
-            lg:mt-16
-          "
-        >
           <div
             className="
-              grid
-              grid-cols-1
-              sm:grid-cols-2
-              lg:grid-cols-4
-              gap-4
-              sm:gap-5
-              lg:gap-6
-              max-w-[1200px]
-              mx-auto
+              w-full
+              flex
+              justify-center
+              lg:justify-end
             "
           >
-            {images.map((item, index) => (
+            <div
+              className="
+                w-full
+                max-w-[660px]
+              "
+            >
+              {/* =================================================
+                  DESKTOP / TABLET
+              ================================================== */}
+
               <div
-                key={index}
                 className="
+                  hidden
+                  sm:flex
+                  flex-col
+                  items-center
                   w-full
-                  bg-white
-                  rounded-2xl
-                  overflow-hidden
-                  shadow-md
-                  border
-                  border-gray-200
-                  hover:-translate-y-1
-                  hover:shadow-xl
-                  transition-all
-                  duration-300
-                  group
                 "
               >
-                {/* IMAGE */}
+                {/* ================= TOP ROW ================= */}
 
                 <div
                   className="
-                    overflow-hidden
-                    h-[140px]
-                    sm:h-[150px]
-                    md:h-[160px]
-                    lg:h-[145px]
-                    xl:h-[155px]
+                    flex
+                    items-center
+                    justify-center
+                    gap-3
+                    md:gap-4
+                    lg:gap-5
+                    xl:gap-6
                   "
                 >
-                  <img
-                    src={item.image}
-                    alt={item.title}
-                    className="
-                      w-full
-                      h-full
-                      object-cover
-                      group-hover:scale-105
-                      transition
-                      duration-700
-                    "
+                  <Hexagon item={hexagonItems[0]} />
+
+                  <Hexagon item={hexagonItems[1]} />
+
+                  <Hexagon item={hexagonItems[2]} />
+                </div>
+
+                {/* ================= BOTTOM ROW ================= */}
+
+                <div
+                  className="
+                    flex
+                    items-center
+                    justify-center
+                    gap-3
+                    md:gap-4
+                    lg:gap-5
+                    xl:gap-6
+                    mt-4
+                    md:mt-5
+                    lg:mt-6
+                  "
+                >
+                  <Hexagon item={hexagonItems[3]} />
+
+                  <Hexagon item={hexagonItems[4]} />
+
+                  <Hexagon item={hexagonItems[5]} />
+                </div>
+              </div>
+
+              {/* =================================================
+                  MOBILE
+              ================================================== */}
+
+              <div
+                className="
+                  sm:hidden
+                  w-full
+                  flex
+                  flex-col
+                  items-center
+                  gap-4
+                "
+              >
+                {/* ROW 1 */}
+
+                <div
+                  className="
+                    flex
+                    items-center
+                    justify-center
+                    gap-4
+                    w-full
+                  "
+                >
+                  <Hexagon
+                    item={hexagonItems[0]}
+                    mobile
+                  />
+
+                  <Hexagon
+                    item={hexagonItems[1]}
+                    mobile
                   />
                 </div>
 
-                {/* CONTENT */}
+                {/* ROW 2 */}
 
                 <div
                   className="
-                    p-4
-                    sm:p-4
-                    lg:p-5
+                    flex
+                    items-center
+                    justify-center
+                    gap-4
+                    w-full
                   "
                 >
-                  <h4
-                    className="
-                      text-base
-                      sm:text-lg
-                      font-bold
-                      text-gray-900
-                    "
-                  >
-                    {item.title}
-                  </h4>
+                  <Hexagon
+                    item={hexagonItems[2]}
+                    mobile
+                  />
 
-                  <p
-                    className="
-                      mt-2
-                      text-xs
-                      sm:text-sm
-                      text-gray-700
-                      leading-5
-                      sm:leading-6
-                    "
-                  >
-                    {item.text}
-                  </p>
+                  <Hexagon
+                    item={hexagonItems[3]}
+                    mobile
+                  />
+                </div>
+
+                {/* ROW 3 */}
+
+                <div
+                  className="
+                    flex
+                    items-center
+                    justify-center
+                    gap-4
+                    w-full
+                  "
+                >
+                  <Hexagon
+                    item={hexagonItems[4]}
+                    mobile
+                  />
+
+                  <Hexagon
+                    item={hexagonItems[5]}
+                    mobile
+                  />
                 </div>
               </div>
-            ))}
+            </div>
           </div>
         </div>
       </div>
-
-      {/* ================= BACKGROUND BLUR ================= */}
-
-      <div
-        className="
-          absolute
-          -top-32
-          -left-32
-          w-72
-          h-72
-          rounded-full
-          bg-blue-200/40
-          blur-3xl
-          pointer-events-none
-        "
-      />
-
-      <div
-        className="
-          absolute
-          -bottom-40
-          -right-40
-          w-96
-          h-96
-          rounded-full
-          bg-green-200/30
-          blur-3xl
-          pointer-events-none
-        "
-      />
     </section>
+  );
+};
+
+/* ============================================================
+   HEXAGON COMPONENT
+============================================================ */
+
+const Hexagon = ({ item, mobile = false }) => {
+  const Icon = item.icon;
+
+  const isBlue = item.color === "blue";
+
+  return (
+    <div
+      className={`
+        relative
+        flex
+        flex-col
+        items-center
+        justify-center
+        text-center
+        text-white
+        overflow-hidden
+        select-none
+        transition-all
+        duration-300
+        hover:scale-[1.03]
+
+        ${
+          mobile
+            ? `
+              w-[125px]
+              h-[143px]
+            `
+            : `
+              w-[150px]
+              h-[172px]
+              md:w-[160px]
+              md:h-[183px]
+              lg:w-[170px]
+              lg:h-[195px]
+              xl:w-[180px]
+              xl:h-[205px]
+            `
+        }
+
+        ${
+          isBlue
+            ? `
+              bg-[#145A92]
+              hover:bg-[#0B4EA2]
+            `
+            : `
+              bg-gradient-to-b
+              from-[#B8ED72]
+              to-[#63B900]
+              hover:from-[#C3F47D]
+              hover:to-[#58A900]
+            `
+        }
+      `}
+      style={{
+        clipPath:
+          "polygon(25% 0%, 75% 0%, 100% 25%, 100% 75%, 75% 100%, 25% 100%, 0% 75%, 0% 25%)",
+      }}
+    >
+      {/* =================================================
+          CONTENT
+      ================================================== */}
+
+      <div
+        className="
+          relative
+          z-10
+          flex
+          flex-col
+          items-center
+          justify-center
+          px-3
+        "
+      >
+        {/* ICON */}
+
+        <div
+          className={`
+            flex
+            items-center
+            justify-center
+            mb-2
+
+            ${
+              mobile
+                ? "w-9 h-9"
+                : "w-11 h-11 md:w-12 md:h-12"
+            }
+          `}
+        >
+          <Icon
+            className="text-white"
+            strokeWidth={2.2}
+            size={mobile ? 36 : 48}
+          />
+        </div>
+
+        {/* TITLE */}
+
+        <h3
+          className={`
+            font-extrabold
+            text-white
+            leading-[1.15]
+            tracking-wide
+
+            ${
+              mobile
+                ? "text-[10px]"
+                : "text-[12px] md:text-[13px] lg:text-[14px] xl:text-[15px]"
+            }
+          `}
+        >
+          {item.title}
+        </h3>
+      </div>
+    </div>
   );
 };
 

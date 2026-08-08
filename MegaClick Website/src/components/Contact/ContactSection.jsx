@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import Select from "react-select";
 
@@ -23,20 +22,64 @@ import {
   FaInstagram,
 } from "react-icons/fa";
 
+// =====================================================
+// SERVICE OPTIONS
+// =====================================================
+
 const serviceOptions = [
-  { value: "Company Registration", label: "Company Registration" },
-  { value: "Private Limited Company", label: "Private Limited Company" },
-  { value: "LLP Registration", label: "LLP Registration" },
-  { value: "OPC Registration", label: "OPC Registration" },
-  { value: "GST Registration", label: "GST Registration" },
-  { value: "Trademark Registration", label: "Trademark Registration" },
-  { value: "MSME Registration", label: "MSME Registration" },
-  { value: "ISO Certification", label: "ISO Certification" },
-  { value: "FSSAI Registration", label: "FSSAI Registration" },
-  { value: "Import Export Code (IEC)", label: "Import Export Code (IEC)" },
-  { value: "Income Tax Return", label: "Income Tax Return" },
-  { value: "GST Return Filing", label: "GST Return Filing" },
+  {
+    value: "Company Registration",
+    label: "Company Registration",
+  },
+  {
+    value: "Private Limited Company",
+    label: "Private Limited Company",
+  },
+  {
+    value: "LLP Registration",
+    label: "LLP Registration",
+  },
+  {
+    value: "OPC Registration",
+    label: "OPC Registration",
+  },
+  {
+    value: "GST Registration",
+    label: "GST Registration",
+  },
+  {
+    value: "Trademark Registration",
+    label: "Trademark Registration",
+  },
+  {
+    value: "MSME Registration",
+    label: "MSME Registration",
+  },
+  {
+    value: "ISO Certification",
+    label: "ISO Certification",
+  },
+  {
+    value: "FSSAI Registration",
+    label: "FSSAI Registration",
+  },
+  {
+    value: "Import Export Code (IEC)",
+    label: "Import Export Code (IEC)",
+  },
+  {
+    value: "Income Tax Return",
+    label: "Income Tax Return",
+  },
+  {
+    value: "GST Return Filing",
+    label: "GST Return Filing",
+  },
 ];
+
+// =====================================================
+// BENEFITS
+// =====================================================
 
 const benefits = [
   {
@@ -56,8 +99,16 @@ const benefits = [
   },
 ];
 
+// =====================================================
+// CONTACT SECTION
+// =====================================================
+
 const ContactSection = () => {
   const [selectedService, setSelectedService] = useState(null);
+
+  // =====================================================
+  // FORM SUBMIT
+  // =====================================================
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -74,205 +125,263 @@ const ContactSection = () => {
     <section
       className="
         relative
+        w-full
         overflow-hidden
         bg-blue-100
         py-8
-        sm:py-10
-        lg:py-14
+        sm:py-8
+        md:py-10
+        lg:py-12
+        xl:py-14
       "
     >
-      {/* ================= BACKGROUND GLOW ================= */}
+      {/* =====================================================
+          BACKGROUND GLOW - TOP LEFT
+      ====================================================== */}
 
       <div
         className="
+          pointer-events-none
           absolute
-          -top-20
-          -left-20
-          w-60
-          h-60
-          sm:w-72
-          sm:h-72
+          -left-24
+          -top-24
+          h-48
+          w-48
+          sm:h-64
+          sm:w-64
+          lg:h-80
+          lg:w-80
           rounded-full
           bg-blue-300/30
           blur-3xl
-          pointer-events-none
         "
       />
 
+      {/* =====================================================
+          BACKGROUND GLOW - BOTTOM RIGHT
+      ====================================================== */}
+
       <div
         className="
+          pointer-events-none
           absolute
-          -bottom-20
-          -right-20
-          w-64
-          h-64
-          sm:w-80
-          sm:h-80
+          -bottom-24
+          -right-24
+          h-52
+          w-52
+          sm:h-72
+          sm:w-72
+          lg:h-96
+          lg:w-96
           rounded-full
           bg-green-300/30
           blur-3xl
-          pointer-events-none
         "
       />
 
-      {/* ================= CONTAINER ================= */}
+      {/* =====================================================
+          MAIN CONTAINER
+      ====================================================== */}
 
-      <div
-        className="
-          relative
-          z-10
-          max-w-[1500px]
-          mx-auto
-          px-4
-          sm:px-6
-          lg:px-16
-          xl:px-24
-        "
-      >
-        <div
-          className="
-            grid
-            grid-cols-1
-            lg:grid-cols-2
-            gap-8
-            lg:gap-12
-            items-start
-          "
-        >
+     {/* ================= CONTAINER ================= */}
+
+<div
+  className="
+    relative
+    z-10
+    w-full
+    max-w-[1450px]
+    mx-auto
+    px-4
+    sm:px-6
+    md:px-8
+    lg:px-10
+    xl:px-10
+    2xl:px-20
+  "
+>
+  <div
+    className="
+      grid
+      grid-cols-1
+      lg:grid-cols-2
+      gap-8
+      md:gap-8
+      lg:gap-10
+      xl:gap-10
+      items-start
+      w-full
+    "
+  >
           {/* =====================================================
-              LEFT FORM CARD
+              LEFT SIDE - FORM
           ====================================================== */}
 
           <div
             className="
               relative
-              w-full
               min-w-0
-              bg-white/95
-              backdrop-blur-xl
+              w-full
+              overflow-hidden
               rounded-2xl
-              sm:rounded-[28px]
-              lg:rounded-[35px]
-              shadow-[0_20px_60px_rgba(0,0,0,0.10)]
+              bg-white/95
               p-5
+              shadow-[0_15px_50px_rgba(0,0,0,0.08)]
+              backdrop-blur-xl
+              sm:rounded-[26px]
               sm:p-7
-              lg:p-10
+              md:p-8
+              lg:rounded-[30px]
+              lg:p-9
+              xl:rounded-[34px]
+              xl:p-10
             "
           >
-            {/* Floating Circle */}
+            {/* =================================================
+                CARD DECORATION
+            ================================================== */}
 
             <div
               className="
+                pointer-events-none
                 absolute
-                -top-10
-                -right-10
-                w-32
+                -right-16
+                -top-16
                 h-32
-                sm:w-40
-                sm:h-40
+                w-32
                 rounded-full
                 bg-blue-100
                 blur-3xl
-                pointer-events-none
+                sm:h-40
+                sm:w-40
               "
             />
 
-            {/* Badge */}
+            {/* =================================================
+                BADGE
+            ================================================== */}
 
             <span
               className="
                 relative
                 inline-flex
+                max-w-full
                 items-center
                 gap-2
-                px-4
-                sm:px-5
-                py-2
                 rounded-full
                 bg-green-100
-                text-green-700
-                font-bold
+                px-3.5
+                py-2
                 text-xs
+                font-bold
+                text-green-700
+                sm:px-5
                 sm:text-sm
               "
             >
-              <Sparkles size={15} />
+              <Sparkles
+                size={15}
+                className="flex-shrink-0"
+              />
 
-              Free Expert Consultation
+              <span className="truncate">
+                Free Expert Consultation
+              </span>
             </span>
 
-            {/* Heading */}
+            {/* =================================================
+                HEADING
+            ================================================== */}
 
             <h2
               className="
-                mt-5
-                sm:mt-6
+                mt-4
+                max-w-2xl
                 text-2xl
-                sm:text-3xl
-                lg:text-4xl
                 font-extrabold
                 leading-tight
-                bg-gradient-to-r
-                from-[#0B4EA2]
-                via-blue-600
-                to-green-600
-                bg-clip-text
-                text-transparent
+                sm:mt-5
+                sm:text-3xl
+                md:text-[34px]
+                lg:text-4xl
+                xl:text-[42px]
               "
             >
-              Request Your Free Consultation
+              <span
+                className="
+                  bg-gradient-to-r
+                  from-[#0B4EA2]
+                  via-blue-600
+                  to-green-600
+                  bg-clip-text
+                  text-transparent
+                "
+              >
+                Request Your Free Consultation
+              </span>
             </h2>
+
+            {/* =================================================
+                DESCRIPTION
+            ================================================== */}
 
             <p
               className="
                 mt-3
-                sm:mt-4
+                max-w-2xl
                 text-sm
-                sm:text-base
-                text-gray-700
                 leading-6
+                text-gray-700
+                sm:mt-4
+                sm:text-base
                 sm:leading-7
               "
             >
-              Tell us about your business requirements and our experts will
-              contact you with the best legal, financial and compliance
-              solutions.
+              Tell us about your business requirements and our
+              experts will contact you with the best legal,
+              financial and compliance solutions.
             </p>
 
-            {/* ================= FORM ================= */}
+            {/* =================================================
+                FORM
+            ================================================== */}
 
             <form
               onSubmit={handleSubmit}
               className="
                 mt-6
-                sm:mt-8
                 space-y-4
+                sm:mt-7
                 sm:space-y-5
+                lg:mt-8
               "
             >
-              {/* NAME + PHONE */}
+              {/* =================================================
+                  NAME + PHONE
+              ================================================== */}
 
               <div
                 className="
                   grid
                   grid-cols-1
-                  sm:grid-cols-2
                   gap-4
+                  sm:grid-cols-2
                   sm:gap-5
                 "
               >
-                {/* Name */}
+                {/* NAME */}
 
                 <div className="relative min-w-0">
                   <User
                     size={18}
                     className="
+                      pointer-events-none
                       absolute
                       left-4
                       top-1/2
+                      z-10
                       -translate-y-1/2
                       text-gray-400
-                      z-10
                     "
                   />
 
@@ -282,40 +391,43 @@ const ContactSection = () => {
                     required
                     placeholder="Full Name *"
                     className="
+                      h-14
                       w-full
-                      h-13
-                      sm:h-14
+                      min-w-0
                       rounded-xl
-                      bg-gray-50
                       border
                       border-gray-200
+                      bg-gray-50
                       pl-11
-                      sm:pl-12
                       pr-4
                       text-sm
-                      sm:text-base
+                      text-gray-900
                       outline-none
-                      focus:bg-white
+                      transition
+                      placeholder:text-gray-400
                       focus:border-[#0B4EA2]
+                      focus:bg-white
                       focus:ring-4
                       focus:ring-blue-100
-                      transition
+                      sm:pl-12
+                      sm:text-base
                     "
                   />
                 </div>
 
-                {/* Phone */}
+                {/* PHONE */}
 
                 <div className="relative min-w-0">
                   <Phone
                     size={18}
                     className="
+                      pointer-events-none
                       absolute
                       left-4
                       top-1/2
+                      z-10
                       -translate-y-1/2
                       text-gray-400
-                      z-10
                     "
                   />
 
@@ -325,52 +437,57 @@ const ContactSection = () => {
                     required
                     placeholder="Phone Number *"
                     className="
+                      h-14
                       w-full
-                      h-13
-                      sm:h-14
+                      min-w-0
                       rounded-xl
-                      bg-gray-50
                       border
                       border-gray-200
+                      bg-gray-50
                       pl-11
-                      sm:pl-12
                       pr-4
                       text-sm
-                      sm:text-base
+                      text-gray-900
                       outline-none
-                      focus:bg-white
+                      transition
+                      placeholder:text-gray-400
                       focus:border-[#0B4EA2]
+                      focus:bg-white
                       focus:ring-4
                       focus:ring-blue-100
-                      transition
+                      sm:pl-12
+                      sm:text-base
                     "
                   />
                 </div>
               </div>
 
-              {/* EMAIL + SERVICE */}
+              {/* =================================================
+                  EMAIL + SERVICE
+              ================================================== */}
 
               <div
                 className="
                   grid
                   grid-cols-1
-                  sm:grid-cols-2
                   gap-4
+                  sm:grid-cols-2
                   sm:gap-5
                 "
               >
-                {/* Email */}
+                {/* EMAIL */}
 
                 <div className="relative min-w-0">
                   <Mail
                     size={18}
                     className="
+                      pointer-events-none
                       absolute
                       left-4
                       top-1/2
+                      z-10
                       -translate-y-1/2
                       text-gray-400
-                      z-10
                     "
                   />
 
@@ -379,39 +496,42 @@ const ContactSection = () => {
                     name="email"
                     placeholder="Email Address (Optional)"
                     className="
+                      h-14
                       w-full
-                      h-13
-                      sm:h-14
+                      min-w-0
                       rounded-xl
-                      bg-gray-50
                       border
                       border-gray-200
+                      bg-gray-50
                       pl-11
-                      sm:pl-12
                       pr-4
                       text-sm
-                      sm:text-base
+                      text-gray-900
                       outline-none
-                      focus:bg-white
+                      transition
+                      placeholder:text-gray-400
                       focus:border-[#0B4EA2]
+                      focus:bg-white
                       focus:ring-4
                       focus:ring-blue-100
-                      transition
+                      sm:pl-12
+                      sm:text-base
                     "
                   />
                 </div>
 
-                {/* Service */}
+                {/* SERVICE */}
 
                 <div className="relative min-w-0">
                   <Briefcase
                     size={18}
                     className="
+                      pointer-events-none
                       absolute
                       left-4
                       top-1/2
-                      -translate-y-1/2
                       z-20
+                      -translate-y-1/2
                       text-gray-400
                     "
                   />
@@ -422,11 +542,12 @@ const ContactSection = () => {
                     onChange={setSelectedService}
                     isSearchable
                     placeholder="Search & Select Service *"
-                    className="text-sm"
+                    className="w-full text-sm"
                     classNamePrefix="service-select"
                     styles={{
                       control: (base, state) => ({
                         ...base,
+                        width: "100%",
                         minHeight: "56px",
                         height: "56px",
                         borderRadius: "12px",
@@ -437,6 +558,7 @@ const ContactSection = () => {
                         boxShadow: state.isFocused
                           ? "0 0 0 4px rgba(59,130,246,.15)"
                           : "none",
+                        backgroundColor: "#f9fafb",
                         "&:hover": {
                           borderColor: "#0B4EA2",
                         },
@@ -444,7 +566,24 @@ const ContactSection = () => {
 
                       valueContainer: (base) => ({
                         ...base,
+                        minWidth: 0,
                         paddingLeft: "4px",
+                        paddingRight: "8px",
+                      }),
+
+                      singleValue: (base) => ({
+                        ...base,
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      }),
+
+                      placeholder: (base) => ({
+                        ...base,
+                        color: "#9ca3af",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
                       }),
 
                       menu: (base) => ({
@@ -459,7 +598,9 @@ const ContactSection = () => {
                           : state.isFocused
                           ? "#EAF3FF"
                           : "#fff",
-                        color: state.isSelected ? "#fff" : "#111827",
+                        color: state.isSelected
+                          ? "#fff"
+                          : "#111827",
                         cursor: "pointer",
                       }),
                     }}
@@ -468,23 +609,26 @@ const ContactSection = () => {
                   {!selectedService && (
                     <input
                       required
+                      tabIndex={-1}
                       value=""
                       onChange={() => {}}
-                      tabIndex={-1}
                       autoComplete="off"
+                      aria-hidden="true"
                       className="
-                        absolute
-                        opacity-0
                         pointer-events-none
-                        w-0
+                        absolute
                         h-0
+                        w-0
+                        opacity-0
                       "
                     />
                   )}
                 </div>
               </div>
 
-              {/* MESSAGE */}
+              {/* =================================================
+                  MESSAGE
+              ================================================== */}
 
               <textarea
                 name="message"
@@ -492,77 +636,82 @@ const ContactSection = () => {
                 required
                 placeholder="Tell us about your requirements *"
                 className="
-                  w-full
                   min-h-[130px]
+                  w-full
+                  resize-none
                   rounded-xl
-                  bg-gray-50
                   border
                   border-gray-200
+                  bg-gray-50
                   p-4
                   text-sm
-                  sm:text-base
-                  resize-none
+                  text-gray-900
                   outline-none
-                  focus:bg-white
+                  transition
+                  placeholder:text-gray-400
                   focus:border-[#0B4EA2]
+                  focus:bg-white
                   focus:ring-4
                   focus:ring-blue-100
-                  transition
+                  sm:text-base
                 "
               />
 
-              {/* SUBMIT */}
+              {/* =================================================
+                  SUBMIT BUTTON
+              ================================================== */}
 
               <button
                 type="submit"
                 className="
                   group
+                  flex
+                  h-14
                   w-full
-                  h-13
-                  sm:h-14
+                  items-center
+                  justify-center
                   rounded-xl
                   bg-[#0B4EA2]
-                  hover:bg-green-600
-                  text-white
-                  font-semibold
                   text-sm
-                  sm:text-base
+                  font-semibold
+                  text-white
                   transition-all
                   duration-300
                   hover:-translate-y-1
+                  hover:bg-green-600
                   hover:shadow-xl
+                  sm:text-base
                 "
               >
-                <span
-                  className="
-                    flex
-                    items-center
-                    justify-center
-                    gap-2
-                  "
-                >
+                <span className="flex items-center justify-center gap-2">
                   Send Message
 
                   <ArrowRight
                     size={18}
                     className="
-                      group-hover:translate-x-1
                       transition
+                      duration-300
+                      group-hover:translate-x-1
                     "
                   />
                 </span>
               </button>
 
-              {/* TRUST POINTS */}
+              {/* =================================================
+                  TRUST POINTS
+              ================================================== */}
 
               <div
                 className="
                   flex
                   flex-wrap
+                  items-center
                   justify-center
                   gap-x-4
                   gap-y-2
-                  pt-2
+                  pt-1
+                  sm:gap-x-5
+                  sm:pt-2
                 "
               >
                 <div
@@ -571,14 +720,15 @@ const ContactSection = () => {
                     items-center
                     gap-1.5
                     text-xs
-                    sm:text-sm
                     text-gray-700
+                    sm:text-sm
                   "
                 >
                   <CheckCircle2
                     size={15}
-                    className="text-green-600"
+                    className="flex-shrink-0 text-green-600"
                   />
+
                   100% Secure
                 </div>
 
@@ -588,14 +738,15 @@ const ContactSection = () => {
                     items-center
                     gap-1.5
                     text-xs
-                    sm:text-sm
                     text-gray-700
+                    sm:text-sm
                   "
                 >
                   <CheckCircle2
                     size={15}
-                    className="text-green-600"
+                    className="flex-shrink-0 text-green-600"
                   />
+
                   Expert Guidance
                 </div>
 
@@ -605,36 +756,39 @@ const ContactSection = () => {
                     items-center
                     gap-1.5
                     text-xs
-                    sm:text-sm
                     text-gray-700
+                    sm:text-sm
                   "
                 >
                   <CheckCircle2
                     size={15}
-                    className="text-green-600"
+                    className="flex-shrink-0 text-green-600"
                   />
+
                   Quick Response
                 </div>
               </div>
 
-              {/* SOCIAL */}
+              {/* =================================================
+                  SOCIAL
+              ================================================== */}
 
               <div
                 className="
-                  mt-6
-                  sm:mt-8
-                  pt-5
-                  sm:pt-6
+                  mt-5
                   border-t
                   border-gray-200
+                  pt-5
+                  sm:mt-7
+                  sm:pt-6
                 "
               >
                 <h3
                   className="
                     text-lg
-                    sm:text-xl
                     font-bold
                     text-gray-900
+                    sm:text-xl
                   "
                 >
                   Connect With Us
@@ -644,102 +798,118 @@ const ContactSection = () => {
                   className="
                     mt-1.5
                     text-sm
-                    sm:text-base
+                    leading-6
                     text-gray-600
+                    sm:text-base
                   "
                 >
-                  Follow us for updates, business tips and latest services.
+                  Follow us for updates, business tips and latest
+                  services.
                 </p>
 
                 <div
                   className="
+                    mt-4
                     flex
                     flex-wrap
                     gap-3
-                    sm:gap-4
-                    mt-4
                     sm:mt-5
+                    sm:gap-4
                   "
                 >
+                  {/* FACEBOOK */}
+
                   <a
                     href="#"
+                    aria-label="Facebook"
                     className="
-                      w-10
-                      h-10
-                      sm:w-12
-                      sm:h-12
-                      rounded-full
-                      bg-blue-100
                       flex
+                      h-10
+                      w-10
                       items-center
                       justify-center
+                      rounded-full
+                      bg-blue-100
                       text-[#0B4EA2]
+                      transition
                       hover:bg-[#0B4EA2]
                       hover:text-white
-                      transition
+                      sm:h-12
+                      sm:w-12
                     "
                   >
                     <FaFacebookF size={18} />
                   </a>
 
+                  {/* LINKEDIN */}
+
                   <a
                     href="#"
+                    aria-label="LinkedIn"
                     className="
-                      w-10
-                      h-10
-                      sm:w-12
-                      sm:h-12
-                      rounded-full
-                      bg-blue-100
                       flex
+                      h-10
+                      w-10
                       items-center
                       justify-center
+                      rounded-full
+                      bg-blue-100
                       text-[#0B4EA2]
+                      transition
                       hover:bg-[#0B4EA2]
                       hover:text-white
-                      transition
+                      sm:h-12
+                      sm:w-12
                     "
                   >
                     <FaLinkedinIn size={18} />
                   </a>
 
+                  {/* WHATSAPP */}
+
                   <a
-                    href="#"
+                    href="https://wa.me/919921611911"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="WhatsApp"
                     className="
-                      w-10
-                      h-10
-                      sm:w-12
-                      sm:h-12
-                      rounded-full
-                      bg-green-100
                       flex
+                      h-10
+                      w-10
                       items-center
                       justify-center
+                      rounded-full
+                      bg-green-100
                       text-green-600
+                      transition
                       hover:bg-green-600
                       hover:text-white
-                      transition
+                      sm:h-12
+                      sm:w-12
                     "
                   >
                     <FaWhatsapp size={20} />
                   </a>
 
+                  {/* INSTAGRAM */}
+
                   <a
                     href="#"
+                    aria-label="Instagram"
                     className="
-                      w-10
-                      h-10
-                      sm:w-12
-                      sm:h-12
-                      rounded-full
-                      bg-pink-100
                       flex
+                      h-10
+                      w-10
                       items-center
                       justify-center
+                      rounded-full
+                      bg-pink-100
                       text-pink-600
+                      transition
                       hover:bg-pink-600
                       hover:text-white
-                      transition
+                      sm:h-12
+                      sm:w-12
                     "
                   >
                     <FaInstagram size={20} />
@@ -756,121 +926,151 @@ const ContactSection = () => {
           <div
             className="
               relative
-              w-full
               min-w-0
-              flex
-              flex-col
-              justify-center
+              w-full
+              self-stretch
+              lg:pt-2
+              xl:pt-4
             "
           >
-            {/* Floating Glow */}
+            {/* =================================================
+                BACKGROUND GLOWS
+            ================================================== */}
 
             <div
               className="
-                absolute
-                -top-10
-                -right-10
-                w-48
-                h-48
-                sm:w-60
-                sm:h-60
-                bg-blue-200/40
-                rounded-full
-                blur-3xl
                 pointer-events-none
+                absolute
+                -right-10
+                -top-10
+                h-48
+                w-48
+                rounded-full
+                bg-blue-200/40
+                blur-3xl
+                sm:h-60
+                sm:w-60
               "
             />
 
             <div
               className="
+                pointer-events-none
                 absolute
                 -bottom-10
                 -left-10
-                w-44
                 h-44
-                sm:w-52
-                sm:h-52
-                bg-green-200/40
+                w-44
                 rounded-full
+                bg-green-200/40
                 blur-3xl
-                pointer-events-none
+                sm:h-52
+                sm:w-52
               "
             />
 
-            <div className="relative z-10">
-              {/* Badge */}
+            {/* =================================================
+                RIGHT CONTENT
+            ================================================== */}
+
+            <div className="relative z-10 w-full min-w-0">
+              {/* =================================================
+                  BADGE
+              ================================================== */}
 
               <span
                 className="
                   inline-flex
+                  max-w-full
                   items-center
                   gap-2
-                  px-4
-                  sm:px-5
-                  py-2
                   rounded-full
                   bg-[#0B4EA2]
-                  text-white
+                  px-4
+                  py-2
                   text-xs
-                  sm:text-sm
                   font-semibold
+                  text-white
                   shadow-lg
+                  sm:px-5
+                  sm:text-sm
                 "
               >
-                <Sparkles size={15} />
+                <Sparkles
+                  size={15}
+                  className="flex-shrink-0"
+                />
 
                 Why Choose MegaClick
               </span>
 
-              {/* Heading */}
+              {/* =================================================
+                  HEADING
+              ================================================== */}
 
               <h2
                 className="
-                  mt-5
-                  sm:mt-6
+                  mt-4
                   text-2xl
-                  sm:text-3xl
-                  lg:text-4xl
                   font-extrabold
                   leading-tight
-                  bg-gradient-to-r
-                  from-[#0B4EA2]
-                  via-blue-600
-                  to-green-600
-                  bg-clip-text
-                  text-transparent
+                  sm:mt-5
+                  sm:text-3xl
+                  md:text-[34px]
+                  lg:text-4xl
+                  xl:text-[42px]
                 "
               >
-                Let's Build Your
-                <br />
-                Business Together
+                <span
+                  className="
+                    bg-gradient-to-r
+                    from-[#0B4EA2]
+                    via-blue-600
+                    to-green-600
+                    bg-clip-text
+                    text-transparent
+                  "
+                >
+                  Let's Build Your
+                  <br />
+                  Business Together
+                </span>
               </h2>
+
+              {/* =================================================
+                  DESCRIPTION
+              ================================================== */}
 
               <p
                 className="
-                  mt-4
-                  sm:mt-5
+                  mt-3
+                  max-w-2xl
                   text-sm
-                  sm:text-lg
-                  text-gray-700
                   leading-6
-                  sm:leading-8
-                  max-w-xl
+                  text-gray-700
+                  sm:mt-4
+                  sm:text-base
+                  sm:leading-7
+                  lg:text-lg
+                  lg:leading-8
                 "
               >
-                MegaClick simplifies business registration, taxation, legal
-                compliance and financial services with expert guidance and
-                end-to-end support.
+                MegaClick simplifies business registration,
+                taxation, legal compliance and financial services
+                with expert guidance and end-to-end support.
               </p>
 
-              {/* BENEFITS */}
+              {/* =================================================
+                  BENEFITS
+              ================================================== */}
 
               <div
                 className="
-                  mt-7
-                  sm:mt-10
+                  mt-6
                   space-y-4
+                  sm:mt-8
                   sm:space-y-5
+                  lg:mt-9
                 "
               >
                 {benefits.map((item, index) => {
@@ -882,55 +1082,63 @@ const ContactSection = () => {
                       className="
                         group
                         w-full
-                        bg-white/95
-                        backdrop-blur-xl
+                        min-w-0
                         rounded-2xl
-                        sm:rounded-3xl
+                        bg-white/95
                         p-4
-                        sm:p-6
-                        shadow-lg
-                        hover:shadow-2xl
-                        hover:-translate-y-1
+                        shadow-[0_10px_35px_rgba(0,0,0,0.07)]
+                        backdrop-blur-xl
                         transition-all
                         duration-300
+                        hover:-translate-y-1
+                        hover:shadow-2xl
+                        sm:rounded-3xl
+                        sm:p-5
+                        lg:p-6
                       "
                     >
                       <div
                         className="
                           flex
+                          min-w-0
                           items-start
                           gap-3
                           sm:gap-5
                         "
                       >
+                        {/* ICON */}
+
                         <div
                           className="
-                            w-11
-                            h-11
-                            sm:w-14
-                            sm:h-14
-                            flex-shrink-0
-                            rounded-xl
-                            sm:rounded-2xl
-                            bg-blue-100
                             flex
+                            h-11
+                            w-11
+                            flex-shrink-0
                             items-center
                             justify-center
-                            group-hover:bg-[#0B4EA2]
+                            rounded-xl
+                            bg-blue-100
                             transition
+                            duration-300
+                            group-hover:bg-[#0B4EA2]
+                            sm:h-14
+                            sm:w-14
+                            sm:rounded-2xl
                           "
                         >
                           <Icon
                             size={22}
                             className="
                               text-[#0B4EA2]
-                              group-hover:text-white
                               transition
+                              group-hover:text-white
                             "
                           />
                         </div>
 
-                        <div className="flex-1 min-w-0">
+                        {/* CONTENT */}
+
+                        <div className="min-w-0 flex-1">
                           <div
                             className="
                               flex
@@ -941,10 +1149,14 @@ const ContactSection = () => {
                           >
                             <h3
                               className="
+                                min-w-0
                                 text-base
-                                sm:text-xl
                                 font-bold
+                                leading-6
                                 text-gray-900
+                                sm:text-lg
+                                sm:leading-7
+                                lg:text-xl
                               "
                             >
                               {item.title}
@@ -953,12 +1165,12 @@ const ContactSection = () => {
                             <ArrowUpRight
                               size={18}
                               className="
-                                flex-shrink-0
                                 mt-1
+                                flex-shrink-0
                                 text-gray-300
-                                group-hover:text-[#0B4EA2]
-                                group-hover:rotate-45
                                 transition
+                                group-hover:rotate-45
+                                group-hover:text-[#0B4EA2]
                               "
                             />
                           </div>
@@ -966,11 +1178,11 @@ const ContactSection = () => {
                           <p
                             className="
                               mt-1.5
-                              sm:mt-2
                               text-sm
-                              sm:text-base
-                              text-gray-600
                               leading-6
+                              text-gray-600
+                              sm:mt-2
+                              sm:text-base
                               sm:leading-7
                             "
                           >
@@ -983,35 +1195,41 @@ const ContactSection = () => {
                 })}
               </div>
 
-              {/* STATS */}
+              {/* =================================================
+                  STATS
+              ================================================== */}
 
               <div
                 className="
+                  mt-6
                   grid
                   grid-cols-3
                   gap-2
+                  sm:mt-8
                   sm:gap-4
-                  mt-7
-                  sm:mt-10
+                  lg:mt-9
                 "
               >
+                {/* 15K */}
+
                 <div
                   className="
-                    bg-white
+                    min-w-0
                     rounded-xl
-                    sm:rounded-3xl
-                    shadow-lg
+                    bg-white
                     p-3
-                    sm:p-5
                     text-center
+                    shadow-lg
+                    sm:rounded-3xl
+                    sm:p-5
                   "
                 >
                   <h3
                     className="
                       text-xl
-                      sm:text-3xl
                       font-extrabold
                       text-[#0B4EA2]
+                      sm:text-3xl
                     "
                   >
                     15K+
@@ -1019,34 +1237,39 @@ const ContactSection = () => {
 
                   <p
                     className="
-                      text-[10px]
-                      sm:text-sm
-                      text-gray-600
                       mt-1
+                      text-[9px]
+                      leading-4
+                      text-gray-600
                       sm:mt-2
+                      sm:text-sm
+                      sm:leading-5
                     "
                   >
                     Happy Clients
                   </p>
                 </div>
 
+                {/* 25+ */}
+
                 <div
                   className="
-                    bg-white
+                    min-w-0
                     rounded-xl
-                    sm:rounded-3xl
-                    shadow-lg
+                    bg-white
                     p-3
-                    sm:p-5
                     text-center
+                    shadow-lg
+                    sm:rounded-3xl
+                    sm:p-5
                   "
                 >
                   <h3
                     className="
                       text-xl
-                      sm:text-3xl
                       font-extrabold
                       text-green-600
+                      sm:text-3xl
                     "
                   >
                     25+
@@ -1054,34 +1277,39 @@ const ContactSection = () => {
 
                   <p
                     className="
-                      text-[10px]
-                      sm:text-sm
-                      text-gray-600
                       mt-1
+                      text-[9px]
+                      leading-4
+                      text-gray-600
                       sm:mt-2
+                      sm:text-sm
+                      sm:leading-5
                     "
                   >
                     Services
                   </p>
                 </div>
 
+                {/* 10+ */}
+
                 <div
                   className="
-                    bg-white
+                    min-w-0
                     rounded-xl
-                    sm:rounded-3xl
-                    shadow-lg
+                    bg-white
                     p-3
-                    sm:p-5
                     text-center
+                    shadow-lg
+                    sm:rounded-3xl
+                    sm:p-5
                   "
                 >
                   <h3
                     className="
                       text-xl
-                      sm:text-3xl
                       font-extrabold
                       text-[#0B4EA2]
+                      sm:text-3xl
                     "
                   >
                     10+
@@ -1089,11 +1317,13 @@ const ContactSection = () => {
 
                   <p
                     className="
-                      text-[10px]
-                      sm:text-sm
-                      text-gray-600
                       mt-1
+                      text-[9px]
+                      leading-4
+                      text-gray-600
                       sm:mt-2
+                      sm:text-sm
+                      sm:leading-5
                     "
                   >
                     Years
@@ -1101,33 +1331,38 @@ const ContactSection = () => {
                 </div>
               </div>
 
-              {/* TRUST LINE */}
+              {/* =================================================
+                  TRUST LINE
+              ================================================== */}
 
               <div
                 className="
+                  mt-5
                   flex
                   flex-wrap
                   gap-x-4
                   gap-y-2
-                  mt-6
-                  sm:mt-8
+                  sm:mt-7
+                  sm:gap-x-5
+                  lg:mt-8
                 "
               >
                 <div
                   className="
                     flex
                     items-center
-                    gap-2
+                    gap-1.5
                     text-xs
-                    sm:text-sm
                     font-medium
                     text-gray-700
+                    sm:text-sm
                   "
                 >
                   <CheckCircle2
                     size={16}
-                    className="text-green-600"
+                    className="flex-shrink-0 text-green-600"
                   />
+
                   Trusted Professionals
                 </div>
 
@@ -1135,17 +1370,18 @@ const ContactSection = () => {
                   className="
                     flex
                     items-center
-                    gap-2
+                    gap-1.5
                     text-xs
-                    sm:text-sm
                     font-medium
                     text-gray-700
+                    sm:text-sm
                   "
                 >
                   <CheckCircle2
                     size={16}
-                    className="text-green-600"
+                    className="flex-shrink-0 text-green-600"
                   />
+
                   Fast Processing
                 </div>
 
@@ -1153,17 +1389,18 @@ const ContactSection = () => {
                   className="
                     flex
                     items-center
-                    gap-2
+                    gap-1.5
                     text-xs
-                    sm:text-sm
                     font-medium
                     text-gray-700
+                    sm:text-sm
                   "
                 >
                   <CheckCircle2
                     size={16}
-                    className="text-green-600"
+                    className="flex-shrink-0 text-green-600"
                   />
+
                   Transparent Pricing
                 </div>
               </div>

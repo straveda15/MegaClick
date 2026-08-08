@@ -9,19 +9,32 @@ import {
 } from "lucide-react";
 
 const ContactInfo = () => {
+  // =================================================
+  // CONTACT DETAILS
+  // =================================================
+
+  const phoneNumber = "+919921611911";
+  const emailAddress = "megaclickofficial@gmail.com";
+
+  const gmailComposeUrl =
+    `https://mail.google.com/mail/?view=cm&fs=1&to=${emailAddress}`;
+
+  const mapUrl =
+    "https://www.google.com/maps/search/?api=1&query=4th+Floor+Tristar+Complex+Jehan+Circle+Gangapur+Road+Nashik+Maharashtra+422005";
+
   return (
     <section
       className="
-        py-10
-        sm:py-14
-        lg:py-20
+        py-5
+        sm:py-10
+        lg:py-16
         bg-white
         overflow-hidden
       "
     >
       <div
         className="
-          max-w-[1500px]
+          max-w-[1450px]
           mx-auto
           px-4
           sm:px-6
@@ -30,8 +43,9 @@ const ContactInfo = () => {
         "
       >
 
-        {/* ================= HEADING ================= */}
-
+        {/* =================================================
+            HEADING
+        ================================================= */}
         <div
           className="
             mb-8
@@ -95,9 +109,9 @@ const ContactInfo = () => {
           </p>
         </div>
 
-
-        {/* ================= MAIN GRID ================= */}
-
+        {/* =================================================
+            MAIN GRID
+        ================================================= */}
         <div
           className="
             grid
@@ -110,8 +124,9 @@ const ContactInfo = () => {
           "
         >
 
-          {/* ================= MAP CARD ================= */}
-
+          {/* =================================================
+              MAP CARD
+          ================================================= */}
           <div
             className="
               lg:col-span-2
@@ -131,7 +146,6 @@ const ContactInfo = () => {
           >
 
             {/* Top Line */}
-
             <div
               className="
                 absolute
@@ -145,9 +159,9 @@ const ContactInfo = () => {
               "
             />
 
-
-            {/* ================= MAP HEADER ================= */}
-
+            {/* =================================================
+                MAP HEADER
+            ================================================= */}
             <div
               className="
                 flex
@@ -226,7 +240,6 @@ const ContactInfo = () => {
 
               </div>
 
-
               <ArrowUpRight
                 size={22}
                 className="
@@ -239,9 +252,9 @@ const ContactInfo = () => {
 
             </div>
 
-
-            {/* ================= GOOGLE MAP ================= */}
-
+            {/* =================================================
+                GOOGLE MAP
+            ================================================= */}
             <div
               className="
                 px-4
@@ -280,9 +293,9 @@ const ContactInfo = () => {
               </div>
             </div>
 
-
-            {/* ================= ADDRESS ================= */}
-
+            {/* =================================================
+                ADDRESS
+            ================================================= */}
             <div
               className="
                 p-5
@@ -349,9 +362,9 @@ const ContactInfo = () => {
 
           </div>
 
-
-          {/* ================= RIGHT SIDE CARDS ================= */}
-
+          {/* =================================================
+              RIGHT SIDE CARDS
+          ================================================= */}
           <div
             className="
               flex
@@ -363,8 +376,9 @@ const ContactInfo = () => {
             "
           >
 
-            {/* ================= CALL CARD ================= */}
-
+            {/* =================================================
+                CALL CARD
+            ================================================= */}
             <div
               className="
                 group
@@ -388,7 +402,6 @@ const ContactInfo = () => {
             >
 
               {/* Glow */}
-
               <div
                 className="
                   absolute
@@ -403,7 +416,6 @@ const ContactInfo = () => {
                   blur-3xl
                 "
               />
-
 
               <div
                 className="
@@ -459,7 +471,6 @@ const ContactInfo = () => {
 
                   </div>
 
-
                   <div className="min-w-0">
 
                     <h3
@@ -488,7 +499,6 @@ const ContactInfo = () => {
 
                 </div>
 
-
                 <ArrowUpRight
                   size={22}
                   className="
@@ -502,9 +512,8 @@ const ContactInfo = () => {
 
               </div>
 
-
               <a
-                href="tel:+919921611911"
+                href={`tel:${phoneNumber}`}
                 className="
                   mt-5
                   sm:mt-7
@@ -531,9 +540,9 @@ const ContactInfo = () => {
 
             </div>
 
-
-            {/* ================= EMAIL CARD ================= */}
-
+            {/* =================================================
+                EMAIL CARD
+            ================================================= */}
             <div
               className="
                 group
@@ -557,7 +566,6 @@ const ContactInfo = () => {
             >
 
               {/* Glow */}
-
               <div
                 className="
                   absolute
@@ -572,7 +580,6 @@ const ContactInfo = () => {
                   blur-3xl
                 "
               />
-
 
               <div
                 className="
@@ -627,7 +634,6 @@ const ContactInfo = () => {
 
                   </div>
 
-
                   <div className="min-w-0">
 
                     <h3
@@ -650,13 +656,12 @@ const ContactInfo = () => {
                         break-all
                       "
                     >
-                      megaclickofficial@gmail.com
+                      {emailAddress}
                     </p>
 
                   </div>
 
                 </div>
-
 
                 <ArrowUpRight
                   size={22}
@@ -671,9 +676,13 @@ const ContactInfo = () => {
 
               </div>
 
-
+              {/* =================================================
+                  GMAIL COMPOSE BUTTON
+              ================================================= */}
               <a
-                href="mailto:megaclickofficial@gmail.com"
+                href={gmailComposeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="
                   mt-5
                   sm:mt-7

@@ -591,7 +591,7 @@ const VisionMission = () => {
               rounded-xl
               bg-gray-50
               border
-              border-gray-100
+              border-gray-400
               px-5
               py-4
             "
@@ -622,7 +622,7 @@ const VisionMission = () => {
               rounded-xl
               bg-gray-50
               border
-              border-gray-100
+              border-gray-400
               px-5
               py-4
             "
