@@ -121,7 +121,7 @@ const FAQ = () => {
               inline-flex
               items-center
               gap-2
-              bg-[#2563EB]
+             bg-[#0B4EA2]
               text-white
               px-3
               sm:px-4

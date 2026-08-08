@@ -8,17 +8,16 @@ import {
 
 const TopBar = () => {
   return (
-    <div className="bg-blue-950 text-white">
+    <div className="bg-[#083A7A] text-white">
       <div
         className="
           max-w-[1500px]
           mx-auto
-          px-3
+          px-4
           sm:px-6
           lg:px-16
           xl:px-24
-          py-1.5
-          sm:py-2
+          py-2
         "
       >
         {/* =====================================================
@@ -36,6 +35,7 @@ const TopBar = () => {
             sm:gap-4
           "
         >
+
           {/* =====================================================
               CONTACT DETAILS
           ====================================================== */}
@@ -52,7 +52,10 @@ const TopBar = () => {
               min-w-0
             "
           >
-            {/* PHONE */}
+
+            {/* =================================================
+                PHONE
+            ================================================= */}
 
             <a
               href="tel:+919921611911"
@@ -62,14 +65,15 @@ const TopBar = () => {
                 gap-1
                 sm:gap-2
                 text-[10px]
-                xs:text-[11px]
                 sm:text-sm
                 whitespace-nowrap
                 min-w-0
                 hover:text-white
                 transition-colors
+                duration-300
               "
             >
+
               <Phone
                 size={13}
                 className="
@@ -88,26 +92,34 @@ const TopBar = () => {
               >
                 +91 9921611911
               </span>
+
             </a>
 
-            {/* EMAIL */}
+
+            {/* =================================================
+                EMAIL
+            ================================================= */}
 
             <a
-              href="mailto:megaclickofficial@gmail.com"
+              href="https://mail.google.com/mail/?view=cm&fs=1&to=megaclickofficial@gmail.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Email MegaClick"
               className="
                 flex
                 items-center
                 gap-1
                 sm:gap-2
                 text-[9px]
-                xs:text-[10px]
                 sm:text-sm
                 whitespace-nowrap
                 min-w-0
                 hover:text-white
                 transition-colors
+                duration-300
               "
             >
+
               <Mail
                 size={13}
                 className="
@@ -126,8 +138,11 @@ const TopBar = () => {
               >
                 megaclickofficial@gmail.com
               </span>
+
             </a>
+
           </div>
+
 
           {/* =====================================================
               TRUST TEXT
@@ -147,6 +162,7 @@ const TopBar = () => {
               whitespace-nowrap
             "
           >
+
             <ShieldCheck
               size={14}
               className="
@@ -160,7 +176,9 @@ const TopBar = () => {
             <span>
               Trusted Business Solutions
             </span>
+
           </div>
+
         </div>
       </div>
     </div>
