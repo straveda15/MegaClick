@@ -1,20 +1,23 @@
+
 import { useEffect, useState } from "react";
 import TopBar from "./TopBar";
-import { NavLink } from "react-router-dom";
+
 import {
   Menu,
   X,
   ArrowRight,
-  UserRound,
 } from "lucide-react";
 
 import {
   Link,
+  NavLink,
   useNavigate,
   useLocation,
 } from "react-router-dom";
 
+
 import logo from "../assets/LOGO.png";
+
 
 
 function Navbar({ showTopBar = false }) {
@@ -36,12 +39,11 @@ const activePage = location.pathname;
 
 
 
-// Shadow on scroll
 
 useEffect(()=>{
 
 
-const handleScroll = ()=>{
+const handleScroll=()=>{
 
 setScrolled(window.scrollY > 20);
 
@@ -65,6 +67,8 @@ handleScroll
 
 
 },[]);
+
+
 
 
 
@@ -123,6 +127,21 @@ setMenuOpen(false);
 
 
 
+
+
+
+const closeMenu=()=>{
+
+setMenuOpen(false);
+
+};
+
+
+
+
+
+
+
 return (
 
 <>
@@ -136,19 +155,29 @@ return (
 className={`
 
 sticky
+
 top-0
+
 z-50
+
 bg-white
+
 transition-all
+
 duration-300
 
 
 ${
 scrolled
+
 ?
+
 "shadow-md"
+
 :
+
 "shadow-sm"
+
 }
 
 `}
@@ -157,14 +186,23 @@ scrolled
 
 
 
+
+
 <div
 
 className="
 max-w-[1500px]
+
 mx-auto
-px-6
-lg:px-24
-py-2
+
+px-5
+
+sm:px-8
+
+lg:px-16
+
+xl:px-24
+
 "
 
 >
@@ -174,13 +212,19 @@ py-2
 <div
 
 className="
-h-10
+h-16
+
 flex
+
 items-center
+
 justify-between
+
 "
 
 >
+
+
 
 
 
@@ -194,14 +238,19 @@ justify-between
 
 to="/"
 
+onClick={closeMenu}
+
 className="
 flex
+
 items-center
+
 gap-3
-h-16
+
 "
 
 >
+
 
 
 <img
@@ -211,22 +260,37 @@ src={logo}
 alt="MegaClick"
 
 className="
-w-12
-h-12
--ml-2
+
+w-11
+
+h-11
+
+sm:w-12
+
+sm:h-12
+
 rounded-full
+
 object-contain
+
 p-1
+
 border
+
 border-blue-300
-shadow-lg
-shadow-blue-200/90
-transition-all
-duration-300
+
+shadow-md
+
+transition
+
 hover:scale-105
+
 "
 
 />
+
+
+
 
 
 
@@ -236,14 +300,23 @@ hover:scale-105
 <h1
 
 className="
-text-xl
+text-lg
+
+sm:text-xl
+
 font-bold
-text-[#0B4EA2]
+
 "
 
 >
 
+
+<span className="text-[#0B4EA2]">
+
 Mega
+
+</span>
+
 
 <span className="text-green-600">
 
@@ -252,17 +325,33 @@ Click
 </span>
 
 
+
 </h1>
 
 
-<p className="text-xs text-gray-500">
+
+
+<p
+
+className="
+text-[11px]
+
+sm:text-xs
+
+text-gray-500
+
+"
+
+>
 
 Enterprises
 
 </p>
 
 
+
 </div>
+
 
 
 </Link>
@@ -274,22 +363,28 @@ Enterprises
 
 
 
+
 {/* DESKTOP NAV */}
+
 
 <nav
 
 className="
 hidden
+
 lg:flex
+
 items-center
-gap-10
+
+gap-8
+
+xl:gap-10
+
 text-sm
+
 "
 
 >
-
-
-
 
 
 {/* HOME */}
@@ -298,19 +393,30 @@ text-sm
 
 to="/"
 
+onClick={closeMenu}
+
 className={`
 
 relative
+
 font-medium
+
 pb-1
+
 transition
 
 
 after:absolute
+
 after:left-0
+
 after:-bottom-1
+
 after:h-[2px]
+
 after:bg-[#0B4EA2]
+
+
 after:transition-all
 
 
@@ -340,26 +446,38 @@ Home
 
 
 
-{/* ABOUT */}
 
+
+{/* ABOUT */}
 
 <Link
 
 to="/about"
 
+onClick={closeMenu}
+
 className={`
 
 relative
+
 font-medium
+
 pb-1
+
 transition
 
 
 after:absolute
+
 after:left-0
+
 after:-bottom-1
+
 after:h-[2px]
+
 after:bg-[#0B4EA2]
+
+
 after:transition-all
 
 
@@ -389,25 +507,37 @@ About Us
 
 
 
+
 {/* SERVICES */}
 
 <Link
 
 to="/services"
 
+onClick={closeMenu}
+
 className={`
 
 relative
+
 font-medium
+
 pb-1
+
 transition
 
 
 after:absolute
+
 after:left-0
+
 after:-bottom-1
+
 after:h-[2px]
+
 after:bg-[#0B4EA2]
+
+
 after:transition-all
 
 
@@ -434,24 +564,42 @@ Services
 
 
 
-{/* ASSOCIATE WITH US */}
+
+
+
+
+
+
+{/* ASSOCIATE */}
 
 <NavLink
 
 to="/associate-with-us"
 
+onClick={closeMenu}
+
 className={`
 
 relative
+
 font-medium
+
 pb-1
+
 transition
 
+
 after:absolute
+
 after:left-0
+
 after:-bottom-1
+
 after:h-[2px]
+
 after:bg-[#0B4EA2]
+
+
 after:transition-all
 
 
@@ -474,32 +622,45 @@ activePage === "/associate-with-us"
 
 Associate With Us
 
-
 </NavLink>
 
 
-{/* CONTACT */}
 
+
+
+
+
+{/* CONTACT */}
 
 <Link
 
 to="/contact"
 
+onClick={closeMenu}
+
 className={`
 
 relative
+
 font-medium
+
 pb-1
+
 transition
 
 
 after:absolute
-after:left-0
-after:-bottom-1
-after:h-[2px]
-after:bg-[#0B4EA2]
-after:transition-all
 
+after:left-0
+
+after:-bottom-1
+
+after:h-[2px]
+
+after:bg-[#0B4EA2]
+
+
+after:transition-all
 
 
 ${
@@ -525,8 +686,6 @@ Contact Us
 
 
 
-
-
 </nav>
 
 
@@ -537,19 +696,7 @@ Contact Us
 
 
 
-{/* RIGHT BUTTONS */}
-
-
-<div
-
-className="
-hidden
-lg:flex
-items-center
-"
-
->
-
+{/* DESKTOP BUTTON */}
 
 
 <button
@@ -557,18 +704,32 @@ items-center
 onClick={()=>scrollToSection("contact")}
 
 className="
-flex
+hidden
+
+lg:flex
+
 items-center
+
 gap-2
+
 bg-green-600
+
 hover:bg-green-700
+
 text-white
+
 px-5
+
 py-2.5
+
 rounded-md
+
 font-semibold
+
 text-sm
+
 transition
+
 "
 
 >
@@ -590,16 +751,7 @@ Get Free Consultation
 
 
 
-</div>
-
-
-
-
-
-
-
-
-{/* MOBILE MENU BUTTON */}
+{/* MOBILE BUTTON */}
 
 
 <button
@@ -609,7 +761,6 @@ className="lg:hidden"
 onClick={()=>setMenuOpen(!menuOpen)}
 
 >
-
 
 {
 
@@ -631,6 +782,239 @@ menuOpen
 
 </div>
 
+
+
+
+
+
+
+
+{/* MOBILE MENU */}
+
+
+{
+
+menuOpen && (
+
+
+<div
+
+className="
+lg:hidden
+
+bg-white
+
+border-t
+
+border-gray-100
+
+py-5
+
+space-y-4
+
+"
+
+>
+
+
+
+<Link
+
+to="/"
+
+onClick={closeMenu}
+
+className="
+block
+
+px-4
+
+font-medium
+
+text-gray-700
+
+hover:text-[#0B4EA2]
+
+"
+
+>
+
+Home
+
+</Link>
+
+
+
+
+<Link
+
+to="/about"
+
+onClick={closeMenu}
+
+className="
+block
+
+px-4
+
+font-medium
+
+text-gray-700
+
+hover:text-[#0B4EA2]
+
+"
+
+>
+
+About Us
+
+</Link>
+
+
+
+
+
+<Link
+
+to="/services"
+
+onClick={closeMenu}
+
+className="
+block
+
+px-4
+
+font-medium
+
+text-gray-700
+
+hover:text-[#0B4EA2]
+
+"
+
+>
+
+Services
+
+</Link>
+
+
+
+
+
+<Link
+
+to="/associate-with-us"
+
+onClick={closeMenu}
+
+className="
+block
+
+px-4
+
+font-medium
+
+text-gray-700
+
+hover:text-[#0B4EA2]
+
+"
+
+>
+
+Associate With Us
+
+</Link>
+
+
+
+
+
+
+<Link
+
+to="/contact"
+
+onClick={closeMenu}
+
+className="
+block
+
+px-4
+
+font-medium
+
+text-gray-700
+
+hover:text-[#0B4EA2]
+
+"
+
+>
+
+Contact Us
+
+</Link>
+
+
+
+
+
+
+<button
+
+onClick={()=>scrollToSection("contact")}
+
+className="
+mx-4
+
+w-[calc(100%-2rem)]
+
+flex
+
+justify-center
+
+items-center
+
+gap-2
+
+bg-green-600
+
+text-white
+
+py-3
+
+rounded-lg
+
+font-semibold
+
+"
+
+>
+
+Get Free Consultation
+
+
+<ArrowRight size={16}/>
+
+
+</button>
+
+
+
+</div>
+
+
+)
+
+
+}
+
+
+
 </div>
 
 
@@ -638,6 +1022,7 @@ menuOpen
 
 
 </>
+
 
 );
 

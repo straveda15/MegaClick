@@ -43,124 +43,155 @@ const testimonials = [
       "MegaClick made the documentation process incredibly simple. Their professional approach exceeded our expectations.",
   },
 ];
+
 const Testimonials = () => {
   return (
     <section
       className="
-      relative
-      overflow-hidden
-      py-16
-      bg-white
+        relative
+        overflow-hidden
+        py-9
+        sm:py-12
+        lg:py-14
+        bg-white
       "
     >
-      {/* Background */}
+      {/* ================= BACKGROUND ================= */}
 
       <div
         className="
-        absolute
-        -top-24
-        -left-24
-        h-50
-        w-50
-        rounded-full
-        bg-blue-200
-        blur-3xl
-        opacity-30
+          absolute
+          -top-24
+          -left-24
+          h-50
+          w-50
+          rounded-full
+          bg-blue-200
+          blur-3xl
+          opacity-30
+          pointer-events-none
         "
       />
 
       <div
         className="
-        absolute
-        -bottom-24
-        -right-24
-        h-80
-        w-80
-        rounded-full
-        bg-green-200
-        blur-3xl
-        opacity-30
+          absolute
+          -bottom-24
+          -right-24
+          h-80
+          w-80
+          rounded-full
+          bg-green-200
+          blur-3xl
+          opacity-30
+          pointer-events-none
         "
       />
 
       <div
         className="
-        relative
-        max-w-[1500px]
-        mx-auto
-        px-6
-        lg:px-24
-        z-10
+          relative
+          max-w-[1500px]
+          mx-auto
+          px-4
+          sm:px-6
+          md:px-8
+          lg:px-12
+          xl:px-24
+          z-10
         "
       >
-        {/* Header */}
+        {/* =====================================================
+            HEADER
+        ====================================================== */}
 
         <div
           className="
-          grid
-          lg:grid-cols-2
-          gap-10
-          items-center
-          mb-14
+            grid
+            grid-cols-1
+            lg:grid-cols-2
+            gap-7
+            sm:gap-10
+            items-center
+            mb-8
+            sm:mb-12
+            lg:mb-14
           "
         >
-          {/* Left */}
+          {/* ================= LEFT ================= */}
 
           <div>
+            {/* BADGE */}
+
             <span
               className="
-              inline-flex
-              items-center
-              gap-2
-              bg-[#0B4EA2]
-              text-white
-              px-5
-              py-2
-              rounded-full
-              text-sm
-              font-semibold
-              shadow-md
-              mb-5
+                inline-flex
+                items-center
+                gap-2
+                bg-[#0B4EA2]
+                text-white
+                px-3
+                sm:px-5
+                py-1.5
+                sm:py-2
+                rounded-full
+                text-xs
+                sm:text-sm
+                font-semibold
+                shadow-md
+                mb-4
+                sm:mb-5
               "
             >
               <MessageSquareQuote
-                size={16}
+                size={15}
                 className="text-green-400"
               />
+
               Client Testimonials
             </span>
 
+            {/* HEADING */}
+
             <h2
               className="
-              text-3xl
-              lg:text-5xl
-              font-bold
-              leading-tight
+                text-3xl
+                sm:text-4xl
+                lg:text-5xl
+                font-bold
+                leading-tight
               "
             >
               What Our Clients
 
               <span
                 className="
-                block
-                bg-gradient-to-r
-                from-[#0B4EA2]
-                to-green-500
-                bg-clip-text
-                text-transparent
+                  block
+                  bg-gradient-to-r
+                  from-[#0B4EA2]
+                  to-green-500
+                  bg-clip-text
+                  text-transparent
                 "
               >
                 Say About MegaClick
               </span>
             </h2>
 
+            {/* DESCRIPTION */}
+
             <p
               className="
-              mt-5
-              max-w-xl
-              text-gray-600
-              leading-7
-              text-justify
+                mt-4
+                sm:mt-5
+                max-w-xl
+                text-sm
+                sm:text-base
+                text-gray-600
+                leading-6
+                sm:leading-7
+                text-left
+                sm:text-justify
               "
             >
               Thousands of businesses trust
@@ -168,200 +199,229 @@ const Testimonials = () => {
                 <span className="text-[#0B4EA2]"> Mega</span>
                 <span className="text-green-500">Click</span>
               </span>
+              {" "}
               for reliable registrations, transparent guidance and
               professional support. We simplify every business process
               with experienced experts and customer-first service.
             </p>
           </div>
 
-          {/* Right Image */}
+          {/* ================= RIGHT IMAGE ================= */}
 
-          <div className="flex justify-center">
+          <div
+            className="
+              flex
+              justify-center
+              lg:justify-center
+            "
+          >
             <div
               className="
-              rounded-3xl
-              border-2
-              border-[#0B4EA2]
-              p-3
-              shadow-xl
+                rounded-2xl
+                sm:rounded-3xl
+                border-2
+                border-[#0B4EA2]
+                p-2
+                sm:p-3
+                shadow-lg
               "
             >
               <img
                 src={clientImg}
                 alt="Happy Clients"
                 className="
-                w-[230px]
-                lg:w-[280px]
-                object-contain
+                  w-[180px]
+                  sm:w-[220px]
+                  lg:w-[280px]
+                  object-contain
                 "
               />
             </div>
           </div>
         </div>
 
-        {/* ===== Moving Testimonials starts here ===== */}
-
-        <div className="relative overflow-hidden">
-
-  <div
-    className="
-    flex
-    gap-6
-    w-max
-    animate-testimonials
-    py-4
-    "
-  >
-
-    {[...testimonials, ...testimonials].map((item, index) => (
-
-      <div
-        key={index}
-        className="
-        w-[350px]
-        flex-shrink-0
-        bg-white
-        rounded-2xl
-        border
-        border-blue-100
-        shadow-lg
-        hover:shadow-2xl
-        hover:-translate-y-2
-        transition-all
-        duration-300
-        p-2
-        flex
-        flex-col
-        relative
-        "
-      >
-
-        {/* Top Border */}
+        {/* =====================================================
+            MOVING TESTIMONIALS
+        ====================================================== */}
 
         <div
           className="
-          absolute
-          top-0
-          left-0
-          w-full
-          h-1
-          rounded-t-2xl
-          bg-gradient-to-r
-          from-[#0B4EA2]
-          to-green-500
-          "
-        />
-
-        {/* Quote */}
-
-        <div
-          className="
-          w-11
-          h-11
-          rounded-xl
-          bg-[#0B4EA2]
-          flex
-          items-center
-          justify-center
-          mb-5
+            relative
+            overflow-hidden
+            w-full
           "
         >
-          <Quote
-            size={20}
-            className="text-white"
-          />
+          <div
+            className="
+              flex
+              gap-4
+              sm:gap-5
+              lg:gap-6
+              w-max
+              animate-testimonials
+              py-3
+            "
+          >
+            {[...testimonials, ...testimonials].map(
+              (item, index) => (
+                <div
+                  key={index}
+                  className="
+                    w-[calc(100vw-2rem)]
+                    sm:w-[330px]
+                    md:w-[340px]
+                    lg:w-[350px]
+                    max-w-[350px]
+                    flex-shrink-0
+                    bg-white
+                    rounded-xl
+                    sm:rounded-2xl
+                    border
+                    border-blue-300
+                    shadow-md
+                    hover:shadow-xl
+                    hover:-translate-y-1
+                    transition-all
+                    duration-300
+                    px-4
+                    py-5
+                    sm:p-5
+                    lg:p-6
+                    flex
+                    flex-col
+                    relative
+                  "
+                >
+                  {/* TOP BORDER */}
+
+                  <div
+                    className="
+                      absolute
+                      top-0
+                      left-0
+                      w-full
+                      h-1
+                      rounded-t-xl
+                      sm:rounded-t-2xl
+                      bg-gradient-to-r
+                      from-[#0B4EA2]
+                      to-green-500
+                    "
+                  />
+
+                  {/* QUOTE ICON */}
+
+                  <div
+                    className="
+                      w-9
+                      h-9
+                      sm:w-11
+                      sm:h-11
+                      rounded-lg
+                      sm:rounded-xl
+                      bg-[#0B4EA2]
+                      flex
+                      items-center
+                      justify-center
+                      mb-4
+                      sm:mb-5
+                    "
+                  >
+                    <Quote
+                      size={18}
+                      className="text-white sm:w-5 sm:h-5"
+                    />
+                  </div>
+
+                  {/* REVIEW */}
+
+                  <p
+                    className="
+                      text-sm
+                      sm:text-[15px]
+                      leading-6
+                      sm:leading-7
+                      text-gray-700
+                      text-left
+                      sm:text-justify
+                      min-h-[120px]
+                      sm:min-h-[130px]
+                    "
+                  >
+                    "{item.review}"
+                  </p>
+
+                  {/* STARS */}
+
+                  <div className="flex gap-1 mt-4 sm:mt-5">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star
+                        key={star}
+                        size={15}
+                        fill="currentColor"
+                        className="text-green-500"
+                      />
+                    ))}
+                  </div>
+
+                  {/* DIVIDER */}
+
+                  <div className="my-4 sm:my-5 h-px bg-gray-200" />
+
+                  {/* CLIENT DETAILS */}
+
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <span
+                        className="
+                          flex-shrink-0
+                          w-2
+                          h-2
+                          rounded-full
+                          bg-[#0B4EA2]
+                        "
+                      />
+
+                      <h3
+                        className="
+                          text-base
+                          sm:text-lg
+                          font-bold
+                          text-gray-900
+                          truncate
+                        "
+                      >
+                        {item.name}
+                      </h3>
+                    </div>
+
+                    <p
+                      className="
+                        text-xs
+                        sm:text-sm
+                        font-medium
+                        text-[#0B4EA2]
+                        leading-5
+                      "
+                    >
+                      {item.service}
+                    </p>
+
+                    <p
+                      className="
+                        text-xs
+                        sm:text-sm
+                        text-gray-500
+                      "
+                    >
+                      {item.location}
+                    </p>
+                  </div>
+                </div>
+              )
+            )}
+          </div>
         </div>
-
-        {/* Review */}
-
-        <p
-          className="
-          text-[15px]
-          leading-7
-          text-gray-700
-          text-justify
-          flex-1
-          "
-        >
-          "{item.review}"
-        </p>
-
-        {/* Stars */}
-
-        <div className="flex gap-1 mt-5">
-
-          {[1,2,3,4,5].map((star)=>(
-            <Star
-              key={star}
-              size={16}
-              fill="currentColor"
-              className="text-green-500"
-            />
-          ))}
-
-        </div>
-
-        <div className="my-5 h-px bg-gray-200" />
-{/* Divider */}
-
-<div className="my-5 h-px bg-gray-200" />
-
-{/* Client Details */}
-
-<div className="space-y-1">
-
-<div className="flex items-center gap-2">
-
-  <span
-    className="
-    w-2.5
-    h-2.5
-    rounded-full
-    bg-[#0B4EA2]
-    "
-  />
-
-  <h3
-    className="
-    text-xl
-    font-bold
-    text-gray-900
-    "
-  >
-    {item.name}
-  </h3>
-
-</div>
-
-  <p
-    className="
-    text-sm
-    font-medium
-    text-[#0B4EA2]
-    "
-  >
-    {item.service}
-  </p>
-
-  <p
-    className="
-    text-sm
-    text-gray-500
-    "
-  >
-    {item.location}
-  </p>
-
-</div>
-
-      </div>
-
-    ))}
-
-  </div>
-
-</div>
-
       </div>
     </section>
   );

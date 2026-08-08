@@ -7,10 +7,47 @@ const WhatsAppButton = () => {
       href="https://wa.me/919876543210"
       target="_blank"
       rel="noopener noreferrer"
-      className="fixed bottom-6 right-12 z-50"
+      aria-label="Chat with us on WhatsApp"
+      className="
+        fixed
+        bottom-4
+        right-4
+        sm:bottom-5
+        sm:right-5
+        lg:bottom-6
+        lg:right-8
+        z-50
+        flex
+        items-center
+        justify-center
+      "
     >
-      <div className="w-12 h-12 rounded-full bg-green-500 flex items-center-safe justify-center shadow-xl hover:scale-110 transition">
-        <FaWhatsapp className="text-white text-4xl" />
+      <div
+        className="
+          w-10
+          h-10
+          sm:w-12
+          sm:h-12
+          rounded-full
+          bg-green-500
+          flex
+          items-center
+          justify-center
+          shadow-xl
+          hover:bg-green-600
+          hover:scale-110
+          active:scale-95
+          transition-all
+          duration-300
+        "
+      >
+        <FaWhatsapp
+          className="
+            text-white
+            text-[28px]
+            sm:text-[32px]
+          "
+        />
       </div>
     </a>
   );

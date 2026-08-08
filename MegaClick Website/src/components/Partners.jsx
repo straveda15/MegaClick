@@ -55,7 +55,7 @@ return(
 
 className="
 py-10
-bg-white
+bg-blue-50
 overflow-hidden
 "
 

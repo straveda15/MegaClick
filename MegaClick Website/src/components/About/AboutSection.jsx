@@ -1,3 +1,4 @@
+
 import React, { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 
@@ -8,9 +9,11 @@ import {
   BadgeCheck,
 } from "lucide-react";
 
-
 const title = "Your Success, Our Mission";
 
+/* =====================================================
+   HEADING ANIMATION
+===================================================== */
 
 const containerVariants = {
   hidden: {},
@@ -22,15 +25,12 @@ const containerVariants = {
   },
 };
 
-
 const letterVariants = {
-
   hidden: {
     opacity: 0,
     y: 45,
     filter: "blur(8px)",
   },
-
 
   visible: {
     opacity: 1,
@@ -42,102 +42,61 @@ const letterVariants = {
       ease: [0.22, 1, 0.36, 1],
     },
   },
-
 };
 
-
-
-const fadeUp = {
-
-  hidden: {
-    opacity: 0,
-    y: 45,
-  },
-
-
-  visible: {
-    opacity: 1,
-    y: 0,
-
-    transition: {
-      duration: 0.8,
-    },
-  },
-
-};
-
-
-
+/* =====================================================
+   ABOUT COMPONENT
+===================================================== */
 
 const About = () => {
-
-
   const sectionRef = useRef(null);
 
-
   const isInView = useInView(sectionRef, {
-    amount: 0.35,
+    amount: 0.2,
     once: false,
   });
 
-
-
   return (
-
     <section
-
       ref={sectionRef}
-
       className="
         relative
         overflow-hidden
-        py-10
+        py-8
+        sm:py-10
+        lg:py-14
         bg-white
       "
-
     >
-
+      {/* =====================================================
+          MAIN CONTAINER
+      ====================================================== */}
 
       <div
-
         className="
           max-w-[1500px]
           mx-auto
-          px-6
-          lg:px-24
+          px-4
+          sm:px-6
+          lg:px-16
+          xl:px-24
         "
-
       >
+        {/* =====================================================
+            HEADING
+            ONLY THIS SECTION HAS ANIMATION
+        ====================================================== */}
 
-
-
-
-        {/* ================= Heading ================= */}
-
-
-
-        <motion.div
-
-          initial="hidden"
-
-          animate={
-            isInView
-            ?
-            "visible"
-            :
-            "hidden"
-          }
-
-          variants={fadeUp}
-
-          className="mb-14"
-
+        <div
+          className="
+            mb-8
+            sm:mb-10
+            lg:mb-12
+          "
         >
-
-
+          {/* BADGE */}
 
           <span
-
             className="
               inline-flex
               items-center
@@ -148,240 +107,138 @@ const About = () => {
               py-2
               rounded-full
               text-xs
+              sm:text-sm
               font-semibold
-              mb-5
               shadow-md
             "
-
           >
-
-
             <Building2
               size={15}
               className="text-green-300"
             />
 
-
             ABOUT US
-
-
           </span>
 
-
-
-
-
+          {/* HEADING */}
 
           <motion.h2
-
             variants={containerVariants}
-
             initial="hidden"
-
-            animate={
-              isInView
-              ?
-              "visible"
-              :
-              "hidden"
-            }
-
-
+            animate={isInView ? "visible" : "hidden"}
             className="
-              mt-5
-              text-3xl
-              md:text-3xl
-              lg:text-4xl
+              mt-4
+              sm:mt-5
+              text-2xl
+              sm:text-3xl
+              md:text-4xl
+              lg:text-5xl
               font-extrabold
               leading-tight
               flex
               flex-wrap
             "
-
           >
+            {title.split("").map((char, index) => {
+              let color = "text-gray-900";
 
+              /* Your → Blue */
 
+              if (index >= 0 && index <= 3) {
+                color = "text-[#0B4EA2]";
+              }
 
-            {
-              title.split("").map((char,index)=>{
+              /* Success → Green */
 
-let color = "text-gray-900";
+              if (index >= 5 && index <= 11) {
+                color = "text-green-500";
+              }
 
-// "Your" -> Blue
-if (index >= 0 && index <= 3) {
-  color = "text-[#0B4EA2]";
-}
-
-// "Success" -> Green
-if (index >= 5 && index <= 11) {
-  color = "text-green-500";
-}
-
-
-
-                return (
-
-                  <motion.span
-
-                    key={index}
-
-                    variants={letterVariants}
-
-                    className={`
-                      ${color}
-                      inline-block
-                    `}
-
-                  >
-
-
-                    {
-                      char === " "
-                      ?
-                      "\u00A0"
-                      :
-                      char
-                    }
-
-
-                  </motion.span>
-
-                );
-
-
-              })
-
-            }
-
-
-
+              return (
+                <motion.span
+                  key={index}
+                  variants={letterVariants}
+                  className={`
+                    ${color}
+                    inline-block
+                  `}
+                >
+                  {char === " " ? "\u00A0" : char}
+                </motion.span>
+              );
+            })}
           </motion.h2>
 
-
-
-
-
-
+          {/* UNDERLINE */}
 
           <motion.div
-
             initial={{
-              width:0,
-              opacity:0
+              width: 0,
+              opacity: 0,
             }}
-
-
             animate={
-
               isInView
-
-              ?
-
-              {
-                width:"7rem",
-                opacity:1
-              }
-
-              :
-
-              {
-                width:0,
-                opacity:0
-              }
-
+                ? {
+                    width: "7rem",
+                    opacity: 1,
+                  }
+                : {
+                    width: 0,
+                    opacity: 0,
+                  }
             }
-
-
-
             transition={{
-              duration:0.6
+              duration: 0.6,
             }}
-
-
-
             className="
-              mt-6
-              h-1.5
+              mt-4
+              sm:mt-6
+              h-1
+              sm:h-1.5
               rounded-full
               bg-gradient-to-r
               from-[#0B4EA2]
               to-green-500
             "
-
           />
+        </div>
 
+        {/* =====================================================
+            ABOUT CONTENT
+            NO ANIMATION
+        ====================================================== */}
 
-
-        </motion.div>
-
-        
-        {/* ================= About Content ================= */}
-
-
-
-        <motion.div
-
-
-          initial="hidden"
-
-
-          animate={
-            isInView
-            ?
-            "visible"
-            :
-            "hidden"
-          }
-
-
-          variants={fadeUp}
-
-
+        <div
           className="
             w-full
-            space-y-8
+            space-y-5
+            sm:space-y-7
+            lg:space-y-8
           "
-
-
         >
-
-
-
+          {/* PARAGRAPH 1 */}
 
           <p
-
             className="
-              text-xl
+              text-base
+              sm:text-lg
               lg:text-[22px]
-              leading-10
+              leading-7
+              sm:leading-8
+              lg:leading-10
               text-gray-700
               text-justify
             "
-
           >
-
-
             <span className="font-bold">
-
-
               <span className="text-[#0B4EA2]">
                 Mega
               </span>
 
-
               <span className="text-green-500">
                 Click
               </span>
-
-
-            </span>
-
-
-
-            {" "}
-
-
-
+            </span>{" "}
             stands as one of India's most dynamic and
             forward-thinking integrated professional
             service platforms. It is built to simplify,
@@ -395,62 +252,37 @@ if (index >= 5 && index <= 11) {
             business requirement with precision,
             expertise, and an unwavering commitment
             to excellence.
-
-
           </p>
 
-
-
-
-
+          {/* PARAGRAPH 2 */}
 
           <p
-
-
             className="
-              text-xl
+              text-base
+              sm:text-lg
               lg:text-[22px]
-              leading-10
+              leading-7
+              sm:leading-8
+              lg:leading-10
               text-gray-700
               text-justify
             "
-
-
           >
-
-
-
             By bringing together legal, financial,
             banking, real estate, and business
             support professional services under
             one seamlessly integrated ecosystem,
 
-
-
             <span className="font-bold">
-
-
               {" "}
-
-
               <span className="text-[#0B4EA2]">
                 Mega
               </span>
 
-
               <span className="text-green-500">
                 Click
               </span>
-
-
-            </span>
-
-
-
-            {" "}
-
-
-
+            </span>{" "}
             eliminates the fragmentation that has
             traditionally complicated professional
             service delivery across India.
@@ -463,166 +295,63 @@ if (index >= 5 && index <= 11) {
             consistently delivers reliable,
             transparent, and result-oriented
             professional services.
-
-
           </p>
+        </div>
 
+        {/* =====================================================
+            STATISTICS STRIP
+            NO ANIMATION
+        ====================================================== */}
 
-
-
-        </motion.div>
-
-
-
-
-
-
-
-        {/* ================= Statistics Strip ================= */}
-
-
-
-
-
-        <motion.div
-
-
-          initial={{
-            opacity:0,
-            y:70
-          }}
-
-
-
-          animate={
-
-            isInView
-
-            ?
-
-            {
-              opacity:1,
-              y:0
-            }
-
-
-            :
-
-
-            {
-              opacity:0,
-              y:70
-            }
-
-          }
-
-
-
-          transition={{
-
-            duration:0.8,
-
-            ease:"easeOut",
-
-            delay:0.25
-
-          }}
-
-
-
+        <div
           className="
             relative
-            mt-14
+            mt-8
+            sm:mt-10
+            lg:mt-14
             w-full
             overflow-hidden
-            rounded
+            rounded-xl
+            sm:rounded-2xl
             bg-gradient-to-r
             from-[#0B4EA2]
             via-blue-600
             to-[#0B4EA2]
             shadow-2xl
           "
-
-
-
         >
-
-
-
-
-
-
-          {/* Background Pattern */}
-
-
-
-
+          {/* BACKGROUND PATTERN */}
 
           <div
-
             className="
               absolute
               inset-0
               opacity-[0.08]
             "
-
-
-
             style={{
-
-
               backgroundImage:
-              "radial-gradient(circle, rgba(255,255,255,.9) 1.2px, transparent 1.2px)",
-
-
-              backgroundSize:
-              "26px 26px"
-
-
+                "radial-gradient(circle, rgba(255,255,255,.9) 1.2px, transparent 1.2px)",
+              backgroundSize: "26px 26px",
             }}
-
-
-
           />
 
-
-
-
-
-
           <div
-
-
             className="
               absolute
               inset-0
               opacity-[0.08]
             "
-
-
             style={{
-
-
               backgroundImage:
-              "repeating-linear-gradient(-45deg, rgba(255,255,255,.8) 0px, rgba(255,255,255,.8) 2px, transparent 2px, transparent 42px)"
-
-
+                "repeating-linear-gradient(-45deg, rgba(255,255,255,.8) 0px, rgba(255,255,255,.8) 2px, transparent 2px, transparent 42px)",
             }}
-
-
-
           />
 
-
-
-
-
-
-
+          {/* =====================================================
+              STATS GRID
+          ====================================================== */}
 
           <div
-
-
             className="
               relative
               z-10
@@ -630,353 +359,306 @@ if (index >= 5 && index <= 11) {
               grid-cols-2
               lg:grid-cols-4
             "
-
-
           >
-            {/* ================= Stat 1 ================= */}
+            {/* STAT 1 */}
 
-
-
-            <motion.div
-
-              whileHover={{
-                y:-8,
-                scale:1.03
-              }}
-
-              transition={{
-                duration:0.3
-              }}
-
-
+            <div
               className="
                 flex
                 flex-col
                 items-center
                 justify-center
                 text-center
-                px-4
-                py-8
+                px-3
+                sm:px-4
+                py-5
+                sm:py-7
+                lg:py-8
                 border-b
+                border-r
                 lg:border-b-0
                 lg:border-r
                 border-white/10
               "
-
-
             >
-
-
-
               <div
-
                 className="
-                  w-14
-                  h-14
+                  w-10
+                  h-10
+                  sm:w-12
+                  sm:h-12
+                  lg:w-14
+                  lg:h-14
                   rounded-full
                   bg-white
                   flex
                   items-center
                   justify-center
-                  mb-4
+                  mb-3
+                  sm:mb-4
                   shadow-lg
                 "
-
               >
-
-                <Users className="w-6 h-6 text-[#0B4EA2]" />
-
+                <Users
+                  className="
+                    w-5
+                    h-5
+                    sm:w-6
+                    sm:h-6
+                    text-[#0B4EA2]
+                  "
+                />
               </div>
 
-
-
-
-              <h3 className="text-4xl font-bold text-white">
+              <h3
+                className="
+                  text-2xl
+                  sm:text-3xl
+                  lg:text-4xl
+                  font-bold
+                  text-white
+                "
+              >
                 15K+
               </h3>
 
-
-              <p className="text-white/80 mt-2 font-medium">
+              <p
+                className="
+                  text-xs
+                  sm:text-sm
+                  text-white/80
+                  mt-1
+                  sm:mt-2
+                  font-medium
+                "
+              >
                 Happy Clients
               </p>
+            </div>
 
+            {/* STAT 2 */}
 
-
-            </motion.div>
-
-
-
-
-
-
-            {/* ================= Stat 2 ================= */}
-
-
-
-            <motion.div
-
-
-              whileHover={{
-                y:-8,
-                scale:1.03
-              }}
-
-
-              transition={{
-                duration:0.3
-              }}
-
-
-
+            <div
               className="
                 flex
                 flex-col
                 items-center
                 justify-center
                 text-center
-                px-4
-                py-8
+                px-3
+                sm:px-4
+                py-5
+                sm:py-7
+                lg:py-8
                 border-b
                 lg:border-b-0
                 lg:border-r
                 border-white/10
               "
-
-
-
             >
-
-
-
               <div
-
                 className="
-                  w-14
-                  h-14
+                  w-10
+                  h-10
+                  sm:w-12
+                  sm:h-12
+                  lg:w-14
+                  lg:h-14
                   rounded-full
                   bg-white
                   flex
                   items-center
                   justify-center
-                  mb-4
+                  mb-3
+                  sm:mb-4
                   shadow-lg
                 "
-
               >
-
-                <Building2 className="w-6 h-6 text-green-500" />
-
+                <Building2
+                  className="
+                    w-5
+                    h-5
+                    sm:w-6
+                    sm:h-6
+                    text-green-500
+                  "
+                />
               </div>
 
-
-
-
-              <h3 className="text-4xl font-bold text-white">
+              <h3
+                className="
+                  text-2xl
+                  sm:text-3xl
+                  lg:text-4xl
+                  font-bold
+                  text-white
+                "
+              >
                 25+
               </h3>
 
-
-
-              <p className="text-white/80 mt-2 font-medium">
+              <p
+                className="
+                  text-xs
+                  sm:text-sm
+                  text-white/80
+                  mt-1
+                  sm:mt-2
+                  font-medium
+                "
+              >
                 Business Services
               </p>
+            </div>
 
+            {/* STAT 3 */}
 
-
-            </motion.div>
-
-
-
-
-
-
-
-
-            {/* ================= Stat 3 ================= */}
-
-
-
-            <motion.div
-
-
-              whileHover={{
-                y:-8,
-                scale:1.03
-              }}
-
-
-              transition={{
-                duration:0.3
-              }}
-
-
-
+            <div
               className="
                 flex
                 flex-col
                 items-center
                 justify-center
                 text-center
-                px-4
-                py-8
-                lg:border-r
+                px-3
+                sm:px-4
+                py-5
+                sm:py-7
+                lg:py-8
+                border-r
                 border-white/10
               "
-
-
-
             >
-
-
-
               <div
-
                 className="
-                  w-14
-                  h-14
+                  w-10
+                  h-10
+                  sm:w-12
+                  sm:h-12
+                  lg:w-14
+                  lg:h-14
                   rounded-full
                   bg-white
                   flex
                   items-center
                   justify-center
-                  mb-4
+                  mb-3
+                  sm:mb-4
                   shadow-lg
                 "
-
               >
-
-
-                <ShieldCheck className="w-6 h-6 text-emerald-500" />
-
-
+                <ShieldCheck
+                  className="
+                    w-5
+                    h-5
+                    sm:w-6
+                    sm:h-6
+                    text-emerald-500
+                  "
+                />
               </div>
 
-
-
-
-              <h3 className="text-4xl font-bold text-white">
+              <h3
+                className="
+                  text-2xl
+                  sm:text-3xl
+                  lg:text-4xl
+                  font-bold
+                  text-white
+                "
+              >
                 100%
               </h3>
 
-
-
-              <p className="text-white/80 mt-2 font-medium">
+              <p
+                className="
+                  text-xs
+                  sm:text-sm
+                  text-white/80
+                  mt-1
+                  sm:mt-2
+                  font-medium
+                "
+              >
                 Trusted Process
               </p>
+            </div>
 
+            {/* STAT 4 */}
 
-
-
-            </motion.div>
-
-
-
-
-
-
-
-
-            {/* ================= Stat 4 ================= */}
-
-
-
-
-            <motion.div
-
-
-              whileHover={{
-                y:-8,
-                scale:1.03
-              }}
-
-
-
-              transition={{
-                duration:0.3
-              }}
-
-
-
+            <div
               className="
                 flex
                 flex-col
                 items-center
                 justify-center
                 text-center
-                px-4
-                py-8
+                px-3
+                sm:px-4
+                py-5
+                sm:py-7
+                lg:py-8
               "
-
-
-
             >
-
-
-
-
               <div
-
                 className="
-                  w-14
-                  h-14
+                  w-10
+                  h-10
+                  sm:w-12
+                  sm:h-12
+                  lg:w-14
+                  lg:h-14
                   rounded-full
                   bg-white
                   flex
                   items-center
                   justify-center
-                  mb-4
+                  mb-3
+                  sm:mb-4
                   shadow-lg
                 "
-
               >
-
-
-                <BadgeCheck className="w-6 h-6 text-[#0B4EA2]" />
-
-
+                <BadgeCheck
+                  className="
+                    w-5
+                    h-5
+                    sm:w-6
+                    sm:h-6
+                    text-[#0B4EA2]
+                  "
+                />
               </div>
 
-
-
-
-              <h3 className="text-4xl font-bold text-white">
+              <h3
+                className="
+                  text-2xl
+                  sm:text-3xl
+                  lg:text-4xl
+                  font-bold
+                  text-white
+                "
+              >
                 10+
               </h3>
 
-
-
-              <p className="text-white/80 mt-2 font-medium">
+              <p
+                className="
+                  text-xs
+                  sm:text-sm
+                  text-white/80
+                  mt-1
+                  sm:mt-2
+                  font-medium
+                "
+              >
                 Years Experience
               </p>
-
-
-
-
-            </motion.div>
-
-
-
-
+            </div>
           </div>
-
-
-
-        </motion.div>
-
-
-
-
-
+        </div>
       </div>
-
-
     </section>
-
-
   );
-
-
 };
-
 
 export default About;

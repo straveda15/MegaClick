@@ -1,3 +1,4 @@
+
 import React from "react";
 import teamImg from "../../assets/teamimg.png";
 
@@ -5,24 +6,40 @@ const HeroSection = () => {
   return (
     <section className="relative w-full overflow-hidden bg-[#0B4EA2]">
 
+      {/* =====================================================
+          DESKTOP / MOBILE CONTAINER
+      ====================================================== */}
+
       <div
         className="
           max-w-[1300px]
           mx-auto
           relative
-          h-[520px]
+
+          min-h-0
+          lg:h-[520px]
         "
       >
 
-        {/* ================= IMAGE RIGHT SIDE ================= */}
+        {/* =====================================================
+            IMAGE
+            DESKTOP = RIGHT
+            MOBILE = BELOW CONTENT
+        ====================================================== */}
 
         <div
           className="
-            absolute
-            right-0
-            top-0
-            w-[65%]
-            h-full
+            relative
+            w-full
+            h-[260px]
+
+            sm:h-[320px]
+
+            lg:absolute
+            lg:right-0
+            lg:top-0
+            lg:w-[65%]
+            lg:h-full
           "
         >
 
@@ -34,6 +51,8 @@ const HeroSection = () => {
               h-full
               object-cover
               object-center
+
+              lg:object-center
             "
           />
 
@@ -50,72 +69,112 @@ const HeroSection = () => {
         </div>
 
 
-
-        {/* ================= LEFT BLUE SHAPE ================= */}
+        {/* =====================================================
+            LEFT BLUE CONTENT
+            DESKTOP = LEFT OVER IMAGE
+            MOBILE = TOP
+        ====================================================== */}
 
         <div
           className="
-            absolute
-            left-0
-            top-0
-            h-full
-            w-[52%]
+            relative
+            w-full
             bg-[#0B4EA2]
+
             z-10
+
+            lg:absolute
+            lg:left-0
+            lg:top-0
+            lg:h-full
+            lg:w-[52%]
+
+            lg:[clip-path:polygon(0_0,82%_0,68%_50%,82%_100%,0_100%)]
           "
-          style={{
-            clipPath:
-              "polygon(0 0, 82% 0, 68% 50%, 82% 100%, 0 100%)",
-          }}
         >
 
-    <div
-  className="
-    h-full
-    flex
-    flex-col
-    justify-center
-    -ml-2
-    lg:-ml-6
-    pl-6
-    pr-4
-  "
->
+          <div
+            className="
+              min-h-[430px]
 
+              flex
+              flex-col
+              justify-center
 
-            {/* Small Heading */}
+              px-6
+              py-12
+
+              sm:px-10
+              sm:py-14
+
+              lg:h-full
+              lg:min-h-0
+              lg:px-8
+              lg:py-0
+              lg:-ml-2
+
+              xl:-ml-6
+              xl:pl-10
+              xl:pr-20
+            "
+          >
+
+            {/* =================================================
+                SMALL HEADING
+            ================================================== */}
 
             <p
-  className="
-    text-white/90
-    text-base
-    mb-3
-    font-semibold
-    tracking-[0.18em]
-    uppercase
-    flex
-    items-center
-    gap-3
-  "
->
-  <span className="w-10 h-[2px] bg-green-500"></span>
-  Who We Are
-</p>
+              className="
+                text-white/90
+                text-sm
+                sm:text-base
+                mb-4
+
+                font-semibold
+                tracking-[0.14em]
+                sm:tracking-[0.18em]
+
+                uppercase
+
+                flex
+                items-center
+                gap-3
+              "
+            >
+
+              <span
+                className="
+                  w-8
+                  sm:w-10
+                  h-[2px]
+                  bg-green-500
+                  flex-shrink-0
+                "
+              />
+
+              Who We Are
+
+            </p>
 
 
+            {/* =================================================
+                MAIN HEADING
+            ================================================== */}
 
-            {/* Main Heading */}
-<h1
-  className="
-    text-3xl
-    md:text-4xl
-    lg:text-[42px]
-    font-extrabold
-    leading-[1.15]
-    max-w-[500px]
-    tracking-tight
-  "
->
+            <h1
+              className="
+                text-3xl
+                sm:text-4xl
+                lg:text-[42px]
+
+                font-extrabold
+                leading-[1.15]
+
+                tracking-tight
+
+                max-w-[500px]
+              "
+            >
 
               <span
                 className="
@@ -141,7 +200,12 @@ const HeroSection = () => {
                   block
                   text-white
                   font-semibold
+
                   mt-3
+
+                  text-2xl
+                  sm:text-3xl
+                  lg:text-[34px]
                 "
               >
                 All Under One Roof
@@ -150,22 +214,27 @@ const HeroSection = () => {
             </h1>
 
 
-
-            {/* Description */}
+            {/* =================================================
+                DESCRIPTION
+            ================================================== */}
 
             <p
               className="
-                mt-4
+                mt-5
+
                 text-white/80
+
                 text-sm
-                max-w-[420px]
-                leading-relaxed
+                sm:text-base
+
+                max-w-[430px]
+
+                leading-7
               "
             >
               Providing smart and reliable solutions to simplify
               business needs and help organizations grow faster.
             </p>
-
 
           </div>
 
@@ -173,7 +242,6 @@ const HeroSection = () => {
 
 
       </div>
-
 
     </section>
   );
