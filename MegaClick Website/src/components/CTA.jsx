@@ -1,3 +1,4 @@
+
 import React from "react";
 
 import {
@@ -330,43 +331,39 @@ const CTA = () => {
               </a>
 
 
-              {/* ================= EMAIL ================= */}
+         <a
+  href="https://mail.google.com/mail/?view=cm&fs=1&to=megaclickofficial@gmail.com"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="
+    inline-flex
+    items-center
+    justify-start
+    gap-3
+    w-full
+    min-w-0
+    text-[#0B4EA2]
+    font-semibold
+    text-sm
+    sm:text-base
+    hover:text-green-600
+    transition-colors
+    duration-300
+  "
+>
+  <Mail
+    size={19}
+    className="
+     
+      flex-shrink-0
+      w-[20px]
+    "
+  />
 
-              <a
-                href="https://mail.google.com/mail/?view=cm&fs=1&to=megaclickofficial@gmail.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="
-                  inline-flex
-                  items-center
-                  justify-start
-                  gap-3
-                  w-full
-                  min-w-0
-                  text-[#0B4EA2]
-                  font-semibold
-                  text-sm
-                  sm:text-base
-                  hover:text-green-600
-                  transition-colors
-                  duration-300
-                "
-              >
-
-                <Mail
-                  size={19}
-                  className="
-                    text-blue-900
-                    flex-shrink-0
-                    w-[20px]
-                  "
-                />
-
-                <span className="break-all">
-                  megaclickofficial@gmail.com
-                </span>
-
-              </a>
+  <span className="break-all">
+    megaclickofficial@gmail.com
+  </span>
+</a>
 
             </div>
 

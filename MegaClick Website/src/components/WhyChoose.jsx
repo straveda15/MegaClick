@@ -23,6 +23,7 @@ const hexagonItems = [
     ),
     icon: Users,
     color: "green",
+    delay: "0s",
   },
 
   {
@@ -35,6 +36,7 @@ const hexagonItems = [
     ),
     icon: Lightbulb,
     color: "blue",
+    delay: "0.5s",
   },
 
   {
@@ -49,6 +51,7 @@ const hexagonItems = [
     ),
     icon: FileCheck2,
     color: "green",
+    delay: "1s",
   },
 
   {
@@ -61,6 +64,7 @@ const hexagonItems = [
     ),
     icon: WalletCards,
     color: "blue",
+    delay: "1.5s",
   },
 
   {
@@ -73,6 +77,7 @@ const hexagonItems = [
     ),
     icon: ShieldCheck,
     color: "green",
+    delay: "2s",
   },
 
   {
@@ -85,20 +90,36 @@ const hexagonItems = [
     ),
     icon: Handshake,
     color: "blue",
+    delay: "2.5s",
   },
 ];
 
 const WhyChoose = () => {
   return (
-    <section className="w-full bg-blue-50 py-5 sm:py-10 lg:py-16 overflow-hidden">
+    <section
+      className="
+        w-full
+        bg-blue-50
+        py-5
+        sm:py-10
+        lg:py-10
+        overflow-hidden
+      "
+    >
       <div
         className="
           max-w-[1500px]
           mx-auto
           px-4
-          sm:px-6
+          sm:px-8
           lg:px-16
           xl:px-24
+          pt-2
+          sm:pt-3
+          lg:pt-4
+          pb-3
+          sm:pb-6
+          lg:pb-8
         "
       >
         {/* =====================================================
@@ -131,85 +152,83 @@ const WhyChoose = () => {
               lg:mx-0
             "
           >
-            {/* Badge */}
+            {/* ================= BADGE ================= */}
 
-   <span
-  className="
-    relative
-    -top-5
-    sm:-top-6
-    lg:-top-8
-    inline-flex
-    items-center
-    gap-2
-    bg-[#0B4EA2]
-    text-white
-    px-4
-    py-2
-    rounded-full
-    text-[11px]
-    sm:text-xs
-    font-semibold
-    tracking-wide
-  "
->
-  <CheckCircle
-    size={15}
-    className="text-green-300"
-  />
+            <span
+              className="
+                relative
+                -top-5
+                sm:-top-6
+                lg:-top-8
+                inline-flex
+                items-center
+                gap-2
+                bg-[#0B4EA2]
+                text-white
+                px-4
+                py-2
+                rounded-full
+                text-[11px]
+                sm:text-xs
+                font-semibold
+                tracking-wide
+              "
+            >
+              <CheckCircle
+                size={15}
+                className="text-green-300"
+              />
 
-  WHY CHOOSE US
-</span>
+              WHY CHOOSE US
+            </span>
 
-            {/* =================================================
-                MAIN HEADING
-            ================================================== */}
-{/* Heading */}
+            {/* ================= HEADING ================= */}
 
-<h2
-  className="
-    text-3xl
-    sm:text-4xl
-    lg:text-5xl
-    font-bold
-    leading-tight
-    text-black
-  "
->
-  Your Trusted
-  <br className="hidden sm:block" />
+            <h2
+              className="
+                text-3xl
+                sm:text-4xl
+                lg:text-5xl
+                font-bold
+                leading-tight
+                text-black
+              "
+            >
+              Your Trusted
+              <br className="hidden sm:block" />
 
-  <span
-    className="
-      bg-gradient-to-r
-      from-blue-600
-      to-green-500
-      bg-clip-text
-      text-transparent
-    "
-  >
-    Partner
-  </span>
-</h2>
+              <span
+                className="
+                  bg-gradient-to-r
+                  from-blue-600
+                  to-green-500
+                  bg-clip-text
+                  text-transparent
+                "
+              >
+                Partner
+              </span>
+            </h2>
 
-{/* Description */}
+            {/* ================= DESCRIPTION ================= */}
 
-<p
-  className="
-    mt-3
-    sm:mt-4
-    text-sm
-    sm:text-base
-    text-gray-700
-    leading-6
-    sm:leading-7
-    max-w-4xl
-  "
->
-  MegaClick brings together trusted professionals, complete business
-  solutions and reliable support to simplify every step of your business
-  journey.
-</p>
+            <p
+              className="
+                mt-3
+                sm:mt-4
+                text-sm
+                sm:text-base
+                text-gray-700
+                leading-6
+                sm:leading-7
+                max-w-4xl
+              "
+            >
+              MegaClick brings together trusted professionals, complete
+              business solutions and reliable support to simplify every
+              step of your business journey.
+            </p>
+
             {/* =================================================
                 STATS
             ================================================== */}
@@ -340,7 +359,7 @@ const WhyChoose = () => {
                   w-full
                 "
               >
-                {/* ================= TOP ROW ================= */}
+                {/* TOP ROW */}
 
                 <div
                   className="
@@ -360,7 +379,7 @@ const WhyChoose = () => {
                   <Hexagon item={hexagonItems[2]} />
                 </div>
 
-                {/* ================= BOTTOM ROW ================= */}
+                {/* BOTTOM ROW */}
 
                 <div
                   className="
@@ -493,9 +512,11 @@ const Hexagon = ({ item, mobile = false }) => {
         text-white
         overflow-hidden
         select-none
+
         transition-all
         duration-300
-        hover:scale-[1.03]
+
+        ${mobile ? "animate-hexagon-mobile" : "lg:hover:scale-[1.03]"}
 
         ${
           mobile
@@ -519,20 +540,22 @@ const Hexagon = ({ item, mobile = false }) => {
           isBlue
             ? `
               bg-[#145A92]
-              hover:bg-[#0B4EA2]
+              lg:hover:bg-[#0B4EA2]
             `
             : `
               bg-gradient-to-b
               from-[#B8ED72]
               to-[#63B900]
-              hover:from-[#C3F47D]
-              hover:to-[#58A900]
+              lg:hover:from-[#C3F47D]
+              lg:hover:to-[#58A900]
             `
         }
       `}
       style={{
         clipPath:
           "polygon(25% 0%, 75% 0%, 100% 25%, 100% 75%, 75% 100%, 25% 100%, 0% 75%, 0% 25%)",
+
+        animationDelay: mobile ? item.delay : "0s",
       }}
     >
       {/* =================================================

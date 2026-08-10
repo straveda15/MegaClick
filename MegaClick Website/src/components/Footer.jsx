@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Phone, Mail, MapPin } from "lucide-react";
 
@@ -14,35 +13,6 @@ import logo from "../assets/LOGO.png";
 
 const Footer = () => {
   const navigate = useNavigate();
-
-  // =================================================
-  // SCROLL TO HOMEPAGE SECTION
-  // =================================================
-  const scrollToSection = (id) => {
-    if (window.location.pathname !== "/") {
-      navigate("/");
-
-      setTimeout(() => {
-        const section = document.getElementById(id);
-
-        if (section) {
-          section.scrollIntoView({
-            behavior: "smooth",
-            block: "start",
-          });
-        }
-      }, 300);
-    } else {
-      const section = document.getElementById(id);
-
-      if (section) {
-        section.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-      }
-    }
-  };
 
   // =================================================
   // SCROLL TO TOP
@@ -76,19 +46,20 @@ const Footer = () => {
 
   // =================================================
   // QUICK LINKS
+  // ALL ARE DIRECT PAGES
   // =================================================
   const quickLinks = [
     {
       name: "Home",
-      id: "home",
+      path: "/",
     },
     {
       name: "About Us",
-      id: "about",
+      path: "/about",
     },
     {
       name: "Services",
-      id: "services",
+      path: "/services",
     },
     {
       name: "Associate With Us",
@@ -121,6 +92,23 @@ const Footer = () => {
     },
   ];
 
+  // =================================================
+  // HANDLE NAVIGATION
+  // =================================================
+  const handleNavigation = (path) => {
+    navigate(path);
+
+    // If going to homepage, start from top
+    if (path === "/") {
+      setTimeout(() => {
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
+      }, 100);
+    }
+  };
+
   return (
     <footer className="bg-[#083A7A] text-white relative overflow-hidden">
 
@@ -134,15 +122,18 @@ const Footer = () => {
       ================================================= */}
       <div
         className="
-          max-w-[1450px]
+          max-w-[1500px]
           mx-auto
-          px-5
+          px-4
           sm:px-8
           lg:px-16
-          xl:px-20
-          py-10
-          sm:py-12
-          lg:py-14
+          xl:px-24
+          pt-2
+          sm:pt-3
+          lg:pt-4
+          pb-6
+          sm:pb-8
+          lg:pb-10
         "
       >
         <div
@@ -185,7 +176,9 @@ const Footer = () => {
                   shadow-blue-200/50
                   transition-all
                   duration-300
+
                   hover:scale-105
+                  active:scale-95
                 "
               />
 
@@ -251,9 +244,15 @@ const Footer = () => {
                       cursor-pointer
                       transition-all
                       duration-300
+
                       hover:bg-green-500
                       hover:-translate-y-1
                       hover:shadow-lg
+
+                      active:bg-green-500
+                      active:-translate-y-1
+                      active:shadow-lg
+                      active:scale-95
                     "
                   >
                     <Icon size={16} />
@@ -288,30 +287,54 @@ const Footer = () => {
                 <li key={index}>
 
                   <button
-                    onClick={() => {
-
-                      // Routes
-                      if (item.path) {
-                        navigate(item.path);
-                        return;
-                      }
-
-                      // Homepage sections
-                      scrollToSection(item.id);
-
-                    }}
+                    type="button"
+                    onClick={() => handleNavigation(item.path)}
                     className="
+                      group
+                      relative
+                      flex
+                      items-center
+                      gap-2
                       text-sm
                       text-blue-100
                       cursor-pointer
                       transition-all
                       duration-300
+                      text-left
+
                       hover:text-white
                       hover:translate-x-1
-                      text-left
+
+                      active:text-green-300
+                      active:translate-x-1
+                      active:scale-[0.98]
                     "
                   >
+
+                    {/* Highlight Dot */}
+
+                    <span
+                      className="
+                        w-1
+                        h-1
+                        rounded-full
+                        bg-green-400
+                        opacity-0
+                        transition-all
+                        duration-300
+
+                        group-hover:opacity-100
+                        group-hover:w-1.5
+                        group-hover:h-1.5
+
+                        group-active:opacity-100
+                        group-active:w-1.5
+                        group-active:h-1.5
+                      "
+                    />
+
                     {item.name}
+
                   </button>
 
                 </li>
@@ -345,17 +368,51 @@ const Footer = () => {
                 <li
                   key={index}
                   className="
+                    group
+                    relative
+                    flex
+                    items-center
+                    gap-2
                     text-sm
                     leading-6
                     text-blue-100
                     cursor-pointer
                     transition-all
                     duration-300
+
                     hover:text-white
                     hover:translate-x-1
+
+                    active:text-green-300
+                    active:translate-x-1
+                    active:scale-[0.98]
                   "
                 >
+
+                  {/* Highlight Dot */}
+
+                  <span
+                    className="
+                      w-1
+                      h-1
+                      rounded-full
+                      bg-green-400
+                      opacity-0
+                      transition-all
+                      duration-300
+
+                      group-hover:opacity-100
+                      group-hover:w-1.5
+                      group-hover:h-1.5
+
+                      group-active:opacity-100
+                      group-active:w-1.5
+                      group-active:h-1.5
+                    "
+                  />
+
                   {service}
+
                 </li>
 
               ))}
@@ -393,6 +450,12 @@ const Footer = () => {
                   items-center
                   gap-3
                   w-fit
+                  transition-all
+                  duration-300
+
+                  hover:translate-x-1
+                  active:translate-x-1
+                  active:scale-[0.98]
                 "
               >
 
@@ -403,7 +466,9 @@ const Footer = () => {
                     flex-shrink-0
                     transition-transform
                     duration-300
+
                     group-hover:scale-110
+                    group-active:scale-110
                   "
                 />
 
@@ -411,9 +476,11 @@ const Footer = () => {
                   className="
                     text-sm
                     text-blue-100
-                    group-hover:text-white
                     transition-colors
                     duration-300
+
+                    group-hover:text-white
+                    group-active:text-green-300
                   "
                 >
                   +91 9921611911
@@ -428,6 +495,7 @@ const Footer = () => {
                 href="https://mail.google.com/mail/?view=cm&fs=1&to=megaclickofficial@gmail.com"
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="Send email to MegaClick"
                 className="
                   group
                   flex
@@ -435,6 +503,12 @@ const Footer = () => {
                   gap-3
                   w-fit
                   max-w-full
+                  transition-all
+                  duration-300
+
+                  hover:translate-x-1
+                  active:translate-x-1
+                  active:scale-[0.98]
                 "
               >
 
@@ -445,7 +519,9 @@ const Footer = () => {
                     flex-shrink-0
                     transition-transform
                     duration-300
+
                     group-hover:scale-110
+                    group-active:scale-110
                   "
                 />
 
@@ -453,10 +529,12 @@ const Footer = () => {
                   className="
                     text-sm
                     text-blue-100
-                    group-hover:text-white
                     transition-colors
                     duration-300
                     break-all
+
+                    group-hover:text-white
+                    group-active:text-green-300
                   "
                 >
                   megaclickofficial@gmail.com
@@ -477,6 +555,12 @@ const Footer = () => {
                   items-start
                   gap-3
                   max-w-sm
+                  transition-all
+                  duration-300
+
+                  hover:translate-x-1
+                  active:translate-x-1
+                  active:scale-[0.98]
                 "
               >
 
@@ -488,7 +572,9 @@ const Footer = () => {
                     flex-shrink-0
                     transition-transform
                     duration-300
+
                     group-hover:scale-110
+                    group-active:scale-110
                   "
                 />
 
@@ -497,9 +583,11 @@ const Footer = () => {
                     text-sm
                     leading-6
                     text-blue-100
-                    group-hover:text-white
                     transition-colors
                     duration-300
+
+                    group-hover:text-white
+                    group-active:text-green-300
                   "
                 >
                   4th Floor, Tristar Complex,
@@ -547,6 +635,7 @@ const Footer = () => {
         >
 
           {/* Copyright */}
+
           <p
             className="
               text-xs
@@ -567,8 +656,12 @@ const Footer = () => {
             . All Rights Reserved.
           </p>
 
-          {/* Back To Top */}
+          {/* =================================================
+              BACK TO TOP
+          ================================================= */}
+
           <button
+            type="button"
             onClick={scrollToTop}
             aria-label="Back to top"
             className="
@@ -578,6 +671,7 @@ const Footer = () => {
               gap-2
               bg-white/10
               hover:bg-green-500
+              active:bg-green-500
               border
               border-white/10
               px-3
@@ -589,7 +683,10 @@ const Footer = () => {
               text-white
               transition-all
               duration-300
+
               hover:-translate-y-1
+              active:-translate-y-1
+              active:scale-95
             "
           >
 
@@ -602,18 +699,27 @@ const Footer = () => {
                 flex
                 items-center
                 justify-center
+                transition-all
+                duration-300
+
                 group-hover:bg-white
-                transition
+                group-active:bg-white
               "
             >
+
               <span
                 className="
                   text-sm
+                  transition-colors
+                  duration-300
+
                   group-hover:text-green-600
+                  group-active:text-green-600
                 "
               >
                 ↑
               </span>
+
             </span>
 
             Back to Top

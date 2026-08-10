@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   PhoneCall,
@@ -47,29 +47,51 @@ const points = [
 ];
 
 const HowItWorks = () => {
+  // =====================================================
+  // MOBILE / TABLET ACTIVE STEP
+  // Desktop hover animation remains unchanged
+  // =====================================================
+
+  const [activeStep, setActiveStep] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveStep((prev) => (prev + 1) % steps.length);
+    }, 2200);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <section
       className="
         relative
         overflow-hidden
-        bg-blue-50
-        py-5
-        sm:py-8
-        lg:py-10
+        bg-blue-100
+        py-3
+        sm:py-6
+        lg:py-8
       "
     >
       <div
         className="
-          max-w-[1450px]
+          max-w-[1500px]
           mx-auto
           px-4
-          sm:px-6
-          md:px-8
-          lg:px-12
-          xl:px-20
+          sm:px-8
+          lg:px-16
+          xl:px-24
+          pt-2
+          sm:pt-3
+          lg:pt-4
+          pb-6
+          sm:pb-8
+          lg:pb-10
         "
       >
-        {/* ================= TOP SECTION ================= */}
+        {/* =================================================
+            TOP SECTION
+        ================================================= */}
 
         <div
           className="
@@ -83,7 +105,9 @@ const HowItWorks = () => {
             items-center
           "
         >
-          {/* ================= LEFT CONTENT ================= */}
+          {/* =================================================
+              LEFT CONTENT
+          ================================================= */}
 
           <div className="w-full">
             {/* Badge */}
@@ -222,7 +246,9 @@ const HowItWorks = () => {
             </div>
           </div>
 
-          {/* ================= RIGHT CARD ================= */}
+          {/* =================================================
+              RIGHT CARD
+          ================================================= */}
 
           <div
             className="
@@ -447,7 +473,9 @@ const HowItWorks = () => {
           </div>
         </div>
 
-        {/* ================= STEPPER SECTION ================= */}
+        {/* =================================================
+            STEPPER SECTION
+        ================================================= */}
 
         <div
           className="
@@ -457,7 +485,31 @@ const HowItWorks = () => {
           "
         >
           <div className="relative">
-            {/* DESKTOP CONNECTING LINE */}
+
+            {/* =================================================
+                MOBILE / TABLET VERTICAL LINE
+            ================================================= */}
+
+            <div
+              className="
+                lg:hidden
+                absolute
+                top-[32px]
+                bottom-[32px]
+                left-1/2
+                -translate-x-1/2
+                w-[2px]
+                bg-gradient-to-b
+                from-blue-400
+                via-blue-300
+                to-green-400
+                z-0
+              "
+            />
+
+            {/* =================================================
+                DESKTOP HORIZONTAL LINE
+            ================================================= */}
 
             <div
               className="
@@ -472,10 +524,13 @@ const HowItWorks = () => {
                 from-blue-400
                 via-blue-300
                 to-green-400
+                z-0
               "
             />
 
-            {/* STEPS */}
+            {/* =================================================
+                STEPS
+            ================================================= */}
 
             <div
               className="
@@ -487,10 +542,14 @@ const HowItWorks = () => {
                 sm:gap-10
                 lg:gap-6
                 relative
+                z-10
               "
             >
               {steps.map((item, index) => {
                 const Icon = item.icon;
+
+                // Automatic animation only below lg
+                const isMobileActive = activeStep === index;
 
                 return (
                   <div
@@ -501,12 +560,15 @@ const HowItWorks = () => {
                       items-center
                       text-center
                       group
+                      relative
                     "
                   >
-                    {/* ICON */}
+                    {/* =================================================
+                        ICON
+                    ================================================= */}
 
                     <div
-                      className="
+                      className={`
                         relative
                         w-[64px]
                         h-[64px]
@@ -520,14 +582,23 @@ const HowItWorks = () => {
                         flex
                         items-center
                         justify-center
-                        transition
-                        duration-300
+                        transition-all
+                        duration-500
                         group-hover:-translate-y-2
                         group-hover:border-blue-500
-                      "
+                        z-20
+
+                        ${
+                          isMobileActive
+                            ? "max-lg:-translate-y-2 max-lg:scale-110 max-lg:border-blue-500"
+                            : ""
+                        }
+                      `}
                     >
+                      {/* Animated Background */}
+
                       <div
-                        className="
+                        className={`
                           absolute
                           inset-0
                           rounded-full
@@ -536,37 +607,63 @@ const HowItWorks = () => {
                           to-green-500
                           opacity-0
                           group-hover:opacity-100
-                          transition
-                        "
+                          transition-opacity
+                          duration-300
+
+                          ${
+                            isMobileActive
+                              ? "max-lg:opacity-100"
+                              : ""
+                          }
+                        `}
                       />
+
+                      {/* Icon */}
 
                       <Icon
                         size={26}
-                        className="
+                        className={`
                           relative
                           z-10
                           text-[#0B4EA2]
                           group-hover:text-white
-                          transition
-                        "
+                          transition-colors
+                          duration-300
+
+                          ${
+                            isMobileActive
+                              ? "max-lg:text-white"
+                              : ""
+                          }
+                        `}
                       />
                     </div>
 
-                    {/* NUMBER */}
+                    {/* =================================================
+                        NUMBER
+                    ================================================= */}
 
                     <div
-                      className="
+                      className={`
                         mt-3
                         text-[11px]
                         sm:text-xs
                         font-bold
-                        text-[#0B4EA2]
-                      "
+                        transition-colors
+                        duration-300
+                        ${
+                          isMobileActive
+                            ? "max-lg:text-green-600"
+                            : "text-[#0B4EA2]"
+                        }
+                      `}
                     >
                       STEP {item.number}
                     </div>
 
-                    {/* TITLE */}
+                    {/* =================================================
+                        TITLE
+                    ================================================= */}
 
                     <h4
                       className="
@@ -581,7 +678,9 @@ const HowItWorks = () => {
                       {item.title}
                     </h4>
 
-                    {/* DESCRIPTION */}
+                    {/* =================================================
+                        DESCRIPTION
+                    ================================================= */}
 
                     <p
                       className="
@@ -589,14 +688,17 @@ const HowItWorks = () => {
                         text-sm
                         leading-6
                         text-gray-600
-                        max-w-[260px]
-                        sm:max-w-[220px]
+                        max-w-[280px]
+                        sm:max-w-[260px]
+                        lg:max-w-[220px]
                       "
                     >
                       {item.text}
                     </p>
 
-                    {/* BADGE */}
+                    {/* =================================================
+                        BADGE
+                    ================================================= */}
 
                     <div
                       className="

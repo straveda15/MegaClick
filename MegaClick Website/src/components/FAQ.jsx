@@ -46,8 +46,8 @@ const FAQ = () => {
         relative
         overflow-hidden
         py-5
-        sm:py-12
-        lg:py-16
+        sm:py-8
+        lg:py-10
         bg-white
       "
     >
@@ -89,19 +89,22 @@ const FAQ = () => {
         "
       />
 
-      <div
-        className="
-          relative
-          max-w-[1500px]
-          mx-auto
-          px-4
-          sm:px-6
-          md:px-8
-          lg:px-12
-          xl:px-24
-          z-10
-        "
-      >
+          <div
+  className="
+    max-w-[1500px]
+    mx-auto
+    px-4
+    sm:px-8
+    lg:px-16
+    xl:px-24
+    pt-2
+    sm:pt-3
+    lg:pt-4
+    pb-3
+    sm:pb-6
+    lg:pb-8
+  "
+>
         {/* =====================================================
             HEADING
         ====================================================== */}
@@ -154,9 +157,7 @@ const FAQ = () => {
               text-black
             "
           >
-            Frequently Asked
-
-            <br />
+            Frequently Asked{" "}
 
             <span
               className="

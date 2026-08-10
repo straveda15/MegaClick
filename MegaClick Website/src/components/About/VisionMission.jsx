@@ -58,16 +58,20 @@ const VisionMission = () => {
         "
       />
 
-      <div
+       <div
         className="
-          relative
-          z-10
           max-w-[1500px]
           mx-auto
-          px-5
+          px-4
           sm:px-8
-          lg:px-20
+          lg:px-16
           xl:px-24
+          pt-2
+          sm:pt-3
+          lg:pt-4
+          pb-6
+          sm:pb-8
+          lg:pb-10
         "
       >
 

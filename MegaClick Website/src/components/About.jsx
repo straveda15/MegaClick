@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Building2,
   ArrowRight,
@@ -26,30 +26,85 @@ const stats = [
 const About = () => {
   const navigate = useNavigate();
 
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  // =====================================================
+  // SCROLL TO TOP
+  // =====================================================
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  // =====================================================
+  // LOCK BACKGROUND SCROLL WHEN MODAL IS OPEN
+  // =====================================================
+
+  useEffect(() => {
+    if (selectedImage) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [selectedImage]);
+
+  // =====================================================
+  // ESCAPE KEY TO CLOSE IMAGE
+  // =====================================================
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setSelectedImage(null);
+      }
+    };
+
+    if (selectedImage) {
+      document.addEventListener("keydown", handleKeyDown);
+    }
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [selectedImage]);
+
   return (
     <section
       className="
         relative
         overflow-hidden
         bg-white
-        py-10
-        sm:py-12
-        lg:py-14
+        py-5
+        sm:py-8
+        lg:py-10
       "
     >
+      {/* =====================================================
+          MAIN CONTAINER
+      ====================================================== */}
+
       <div
         className="
           max-w-[1500px]
           mx-auto
           px-4
-          sm:px-6
-          md:px-8
-          lg:px-12
+          sm:px-8
+          lg:px-16
           xl:px-24
+          pt-2
+          sm:pt-3
+          lg:pt-4
+          pb-3
+          sm:pb-6
+          lg:pb-8
         "
       >
         {/* =====================================================
-            MOBILE / DESKTOP MAIN LAYOUT
+            MAIN GRID
         ====================================================== */}
 
         <div
@@ -68,10 +123,9 @@ const About = () => {
               RIGHT CONTENT
               MOBILE ORDER:
               1. BADGE
-              2. HEADING + DESCRIPTION
-              3. STATS
-              4. PHOTOS
-              5. BUTTON
+              2. HEADING
+              3. DESCRIPTION
+              4. STATS
           ====================================================== */}
 
           <div
@@ -234,12 +288,20 @@ const About = () => {
                     {index === 0 ? (
                       <Users
                         size={19}
-                        className="text-[#0B4EA2] sm:w-6 sm:h-6"
+                        className="
+                          text-[#0B4EA2]
+                          sm:w-6
+                          sm:h-6
+                        "
                       />
                     ) : (
                       <BriefcaseBusiness
                         size={19}
-                        className="text-[#0B4EA2] sm:w-6 sm:h-6"
+                        className="
+                          text-[#0B4EA2]
+                          sm:w-6
+                          sm:h-6
+                        "
                       />
                     )}
                   </div>
@@ -298,9 +360,12 @@ const About = () => {
               w-full
             "
           >
-            {/* IMAGE 1 */}
+            {/* =================================================
+                IMAGE 1
+            ================================================= */}
 
             <div
+              onClick={() => setSelectedImage(img1)}
               className="
                 h-[170px]
                 sm:h-[210px]
@@ -314,6 +379,7 @@ const About = () => {
                 shadow-md
                 sm:shadow-lg
                 group
+                cursor-pointer
               "
             >
               <img
@@ -330,9 +396,12 @@ const About = () => {
               />
             </div>
 
-            {/* IMAGE 2 */}
+            {/* =================================================
+                IMAGE 2
+            ================================================= */}
 
             <div
+              onClick={() => setSelectedImage(img2)}
               className="
                 h-[170px]
                 sm:h-[210px]
@@ -346,6 +415,7 @@ const About = () => {
                 shadow-md
                 sm:shadow-lg
                 group
+                cursor-pointer
               "
             >
               <img
@@ -362,9 +432,12 @@ const About = () => {
               />
             </div>
 
-            {/* IMAGE 3 */}
+            {/* =================================================
+                IMAGE 3
+            ================================================= */}
 
             <div
+              onClick={() => setSelectedImage(img3)}
               className="
                 h-[170px]
                 sm:h-[210px]
@@ -378,6 +451,7 @@ const About = () => {
                 shadow-md
                 sm:shadow-lg
                 group
+                cursor-pointer
               "
             >
               <img
@@ -394,9 +468,12 @@ const About = () => {
               />
             </div>
 
-            {/* IMAGE 4 + EXPERIENCE */}
+            {/* =================================================
+                IMAGE 4 + EXPERIENCE
+            ================================================= */}
 
             <div
+              onClick={() => setSelectedImage(img4)}
               className="
                 relative
                 h-[170px]
@@ -411,6 +488,7 @@ const About = () => {
                 shadow-md
                 sm:shadow-lg
                 group
+                cursor-pointer
               "
             >
               <img
@@ -451,6 +529,7 @@ const About = () => {
                   text-white
                   text-center
                   px-2
+                  pointer-events-none
                 "
               >
                 <h2
@@ -481,54 +560,58 @@ const About = () => {
               </div>
             </div>
           </div>
-{/* =====================================================
-    LEARN MORE BUTTON
-    MOBILE = CENTER
-===================================================== */}
 
-<div
-  className="
-    order-5
-    lg:order-none
-    lg:-mt-4
-    flex
-    justify-center
-    lg:justify-end
-    w-full
-  "
->
-  <button
-    onClick={() => navigate("/about")}
-    className="
-      inline-flex
-      items-center
-      justify-center
-      gap-2
-      bg-[#0B4EA2]
-      hover:bg-blue-700
-      text-white
-      px-6
-      sm:px-8
-      py-3
-      sm:py-3.5
-      rounded-xl
-      font-semibold
-      text-sm
-      sm:text-base
-      transition-all
-      duration-300
-      hover:scale-[1.02]
-      sm:hover:scale-105
-    "
-  >
-    Learn More
+          {/* =====================================================
+              LEARN MORE BUTTON
+              MOBILE = CENTER
+          ====================================================== */}
 
-    <ArrowRight size={18} />
-  </button>
-</div>
-</div>
-</div>
-      {/* ================= BACKGROUND BLUR ================= */}
+          <div
+            className="
+              order-5
+              lg:order-none
+              lg:-mt-4
+              flex
+              justify-center
+              lg:justify-end
+              w-full
+            "
+          >
+            <button
+              onClick={() => navigate("/about")}
+              className="
+                inline-flex
+                items-center
+                justify-center
+                gap-2
+                bg-[#0B4EA2]
+                hover:bg-blue-700
+                text-white
+                px-6
+                sm:px-8
+                py-3
+                sm:py-3.5
+                rounded-xl
+                font-semibold
+                text-sm
+                sm:text-base
+                transition-all
+                duration-300
+                hover:scale-[1.02]
+                sm:hover:scale-105
+              "
+            >
+              Learn More
+
+              <ArrowRight size={18} />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* =====================================================
+          BACKGROUND BLUR
+      ====================================================== */}
 
       <div
         className="
@@ -541,6 +624,7 @@ const About = () => {
           bg-blue-100/50
           blur-3xl
           -z-10
+          pointer-events-none
         "
       />
 
@@ -555,8 +639,99 @@ const About = () => {
           bg-green-100/40
           blur-3xl
           -z-10
+          pointer-events-none
         "
       />
+
+      {/* =====================================================
+          FULLSCREEN IMAGE MODAL
+      ====================================================== */}
+
+      {selectedImage && (
+        <div
+          className="
+            fixed
+            inset-0
+            z-[9999]
+            bg-black/80
+            backdrop-blur-sm
+            flex
+            items-center
+            justify-center
+            p-4
+            sm:p-6
+          "
+          onClick={() => setSelectedImage(null)}
+        >
+          {/* =================================================
+              CLOSE BUTTON
+          ================================================= */}
+
+          <button
+            type="button"
+            onClick={() => setSelectedImage(null)}
+            className="
+              absolute
+              top-4
+              right-4
+              sm:top-6
+              sm:right-6
+              z-20
+              w-10
+              h-10
+              sm:w-12
+              sm:h-12
+              rounded-full
+              bg-white/90
+              hover:bg-white
+              text-gray-900
+              flex
+              items-center
+              justify-center
+              text-2xl
+              sm:text-3xl
+              font-bold
+              shadow-lg
+              transition-all
+              duration-200
+              hover:scale-105
+            "
+            aria-label="Close image"
+          >
+            ×
+          </button>
+
+          {/* =================================================
+              IMAGE CONTAINER
+          ================================================= */}
+
+          <div
+            className="
+              relative
+              max-w-5xl
+              max-h-[90vh]
+              w-full
+              flex
+              items-center
+              justify-center
+            "
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={selectedImage}
+              alt="MegaClick preview"
+              className="
+                max-w-full
+                max-h-[85vh]
+                object-contain
+                rounded-xl
+                sm:rounded-2xl
+                shadow-2xl
+              "
+            />
+          </div>
+        </div>
+      )}
     </section>
   );
 };

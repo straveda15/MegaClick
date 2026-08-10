@@ -77,9 +77,15 @@ const About = () => {
           max-w-[1500px]
           mx-auto
           px-4
-          sm:px-6
+          sm:px-8
           lg:px-16
           xl:px-24
+          pt-2
+          sm:pt-3
+          lg:pt-4
+          pb-6
+          sm:pb-8
+          lg:pb-10
         "
       >
         {/* =====================================================
