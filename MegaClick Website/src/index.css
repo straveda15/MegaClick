@@ -116,49 +116,112 @@ animation:floatMedium 5s ease-in-out infinite;
 animation:floatFast 4.8s ease-in-out infinite;
 }
 
-/* ================= FLOATING ANIMATIONS ================= */
 
-@keyframes float1 {
+/* ================= HERO FLOAT ANIMATIONS ================= */
+
+@keyframes heroFloatUp {
   0%,
   100% {
-    transform: translateY(0px);
+    transform: translateY(0);
   }
 
   50% {
-    transform: translateY(-18px);
+    transform: translateY(-16px);
   }
 }
 
-@keyframes float2 {
+@keyframes heroFloatDown {
   0%,
   100% {
-    transform: translateY(0px);
+    transform: translateY(0);
   }
 
   50% {
-    transform: translateY(18px);
+    transform: translateY(16px);
   }
 }
 
-@keyframes float3 {
+@keyframes heroFloatSmall {
   0%,
   100% {
-    transform: translateY(0px);
+    transform: translateY(0);
   }
 
   50% {
-    transform: translateY(-12px);
+    transform: translateY(-10px);
   }
 }
 
-.animate-float1 {
-  animation: float1 6s ease-in-out infinite;
+.hero-float-main {
+  animation: heroFloatUp 6s ease-in-out infinite;
 }
 
-.animate-float2 {
-  animation: float2 5.5s ease-in-out infinite;
+.hero-float-left {
+  animation: heroFloatDown 5.2s ease-in-out infinite;
+  animation-delay: 0.4s;
 }
 
-.animate-float3 {
-  animation: float3 4.5s ease-in-out infinite;
+.hero-float-right {
+  animation: heroFloatUp 4.8s ease-in-out infinite;
+  animation-delay: 0.8s;
+}
+
+.hero-float-status {
+  animation: heroFloatSmall 5s ease-in-out infinite;
+  animation-delay: 0.6s;
+}
+
+
+/* Mobile par bhi animation forcefully enabled */
+
+@media (max-width: 1023px) {
+  .hero-float-main {
+    animation: heroFloatUp 5.5s ease-in-out infinite;
+  }
+
+  .hero-float-left {
+    animation: heroFloatDown 5s ease-in-out infinite;
+    animation-delay: 0.3s;
+  }
+
+  .hero-float-right {
+    animation: heroFloatUp 4.6s ease-in-out infinite;
+    animation-delay: 0.6s;
+  }
+
+  .hero-float-status {
+    animation: heroFloatSmall 4.8s ease-in-out infinite;
+    animation-delay: 0.4s;
+  }
+}
+
+
+/* Accessibility */
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-float-main,
+  .hero-float-left,
+  .hero-float-right,
+  .hero-float-status {
+    animation: none !important;
+  }
+}
+
+/* ============================================================
+   MOBILE HEXAGON ANIMATION
+============================================================ */
+
+@keyframes hexagonMobile {
+  0%,
+  100% {
+    transform: translateY(0px) scale(1);
+  }
+
+  50% {
+    transform: translateY(-7px) scale(1.02);
+  }
+}
+
+.animate-hexagon-mobile {
+  animation: hexagonMobile 3.5s ease-in-out infinite;
 }

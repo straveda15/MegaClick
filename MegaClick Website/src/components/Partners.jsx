@@ -54,7 +54,7 @@ return(
 <section
 
 className="
-py-10
+py-5
 bg-blue-50
 overflow-hidden
 "
@@ -62,15 +62,21 @@ overflow-hidden
 >
 
 
-<div
-
-className="
-max-w-[1500px]
-mx-auto
-px-6
-lg:px-24
-"
-
+     <div
+  className="
+    max-w-[1500px]
+    mx-auto
+    px-4
+    sm:px-8
+    lg:px-16
+    xl:px-24
+    pt-2
+    sm:pt-3
+    lg:pt-4
+    pb-3
+    sm:pb-6
+    lg:pb-8
+  "
 >
 
 

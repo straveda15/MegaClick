@@ -1,4 +1,3 @@
-
 import { Routes, Route } from "react-router-dom";
 
 // Pages
@@ -11,6 +10,7 @@ import ServiceDetails from "./pages/ServiceDetails";
 
 // Components
 import WhatsAppButton from "./components/WhatsAppButton";
+import ScrollToTop from "./components/ScrollToTop";
 
 // Layout
 import MainLayout from "./layouts/MainLayout";
@@ -18,7 +18,11 @@ import MainLayout from "./layouts/MainLayout";
 function App() {
   return (
     <>
+      {/* ================= SCROLL TO TOP ================= */}
+      <ScrollToTop />
+
       <Routes>
+        {/* ================= LAYOUT ================= */}
         <Route element={<MainLayout />}>
 
           {/* ================= HOME ================= */}

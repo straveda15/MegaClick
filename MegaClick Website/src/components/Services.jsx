@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import {
@@ -45,16 +45,26 @@ const services = [
 const Services = () => {
   const navigate = useNavigate();
 
+  // Mobile / tablet card animation
+  const [activeCard, setActiveCard] = useState(null);
+
+  const handleCardClick = (index) => {
+    // Trigger the same animation on touch devices
+    setActiveCard(index);
+
+    // Remove active state after animation
+    setTimeout(() => {
+      setActiveCard(null);
+    }, 500);
+  };
+
   return (
     <section
-      id="services"
       className="
-        relative
         w-full
-        overflow-hidden
         py-5
-        sm:py-12
-        lg:py-14
+        sm:py-8
+        lg:py-10
         bg-white
       "
     >
@@ -63,11 +73,15 @@ const Services = () => {
           max-w-[1500px]
           mx-auto
           px-4
-          sm:px-6
-          md:px-10
+          sm:px-8
           lg:px-16
           xl:px-24
-          2xl:px-32
+          pt-2
+          sm:pt-3
+          lg:pt-4
+          pb-6
+          sm:pb-8
+          lg:pb-10
         "
       >
         {/* ================= HEADING ================= */}
@@ -121,6 +135,7 @@ const Services = () => {
             "
           >
             Complete Business Solutions
+
             <br className="hidden sm:block" />
 
             <span
@@ -178,7 +193,8 @@ const Services = () => {
             return (
               <div
                 key={index}
-                className="
+                onClick={() => handleCardClick(index)}
+                className={`
                   group
                   w-full
                   bg-white
@@ -191,8 +207,16 @@ const Services = () => {
                   hover:shadow-[0_15px_40px_rgba(11,78,162,0.14)]
                   transition-all
                   duration-300
+                  cursor-pointer
+
                   lg:hover:-translate-y-2
-                "
+
+                  ${
+                    activeCard === index
+                      ? "-translate-y-2 shadow-[0_15px_40px_rgba(11,78,162,0.14)]"
+                      : ""
+                  }
+                `}
               >
                 {/* ================= IMAGE ================= */}
 
@@ -213,27 +237,39 @@ const Services = () => {
                     src={service.image}
                     alt={service.title}
                     loading="lazy"
-                    className="
+                    className={`
                       w-full
                       h-full
                       object-cover
                       transition-transform
                       duration-500
                       group-hover:scale-105
-                    "
+
+                      ${
+                        activeCard === index
+                          ? "scale-105"
+                          : ""
+                      }
+                    `}
                   />
 
                   {/* Image Overlay */}
 
                   <div
-                    className="
+                    className={`
                       absolute
                       inset-0
                       bg-black/5
                       group-hover:bg-black/10
                       transition-colors
                       duration-300
-                    "
+
+                      ${
+                        activeCard === index
+                          ? "bg-black/10"
+                          : ""
+                      }
+                    `}
                   />
                 </div>
 
@@ -278,7 +314,11 @@ const Services = () => {
                     >
                       <Icon
                         size={23}
-                        className="text-[#0B4EA2] sm:w-[26px] sm:h-[26px]"
+                        className="
+                          text-[#0B4EA2]
+                          sm:w-[26px]
+                          sm:h-[26px]
+                        "
                       />
                     </div>
 

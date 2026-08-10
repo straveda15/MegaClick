@@ -9,10 +9,7 @@ const HeroSection = () => {
   const WaveText = ({ children }) => {
     return (
       <span
-        className="
-          inline
-          break-words
-        "
+        className="inline break-words"
         aria-label={children}
       >
         {children.split("").map((char, index) => {
@@ -30,10 +27,7 @@ const HeroSection = () => {
           return (
             <span
               key={index}
-              className="
-                inline-block
-                wave-letter
-              "
+              className="inline-block wave-letter"
               style={{
                 animationDelay: `${index * 0.045}s`,
               }}
@@ -57,34 +51,67 @@ const HeroSection = () => {
           @keyframes letterWave {
             0%,
             100% {
-              transform: translateY(0);
+              transform: translate3d(0, 0, 0);
             }
 
             20% {
-              transform: translateY(-6px);
+              transform: translate3d(0, -7px, 0);
             }
 
             40% {
-              transform: translateY(0);
+              transform: translate3d(0, 0, 0);
             }
 
             60% {
-              transform: translateY(4px);
+              transform: translate3d(0, 4px, 0);
             }
 
             80% {
-              transform: translateY(0);
+              transform: translate3d(0, 0, 0);
             }
           }
 
           .wave-letter {
-            animation: letterWave 1.8s ease-in-out infinite;
+            display: inline-block;
+            animation-name: letterWave;
+            animation-duration: 1.8s;
+            animation-timing-function: ease-in-out;
+            animation-iteration-count: infinite;
+            animation-fill-mode: both;
             will-change: transform;
+            transform: translate3d(0, 0, 0);
           }
+
+          /* =====================================================
+             MOBILE
+             Keep the animation active on mobile
+          ===================================================== */
+
+          @media (max-width: 639px) {
+            .wave-letter {
+              animation-duration: 1.7s;
+              will-change: transform;
+            }
+          }
+
+          /* =====================================================
+             TABLET
+          ===================================================== */
+
+          @media (min-width: 640px) and (max-width: 1023px) {
+            .wave-letter {
+              animation-duration: 1.8s;
+            }
+          }
+
+          /* =====================================================
+             REDUCED MOTION
+          ===================================================== */
 
           @media (prefers-reduced-motion: reduce) {
             .wave-letter {
-              animation: none;
+              animation: none !important;
+              transform: none !important;
             }
           }
         `}
@@ -193,6 +220,7 @@ const HeroSection = () => {
 
             {/* =================================================
                 LEFT IMAGE
+                POSITION UNCHANGED
             ================================================= */}
 
             <div
@@ -207,16 +235,9 @@ const HeroSection = () => {
               "
             >
 
-              {/* =================================================
-                  IMAGE WRAPPER
-
-                  Shifted slightly RIGHT
-              ================================================= */}
-
               <div
                 className="
                   relative
-
                   translate-x-3
                   sm:translate-x-5
                   md:translate-x-6
@@ -377,52 +398,36 @@ const HeroSection = () => {
                   mt-4
                   sm:mt-5
                   md:mt-6
-
                   text-[27px]
                   leading-[1.15]
-
                   sm:text-3xl
                   sm:leading-tight
-
                   md:text-4xl
-
                   lg:text-[42px]
                   lg:leading-[1.15]
-
                   xl:text-[48px]
-
                   font-bold
                   tracking-tight
                   break-words
                 "
               >
 
-                {/* First Line */}
-
                 <span className="block">
                   Professional Services
                 </span>
-
-
-                {/* Second Line */}
 
                 <span
                   className="
                     block
                     mt-1
                     sm:mt-2
-
                     text-[23px]
                     leading-[1.2]
-
                     sm:text-3xl
                     md:text-4xl
-
                     lg:text-[40px]
                     lg:leading-[1.15]
-
                     xl:text-[46px]
-
                     text-green-300
                     break-words
                   "
@@ -434,7 +439,7 @@ const HeroSection = () => {
 
 
               {/* =================================================
-                  QUOTE
+                  QUOTE WITH WAVE ANIMATION
               ================================================= */}
 
               <div
@@ -442,41 +447,30 @@ const HeroSection = () => {
                   mt-5
                   sm:mt-6
                   md:mt-7
-
                   w-full
                   max-w-2xl
-
                   mx-auto
                   lg:mx-0
-
                   px-1
                   sm:px-2
-
-                  overflow-hidden
+                  overflow-visible
                 "
               >
 
                 <p
                   className="
                     text-black
-
                     text-[15px]
                     leading-7
-
                     sm:text-lg
                     sm:leading-8
-
                     md:text-xl
                     md:leading-9
-
                     lg:text-2xl
                     lg:leading-relaxed
-
                     xl:text-[25px]
-
                     italic
                     font-semibold
-
                     break-words
                   "
                 >
