@@ -1,4 +1,3 @@
-
 import React from "react";
 
 import {
@@ -11,6 +10,16 @@ import {
 import { FaWhatsapp } from "react-icons/fa";
 
 const CTA = () => {
+  // =========================================================
+  // GMAIL COMPOSE
+  // =========================================================
+
+  const gmailComposeUrl =
+    "https://mail.google.com/mail/?view=cm&fs=1" +
+    "&to=megaclickofficial@gmail.com" +
+    "&su=Business%20Service%20Inquiry" +
+    "&body=Hello%20MegaClick%2C%0A%0AI%20would%20like%20to%20know%20more%20about%20your%20business%20services.";
+
   return (
     <section className="py-10 sm:py-12 lg:py-16 bg-blue-100">
       <div
@@ -23,7 +32,9 @@ const CTA = () => {
           xl:px-24
         "
       >
-        {/* ================= SINGLE CTA CARD ================= */}
+        {/* =================================================
+            SINGLE CTA CARD
+        ================================================= */}
 
         <div
           className="
@@ -43,7 +54,6 @@ const CTA = () => {
             lg:gap-10
           "
         >
-
           {/* =================================================
               LEFT CONTENT
           ================================================= */}
@@ -57,8 +67,9 @@ const CTA = () => {
               min-w-0
             "
           >
-
-            {/* Label */}
+            {/* =================================================
+                LABEL
+            ================================================= */}
 
             <div
               className="
@@ -78,8 +89,9 @@ const CTA = () => {
               Ready to Start?
             </div>
 
-
-            {/* Heading */}
+            {/* =================================================
+                HEADING
+            ================================================= */}
 
             <h2
               className="
@@ -109,8 +121,9 @@ const CTA = () => {
               </span>
             </h2>
 
-
-            {/* Description */}
+            {/* =================================================
+                DESCRIPTION
+            ================================================= */}
 
             <p
               className="
@@ -130,8 +143,9 @@ const CTA = () => {
               business requirements smoothly.
             </p>
 
-
-            {/* Features */}
+            {/* =================================================
+                FEATURES
+            ================================================= */}
 
             <div
               className="
@@ -146,34 +160,40 @@ const CTA = () => {
                 text-gray-600
               "
             >
+              {/* Expert Assistance */}
 
               <div className="flex items-center gap-2">
                 <CheckCircle
                   size={16}
                   className="text-green-500 flex-shrink-0"
                 />
+
                 Expert Assistance
               </div>
 
+              {/* Quick Process */}
+
               <div className="flex items-center gap-2">
                 <CheckCircle
                   size={16}
                   className="text-green-500 flex-shrink-0"
                 />
+
                 Quick Process
               </div>
 
+              {/* Trusted Service */}
+
               <div className="flex items-center gap-2">
                 <CheckCircle
                   size={16}
                   className="text-green-500 flex-shrink-0"
                 />
+
                 Trusted Service
               </div>
-
             </div>
           </div>
-
 
           {/* =================================================
               VERTICAL SEPARATOR
@@ -189,7 +209,6 @@ const CTA = () => {
               min-h-[210px]
             "
           />
-
 
           {/* =================================================
               RIGHT ACTIONS
@@ -207,8 +226,9 @@ const CTA = () => {
               flex-shrink-0
             "
           >
-
-            {/* ================= CONSULTATION BUTTON ================= */}
+            {/* =================================================
+                GET CONSULTATION
+            ================================================= */}
 
             <a
               href="/contact"
@@ -243,7 +263,6 @@ const CTA = () => {
               />
             </a>
 
-
             {/* =================================================
                 CONTACT LINKS
             ================================================= */}
@@ -258,8 +277,9 @@ const CTA = () => {
                 w-full
               "
             >
-
-              {/* ================= PHONE ================= */}
+              {/* =================================================
+                  PHONE
+              ================================================= */}
 
               <a
                 href="tel:+919921611911"
@@ -278,7 +298,6 @@ const CTA = () => {
                   duration-300
                 "
               >
-
                 <Phone
                   size={18}
                   className="
@@ -290,11 +309,11 @@ const CTA = () => {
                 <span>
                   +91 9921611911
                 </span>
-
               </a>
 
-
-              {/* ================= WHATSAPP ================= */}
+              {/* =================================================
+                  WHATSAPP
+              ================================================= */}
 
               <a
                 href="https://wa.me/919921611911"
@@ -315,7 +334,6 @@ const CTA = () => {
                   duration-300
                 "
               >
-
                 <FaWhatsapp
                   size={21}
                   className="
@@ -327,48 +345,49 @@ const CTA = () => {
                 <span>
                   Chat on WhatsApp
                 </span>
-
               </a>
 
+              {/* =================================================
+                  EMAIL - GMAIL COMPOSE
+              ================================================= */}
 
-         <a
-  href="https://mail.google.com/mail/?view=cm&fs=1&to=megaclickofficial@gmail.com"
-  target="_blank"
-  rel="noopener noreferrer"
-  className="
-    inline-flex
-    items-center
-    justify-start
-    gap-3
-    w-full
-    min-w-0
-    text-[#0B4EA2]
-    font-semibold
-    text-sm
-    sm:text-base
-    hover:text-green-600
-    transition-colors
-    duration-300
-  "
->
-  <Mail
-    size={19}
-    className="
-     
-      flex-shrink-0
-      w-[20px]
-    "
-  />
+              <a
+                href={gmailComposeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Send email to MegaClick"
+                className="
+                  inline-flex
+                  items-center
+                  justify-start
+                  gap-3
+                  w-full
+                  min-w-0
+                  text-[#0B4EA2]
+                  font-semibold
+                  text-sm
+                  sm:text-base
+                  hover:text-green-600
+                  transition-colors
+                  duration-300
+                  text-left
+                  cursor-pointer
+                "
+              >
+                <Mail
+                  size={19}
+                  className="
+                    flex-shrink-0
+                    w-[20px]
+                  "
+                />
 
-  <span className="break-all">
-    megaclickofficial@gmail.com
-  </span>
-</a>
-
+                <span className="break-all">
+                  megaclickofficial@gmail.com
+                </span>
+              </a>
             </div>
-
           </div>
-
         </div>
       </div>
     </section>

@@ -49,7 +49,6 @@ const points = [
 const HowItWorks = () => {
   // =====================================================
   // MOBILE / TABLET ACTIVE STEP
-  // Desktop hover animation remains unchanged
   // =====================================================
 
   const [activeStep, setActiveStep] = useState(0);
@@ -110,7 +109,7 @@ const HowItWorks = () => {
           ================================================= */}
 
           <div className="w-full">
-            {/* Badge */}
+            {/* BADGE */}
 
             <span
               className="
@@ -137,7 +136,7 @@ const HowItWorks = () => {
               Our Process
             </span>
 
-            {/* Heading */}
+            {/* HEADING */}
 
             <h2
               className="
@@ -168,7 +167,7 @@ const HowItWorks = () => {
               </span>
             </h2>
 
-            {/* Description */}
+            {/* DESCRIPTION */}
 
             <p
               className="
@@ -190,7 +189,7 @@ const HowItWorks = () => {
               every stage ensuring accuracy and reliability.
             </p>
 
-            {/* Points */}
+            {/* POINTS */}
 
             <div
               className="
@@ -304,7 +303,7 @@ const HowItWorks = () => {
                   sm:p-5
                 "
               >
-                {/* Card Header */}
+                {/* CARD HEADER */}
 
                 <div
                   className="
@@ -357,7 +356,7 @@ const HowItWorks = () => {
                   </div>
                 </div>
 
-                {/* Description */}
+                {/* DESCRIPTION */}
 
                 <p
                   className="
@@ -371,14 +370,13 @@ const HowItWorks = () => {
                   and complete transparency.
                 </p>
 
-                {/* Features */}
+                {/* FEATURES */}
 
                 <div
                   className="
                     mt-5
                     grid
                     grid-cols-1
-                    xs:grid-cols-2
                     sm:grid-cols-2
                     gap-3
                   "
@@ -487,28 +485,10 @@ const HowItWorks = () => {
           <div className="relative">
 
             {/* =================================================
-                MOBILE / TABLET VERTICAL LINE
-            ================================================= */}
+                DESKTOP HORIZONTAL LINE ONLY
 
-            <div
-              className="
-                lg:hidden
-                absolute
-                top-[32px]
-                bottom-[32px]
-                left-1/2
-                -translate-x-1/2
-                w-[2px]
-                bg-gradient-to-b
-                from-blue-400
-                via-blue-300
-                to-green-400
-                z-0
-              "
-            />
-
-            {/* =================================================
-                DESKTOP HORIZONTAL LINE
+                Mobile + Tablet:
+                NO CONNECTING LINE
             ================================================= */}
 
             <div
@@ -548,7 +528,7 @@ const HowItWorks = () => {
               {steps.map((item, index) => {
                 const Icon = item.icon;
 
-                // Automatic animation only below lg
+                // Automatic animation below desktop
                 const isMobileActive = activeStep === index;
 
                 return (
@@ -595,7 +575,7 @@ const HowItWorks = () => {
                         }
                       `}
                     >
-                      {/* Animated Background */}
+                      {/* ANIMATED BACKGROUND */}
 
                       <div
                         className={`
@@ -618,7 +598,7 @@ const HowItWorks = () => {
                         `}
                       />
 
-                      {/* Icon */}
+                      {/* ICON */}
 
                       <Icon
                         size={26}
