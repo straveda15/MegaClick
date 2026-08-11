@@ -2,18 +2,10 @@ import React from "react";
 import { useParams, Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 
-// =========================================
-// DATA
-// =========================================
-
+// Data
 import serviceDetailsData from "../data/serviceDetailsData";
-import otherServices from "../data/Services/otherServices";
-import businessServices from "../data/Services/businessServices";
 
-// =========================================
-// COMPONENTS
-// =========================================
-
+// Components
 import ServiceHero from "../components/ServiceDetails/ServiceHero";
 import ServiceOverview from "../components/ServiceDetails/ServiceOverview";
 import HowItWorks from "../components/ServiceDetails/HowItWorks";
@@ -26,20 +18,10 @@ const ServiceDetails = () => {
   const { slug } = useParams();
 
   // =========================================
-  // COMBINE ALL SERVICE DETAILS
-  // =========================================
-
-  const allServiceDetails = [
-    ...serviceDetailsData,
-    ...otherServices,
-    ...businessServices,
-  ];
-
-  // =========================================
   // FIND SERVICE USING URL SLUG
   // =========================================
 
-  const service = allServiceDetails.find(
+  const service = serviceDetailsData.find(
     (item) => item.slug === slug
   );
 
@@ -128,47 +110,47 @@ const ServiceDetails = () => {
   return (
     <div className="w-full overflow-hidden">
 
-      {/* =========================================
+      {/* =================================
           SERVICE HERO
-      ========================================= */}
+      ================================= */}
 
       <ServiceHero service={service} />
 
-      {/* =========================================
+      {/* =================================
           SERVICE OVERVIEW
-      ========================================= */}
+      ================================= */}
 
       <ServiceOverview service={service} />
 
-      {/* =========================================
+      {/* =================================
           HOW IT WORKS
-      ========================================= */}
+      ================================= */}
 
       <HowItWorks service={service} />
 
-      {/* =========================================
+      {/* =================================
           BENEFITS
-      ========================================= */}
+      ================================= */}
 
       <ServiceBenefits service={service} />
 
-      {/* =========================================
+      {/* =================================
           NORMAL FAQ
-      ========================================= */}
+      ================================= */}
 
       <ServiceFAQ service={service} />
 
-      {/* =========================================
+      {/* =================================
           UDYAM / MSME FAQ
-      ========================================= */}
+      ================================= */}
 
       {isUdyamService && (
         <UdyamRegistrationFAQ />
       )}
 
-      {/* =========================================
+      {/* =================================
           TESTIMONIALS
-      ========================================= */}
+      ================================= */}
 
       <Testimonials />
 
