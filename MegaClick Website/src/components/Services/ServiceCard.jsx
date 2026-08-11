@@ -1,285 +1,166 @@
 import React from "react";
 import { Link } from "react-router-dom";
-
-
+import { ArrowUpRight } from "lucide-react";
 
 const ServiceCard = ({ service }) => {
-
+  if (!service) return null;
 
   return (
-
     <Link
       to={`/services/${service.slug}`}
-      className="
-      group
-      block
-      h-full
-      "
+      className="group block h-full"
     >
-
-
       <div
-
-      className="
-      relative
-      overflow-hidden
-
-      bg-white
-
-      rounded-3xl
-
-      p-6
-
-      shadow-[0_10px_35px_rgba(0,0,0,0.08)]
-
-      hover:shadow-[0_20px_50px_rgba(11,78,162,0.18)]
-
-      hover:-translate-y-2
-
-      transition-all
-      duration-500
-
-      h-full
-      "
-
+        className="
+          relative
+          h-full
+          overflow-hidden
+          rounded-2xl
+          border
+          border-gray-200
+          bg-white
+          p-5
+          sm:p-6
+          shadow-[0_8px_30px_rgba(0,0,0,0.06)]
+          transition-all
+          duration-300
+          hover:-translate-y-1.5
+          hover:border-[#0B4EA2]/20
+          hover:shadow-[0_16px_40px_rgba(11,78,162,0.12)]
+        "
       >
+        {/* ================= TOP ACCENT ================= */}
 
-
-
-      {/* Floating Glow */}
-
-
-      <div
-
-      className="
-      absolute
-      -top-10
-      -right-10
-
-      w-32
-      h-32
-
-      rounded-full
-
-      bg-blue-100/50
-
-      blur-3xl
-
-      group-hover:bg-green-100/60
-
-      transition
-
-      "
-
-      />
-
-
-
-
-
-
-      {/* Icon Box */}
-
-
-      <div
-
-      className="
-      relative
-      w-16
-      h-16
-
-      rounded-2xl
-
-      bg-blue-50
-
-      flex
-      items-center
-      justify-center
-
-      mb-5
-
-      group-hover:bg-[#0B4EA2]
-
-      transition-all
-      duration-300
-
-      "
-
-      >
-
-
-      {
-        service.icon ? (
-
-          <img
-
-          src={service.icon}
-
-          alt={service.title}
-
+        <div
           className="
-          w-9
-          h-9
-          object-contain
-
-          group-hover:scale-110
-
-          transition
-
+            absolute
+            left-0
+            top-0
+            h-1
+            w-0
+            bg-gradient-to-r
+            from-[#0B4EA2]
+            to-[#22A447]
+            transition-all
+            duration-300
+            group-hover:w-full
           "
+        />
 
-          />
+        {/* ================= ICON ================= */}
 
-        ) : (
-
-          <span
-          className="
-          text-3xl
-          group-hover:scale-110
-          transition
-          "
+        <div className="flex items-start justify-between">
+          <div
+            className="
+              flex
+              h-14
+              w-14
+              shrink-0
+              items-center
+              justify-center
+              rounded-2xl
+              bg-[#EAF3FF]
+              text-2xl
+              transition-all
+              duration-300
+              group-hover:bg-[#0B4EA2]
+              group-hover:scale-105
+            "
           >
-            📋
+            {service.emoji || "📋"}
+          </div>
+
+          {/* ARROW */}
+
+          <div
+            className="
+              flex
+              h-9
+              w-9
+              items-center
+              justify-center
+              rounded-full
+              border
+              border-gray-200
+              text-gray-400
+              transition-all
+              duration-300
+              group-hover:border-[#0B4EA2]
+              group-hover:bg-[#0B4EA2]
+              group-hover:text-white
+            "
+          >
+            <ArrowUpRight size={17} />
+          </div>
+        </div>
+
+        {/* ================= TITLE ================= */}
+
+        <h3
+          className="
+            mt-5
+            text-base
+            sm:text-lg
+            font-bold
+            leading-6
+            text-gray-900
+            transition-colors
+            duration-300
+            group-hover:text-[#0B4EA2]
+          "
+        >
+          {service.title}
+        </h3>
+
+        {/* ================= SMALL DESCRIPTION ================= */}
+
+        <p
+          className="
+            mt-2
+            text-sm
+            leading-6
+            text-gray-500
+          "
+        >
+          {service.description ||
+            "Get professional assistance with complete support."}
+        </p>
+
+        {/* ================= BOTTOM ================= */}
+
+        <div className="mt-5 flex items-center justify-between">
+          <span
+            className="
+              inline-flex
+              items-center
+              rounded-full
+              bg-green-50
+              px-3
+              py-1.5
+              text-[11px]
+              font-semibold
+              text-green-700
+            "
+          >
+            Professional Support
           </span>
 
-        )
-
-      }
-
-
+          <span
+            className="
+              text-xs
+              font-semibold
+              text-gray-400
+              transition-colors
+              duration-300
+              group-hover:text-[#0B4EA2]
+            "
+          >
+            View Details
+          </span>
+        </div>
       </div>
-
-
-
-
-
-
-
-
-      {/* Title */}
-
-
-      <h3
-
-      className="
-      relative
-
-      text-lg
-
-      font-bold
-
-      text-gray-900
-
-      group-hover:text-[#0B4EA2]
-
-      transition
-
-      "
-
-      >
-
-      {service.title}
-
-
-      </h3>
-
-
-
-
-
-
-
-      {/* Description */}
-
-
-      <p
-
-      className="
-      relative
-
-      mt-2
-
-      text-sm
-
-      text-gray-500
-
-      leading-6
-
-      line-clamp-2
-
-      "
-
-      >
-
-      {
-        service.description ||
-        "Get professional assistance with complete support."
-      }
-
-
-      </p>
-
-
-
-
-
-
-
-
-
-      {/* Bottom Tag */}
-
-
-      <div
-
-      className="
-      relative
-
-      mt-5
-
-      inline-flex
-
-      items-center
-
-      px-4
-
-      py-1.5
-
-      rounded-full
-
-      bg-green-50
-
-      text-green-700
-
-      text-xs
-
-      font-semibold
-
-      "
-
-      >
-
-      {service.category}
-
-
-      </div>
-
-
-
-
-
-
-      </div>
-
-
-
     </Link>
-
-
   );
-
-
 };
-
 
 export default ServiceCard;

@@ -1,5 +1,5 @@
-import React from "react";
 
+import React from "react";
 import {
   Quote,
   Star,
@@ -7,11 +7,6 @@ import {
 } from "lucide-react";
 
 import clientImg from "../assets/client.png";
-
-import client1 from "../assets/team1.jpg";
-import client2 from "../assets/team2.jpg";
-import client3 from "../assets/team3.jpg";
-import client4 from "../assets/team4.jpg";
 
 const testimonials = [
   {
@@ -46,137 +41,83 @@ const testimonials = [
 
 const Testimonials = () => {
   return (
-    <section
-      className="
-        relative
-        overflow-hidden
-        py-5
-        sm:py-8
-        lg:py-10
-        bg-white
-      "
-    >
-      {/* ================= BACKGROUND ================= */}
+    <section className="w-full bg-white">
+      {/* =================================
+          MAIN CONTAINER
+      ================================= */}
 
       <div
         className="
-          absolute
-          -top-24
-          -left-24
-          h-50
-          w-50
-          rounded-full
-          bg-blue-200
-          blur-3xl
-          opacity-30
-          pointer-events-none
+          max-w-[1500px]
+          mx-auto
+          px-4
+          sm:px-8
+          lg:px-16
+          xl:px-24
+          pt-8
+          sm:pt-10
+          lg:pt-12
+          pb-10
+          sm:pb-12
+          lg:pb-16
         "
-      />
-
-      <div
-        className="
-          absolute
-          -bottom-24
-          -right-24
-          h-80
-          w-80
-          rounded-full
-          bg-green-200
-          blur-3xl
-          opacity-30
-          pointer-events-none
-        "
-      />
-
-           <div
-  className="
-    max-w-[1500px]
-    mx-auto
-    px-4
-    sm:px-8
-    lg:px-16
-    xl:px-24
-    pt-2
-    sm:pt-3
-    lg:pt-4
-    pb-3
-    sm:pb-6
-    lg:pb-8
-  "
->
-        {/* =====================================================
+      >
+        {/* =================================
             HEADER
-        ====================================================== */}
+        ================================= */}
 
         <div
           className="
             grid
             grid-cols-1
-            lg:grid-cols-2
-            gap-7
-            sm:gap-10
+            lg:grid-cols-[1fr_auto]
+            gap-8
+            lg:gap-12
             items-center
-            mb-8
+            mb-10
             sm:mb-12
             lg:mb-14
           "
         >
-          {/* ================= LEFT ================= */}
+          {/* =========================
+              LEFT CONTENT
+          ========================== */}
 
           <div>
-            {/* BADGE */}
+            {/* SMALL LABEL */}
 
-            <span
-              className="
-                inline-flex
-                items-center
-                gap-2
-                bg-[#0B4EA2]
-                text-white
-                px-3
-                sm:px-5
-                py-1.5
-                sm:py-2
-                rounded-full
-                text-xs
-                sm:text-sm
-                font-semibold
-                shadow-md
-                mb-4
-                sm:mb-5
-              "
-            >
-              <MessageSquareQuote
-                size={15}
-                className="text-green-400"
-              />
+            <div className="flex items-center gap-3 mb-3">
+              <span className="w-8 h-[2px] bg-[#0B4EA2]" />
 
-              Client Testimonials
-            </span>
+              <p
+                className="
+                  text-xs
+                  sm:text-sm
+                  font-semibold
+                  uppercase
+                  tracking-[0.15em]
+                  text-[#0B4EA2]
+                "
+              >
+                Client Testimonials
+              </p>
+            </div>
 
             {/* HEADING */}
 
             <h2
               className="
-                text-3xl
-                sm:text-4xl
-                lg:text-5xl
+                text-2xl
+                sm:text-3xl
+                lg:text-4xl
                 font-bold
+                text-gray-900
                 leading-tight
+                tracking-tight
               "
             >
               What Our Clients
-
-              <span
-                className="
-                  block
-                  bg-gradient-to-r
-                  from-[#0B4EA2]
-                  to-green-500
-                  bg-clip-text
-                  text-transparent
-                "
-              >
+              <span className="block text-[#0B4EA2]">
                 Say About MegaClick
               </span>
             </h2>
@@ -186,79 +127,99 @@ const Testimonials = () => {
             <p
               className="
                 mt-4
-                sm:mt-5
-                max-w-xl
+                max-w-2xl
                 text-sm
                 sm:text-base
                 text-gray-600
-                leading-6
-                sm:leading-7
-                text-left
-                sm:text-justify
+                leading-7
               "
             >
-              Thousands of businesses trust
+              Thousands of businesses trust{" "}
               <span className="font-semibold">
-                <span className="text-[#0B4EA2]"> Mega</span>
+                <span className="text-[#0B4EA2]">Mega</span>
                 <span className="text-green-500">Click</span>
-              </span>
-              {" "}
-              for reliable registrations, transparent guidance and
-              professional support. We simplify every business process
-              with experienced experts and customer-first service.
+              </span>{" "}
+              for reliable registrations, transparent guidance
+              and professional support. We simplify every business
+              process with experienced experts and customer-first
+              service.
             </p>
           </div>
 
-          {/* ================= RIGHT IMAGE ================= */}
+          {/* =========================
+              CLIENT IMAGE
+          ========================== */}
 
-          <div
-            className="
-              flex
-              justify-center
-              lg:justify-center
-            "
-          >
+          <div className="flex justify-center lg:justify-end">
             <div
               className="
-                rounded-2xl
-                sm:rounded-3xl
-                border-2
-                border-[#0B4EA2]
-                p-2
-                sm:p-3
-                shadow-lg
+                relative
+                rounded-3xl
+                border
+                border-[#0B4EA2]/20
+                bg-blue-50
+                p-3
+                sm:p-4
               "
             >
               <img
                 src={clientImg}
-                alt="Happy Clients"
+                alt="Happy MegaClick Clients"
                 className="
-                  w-[180px]
-                  sm:w-[220px]
-                  lg:w-[280px]
+                  w-[170px]
+                  sm:w-[210px]
+                  lg:w-[240px]
                   object-contain
                 "
               />
+
+              {/* RATING BADGE */}
+
+              <div
+                className="
+                  absolute
+                  -bottom-4
+                  left-1/2
+                  -translate-x-1/2
+                  bg-white
+                  border
+                  border-gray-200
+                  rounded-xl
+                  shadow-md
+                  px-4
+                  py-2
+                  whitespace-nowrap
+                "
+              >
+                <div className="flex items-center justify-center gap-1">
+                  <span className="text-sm font-bold text-gray-900">
+                    4.9
+                  </span>
+
+                  <Star
+                    size={14}
+                    fill="currentColor"
+                    className="text-yellow-400"
+                  />
+                </div>
+
+                <p className="text-[10px] text-gray-500 text-center">
+                  Google Rating
+                </p>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* =====================================================
-            MOVING TESTIMONIALS
-        ====================================================== */}
+        {/* =================================
+            TESTIMONIAL SLIDER
+        ================================= */}
 
-        <div
-          className="
-            relative
-            overflow-hidden
-            w-full
-          "
-        >
+        <div className="relative overflow-hidden w-full">
           <div
             className="
               flex
-              gap-4
-              sm:gap-5
+              gap-5
               lg:gap-6
               w-max
               animate-testimonials
@@ -267,72 +228,61 @@ const Testimonials = () => {
           >
             {[...testimonials, ...testimonials].map(
               (item, index) => (
-                <div
+                <article
                   key={index}
                   className="
+                    relative
                     w-[calc(100vw-2rem)]
-                    sm:w-[330px]
+                    sm:w-[320px]
                     md:w-[340px]
                     lg:w-[350px]
-                    max-w-[350px]
                     flex-shrink-0
                     bg-white
-                    rounded-xl
-                    sm:rounded-2xl
+                    rounded-2xl
                     border
-                    border-blue-300
-                    shadow-md
-                    hover:shadow-xl
-                    hover:-translate-y-1
+                    border-gray-200
+                    px-5
+                    py-6
+                    sm:p-6
+                    shadow-[0_6px_25px_rgba(0,0,0,0.05)]
                     transition-all
                     duration-300
-                    px-4
-                    py-5
-                    sm:p-5
-                    lg:p-6
-                    flex
-                    flex-col
-                    relative
+                    hover:-translate-y-1
+                    hover:border-blue-200
+                    hover:shadow-[0_12px_35px_rgba(11,78,162,0.10)]
                   "
                 >
-                  {/* TOP BORDER */}
+                  {/* TOP ACCENT */}
 
                   <div
                     className="
                       absolute
                       top-0
-                      left-0
-                      w-full
-                      h-1
-                      rounded-t-xl
-                      sm:rounded-t-2xl
-                      bg-gradient-to-r
-                      from-[#0B4EA2]
-                      to-green-500
+                      left-6
+                      right-6
+                      h-[2px]
+                      bg-[#0B4EA2]
+                      rounded-full
                     "
                   />
 
-                  {/* QUOTE ICON */}
+                  {/* QUOTE */}
 
                   <div
                     className="
-                      w-9
-                      h-9
-                      sm:w-11
-                      sm:h-11
-                      rounded-lg
-                      sm:rounded-xl
-                      bg-[#0B4EA2]
+                      w-10
+                      h-10
+                      rounded-xl
+                      bg-blue-50
                       flex
                       items-center
                       justify-center
-                      mb-4
-                      sm:mb-5
+                      mb-5
                     "
                   >
                     <Quote
-                      size={18}
-                      className="text-white sm:w-5 sm:h-5"
+                      size={20}
+                      className="text-[#0B4EA2]"
                     />
                   </div>
 
@@ -342,13 +292,9 @@ const Testimonials = () => {
                     className="
                       text-sm
                       sm:text-[15px]
-                      leading-6
-                      sm:leading-7
-                      text-gray-700
-                      text-left
-                      sm:text-justify
-                      min-h-[120px]
-                      sm:min-h-[130px]
+                      text-gray-600
+                      leading-7
+                      min-h-[126px]
                     "
                   >
                     "{item.review}"
@@ -356,39 +302,55 @@ const Testimonials = () => {
 
                   {/* STARS */}
 
-                  <div className="flex gap-1 mt-4 sm:mt-5">
+                  <div className="flex items-center gap-1 mt-5">
                     {[1, 2, 3, 4, 5].map((star) => (
                       <Star
                         key={star}
                         size={15}
                         fill="currentColor"
-                        className="text-green-500"
+                        className="text-yellow-400"
                       />
                     ))}
+
+                    <span className="ml-2 text-xs text-gray-500">
+                      5.0
+                    </span>
                   </div>
 
                   {/* DIVIDER */}
 
-                  <div className="my-4 sm:my-5 h-px bg-gray-200" />
+                  <div className="my-5 h-px bg-gray-100" />
 
-                  {/* CLIENT DETAILS */}
+                  {/* CLIENT */}
 
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span
-                        className="
-                          flex-shrink-0
-                          w-2
-                          h-2
-                          rounded-full
-                          bg-[#0B4EA2]
-                        "
-                      />
+                  <div className="flex items-start gap-3">
+                    {/* AVATAR */}
 
+                    <div
+                      className="
+                        w-10
+                        h-10
+                        shrink-0
+                        rounded-full
+                        bg-[#0B4EA2]
+                        text-white
+                        flex
+                        items-center
+                        justify-center
+                        font-bold
+                        text-sm
+                      "
+                    >
+                      {item.name.charAt(0)}
+                    </div>
+
+                    {/* DETAILS */}
+
+                    <div className="min-w-0">
                       <h3
                         className="
-                          text-base
-                          sm:text-lg
+                          text-sm
+                          sm:text-base
                           font-bold
                           text-gray-900
                           truncate
@@ -396,31 +358,32 @@ const Testimonials = () => {
                       >
                         {item.name}
                       </h3>
+
+                      <p
+                        className="
+                          mt-1
+                          text-xs
+                          sm:text-sm
+                          font-medium
+                          text-[#0B4EA2]
+                          leading-5
+                        "
+                      >
+                        {item.service}
+                      </p>
+
+                      <p
+                        className="
+                          mt-0.5
+                          text-xs
+                          text-gray-500
+                        "
+                      >
+                        {item.location}
+                      </p>
                     </div>
-
-                    <p
-                      className="
-                        text-xs
-                        sm:text-sm
-                        font-medium
-                        text-[#0B4EA2]
-                        leading-5
-                      "
-                    >
-                      {item.service}
-                    </p>
-
-                    <p
-                      className="
-                        text-xs
-                        sm:text-sm
-                        text-gray-500
-                      "
-                    >
-                      {item.location}
-                    </p>
                   </div>
-                </div>
+                </article>
               )
             )}
           </div>

@@ -145,42 +145,50 @@ const WhyChoose = () => {
 
           <div
             className="
-              text-center
-              lg:text-left
+              text-left
               max-w-xl
-              mx-auto
+              mx-0
               lg:mx-0
+              w-full
             "
           >
             {/* ================= BADGE ================= */}
 
-            <span
+            <div
               className="
-                relative
-                -top-5
-                sm:-top-6
-                lg:-top-8
-                inline-flex
-                items-center
-                gap-2
-                bg-[#0B4EA2]
-                text-white
-                px-4
-                py-2
-                rounded-full
-                text-[11px]
-                sm:text-xs
-                font-semibold
-                tracking-wide
+                flex
+                justify-start
+                w-full
               "
             >
-              <CheckCircle
-                size={15}
-                className="text-green-300"
-              />
+              <span
+                className="
+                  relative
+                  -top-5
+                  sm:-top-6
+                  lg:-top-8
+                  inline-flex
+                  items-center
+                  gap-2
+                  bg-[#0B4EA2]
+                  text-white
+                  px-4
+                  py-2
+                  rounded-full
+                  text-[11px]
+                  sm:text-xs
+                  font-semibold
+                  tracking-wide
+                "
+              >
+                <CheckCircle
+                  size={15}
+                  className="text-green-300"
+                />
 
-              WHY CHOOSE US
-            </span>
+                WHY CHOOSE US
+              </span>
+            </div>
 
             {/* ================= HEADING ================= */}
 
@@ -195,7 +203,7 @@ const WhyChoose = () => {
               "
             >
               Your Trusted
-              <br className="hidden sm:block" />
+              <br />
 
               <span
                 className="
@@ -221,7 +229,8 @@ const WhyChoose = () => {
                 text-gray-700
                 leading-6
                 sm:leading-7
-                max-w-4xl
+                max-w-xl
+                text-left
               "
             >
               MegaClick brings together trusted professionals, complete
@@ -238,8 +247,7 @@ const WhyChoose = () => {
                 mt-8
                 sm:mt-10
                 flex
-                justify-center
-                lg:justify-start
+                justify-start
                 gap-8
                 sm:gap-12
                 lg:gap-10
@@ -512,11 +520,14 @@ const Hexagon = ({ item, mobile = false }) => {
         text-white
         overflow-hidden
         select-none
-
         transition-all
         duration-300
 
-        ${mobile ? "animate-hexagon-mobile" : "lg:hover:scale-[1.03]"}
+        ${
+          mobile
+            ? "animate-hexagon-mobile"
+            : "lg:hover:scale-[1.03]"
+        }
 
         ${
           mobile
@@ -558,9 +569,7 @@ const Hexagon = ({ item, mobile = false }) => {
         animationDelay: mobile ? item.delay : "0s",
       }}
     >
-      {/* =================================================
-          CONTENT
-      ================================================== */}
+      {/* CONTENT */}
 
       <div
         className="
