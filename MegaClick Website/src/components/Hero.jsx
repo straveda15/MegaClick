@@ -56,6 +56,7 @@ const Hero = () => {
               space-y-5
               sm:space-y-6
               md:space-y-7
+              w-full
             "
           >
             {/* ================= BADGE ================= */}
@@ -95,7 +96,6 @@ const Hero = () => {
               "
             >
               Grow Your Business
-
               <br />
 
               <span
@@ -288,19 +288,26 @@ const Hero = () => {
               items-center
               justify-center
               w-full
-              min-h-[380px]
+              min-h-[390px]
               sm:min-h-[420px]
               lg:min-h-[450px]
               xl:min-h-[520px]
-              mt-4
+              mt-5
+              sm:mt-6
               lg:mt-0
+              overflow-visible
             "
           >
+            {/* =================================================
+                FLOATING UI CONTAINER
+            ================================================== */}
+
             <div
               className="
                 relative
+                mx-auto
                 w-[320px]
-                h-[340px]
+                h-[360px]
 
                 sm:w-[390px]
                 sm:h-[390px]
@@ -319,26 +326,27 @@ const Hero = () => {
                   CENTER MAIN CARD
               ================================================== */}
 
-             <div
-  className="
-    absolute
-    left-1/2
-    -translate-x-1/2
-    top-[70px]
-    sm:top-[75px]
-    md:top-[80px]
-    lg:top-[85px]
-    xl:top-[90px]
-    z-10
-    w-[270px]
-    sm:w-[330px]
-    md:w-[360px]
-    lg:w-[350px]
-    xl:w-[490px]
-  "
->
-                {/* ANIMATION WRAPPER */}
+              <div
+                className="
+                  absolute
+                  left-1/2
+                  -translate-x-1/2
 
+                  top-[65px]
+                  sm:top-[75px]
+                  md:top-[80px]
+                  lg:top-[85px]
+                  xl:top-[90px]
+
+                  z-10
+
+                  w-[255px]
+                  sm:w-[330px]
+                  md:w-[360px]
+                  lg:w-[350px]
+                  xl:w-[490px]
+                "
+              >
                 <div className="hero-float-main">
                   <div
                     className="
@@ -579,28 +587,34 @@ const Hero = () => {
                   LEFT SMALL CARD - 15000+
               ================================================== */}
 
-             <div
-  className="
-    absolute
-    left-[-20px]
-    top-[-5px]
-    sm:left-[-15px]
-    sm:top-[0px]
-    md:left-[-10px]
-    md:top-[5px]
-    lg:left-[-15px]
-    lg:top-[5px]
-    xl:left-[-20px]
-    xl:top-[10px]
-    z-20
-    w-[115px]
-    sm:w-[140px]
-    md:w-[150px]
-    xl:w-[175px]
-  "
->
-                {/* ANIMATION WRAPPER */}
+              <div
+                className="
+                  absolute
 
+                  left-[0px]
+                  top-[5px]
+
+                  sm:left-[-15px]
+                  sm:top-0
+
+                  md:left-[-35px]
+                  md:top-5
+
+                  lg:left-[-75px]
+                  lg:top-5
+
+                  xl:left-[-85px]
+                  xl:top-10
+
+                  z-20
+
+                  w-[105px]
+                  sm:w-[140px]
+                  md:w-[150px]
+                  lg:w-[155px]
+                  xl:w-[175px]
+                "
+              >
                 <div className="hero-float-left">
                   <div
                     className="
@@ -610,7 +624,7 @@ const Hero = () => {
                       border
                       border-blue-100
                       shadow-[0_15px_35px_rgba(11,78,162,0.12)]
-                      p-3
+                      p-2.5
                       sm:p-4
                       xl:p-5
                     "
@@ -625,8 +639,8 @@ const Hero = () => {
                     >
                       <div
                         className="
-                          w-8
-                          h-8
+                          w-7
+                          h-7
                           sm:w-9
                           sm:h-9
                           xl:w-10
@@ -641,7 +655,7 @@ const Hero = () => {
                         "
                       >
                         <Users
-                          size={18}
+                          size={17}
                           className="
                             text-[#0B4EA2]
                             sm:w-[22px]
@@ -654,8 +668,7 @@ const Hero = () => {
                         <h4
                           className="
                             font-bold
-                            text-gray-900
-                            text-xs
+                            text-[11px]
                             sm:text-sm
                           "
                         >
@@ -664,7 +677,7 @@ const Hero = () => {
 
                         <p
                           className="
-                            text-[9px]
+                            text-[8px]
                             sm:text-[11px]
                             text-gray-500
                           "
@@ -684,23 +697,29 @@ const Hero = () => {
               <div
                 className="
                   absolute
-                  right-[-5px]
 
-                  bottom-[35px]
+                  right-[0px]
+                  bottom-[10px]
+
+                  sm:right-[-5px]
                   sm:bottom-[60px]
+
+                  md:right-0
                   md:bottom-[70px]
+
+                  lg:right-[-5px]
                   lg:bottom-[80px]
+
+                  xl:right-[-5px]
                   xl:bottom-[90px]
 
                   z-20
 
-                  w-[120px]
+                  w-[110px]
                   sm:w-[150px]
                   xl:w-[180px]
                 "
               >
-                {/* ANIMATION WRAPPER */}
-
                 <div className="hero-float-right">
                   <div
                     className="
@@ -709,7 +728,7 @@ const Hero = () => {
                       border
                       border-blue-100
                       shadow-[0_12px_25px_rgba(11,78,162,0.12)]
-                      p-2.5
+                      p-2
                       sm:p-3
                       xl:p-4
                     "
@@ -750,7 +769,7 @@ const Hero = () => {
                         <h4
                           className="
                             font-bold
-                            text-xs
+                            text-[11px]
                             sm:text-sm
                             text-gray-900
                           "
@@ -760,7 +779,7 @@ const Hero = () => {
 
                         <p
                           className="
-                            text-[9px]
+                            text-[8px]
                             sm:text-[11px]
                             text-gray-500
                           "
@@ -782,20 +801,23 @@ const Hero = () => {
                   absolute
 
                   right-[0px]
-                  sm:right-[15px]
-                  md:right-[20px]
-                  xl:right-[50px]
-
                   top-[5px]
+
+                  sm:right-[15px]
                   sm:top-[20px]
+
+                  md:right-[20px]
                   md:top-[25px]
+
+                  lg:right-[20px]
+                  lg:top-[25px]
+
+                  xl:right-[50px]
                   xl:top-[35px]
 
                   z-20
                 "
               >
-                {/* ANIMATION WRAPPER */}
-
                 <div className="hero-float-status">
                   <div
                     className="
@@ -807,12 +829,12 @@ const Hero = () => {
                       border
                       border-blue-200
                       rounded-full
-                      px-2.5
+                      px-2
                       sm:px-4
                       xl:px-5
-                      py-1.5
+                      py-1
                       sm:py-2
-                      text-[9px]
+                      text-[8px]
                       sm:text-xs
                       xl:text-sm
                       font-bold

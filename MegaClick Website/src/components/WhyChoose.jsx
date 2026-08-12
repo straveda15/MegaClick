@@ -309,7 +309,7 @@ const WhyChoose = () => {
 
               {/* SERVICES */}
 
-              <div className="hidden sm:block">
+              <div>
                 <h3
                   className="
                     text-3xl
@@ -525,7 +525,7 @@ const Hexagon = ({ item, mobile = false }) => {
 
         ${
           mobile
-            ? "animate-hexagon-mobile"
+            ? ""
             : "lg:hover:scale-[1.03]"
         }
 
@@ -566,7 +566,7 @@ const Hexagon = ({ item, mobile = false }) => {
         clipPath:
           "polygon(25% 0%, 75% 0%, 100% 25%, 100% 75%, 75% 100%, 25% 100%, 0% 75%, 0% 25%)",
 
-        animationDelay: mobile ? item.delay : "0s",
+        animationDelay: "0s",
       }}
     >
       {/* CONTENT */}

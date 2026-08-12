@@ -136,8 +136,8 @@ const AssociateWithUs = () => {
                   sm:px-5
                   py-2
                   rounded-full
-                  bg-green-100
-                  text-green-700
+                  bg-blue-800
+                  text-white
                   font-semibold
                   text-xs
                   sm:text-sm

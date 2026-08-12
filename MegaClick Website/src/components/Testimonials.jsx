@@ -1,10 +1,5 @@
-
 import React from "react";
-import {
-  Quote,
-  Star,
-  MessageSquareQuote,
-} from "lucide-react";
+import { Quote, Star } from "lucide-react";
 
 import clientImg from "../assets/client.png";
 
@@ -42,6 +37,28 @@ const testimonials = [
 const Testimonials = () => {
   return (
     <section className="w-full bg-white">
+      {/* =================================================
+          MOBILE ANIMATION FIX
+      ================================================= */}
+
+      <style>
+        {`
+          @media (max-width: 639px) {
+            .testimonials-track {
+              animation-play-state: running !important;
+            }
+
+            .testimonials-track:hover {
+              animation-play-state: running !important;
+            }
+
+            .testimonials-track:active {
+              animation-play-state: running !important;
+            }
+          }
+        `}
+      </style>
+
       {/* =================================
           MAIN CONTAINER
       ================================= */}
@@ -84,40 +101,33 @@ const Testimonials = () => {
           ========================== */}
 
           <div>
-            {/* SMALL LABEL */}
-
-            <div className="flex items-center gap-3 mb-3">
-              <span className="w-8 h-[2px] bg-[#0B4EA2]" />
-
-              <p
-                className="
-                  text-xs
-                  sm:text-sm
-                  font-semibold
-                  uppercase
-                  tracking-[0.15em]
-                  text-[#0B4EA2]
-                "
-              >
-                Client Testimonials
-              </p>
-            </div>
-
             {/* HEADING */}
 
             <h2
               className="
-                text-2xl
-                sm:text-3xl
-                lg:text-4xl
+                mt-4
+                sm:mt-5
+                text-3xl
+                sm:text-4xl
+                lg:text-5xl
                 font-bold
-                text-gray-900
                 leading-tight
-                tracking-tight
+                text-gray-900
               "
             >
               What Our Clients
-              <span className="block text-[#0B4EA2]">
+
+              <br />
+
+              <span
+                className="
+                  bg-gradient-to-r
+                  from-blue-600
+                  to-green-500
+                  bg-clip-text
+                  text-transparent
+                "
+              >
                 Say About MegaClick
               </span>
             </h2>
@@ -147,10 +157,10 @@ const Testimonials = () => {
           </div>
 
           {/* =========================
-              CLIENT IMAGE
+              CLIENT IMAGE - RIGHT
           ========================== */}
 
-          <div className="flex justify-center lg:justify-end">
+          <div className="flex justify-center lg:justify-center-safe">
             <div
               className="
                 relative
@@ -172,41 +182,6 @@ const Testimonials = () => {
                   object-contain
                 "
               />
-
-              {/* RATING BADGE */}
-
-              <div
-                className="
-                  absolute
-                  -bottom-4
-                  left-1/2
-                  -translate-x-1/2
-                  bg-white
-                  border
-                  border-gray-200
-                  rounded-xl
-                  shadow-md
-                  px-4
-                  py-2
-                  whitespace-nowrap
-                "
-              >
-                <div className="flex items-center justify-center gap-1">
-                  <span className="text-sm font-bold text-gray-900">
-                    4.9
-                  </span>
-
-                  <Star
-                    size={14}
-                    fill="currentColor"
-                    className="text-yellow-400"
-                  />
-                </div>
-
-                <p className="text-[10px] text-gray-500 text-center">
-                  Google Rating
-                </p>
-              </div>
             </div>
           </div>
         </div>
@@ -218,6 +193,7 @@ const Testimonials = () => {
         <div className="relative overflow-hidden w-full">
           <div
             className="
+              testimonials-track
               flex
               gap-5
               lg:gap-6
@@ -308,13 +284,9 @@ const Testimonials = () => {
                         key={star}
                         size={15}
                         fill="currentColor"
-                        className="text-yellow-400"
+                        className="text-green-600"
                       />
                     ))}
-
-                    <span className="ml-2 text-xs text-gray-500">
-                      5.0
-                    </span>
                   </div>
 
                   {/* DIVIDER */}

@@ -1,6 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { ArrowUpRight } from "lucide-react";
 
 const ServiceCard = ({ service }) => {
   if (!service) return null;
@@ -18,146 +17,80 @@ const ServiceCard = ({ service }) => {
           rounded-2xl
           border
           border-gray-200
-          bg-white
+          bg-gray-50
           p-5
-          sm:p-6
-          shadow-[0_8px_30px_rgba(0,0,0,0.06)]
           transition-all
           duration-300
-          hover:-translate-y-1.5
-          hover:border-[#0B4EA2]/20
-          hover:shadow-[0_16px_40px_rgba(11,78,162,0.12)]
+          hover:bg-white
+          hover:-translate-y-1
+          hover:shadow-xl
         "
       >
-        {/* ================= TOP ACCENT ================= */}
+        {/* ================= GREEN HOVER STRIP ================= */}
 
         <div
           className="
+            pointer-events-none
             absolute
-            left-0
-            top-0
-            h-1
-            w-0
-            bg-gradient-to-r
-            from-[#0B4EA2]
-            to-[#22A447]
-            transition-all
+            inset-0
+            rounded-2xl
+        border
+border-[#00A878]
+border-l-[4px]
+            opacity-0
+            transition-opacity
             duration-300
-            group-hover:w-full
+            group-hover:opacity-100
+            z-10
           "
         />
 
-        {/* ================= ICON ================= */}
+        {/* ================= ICON / EMOJI ================= */}
 
-        <div className="flex items-start justify-between">
-          <div
-            className="
-              flex
-              h-14
-              w-14
-              shrink-0
-              items-center
-              justify-center
-              rounded-2xl
-              bg-[#EAF3FF]
-              text-2xl
-              transition-all
-              duration-300
-              group-hover:bg-[#0B4EA2]
-              group-hover:scale-105
-            "
-          >
-            {service.emoji || "📋"}
-          </div>
-
-          {/* ARROW */}
-
-          <div
-            className="
-              flex
-              h-9
-              w-9
-              items-center
-              justify-center
-              rounded-full
-              border
-              border-gray-200
-              text-gray-400
-              transition-all
-              duration-300
-              group-hover:border-[#0B4EA2]
-              group-hover:bg-[#0B4EA2]
-              group-hover:text-white
-            "
-          >
-            <ArrowUpRight size={17} />
-          </div>
+        <div
+          className="
+            w-12
+            h-12
+            rounded-xl
+            bg-white
+            shadow-sm
+            flex
+            items-center
+            justify-center
+            text-3xl
+            mb-4
+            transition-transform
+            duration-300
+            group-hover:scale-110
+          "
+        >
+          {service.emoji || "📋"}
         </div>
 
         {/* ================= TITLE ================= */}
 
         <h3
           className="
-            mt-5
+            font-semibold
+            text-gray-800
             text-base
-            sm:text-lg
-            font-bold
-            leading-6
-            text-gray-900
-            transition-colors
-            duration-300
-            group-hover:text-[#0B4EA2]
+            leading-5
           "
         >
           {service.title}
         </h3>
 
-        {/* ================= SMALL DESCRIPTION ================= */}
+        {/* ================= DESCRIPTION ================= */}
 
         <p
           className="
-            mt-2
-            text-sm
-            leading-6
+            text-xs
             text-gray-500
+            mt-2
           "
         >
-          {service.description ||
-            "Get professional assistance with complete support."}
+          Get professional assistance
         </p>
-
-        {/* ================= BOTTOM ================= */}
-
-        <div className="mt-5 flex items-center justify-between">
-          <span
-            className="
-              inline-flex
-              items-center
-              rounded-full
-              bg-green-50
-              px-3
-              py-1.5
-              text-[11px]
-              font-semibold
-              text-green-700
-            "
-          >
-            Professional Support
-          </span>
-
-          <span
-            className="
-              text-xs
-              font-semibold
-              text-gray-400
-              transition-colors
-              duration-300
-              group-hover:text-[#0B4EA2]
-            "
-          >
-            View Details
-          </span>
-        </div>
       </div>
     </Link>
   );

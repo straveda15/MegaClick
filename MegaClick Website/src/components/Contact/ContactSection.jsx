@@ -293,34 +293,32 @@ const ContactSection = () => {
                 HEADING
             ================================================== */}
 
-            <h2
+              <h2
+            className="
+              text-3xl
+              sm:text-4xl
+              lg:text-5xl
+              font-bold
+              leading-tight
+              text-black
+            "
+          >
+           Request Your Free{" "}
+
+            <br className="hidden sm:block" />
+
+            <span
               className="
-                mt-4
-                max-w-2xl
-                text-2xl
-                font-extrabold
-                leading-tight
-                sm:mt-5
-                sm:text-3xl
-                md:text-[34px]
-                lg:text-4xl
-                xl:text-[42px]
+                bg-gradient-to-r
+                from-blue-600
+                to-green-500
+                bg-clip-text
+                text-transparent
               "
             >
-              <span
-                className="
-                  bg-gradient-to-r
-                  from-[#0B4EA2]
-                  via-blue-600
-                  to-green-600
-                  bg-clip-text
-                  text-transparent
-                "
-              >
-                Request Your Free Consultation
-              </span>
-            </h2>
-
+             Consultation
+            </span>
+          </h2>
             {/* =================================================
                 DESCRIPTION
             ================================================== */}
@@ -1008,34 +1006,32 @@ const ContactSection = () => {
                   HEADING
               ================================================== */}
 
-              <h2
-                className="
-                  mt-4
-                  text-2xl
-                  font-extrabold
-                  leading-tight
-                  sm:mt-5
-                  sm:text-3xl
-                  md:text-[34px]
-                  lg:text-4xl
-                  xl:text-[42px]
-                "
-              >
-                <span
-                  className="
-                    bg-gradient-to-r
-                    from-[#0B4EA2]
-                    via-blue-600
-                    to-green-600
-                    bg-clip-text
-                    text-transparent
-                  "
-                >
-                  Let's Build Your
-                  <br />
-                  Business Together
-                </span>
-              </h2>
+               <h2
+            className="
+              text-3xl
+              sm:text-4xl
+              lg:text-5xl
+              font-bold
+              leading-tight
+              text-black
+            "
+          >
+            Let's Build Your{" "}
+
+            <br className="hidden sm:block" />
+
+            <span
+              className="
+                bg-gradient-to-r
+                from-blue-600
+                to-green-500
+                bg-clip-text
+                text-transparent
+              "
+            >
+              Business Together
+            </span>
+          </h2>
 
               {/* =================================================
                   DESCRIPTION
