@@ -47,7 +47,6 @@ const Hero = () => {
             items-center
           "
         >
-
           {/* =====================================================
               LEFT SIDE
           ====================================================== */}
@@ -59,7 +58,6 @@ const Hero = () => {
               md:space-y-7
             "
           >
-
             {/* ================= BADGE ================= */}
 
             <div
@@ -79,10 +77,8 @@ const Hero = () => {
               "
             >
               <CheckCircle2 size={16} />
-
               Trusted Business Solutions
             </div>
-
 
             {/* ================= HEADING ================= */}
 
@@ -115,7 +111,6 @@ const Hero = () => {
               </span>
             </h1>
 
-
             {/* ================= DESCRIPTION ================= */}
 
             <p
@@ -133,7 +128,6 @@ const Hero = () => {
               compliance, finance and growth with trusted expert guidance.
             </p>
 
-
             {/* ================= STATS ================= */}
 
             <div
@@ -145,7 +139,6 @@ const Hero = () => {
                 flex-wrap
               "
             >
-
               {/* CLIENTS */}
 
               <div>
@@ -170,7 +163,6 @@ const Hero = () => {
                   Happy Clients
                 </p>
               </div>
-
 
               {/* SERVICES */}
 
@@ -197,7 +189,6 @@ const Hero = () => {
                 </p>
               </div>
 
-
               {/* EXPERIENCE */}
 
               <div>
@@ -222,9 +213,7 @@ const Hero = () => {
                   Years Experience
                 </p>
               </div>
-
             </div>
-
 
             {/* ================= BUTTONS ================= */}
 
@@ -238,7 +227,6 @@ const Hero = () => {
                 pt-2
               "
             >
-
               <button
                 onClick={scrollToContact}
                 className="
@@ -263,10 +251,8 @@ const Hero = () => {
                 "
               >
                 Get Started
-
                 <ArrowRight size={18} />
               </button>
-
 
               <button
                 onClick={scrollToContact}
@@ -289,11 +275,8 @@ const Hero = () => {
               >
                 Contact Us
               </button>
-
             </div>
-
           </div>
-
 
           {/* =====================================================
               RIGHT SIDE FLOATING UI
@@ -305,56 +288,58 @@ const Hero = () => {
               items-center
               justify-center
               w-full
-              min-h-[340px]
-              sm:min-h-[400px]
+              min-h-[380px]
+              sm:min-h-[420px]
               lg:min-h-[450px]
               xl:min-h-[520px]
               mt-4
               lg:mt-0
             "
           >
-
             <div
               className="
                 relative
                 w-[320px]
-                h-[320px]
+                h-[340px]
+
                 sm:w-[390px]
-                sm:h-[370px]
+                sm:h-[390px]
+
                 md:w-[430px]
-                md:h-[400px]
+                md:h-[410px]
+
                 lg:w-[420px]
                 lg:h-[420px]
+
                 xl:w-[560px]
                 xl:h-[480px]
               "
             >
-
               {/* =================================================
                   CENTER MAIN CARD
               ================================================== */}
 
-              <div
-                className="
-                  absolute
-                  left-1/2
-                  -translate-x-1/2
-                  top-[50px]
-                  sm:top-[65px]
-                  lg:top-[70px]
-                  z-10
-                  w-[270px]
-                  sm:w-[330px]
-                  md:w-[360px]
-                  lg:w-[350px]
-                  xl:w-[490px]
-                "
-              >
-
+             <div
+  className="
+    absolute
+    left-1/2
+    -translate-x-1/2
+    top-[70px]
+    sm:top-[75px]
+    md:top-[80px]
+    lg:top-[85px]
+    xl:top-[90px]
+    z-10
+    w-[270px]
+    sm:w-[330px]
+    md:w-[360px]
+    lg:w-[350px]
+    xl:w-[490px]
+  "
+>
                 {/* ANIMATION WRAPPER */}
 
                 <div className="hero-float-main">
-
                   <div
                     className="
                       bg-white
@@ -369,7 +354,6 @@ const Hero = () => {
                       xl:p-8
                     "
                   >
-
                     {/* CARD HEADER */}
 
                     <div
@@ -380,7 +364,6 @@ const Hero = () => {
                         sm:gap-4
                       "
                     >
-
                       <div
                         className="
                           w-10
@@ -408,9 +391,7 @@ const Hero = () => {
                         />
                       </div>
 
-
                       <div>
-
                         <h3
                           className="
                             text-base
@@ -438,11 +419,8 @@ const Hero = () => {
                         >
                           Smart Business Solutions
                         </p>
-
                       </div>
-
                     </div>
-
 
                     {/* CARD STATS */}
 
@@ -458,7 +436,6 @@ const Hero = () => {
                         xl:gap-4
                       "
                     >
-
                       {/* CLIENTS */}
 
                       <div
@@ -472,7 +449,6 @@ const Hero = () => {
                           text-center
                         "
                       >
-
                         <h4
                           className="
                             text-lg
@@ -495,9 +471,7 @@ const Hero = () => {
                         >
                           Clients
                         </p>
-
                       </div>
-
 
                       {/* SERVICES */}
 
@@ -512,7 +486,6 @@ const Hero = () => {
                           text-center
                         "
                       >
-
                         <h4
                           className="
                             text-lg
@@ -535,9 +508,7 @@ const Hero = () => {
                         >
                           Services
                         </p>
-
                       </div>
-
 
                       {/* YEARS */}
 
@@ -552,7 +523,6 @@ const Hero = () => {
                           text-center
                         "
                       >
-
                         <h4
                           className="
                             text-lg
@@ -575,11 +545,8 @@ const Hero = () => {
                         >
                           Years
                         </p>
-
                       </div>
-
                     </div>
-
 
                     {/* TRUSTED */}
 
@@ -597,44 +564,44 @@ const Hero = () => {
                         text-green-600
                       "
                     >
-
                       <CheckCircle2
                         size={16}
                         className="sm:w-[18px] sm:h-[18px]"
                       />
 
                       Trusted Business Partner
-
                     </div>
-
                   </div>
-
                 </div>
-
               </div>
 
-
               {/* =================================================
-                  LEFT SMALL CARD
+                  LEFT SMALL CARD - 15000+
               ================================================== */}
 
-              <div
-                className="
-                  absolute
-                  left-0
-                  top-[10px]
-                  sm:top-[20px]
-                  z-20
-                  w-[125px]
-                  sm:w-[150px]
-                  xl:w-[180px]
-                "
-              >
-
+             <div
+  className="
+    absolute
+    left-[-20px]
+    top-[-5px]
+    sm:left-[-15px]
+    sm:top-[0px]
+    md:left-[-10px]
+    md:top-[5px]
+    lg:left-[-15px]
+    lg:top-[5px]
+    xl:left-[-20px]
+    xl:top-[10px]
+    z-20
+    w-[115px]
+    sm:w-[140px]
+    md:w-[150px]
+    xl:w-[175px]
+  "
+>
                 {/* ANIMATION WRAPPER */}
 
                 <div className="hero-float-left">
-
                   <div
                     className="
                       bg-white
@@ -648,7 +615,6 @@ const Hero = () => {
                       xl:p-5
                     "
                   >
-
                     <div
                       className="
                         flex
@@ -657,7 +623,6 @@ const Hero = () => {
                         sm:gap-3
                       "
                     >
-
                       <div
                         className="
                           w-8
@@ -675,7 +640,6 @@ const Hero = () => {
                           flex-shrink-0
                         "
                       >
-
                         <Users
                           size={18}
                           className="
@@ -684,12 +648,9 @@ const Hero = () => {
                             sm:h-[22px]
                           "
                         />
-
                       </div>
 
-
                       <div>
-
                         <h4
                           className="
                             font-bold
@@ -710,17 +671,11 @@ const Hero = () => {
                         >
                           Happy Clients
                         </p>
-
                       </div>
-
                     </div>
-
                   </div>
-
                 </div>
-
               </div>
-
 
               {/* =================================================
                   RIGHT SECURITY CARD
@@ -729,21 +684,24 @@ const Hero = () => {
               <div
                 className="
                   absolute
-                  right-0
-                  bottom-[45px]
-                  sm:bottom-[70px]
-                  lg:bottom-[90px]
+                  right-[-5px]
+
+                  bottom-[35px]
+                  sm:bottom-[60px]
+                  md:bottom-[70px]
+                  lg:bottom-[80px]
+                  xl:bottom-[90px]
+
                   z-20
-                  w-[125px]
+
+                  w-[120px]
                   sm:w-[150px]
                   xl:w-[180px]
                 "
               >
-
                 {/* ANIMATION WRAPPER */}
 
                 <div className="hero-float-right">
-
                   <div
                     className="
                       bg-white
@@ -756,7 +714,6 @@ const Hero = () => {
                       xl:p-4
                     "
                   >
-
                     <div
                       className="
                         flex
@@ -765,7 +722,6 @@ const Hero = () => {
                         sm:gap-3
                       "
                     >
-
                       <div
                         className="
                           w-7
@@ -780,7 +736,6 @@ const Hero = () => {
                           flex-shrink-0
                         "
                       >
-
                         <ShieldCheck
                           size={16}
                           className="
@@ -789,12 +744,9 @@ const Hero = () => {
                             sm:h-[18px]
                           "
                         />
-
                       </div>
 
-
                       <div>
-
                         <h4
                           className="
                             font-bold
@@ -815,17 +767,11 @@ const Hero = () => {
                         >
                           Compliance
                         </p>
-
                       </div>
-
                     </div>
-
                   </div>
-
                 </div>
-
               </div>
-
 
               {/* =================================================
                   TOP STATUS BADGE
@@ -834,19 +780,23 @@ const Hero = () => {
               <div
                 className="
                   absolute
-                  right-[5px]
-                  sm:right-[20px]
+
+                  right-[0px]
+                  sm:right-[15px]
+                  md:right-[20px]
                   xl:right-[50px]
-                  top-[18px]
-                  sm:top-[35px]
+
+                  top-[5px]
+                  sm:top-[20px]
+                  md:top-[25px]
+                  xl:top-[35px]
+
                   z-20
                 "
               >
-
                 {/* ANIMATION WRAPPER */}
 
                 <div className="hero-float-status">
-
                   <div
                     className="
                       flex
@@ -870,7 +820,6 @@ const Hero = () => {
                       whitespace-nowrap
                     "
                   >
-
                     <span
                       className="
                         w-1.5
@@ -883,20 +832,13 @@ const Hero = () => {
                     />
 
                     Services Active
-
                   </div>
-
                 </div>
-
               </div>
-
             </div>
-
           </div>
-
         </div>
       </div>
-
 
       {/* ================= BACKGROUND BLUR ================= */}
 
@@ -927,7 +869,6 @@ const Hero = () => {
           -z-10
         "
       />
-
     </section>
   );
 };

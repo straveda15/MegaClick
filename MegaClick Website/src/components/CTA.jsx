@@ -12,13 +12,26 @@ import { FaWhatsapp } from "react-icons/fa";
 const CTA = () => {
   // =========================================================
   // GMAIL COMPOSE
+  // Works for both Desktop and Mobile
   // =========================================================
 
-  const gmailComposeUrl =
-    "https://mail.google.com/mail/?view=cm&fs=1" +
-    "&to=megaclickofficial@gmail.com" +
-    "&su=Business%20Service%20Inquiry" +
-    "&body=Hello%20MegaClick%2C%0A%0AI%20would%20like%20to%20know%20more%20about%20your%20business%20services.";
+  const openGmailCompose = () => {
+    const email = "megaclickofficial@gmail.com";
+
+    const subject = "Business Service Inquiry";
+
+    const body =
+      "Hello MegaClick,\n\nI would like to know more about your business services.";
+
+    const gmailComposeUrl =
+      "https://mail.google.com/mail/?view=cm&fs=1" +
+      `&to=${encodeURIComponent(email)}` +
+      `&su=${encodeURIComponent(subject)}` +
+      `&body=${encodeURIComponent(body)}`;
+
+    // Open Gmail Compose
+    window.open(gmailComposeUrl, "_blank");
+  };
 
   return (
     <section className="py-10 sm:py-12 lg:py-16 bg-blue-100">
@@ -351,10 +364,9 @@ const CTA = () => {
                   EMAIL - GMAIL COMPOSE
               ================================================= */}
 
-              <a
-                href={gmailComposeUrl}
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                type="button"
+                onClick={openGmailCompose}
                 aria-label="Send email to MegaClick"
                 className="
                   inline-flex
@@ -372,6 +384,9 @@ const CTA = () => {
                   duration-300
                   text-left
                   cursor-pointer
+                  bg-transparent
+                  border-0
+                  p-0
                 "
               >
                 <Mail
@@ -385,7 +400,7 @@ const CTA = () => {
                 <span className="break-all">
                   megaclickofficial@gmail.com
                 </span>
-              </a>
+              </button>
             </div>
           </div>
         </div>

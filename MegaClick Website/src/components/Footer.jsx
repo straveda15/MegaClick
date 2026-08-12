@@ -15,6 +15,26 @@ const Footer = () => {
   const navigate = useNavigate();
 
   // =================================================
+  // GMAIL COMPOSE
+  // =================================================
+  const openGmailCompose = () => {
+    const email = "megaclickofficial@gmail.com";
+
+    const subject = "Business Service Inquiry";
+
+    const body =
+      "Hello MegaClick,\n\nI would like to know more about your business services.";
+
+    const gmailComposeUrl =
+      "https://mail.google.com/mail/?view=cm&fs=1" +
+      `&to=${encodeURIComponent(email)}` +
+      `&su=${encodeURIComponent(subject)}` +
+      `&body=${encodeURIComponent(body)}`;
+
+    window.open(gmailComposeUrl, "_blank");
+  };
+
+  // =================================================
   // SCROLL TO TOP
   // =================================================
   const scrollToTop = () => {
@@ -46,7 +66,6 @@ const Footer = () => {
 
   // =================================================
   // QUICK LINKS
-  // ALL ARE DIRECT PAGES
   // =================================================
   const quickLinks = [
     {
@@ -98,7 +117,6 @@ const Footer = () => {
   const handleNavigation = (path) => {
     navigate(path);
 
-    // If going to homepage, start from top
     if (path === "/") {
       setTimeout(() => {
         window.scrollTo({
@@ -176,7 +194,6 @@ const Footer = () => {
                   shadow-blue-200/50
                   transition-all
                   duration-300
-
                   hover:scale-105
                   active:scale-95
                 "
@@ -244,11 +261,9 @@ const Footer = () => {
                       cursor-pointer
                       transition-all
                       duration-300
-
                       hover:bg-green-500
                       hover:-translate-y-1
                       hover:shadow-lg
-
                       active:bg-green-500
                       active:-translate-y-1
                       active:shadow-lg
@@ -301,17 +316,13 @@ const Footer = () => {
                       transition-all
                       duration-300
                       text-left
-
                       hover:text-white
                       hover:translate-x-1
-
                       active:text-green-300
                       active:translate-x-1
                       active:scale-[0.98]
                     "
                   >
-
-                    {/* Highlight Dot */}
 
                     <span
                       className="
@@ -322,11 +333,9 @@ const Footer = () => {
                         opacity-0
                         transition-all
                         duration-300
-
                         group-hover:opacity-100
                         group-hover:w-1.5
                         group-hover:h-1.5
-
                         group-active:opacity-100
                         group-active:w-1.5
                         group-active:h-1.5
@@ -379,17 +388,13 @@ const Footer = () => {
                     cursor-pointer
                     transition-all
                     duration-300
-
                     hover:text-white
                     hover:translate-x-1
-
                     active:text-green-300
                     active:translate-x-1
                     active:scale-[0.98]
                   "
                 >
-
-                  {/* Highlight Dot */}
 
                   <span
                     className="
@@ -400,11 +405,9 @@ const Footer = () => {
                       opacity-0
                       transition-all
                       duration-300
-
                       group-hover:opacity-100
                       group-hover:w-1.5
                       group-hover:h-1.5
-
                       group-active:opacity-100
                       group-active:w-1.5
                       group-active:h-1.5
@@ -452,7 +455,6 @@ const Footer = () => {
                   w-fit
                   transition-all
                   duration-300
-
                   hover:translate-x-1
                   active:translate-x-1
                   active:scale-[0.98]
@@ -466,7 +468,6 @@ const Footer = () => {
                     flex-shrink-0
                     transition-transform
                     duration-300
-
                     group-hover:scale-110
                     group-active:scale-110
                   "
@@ -478,7 +479,6 @@ const Footer = () => {
                     text-blue-100
                     transition-colors
                     duration-300
-
                     group-hover:text-white
                     group-active:text-green-300
                   "
@@ -489,12 +489,11 @@ const Footer = () => {
               </a>
 
               {/* =================================================
-                  EMAIL
+                  EMAIL - GMAIL WEB COMPOSE
               ================================================= */}
-              <a
-                href="https://mail.google.com/mail/?view=cm&fs=1&to=megaclickofficial@gmail.com"
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                type="button"
+                onClick={openGmailCompose}
                 aria-label="Send email to MegaClick"
                 className="
                   group
@@ -505,10 +504,14 @@ const Footer = () => {
                   max-w-full
                   transition-all
                   duration-300
-
                   hover:translate-x-1
                   active:translate-x-1
                   active:scale-[0.98]
+                  text-left
+                  bg-transparent
+                  border-0
+                  p-0
+                  cursor-pointer
                 "
               >
 
@@ -519,7 +522,6 @@ const Footer = () => {
                     flex-shrink-0
                     transition-transform
                     duration-300
-
                     group-hover:scale-110
                     group-active:scale-110
                   "
@@ -532,7 +534,6 @@ const Footer = () => {
                     transition-colors
                     duration-300
                     break-all
-
                     group-hover:text-white
                     group-active:text-green-300
                   "
@@ -540,7 +541,7 @@ const Footer = () => {
                   megaclickofficial@gmail.com
                 </span>
 
-              </a>
+              </button>
 
               {/* =================================================
                   ADDRESS
@@ -557,7 +558,6 @@ const Footer = () => {
                   max-w-sm
                   transition-all
                   duration-300
-
                   hover:translate-x-1
                   active:translate-x-1
                   active:scale-[0.98]
@@ -572,7 +572,6 @@ const Footer = () => {
                     flex-shrink-0
                     transition-transform
                     duration-300
-
                     group-hover:scale-110
                     group-active:scale-110
                   "
@@ -585,7 +584,6 @@ const Footer = () => {
                     text-blue-100
                     transition-colors
                     duration-300
-
                     group-hover:text-white
                     group-active:text-green-300
                   "
@@ -596,7 +594,7 @@ const Footer = () => {
                   <br />
                   Above Canara Bank,
                   <br />
-                  D'souza Colony,
+                  D&apos;souza Colony,
                   <br />
                   Nashik, Maharashtra 422005
                 </span>
@@ -683,7 +681,6 @@ const Footer = () => {
               text-white
               transition-all
               duration-300
-
               hover:-translate-y-1
               active:-translate-y-1
               active:scale-95
@@ -701,7 +698,6 @@ const Footer = () => {
                 justify-center
                 transition-all
                 duration-300
-
                 group-hover:bg-white
                 group-active:bg-white
               "
@@ -712,7 +708,6 @@ const Footer = () => {
                   text-sm
                   transition-colors
                   duration-300
-
                   group-hover:text-green-600
                   group-active:text-green-600
                 "

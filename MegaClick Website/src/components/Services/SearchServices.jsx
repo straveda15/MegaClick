@@ -89,15 +89,8 @@ const SearchServices = ({ searchTerm, setSearchTerm }) => {
 
 
 
-          {/* Bottom Line */}
+    
 
-          <div className="flex items-center gap-3 mt-5">
-
-            <div className="h-1 w-16 rounded-full bg-blue-600"></div>
-
-            <div className="h-1 w-8 rounded-full bg-green-500"></div>
-
-          </div>
 
 
         </div>
