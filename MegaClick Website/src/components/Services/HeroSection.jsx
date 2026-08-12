@@ -3,42 +3,7 @@ import { BriefcaseBusiness } from "lucide-react";
 import img1 from "../../assets/img1.jpg";
 
 const HeroSection = () => {
-  // =========================================================
-  // WAVE TEXT COMPONENT
-  // =========================================================
-  const WaveText = ({ children }) => {
-    return (
-      <span
-        className="inline break-words"
-        aria-label={children}
-      >
-        {children.split("").map((char, index) => {
-          if (char === " ") {
-            return (
-              <span
-                key={index}
-                className="inline"
-              >
-                &nbsp;
-              </span>
-            );
-          }
-
-          return (
-            <span
-              key={index}
-              className="inline-block wave-letter"
-              style={{
-                animationDelay: `${index * 0.045}s`,
-              }}
-            >
-              {char}
-            </span>
-          );
-        })}
-      </span>
-    );
-  };
+ 
 
   return (
     <>
@@ -475,31 +440,17 @@ const HeroSection = () => {
                   "
                 >
 
-                  {/* Line 1 */}
+               <span className="block">
+  “ONE PLATFORM.
+</span>
 
-                  <span className="block">
-                    <WaveText>
-                      “ONE PLATFORM.
-                    </WaveText>
-                  </span>
+<span className="block">
+  COMPLETE SOLUTIONS FOR
+</span>
 
-
-                  {/* Line 2 */}
-
-                  <span className="block">
-                    <WaveText>
-                      COMPLETE SOLUTIONS FOR
-                    </WaveText>
-                  </span>
-
-
-                  {/* Line 3 */}
-
-                  <span className="block">
-                    <WaveText>
-                      BUSINESSES &amp; INDIVIDUALS”
-                    </WaveText>
-                  </span>
+<span className="block">
+  BUSINESSES &amp; INDIVIDUALS”
+</span>
 
                 </p>
 

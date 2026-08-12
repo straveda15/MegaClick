@@ -175,38 +175,7 @@ const About = () => {
             })}
           </motion.h2>
 
-          {/* UNDERLINE */}
-
-          <motion.div
-            initial={{
-              width: 0,
-              opacity: 0,
-            }}
-            animate={
-              isInView
-                ? {
-                    width: "7rem",
-                    opacity: 1,
-                  }
-                : {
-                    width: 0,
-                    opacity: 0,
-                  }
-            }
-            transition={{
-              duration: 0.6,
-            }}
-            className="
-              mt-4
-              sm:mt-6
-              h-1
-              sm:h-1.5
-              rounded-full
-              bg-gradient-to-r
-              from-[#0B4EA2]
-              to-green-500
-            "
-          />
+        
         </div>
 
         {/* =====================================================

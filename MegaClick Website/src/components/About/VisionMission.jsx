@@ -145,17 +145,7 @@ const VisionMission = () => {
             </span>
           </h2>
 
-          <div
-            className="
-              mt-4
-              w-20
-              h-1
-              rounded-full
-              bg-gradient-to-r
-              from-[#0B4EA2]
-              to-green-500
-            "
-          />
+         
         </motion.div>
 
 
@@ -352,7 +342,7 @@ const VisionMission = () => {
 
                   Building a trusted future
 
-                  <ArrowRight size={15} />
+             
 
                 </div>
 
@@ -543,8 +533,7 @@ const VisionMission = () => {
 
                   Making business simpler
 
-                  <ArrowRight size={15} />
-
+                 
                 </div>
 
               </div>
@@ -586,67 +575,6 @@ const VisionMission = () => {
             max-w-4xl
           "
         >
-
-          <div
-            className="
-              flex
-              items-center
-              gap-3
-              rounded-xl
-              bg-gray-50
-              border
-              border-gray-400
-              px-5
-              py-4
-            "
-          >
-            <CheckCircle2
-              size={20}
-              className="text-green-500 flex-shrink-0"
-            />
-
-            <span
-              className="
-                text-sm
-                sm:text-base
-                font-medium
-                text-gray-700
-              "
-            >
-              Trusted Professional Support
-            </span>
-          </div>
-
-
-          <div
-            className="
-              flex
-              items-center
-              gap-3
-              rounded-xl
-              bg-gray-50
-              border
-              border-gray-400
-              px-5
-              py-4
-            "
-          >
-            <CheckCircle2
-              size={20}
-              className="text-[#0B4EA2] flex-shrink-0"
-            />
-
-            <span
-              className="
-                text-sm
-                sm:text-base
-                font-medium
-                text-gray-700
-              "
-            >
-              Transparent & Reliable Process
-            </span>
-          </div>
 
         </motion.div>
 
