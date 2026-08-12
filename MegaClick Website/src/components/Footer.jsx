@@ -15,7 +15,9 @@ const Footer = () => {
   const navigate = useNavigate();
 
   // =================================================
-  // GMAIL COMPOSE
+  // EMAIL COMPOSE
+  // Desktop → Gmail Web Compose
+  // Mobile  → Direct Email Compose
   // =================================================
   const openGmailCompose = () => {
     const email = "megaclickofficial@gmail.com";
@@ -25,13 +27,28 @@ const Footer = () => {
     const body =
       "Hello MegaClick,\n\nI would like to know more about your business services.";
 
-    const gmailComposeUrl =
-      "https://mail.google.com/mail/?view=cm&fs=1" +
-      `&to=${encodeURIComponent(email)}` +
-      `&su=${encodeURIComponent(subject)}` +
-      `&body=${encodeURIComponent(body)}`;
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(
+      navigator.userAgent
+    );
 
-    window.open(gmailComposeUrl, "_blank");
+    if (isMobile) {
+      // Mobile → opens default email app in compose mode
+      const mailtoUrl =
+        `mailto:${email}` +
+        `?subject=${encodeURIComponent(subject)}` +
+        `&body=${encodeURIComponent(body)}`;
+
+      window.location.href = mailtoUrl;
+    } else {
+      // Desktop → Gmail Web Compose
+      const gmailComposeUrl =
+        `https://mail.google.com/mail/?view=cm&fs=1` +
+        `&to=${encodeURIComponent(email)}` +
+        `&su=${encodeURIComponent(subject)}` +
+        `&body=${encodeURIComponent(body)}`;
+
+      window.open(gmailComposeUrl, "_blank");
+    }
   };
 
   // =================================================
@@ -129,7 +146,6 @@ const Footer = () => {
 
   return (
     <footer className="bg-[#083A7A] text-white relative overflow-hidden">
-
       {/* =================================================
           TOP GREEN LINE
       ================================================= */}
@@ -166,15 +182,12 @@ const Footer = () => {
             xl:gap-16
           "
         >
-
           {/* =================================================
               COMPANY
           ================================================= */}
           <div className="sm:col-span-2 lg:col-span-1">
-
             {/* Logo + Name */}
             <div className="flex items-center gap-3 mb-5 sm:mb-6">
-
               <img
                 src={logo}
                 alt="MegaClick"
@@ -207,15 +220,10 @@ const Footer = () => {
                   tracking-wide
                 "
               >
-                <span className="text-white">
-                  Mega
-                </span>
+                <span className="text-white">Mega</span>
 
-                <span className="text-green-400">
-                  Click
-                </span>
+                <span className="text-green-400">Click</span>
               </h2>
-
             </div>
 
             {/* Description */}
@@ -237,7 +245,6 @@ const Footer = () => {
                 SOCIAL ICONS
             ================================================= */}
             <div className="flex gap-3 mt-5 sm:mt-6">
-
               {socialLinks.map((social, index) => {
                 const Icon = social.icon;
 
@@ -274,7 +281,6 @@ const Footer = () => {
                   </a>
                 );
               })}
-
             </div>
           </div>
 
@@ -282,7 +288,6 @@ const Footer = () => {
               EXPLORE
           ================================================= */}
           <div>
-
             <h3
               className="
                 text-lg
@@ -296,11 +301,8 @@ const Footer = () => {
             </h3>
 
             <ul className="space-y-3 sm:space-y-4">
-
               {quickLinks.map((item, index) => (
-
                 <li key={index}>
-
                   <button
                     type="button"
                     onClick={() => handleNavigation(item.path)}
@@ -323,7 +325,6 @@ const Footer = () => {
                       active:scale-[0.98]
                     "
                   >
-
                     <span
                       className="
                         w-1
@@ -343,13 +344,9 @@ const Footer = () => {
                     />
 
                     {item.name}
-
                   </button>
-
                 </li>
-
               ))}
-
             </ul>
           </div>
 
@@ -357,7 +354,6 @@ const Footer = () => {
               OUR SERVICES
           ================================================= */}
           <div>
-
             <h3
               className="
                 text-lg
@@ -371,9 +367,7 @@ const Footer = () => {
             </h3>
 
             <ul className="space-y-3 sm:space-y-4">
-
               {services.map((service, index) => (
-
                 <li
                   key={index}
                   className="
@@ -395,7 +389,6 @@ const Footer = () => {
                     active:scale-[0.98]
                   "
                 >
-
                   <span
                     className="
                       w-1
@@ -415,11 +408,8 @@ const Footer = () => {
                   />
 
                   {service}
-
                 </li>
-
               ))}
-
             </ul>
           </div>
 
@@ -427,7 +417,6 @@ const Footer = () => {
               CONTACT
           ================================================= */}
           <div>
-
             <h3
               className="
                 text-lg
@@ -441,7 +430,6 @@ const Footer = () => {
             </h3>
 
             <div className="space-y-4 sm:space-y-5">
-
               {/* =================================================
                   PHONE
               ================================================= */}
@@ -460,7 +448,6 @@ const Footer = () => {
                   active:scale-[0.98]
                 "
               >
-
                 <Phone
                   size={19}
                   className="
@@ -485,11 +472,10 @@ const Footer = () => {
                 >
                   +91 9921611911
                 </span>
-
               </a>
 
               {/* =================================================
-                  EMAIL - GMAIL WEB COMPOSE
+                  EMAIL
               ================================================= */}
               <button
                 type="button"
@@ -514,7 +500,6 @@ const Footer = () => {
                   cursor-pointer
                 "
               >
-
                 <Mail
                   size={19}
                   className="
@@ -540,7 +525,6 @@ const Footer = () => {
                 >
                   megaclickofficial@gmail.com
                 </span>
-
               </button>
 
               {/* =================================================
@@ -563,7 +547,6 @@ const Footer = () => {
                   active:scale-[0.98]
                 "
               >
-
                 <MapPin
                   size={22}
                   className="
@@ -598,12 +581,9 @@ const Footer = () => {
                   <br />
                   Nashik, Maharashtra 422005
                 </span>
-
               </a>
-
             </div>
           </div>
-
         </div>
       </div>
 
@@ -611,7 +591,6 @@ const Footer = () => {
           BOTTOM FOOTER
       ================================================= */}
       <div className="border-t border-white/10">
-
         <div
           className="
             max-w-[1500px]
@@ -631,9 +610,7 @@ const Footer = () => {
             sm:text-left
           "
         >
-
           {/* Copyright */}
-
           <p
             className="
               text-xs
@@ -657,7 +634,6 @@ const Footer = () => {
           {/* =================================================
               BACK TO TOP
           ================================================= */}
-
           <button
             type="button"
             onClick={scrollToTop}
@@ -686,7 +662,6 @@ const Footer = () => {
               active:scale-95
             "
           >
-
             <span
               className="
                 w-6
@@ -702,7 +677,6 @@ const Footer = () => {
                 group-active:bg-white
               "
             >
-
               <span
                 className="
                   text-sm
@@ -714,16 +688,12 @@ const Footer = () => {
               >
                 ↑
               </span>
-
             </span>
 
             Back to Top
-
           </button>
-
         </div>
       </div>
-
     </footer>
   );
 };

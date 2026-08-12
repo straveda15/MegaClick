@@ -582,9 +582,7 @@ const HowItWorks = () => {
                           absolute
                           inset-0
                           rounded-full
-                          bg-gradient-to-br
-                          from-blue-600
-                          to-green-500
+                         bg-green-500
                           opacity-0
                           group-hover:opacity-100
                           transition-opacity

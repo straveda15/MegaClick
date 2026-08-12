@@ -54,9 +54,9 @@ const SearchServices = ({ searchTerm, setSearchTerm }) => {
             "
           >
 
-            Explore 
+            Explore{" "}
 
-            <br />
+          
 
             <span
               className="

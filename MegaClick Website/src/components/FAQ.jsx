@@ -181,6 +181,7 @@ const FAQ = () => {
               leading-6
               sm:leading-7
               text-sm
+              text-justify
               sm:text-base
               text-left
               sm:text-justify

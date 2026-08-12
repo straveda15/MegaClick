@@ -1,4 +1,3 @@
-
 import React from "react";
 
 import {
@@ -16,8 +15,45 @@ const ContactInfo = () => {
   const phoneNumber = "+919921611911";
   const emailAddress = "megaclickofficial@gmail.com";
 
-  const gmailComposeUrl =
-    `https://mail.google.com/mail/?view=cm&fs=1&to=${emailAddress}`;
+  const subject = "Business Service Inquiry";
+
+  const body =
+    "Hello MegaClick,\n\nI would like to know more about your business services.";
+
+  // =================================================
+  // EMAIL HANDLER
+  // Desktop → Gmail Web Compose
+  // Mobile  → Default Email App Compose
+  // =================================================
+
+  const handleEmailClick = (e) => {
+    e.preventDefault();
+
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(
+      navigator.userAgent
+    );
+
+    if (isMobile) {
+      const mailtoUrl =
+        `mailto:${emailAddress}` +
+        `?subject=${encodeURIComponent(subject)}` +
+        `&body=${encodeURIComponent(body)}`;
+
+      window.location.href = mailtoUrl;
+    } else {
+      const gmailComposeUrl =
+        `https://mail.google.com/mail/?view=cm&fs=1` +
+        `&to=${encodeURIComponent(emailAddress)}` +
+        `&su=${encodeURIComponent(subject)}` +
+        `&body=${encodeURIComponent(body)}`;
+
+      window.open(gmailComposeUrl, "_blank");
+    }
+  };
+
+  // =================================================
+  // GOOGLE MAPS URL
+  // =================================================
 
   const mapUrl =
     "https://www.google.com/maps/search/?api=1&query=4th+Floor+Tristar+Complex+Jehan+Circle+Gangapur+Road+Nashik+Maharashtra+422005";
@@ -42,10 +78,10 @@ const ContactInfo = () => {
           xl:px-24
         "
       >
-
         {/* =================================================
             HEADING
         ================================================= */}
+
         <div
           className="
             mb-8
@@ -53,10 +89,13 @@ const ContactInfo = () => {
             lg:mb-14
           "
         >
+          {/* CONTACT BADGE */}
+
           <span
             className="
               inline-flex
               items-center
+              gap-2
               rounded-full
               bg-[#0B4EA2]
               px-4
@@ -68,36 +107,53 @@ const ContactInfo = () => {
               text-white
             "
           >
+            <MapPin
+              size={15}
+              className="text-green-300"
+            />
+
             CONTACT INFORMATION
           </span>
 
-          <h2
-            className="
-              mt-4
-              sm:mt-5
-              text-2xl
-              sm:text-3xl
-              lg:text-4xl
-              font-extrabold
-              leading-tight
-              bg-gradient-to-r
-              from-[#0B4EA2]
-              via-blue-600
-              to-green-600
-              bg-clip-text
-              text-transparent
-            "
-          >
-            Get In Touch With Us
-          </h2>
+
+           <h3
+              className="
+                text-3xl
+                sm:text-4xl
+                md:text-4xl
+                lg:text-5xl
+                xl:text-5xl
+                font-bold
+                leading-tight
+                text-black
+              "
+            >Get In{" "}
+             
+
+              <span
+                className="
+                  bg-gradient-to-r
+                  from-blue-600
+                  to-green-500
+                  bg-clip-text
+                  text-transparent
+                "
+              >
+               Touch With Us
+              </span>
+            </h3>
+
+
+          {/* DESCRIPTION */}
 
           <p
             className="
               mt-4
               sm:mt-5
               max-w-3xl
-              text-base
-              sm:text-lg
+              text-sm
+              sm:text-base
+              lg:text-lg
               leading-7
               sm:leading-8
               text-gray-600
@@ -112,6 +168,7 @@ const ContactInfo = () => {
         {/* =================================================
             MAIN GRID
         ================================================= */}
+
         <div
           className="
             grid
@@ -123,10 +180,10 @@ const ContactInfo = () => {
             items-stretch
           "
         >
-
           {/* =================================================
               MAP CARD
           ================================================= */}
+
           <div
             className="
               lg:col-span-2
@@ -144,8 +201,8 @@ const ContactInfo = () => {
               duration-500
             "
           >
+            {/* TOP LINE */}
 
-            {/* Top Line */}
             <div
               className="
                 absolute
@@ -162,6 +219,7 @@ const ContactInfo = () => {
             {/* =================================================
                 MAP HEADER
             ================================================= */}
+
             <div
               className="
                 flex
@@ -173,7 +231,6 @@ const ContactInfo = () => {
                 lg:p-8
               "
             >
-
               <div
                 className="
                   flex
@@ -183,6 +240,7 @@ const ContactInfo = () => {
                   min-w-0
                 "
               >
+                {/* ICON */}
 
                 <div
                   className="
@@ -211,8 +269,9 @@ const ContactInfo = () => {
                   />
                 </div>
 
-                <div className="min-w-0">
+                {/* TEXT */}
 
+                <div className="min-w-0">
                   <h3
                     className="
                       text-lg
@@ -235,9 +294,7 @@ const ContactInfo = () => {
                   >
                     We'd love to meet you.
                   </p>
-
                 </div>
-
               </div>
 
               <ArrowUpRight
@@ -249,12 +306,12 @@ const ContactInfo = () => {
                   text-gray-300
                 "
               />
-
             </div>
 
             {/* =================================================
                 GOOGLE MAP
             ================================================= */}
+
             <div
               className="
                 px-4
@@ -271,7 +328,6 @@ const ContactInfo = () => {
                   border-gray-200
                 "
               >
-
                 <iframe
                   title="MegaClick Office"
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3748.917570480964!2d73.7563732!3d20.011974!2m3!1f0!2f0!3f0!2m3!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bddeb28d1dd624d%3A0xe806e01c2d79c79f!2sMegaClick%20Properties!5e0!3m2!1sen!2sin!4v1785864099343!5m2!1sen!2sin"
@@ -284,18 +340,18 @@ const ContactInfo = () => {
                   allowFullScreen
                   referrerPolicy="strict-origin-when-cross-origin"
                   className="
-                    h-[240px]
-                    sm:h-[300px]
+                    h-[220px]
+                    sm:h-[280px]
                     lg:h-[320px]
                   "
                 />
-
               </div>
             </div>
 
             {/* =================================================
                 ADDRESS
             ================================================= */}
+
             <div
               className="
                 p-5
@@ -303,7 +359,6 @@ const ContactInfo = () => {
                 lg:p-8
               "
             >
-
               <h4
                 className="
                   text-lg
@@ -339,9 +394,17 @@ const ContactInfo = () => {
                 Nashik - 422005
               </p>
 
-              <span
+              {/* MAP BUTTON */}
+
+              <a
+                href={mapUrl}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="
                   inline-flex
+                  items-center
+                  justify-center
+                  gap-2
                   mt-4
                   sm:mt-6
                   rounded-full
@@ -353,18 +416,22 @@ const ContactInfo = () => {
                   sm:text-sm
                   font-semibold
                   text-[#0B4EA2]
+                  hover:bg-[#0B4EA2]
+                  hover:text-white
+                  transition-all
+                  duration-300
                 "
               >
+                <MapPin size={15} />
                 Mon - Sat • 9:00 AM - 7:00 PM
-              </span>
-
+              </a>
             </div>
-
           </div>
 
           {/* =================================================
               RIGHT SIDE CARDS
           ================================================= */}
+
           <div
             className="
               flex
@@ -373,12 +440,13 @@ const ContactInfo = () => {
               gap-5
               sm:gap-6
               lg:gap-8
+              w-full
             "
           >
-
             {/* =================================================
                 CALL CARD
             ================================================= */}
+
             <div
               className="
                 group
@@ -398,10 +466,11 @@ const ContactInfo = () => {
                 hover:-translate-y-2
                 transition-all
                 duration-500
+                w-full
               "
             >
+              {/* GLOW */}
 
-              {/* Glow */}
               <div
                 className="
                   absolute
@@ -426,7 +495,6 @@ const ContactInfo = () => {
                   gap-3
                 "
               >
-
                 <div
                   className="
                     flex
@@ -436,7 +504,6 @@ const ContactInfo = () => {
                     min-w-0
                   "
                 >
-
                   <div
                     className="
                       w-12
@@ -457,7 +524,6 @@ const ContactInfo = () => {
                       duration-300
                     "
                   >
-
                     <Phone
                       size={24}
                       className="
@@ -468,11 +534,9 @@ const ContactInfo = () => {
                         transition
                       "
                     />
-
                   </div>
 
                   <div className="min-w-0">
-
                     <h3
                       className="
                         text-lg
@@ -494,9 +558,7 @@ const ContactInfo = () => {
                     >
                       +91 99216 11911
                     </p>
-
                   </div>
-
                 </div>
 
                 <ArrowUpRight
@@ -509,7 +571,6 @@ const ContactInfo = () => {
                     transition
                   "
                 />
-
               </div>
 
               <a
@@ -537,12 +598,12 @@ const ContactInfo = () => {
                 <Phone size={17} />
                 Call Now
               </a>
-
             </div>
 
             {/* =================================================
                 EMAIL CARD
             ================================================= */}
+
             <div
               className="
                 group
@@ -562,10 +623,11 @@ const ContactInfo = () => {
                 hover:-translate-y-2
                 transition-all
                 duration-500
+                w-full
               "
             >
+              {/* GLOW */}
 
-              {/* Glow */}
               <div
                 className="
                   absolute
@@ -590,7 +652,6 @@ const ContactInfo = () => {
                   gap-3
                 "
               >
-
                 <div
                   className="
                     flex
@@ -600,7 +661,6 @@ const ContactInfo = () => {
                     min-w-0
                   "
                 >
-
                   <div
                     className="
                       w-12
@@ -620,7 +680,6 @@ const ContactInfo = () => {
                       transition
                     "
                   >
-
                     <Mail
                       size={24}
                       className="
@@ -631,11 +690,9 @@ const ContactInfo = () => {
                         transition
                       "
                     />
-
                   </div>
 
                   <div className="min-w-0">
-
                     <h3
                       className="
                         text-lg
@@ -650,17 +707,15 @@ const ContactInfo = () => {
                     <p
                       className="
                         mt-1
-                        text-sm
-                        sm:text-base
+                        text-xs
+                        sm:text-sm
                         text-gray-600
                         break-all
                       "
                     >
                       {emailAddress}
                     </p>
-
                   </div>
-
                 </div>
 
                 <ArrowUpRight
@@ -673,16 +728,13 @@ const ContactInfo = () => {
                     transition
                   "
                 />
-
               </div>
 
-              {/* =================================================
-                  GMAIL COMPOSE BUTTON
-              ================================================= */}
-              <a
-                href={gmailComposeUrl}
-                target="_blank"
-                rel="noopener noreferrer"
+              {/* EMAIL BUTTON */}
+
+              <button
+                type="button"
+                onClick={handleEmailClick}
                 className="
                   mt-5
                   sm:mt-7
@@ -701,16 +753,14 @@ const ContactInfo = () => {
                   gap-2
                   hover:bg-blue-900
                   transition
+                  cursor-pointer
                 "
               >
                 <Mail size={17} />
                 Send Email
-              </a>
-
+              </button>
             </div>
-
           </div>
-
         </div>
       </div>
     </section>
