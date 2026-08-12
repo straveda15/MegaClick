@@ -18,11 +18,7 @@ const Hero = () => {
   return (
     <section
       id="home"
-      className="
-        relative
-        overflow-hidden
-        bg-white
-      "
+      className="relative overflow-hidden bg-white"
     >
       <div
         className="
@@ -32,9 +28,9 @@ const Hero = () => {
           sm:px-8
           lg:px-16
           xl:px-24
-          py-6
-          sm:py-8
-          lg:py-10
+          py-8
+          sm:py-10
+          lg:py-12
         "
       >
         <div
@@ -43,12 +39,13 @@ const Hero = () => {
             grid-cols-1
             lg:grid-cols-2
             gap-10
-            lg:gap-16
+            lg:gap-14
+            xl:gap-20
             items-center
           "
         >
           {/* =====================================================
-              LEFT SIDE
+              LEFT CONTENT
           ====================================================== */}
 
           <div
@@ -59,7 +56,7 @@ const Hero = () => {
               w-full
             "
           >
-            {/* ================= BADGE ================= */}
+            {/* BADGE */}
 
             <div
               className="
@@ -81,7 +78,7 @@ const Hero = () => {
               Trusted Business Solutions
             </div>
 
-            {/* ================= HEADING ================= */}
+            {/* HEADING */}
 
             <h1
               className="
@@ -111,7 +108,7 @@ const Hero = () => {
               </span>
             </h1>
 
-            {/* ================= DESCRIPTION ================= */}
+            {/* DESCRIPTION */}
 
             <p
               className="
@@ -128,7 +125,7 @@ const Hero = () => {
               compliance, finance and growth with trusted expert guidance.
             </p>
 
-            {/* ================= STATS ================= */}
+            {/* STATS */}
 
             <div
               className="
@@ -139,8 +136,6 @@ const Hero = () => {
                 flex-wrap
               "
             >
-              {/* CLIENTS */}
-
               <div>
                 <h3
                   className="
@@ -153,18 +148,10 @@ const Hero = () => {
                   15000+
                 </h3>
 
-                <p
-                  className="
-                    text-black
-                    text-xs
-                    sm:text-sm
-                  "
-                >
+                <p className="text-black text-xs sm:text-sm">
                   Happy Clients
                 </p>
               </div>
-
-              {/* SERVICES */}
 
               <div>
                 <h3
@@ -178,18 +165,10 @@ const Hero = () => {
                   25+
                 </h3>
 
-                <p
-                  className="
-                    text-black
-                    text-xs
-                    sm:text-sm
-                  "
-                >
+                <p className="text-black text-xs sm:text-sm">
                   Services
                 </p>
               </div>
-
-              {/* EXPERIENCE */}
 
               <div>
                 <h3
@@ -203,19 +182,13 @@ const Hero = () => {
                   10+
                 </h3>
 
-                <p
-                  className="
-                    text-black
-                    text-xs
-                    sm:text-sm
-                  "
-                >
+                <p className="text-black text-xs sm:text-sm">
                   Years Experience
                 </p>
               </div>
             </div>
 
-            {/* ================= BUTTONS ================= */}
+            {/* BUTTONS */}
 
             <div
               className="
@@ -279,90 +252,102 @@ const Hero = () => {
           </div>
 
           {/* =====================================================
-              RIGHT SIDE FLOATING UI
+              RIGHT FLOATING UI
           ====================================================== */}
 
           <div
             className="
-              flex
-              items-center
-              justify-center
+              relative
               w-full
-              min-h-[390px]
-              sm:min-h-[420px]
-              lg:min-h-[450px]
-              xl:min-h-[520px]
-              mt-5
-              sm:mt-6
+              flex
+              justify-center
+              items-center
+              mt-6
               lg:mt-0
               overflow-visible
             "
           >
             {/* =================================================
-                FLOATING UI CONTAINER
+                RESPONSIVE FLOATING CONTAINER
             ================================================== */}
 
             <div
               className="
                 relative
-                mx-auto
+                flex-shrink-0
+
                 w-[320px]
-                h-[360px]
+                h-[390px]
 
                 sm:w-[390px]
-                sm:h-[390px]
+                sm:h-[420px]
 
-                md:w-[430px]
-                md:h-[410px]
+                md:w-[450px]
+                md:h-[440px]
 
-                lg:w-[420px]
-                lg:h-[420px]
+                lg:w-[500px]
+                lg:h-[450px]
 
                 xl:w-[560px]
                 xl:h-[480px]
               "
             >
+
               {/* =================================================
-                  CENTER MAIN CARD
+                  MAIN CENTER CARD
               ================================================== */}
 
               <div
                 className="
                   absolute
+                  z-10
+
                   left-1/2
                   -translate-x-1/2
 
                   top-[65px]
-                  sm:top-[75px]
-                  md:top-[80px]
-                  lg:top-[85px]
-                  xl:top-[90px]
 
-                  z-10
+                  sm:top-[70px]
 
-                  w-[255px]
-                  sm:w-[330px]
-                  md:w-[360px]
-                  lg:w-[350px]
-                  xl:w-[490px]
+                  md:top-[75px]
+
+                  lg:top-[80px]
+
+                  xl:top-[85px]
+
+                  w-[245px]
+
+                  sm:w-[310px]
+
+                  md:w-[350px]
+
+                  lg:w-[380px]
+
+                  xl:w-[440px]
                 "
               >
                 <div className="hero-float-main">
+
                   <div
                     className="
                       bg-white
                       rounded-2xl
-                      sm:rounded-[24px]
+                      sm:rounded-[22px]
+
                       border
                       border-blue-100
-                      shadow-[0_20px_40px_rgba(11,78,162,0.12)]
+
+                      shadow-[0_20px_40px_rgba(11,78,162,0.14)]
+
                       p-4
                       sm:p-5
-                      lg:p-6
+                      md:p-6
+                      lg:p-7
                       xl:p-8
                     "
                   >
-                    {/* CARD HEADER */}
+
+                    {/* MAIN CARD HEADER */}
 
                     <div
                       className="
@@ -372,17 +357,23 @@ const Hero = () => {
                         sm:gap-4
                       "
                     >
+
                       <div
                         className="
                           w-10
                           h-10
+
                           sm:w-12
                           sm:h-12
+
                           xl:w-14
                           xl:h-14
+
                           rounded-xl
                           sm:rounded-2xl
+
                           bg-blue-100
+
                           flex
                           items-center
                           justify-center
@@ -430,20 +421,23 @@ const Hero = () => {
                       </div>
                     </div>
 
-                    {/* CARD STATS */}
+                    {/* MAIN CARD STATS */}
 
                     <div
                       className="
                         mt-5
                         sm:mt-6
                         xl:mt-8
+
                         grid
                         grid-cols-3
+
                         gap-2
                         sm:gap-3
                         xl:gap-4
                       "
                     >
+
                       {/* CLIENTS */}
 
                       <div
@@ -451,9 +445,11 @@ const Hero = () => {
                           bg-blue-50
                           rounded-lg
                           sm:rounded-xl
+
                           p-2
                           sm:p-3
                           xl:p-4
+
                           text-center
                         "
                       >
@@ -488,9 +484,11 @@ const Hero = () => {
                           bg-green-50
                           rounded-lg
                           sm:rounded-xl
+
                           p-2
                           sm:p-3
                           xl:p-4
+
                           text-center
                         "
                       >
@@ -525,9 +523,11 @@ const Hero = () => {
                           bg-blue-50
                           rounded-lg
                           sm:rounded-xl
+
                           p-2
                           sm:p-3
                           xl:p-4
+
                           text-center
                         "
                       >
@@ -554,6 +554,7 @@ const Hero = () => {
                           Years
                         </p>
                       </div>
+
                     </div>
 
                     {/* TRUSTED */}
@@ -563,72 +564,89 @@ const Hero = () => {
                         mt-4
                         sm:mt-5
                         xl:mt-6
+
                         flex
                         items-center
                         gap-2
+
                         text-xs
                         sm:text-sm
+
                         font-semibold
                         text-green-600
                       "
                     >
                       <CheckCircle2
                         size={16}
-                        className="sm:w-[18px] sm:h-[18px]"
+                        className="
+                          sm:w-[18px]
+                          sm:h-[18px]
+                        "
                       />
 
                       Trusted Business Partner
                     </div>
+
                   </div>
                 </div>
               </div>
 
               {/* =================================================
-                  LEFT SMALL CARD - 15000+
+                  LEFT SMALL CARD
               ================================================== */}
 
               <div
                 className="
                   absolute
-
-                  left-[0px]
-                  top-[5px]
-
-                  sm:left-[-15px]
-                  sm:top-0
-
-                  md:left-[-35px]
-                  md:top-5
-
-                  lg:left-[-75px]
-                  lg:top-5
-
-                  xl:left-[-85px]
-                  xl:top-10
-
                   z-20
 
+                  left-[0px]
+                  top-[15px]
+
+                  sm:left-[5px]
+                  sm:top-[10px]
+
+                  md:left-[15px]
+                  md:top-[15px]
+
+                  lg:left-[30px]
+                  lg:top-[20px]
+
+                  xl:left-[35px]
+                  xl:top-[25px]
+
                   w-[105px]
-                  sm:w-[140px]
+
+                  sm:w-[135px]
+
                   md:w-[150px]
-                  lg:w-[155px]
-                  xl:w-[175px]
+
+                  lg:w-[165px]
+
+                  xl:w-[180px]
                 "
               >
                 <div className="hero-float-left">
+
                   <div
                     className="
                       bg-white
+
                       rounded-xl
                       sm:rounded-2xl
+
                       border
                       border-blue-100
-                      shadow-[0_15px_35px_rgba(11,78,162,0.12)]
+
+                      shadow-[0_15px_30px_rgba(11,78,162,0.13)]
+
                       p-2.5
-                      sm:p-4
+                      sm:p-3.5
+                      md:p-4
                       xl:p-5
                     "
                   >
+
                     <div
                       className="
                         flex
@@ -637,20 +655,27 @@ const Hero = () => {
                         sm:gap-3
                       "
                     >
+
                       <div
                         className="
                           w-7
                           h-7
+
                           sm:w-9
                           sm:h-9
+
                           xl:w-10
                           xl:h-10
+
                           rounded-lg
                           sm:rounded-xl
+
                           bg-blue-100
+
                           flex
                           items-center
                           justify-center
+
                           flex-shrink-0
                         "
                       >
@@ -658,18 +683,20 @@ const Hero = () => {
                           size={17}
                           className="
                             text-[#0B4EA2]
-                            sm:w-[22px]
-                            sm:h-[22px]
+                            sm:w-[21px]
+                            sm:h-[21px]
                           "
                         />
                       </div>
 
                       <div>
+
                         <h4
                           className="
                             font-bold
                             text-[11px]
                             sm:text-sm
+                            xl:text-base
                           "
                         >
                           15000+
@@ -678,61 +705,79 @@ const Hero = () => {
                         <p
                           className="
                             text-[8px]
-                            sm:text-[11px]
+                            sm:text-[10px]
+                            xl:text-[11px]
                             text-gray-500
                           "
                         >
                           Happy Clients
                         </p>
+
                       </div>
+
                     </div>
+
                   </div>
+
                 </div>
               </div>
 
               {/* =================================================
-                  RIGHT SECURITY CARD
+                  RIGHT / BOTTOM SMALL CARD
               ================================================== */}
 
               <div
                 className="
                   absolute
-
-                  right-[0px]
-                  bottom-[10px]
-
-                  sm:right-[-5px]
-                  sm:bottom-[60px]
-
-                  md:right-0
-                  md:bottom-[70px]
-
-                  lg:right-[-5px]
-                  lg:bottom-[80px]
-
-                  xl:right-[-5px]
-                  xl:bottom-[90px]
-
                   z-20
 
+                  right-[0px]
+                  bottom-[20px]
+
+                  sm:right-[0px]
+                  sm:bottom-[35px]
+
+                  md:right-[5px]
+                  md:bottom-[45px]
+
+                  lg:right-[5px]
+                  lg:bottom-[50px]
+
+                  xl:right-[0px]
+                  xl:bottom-[55px]
+
                   w-[110px]
-                  sm:w-[150px]
-                  xl:w-[180px]
+
+                  sm:w-[145px]
+
+                  md:w-[160px]
+
+                  lg:w-[175px]
+
+                  xl:w-[200px]
                 "
               >
                 <div className="hero-float-right">
+
                   <div
                     className="
                       bg-white
+
                       rounded-xl
+                      sm:rounded-2xl
+
                       border
                       border-blue-100
-                      shadow-[0_12px_25px_rgba(11,78,162,0.12)]
-                      p-2
-                      sm:p-3
-                      xl:p-4
+
+                      shadow-[0_15px_30px_rgba(11,78,162,0.13)]
+
+                      p-2.5
+                      sm:p-3.5
+                      md:p-4
+                      xl:p-5
                     "
                   >
+
                     <div
                       className="
                         flex
@@ -741,17 +786,27 @@ const Hero = () => {
                         sm:gap-3
                       "
                     >
+
                       <div
                         className="
                           w-7
                           h-7
-                          sm:w-8
-                          sm:h-8
+
+                          sm:w-9
+                          sm:h-9
+
+                          xl:w-10
+                          xl:h-10
+
                           rounded-lg
+                          sm:rounded-xl
+
                           bg-green-100
+
                           flex
                           items-center
                           justify-center
+
                           flex-shrink-0
                         "
                       >
@@ -759,18 +814,20 @@ const Hero = () => {
                           size={16}
                           className="
                             text-green-600
-                            sm:w-[18px]
-                            sm:h-[18px]
+                            sm:w-[19px]
+                            sm:h-[19px]
                           "
                         />
                       </div>
 
                       <div>
+
                         <h4
                           className="
                             font-bold
                             text-[11px]
                             sm:text-sm
+                            xl:text-base
                             text-gray-900
                           "
                         >
@@ -780,89 +837,115 @@ const Hero = () => {
                         <p
                           className="
                             text-[8px]
-                            sm:text-[11px]
+                            sm:text-[10px]
+                            xl:text-[11px]
                             text-gray-500
                           "
                         >
                           Compliance
                         </p>
+
                       </div>
+
                     </div>
+
                   </div>
+
                 </div>
               </div>
 
               {/* =================================================
-                  TOP STATUS BADGE
+                  SERVICE ACTIVE BADGE
               ================================================== */}
 
               <div
                 className="
                   absolute
+                  z-30
 
-                  right-[0px]
-                  top-[5px]
+                  right-[5px]
+                  top-[20px]
 
                   sm:right-[15px]
-                  sm:top-[20px]
+                  sm:top-[25px]
 
-                  md:right-[20px]
-                  md:top-[25px]
+                  md:right-[25px]
+                  md:top-[30px]
 
-                  lg:right-[20px]
-                  lg:top-[25px]
+                  lg:right-[35px]
+                  lg:top-[30px]
 
-                  xl:right-[50px]
+                  xl:right-[45px]
                   xl:top-[35px]
-
-                  z-20
                 "
               >
                 <div className="hero-float-status">
+
                   <div
                     className="
                       flex
                       items-center
                       gap-1.5
                       sm:gap-2
+
                       bg-blue-50
+
                       border
                       border-blue-200
+
                       rounded-full
-                      px-2
+
+                      px-2.5
                       sm:px-4
                       xl:px-5
-                      py-1
+
+                      py-1.5
                       sm:py-2
+
                       text-[8px]
                       sm:text-xs
                       xl:text-sm
+
                       font-bold
                       text-[#0B4EA2]
+
                       whitespace-nowrap
+
+                      shadow-sm
                     "
                   >
+
                     <span
                       className="
                         w-1.5
                         h-1.5
+
                         sm:w-2
                         sm:h-2
+
                         rounded-full
+
                         bg-green-500
+
+                        shadow-[0_0_6px_rgba(34,197,94,0.8)]
                       "
                     />
 
                     Services Active
+
                   </div>
+
                 </div>
               </div>
+
             </div>
           </div>
         </div>
       </div>
 
-      {/* ================= BACKGROUND BLUR ================= */}
+      {/* =====================================================
+          BACKGROUND BLUR
+      ====================================================== */}
 
       <div
         className="
@@ -891,6 +974,70 @@ const Hero = () => {
           -z-10
         "
       />
+
+      {/* =====================================================
+          FLOATING ANIMATIONS
+      ====================================================== */}
+
+      <style>{`
+        @keyframes heroFloatA {
+          0%,
+          100% {
+            transform: translateY(0px);
+          }
+
+          50% {
+            transform: translateY(-8px);
+          }
+        }
+
+        @keyframes heroFloatB {
+          0%,
+          100% {
+            transform: translateY(0px);
+          }
+
+          50% {
+            transform: translateY(8px);
+          }
+        }
+
+        @keyframes heroStatusFloat {
+          0%,
+          100% {
+            transform: translateY(0px);
+          }
+
+          50% {
+            transform: translateY(-5px);
+          }
+        }
+
+        .hero-float-main {
+          animation: heroFloatA 6s ease-in-out infinite;
+        }
+
+        .hero-float-left {
+          animation: heroFloatB 5.2s ease-in-out 0.4s infinite;
+        }
+
+        .hero-float-right {
+          animation: heroFloatA 4.8s ease-in-out 0.8s infinite;
+        }
+
+        .hero-float-status {
+          animation: heroStatusFloat 5s ease-in-out 0.6s infinite;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .hero-float-main,
+          .hero-float-left,
+          .hero-float-right,
+          .hero-float-status {
+            animation: none;
+          }
+        }
+      `}</style>
     </section>
   );
 };

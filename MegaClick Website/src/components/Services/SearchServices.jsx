@@ -126,7 +126,7 @@ const SearchServices = ({ searchTerm, setSearchTerm }) => {
                 rounded-xl
 
                 border-2
-                border-black
+                border-green-600
 
                 bg-white
 

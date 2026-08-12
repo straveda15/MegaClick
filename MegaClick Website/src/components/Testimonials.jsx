@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Quote, Star } from "lucide-react";
 
 import clientImg from "../assets/client.png";
@@ -35,30 +35,10 @@ const testimonials = [
 ];
 
 const Testimonials = () => {
+  const [isTouching, setIsTouching] = useState(false);
+
   return (
     <section className="w-full bg-white">
-      {/* =================================================
-          MOBILE ANIMATION FIX
-      ================================================= */}
-
-      <style>
-        {`
-          @media (max-width: 639px) {
-            .testimonials-track {
-              animation-play-state: running !important;
-            }
-
-            .testimonials-track:hover {
-              animation-play-state: running !important;
-            }
-
-            .testimonials-track:active {
-              animation-play-state: running !important;
-            }
-          }
-        `}
-      </style>
-
       {/* =================================
           MAIN CONTAINER
       ================================= */}
@@ -96,13 +76,9 @@ const Testimonials = () => {
             lg:mb-14
           "
         >
-          {/* =========================
-              LEFT CONTENT
-          ========================== */}
+          {/* LEFT CONTENT */}
 
           <div>
-            {/* HEADING */}
-
             <h2
               className="
                 mt-4
@@ -116,7 +92,6 @@ const Testimonials = () => {
               "
             >
               What Our Clients
-
               <br />
 
               <span
@@ -131,8 +106,6 @@ const Testimonials = () => {
                 Say About MegaClick
               </span>
             </h2>
-
-            {/* DESCRIPTION */}
 
             <p
               className="
@@ -156,11 +129,9 @@ const Testimonials = () => {
             </p>
           </div>
 
-          {/* =========================
-              CLIENT IMAGE - RIGHT
-          ========================== */}
+          {/* CLIENT IMAGE */}
 
-          <div className="flex justify-center lg:justify-center-safe">
+          <div className="flex justify-center lg:justify-center">
             <div
               className="
                 relative
@@ -190,9 +161,19 @@ const Testimonials = () => {
             TESTIMONIAL SLIDER
         ================================= */}
 
-        <div className="relative overflow-hidden w-full">
+        <div
+          className="
+            relative
+            overflow-hidden
+            w-full
+            touch-pan-y
+          "
+          onTouchStart={() => setIsTouching(true)}
+          onTouchEnd={() => setIsTouching(false)}
+          onTouchCancel={() => setIsTouching(false)}
+        >
           <div
-            className="
+            className={`
               testimonials-track
               flex
               gap-5
@@ -200,7 +181,13 @@ const Testimonials = () => {
               w-max
               animate-testimonials
               py-3
-            "
+
+              ${
+                isTouching
+                  ? "[animation-play-state:paused]"
+                  : "[animation-play-state:running]"
+              }
+            `}
           >
             {[...testimonials, ...testimonials].map(
               (item, index) => (

@@ -11,26 +11,36 @@ import { FaWhatsapp } from "react-icons/fa";
 
 const CTA = () => {
   // =========================================================
-  // GMAIL COMPOSE
-  // Works for both Desktop and Mobile
+  // EMAIL COMPOSE
+  // Desktop → Gmail Web Compose
+  // Mobile → Default Email App
+  // Only recipient is pre-filled
   // =========================================================
 
   const openGmailCompose = () => {
     const email = "megaclickofficial@gmail.com";
 
-    const subject = "Business Service Inquiry";
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(
+      navigator.userAgent
+    );
 
-    const body =
-      "Hello MegaClick,\n\nI would like to know more about your business services.";
+    if (isMobile) {
+      // =====================================================
+      // MOBILE → DEFAULT EMAIL APP
+      // =====================================================
 
-    const gmailComposeUrl =
-      "https://mail.google.com/mail/?view=cm&fs=1" +
-      `&to=${encodeURIComponent(email)}` +
-      `&su=${encodeURIComponent(subject)}` +
-      `&body=${encodeURIComponent(body)}`;
+      window.location.href = `mailto:${email}`;
+    } else {
+      // =====================================================
+      // DESKTOP → GMAIL WEB COMPOSE
+      // =====================================================
 
-    // Open Gmail Compose
-    window.open(gmailComposeUrl, "_blank");
+      const gmailComposeUrl =
+        `https://mail.google.com/mail/?view=cm&fs=1` +
+        `&to=${encodeURIComponent(email)}`;
+
+      window.open(gmailComposeUrl, "_blank");
+    }
   };
 
   return (
@@ -361,7 +371,7 @@ const CTA = () => {
               </a>
 
               {/* =================================================
-                  EMAIL - GMAIL COMPOSE
+                  EMAIL
               ================================================= */}
 
               <button

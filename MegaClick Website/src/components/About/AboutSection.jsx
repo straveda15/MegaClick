@@ -1,6 +1,4 @@
-
-import React, { useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import React from "react";
 
 import {
   Users,
@@ -9,56 +7,9 @@ import {
   BadgeCheck,
 } from "lucide-react";
 
-const title = "Your Success, Our Mission";
-
-/* =====================================================
-   HEADING ANIMATION
-===================================================== */
-
-const containerVariants = {
-  hidden: {},
-
-  visible: {
-    transition: {
-      staggerChildren: 0.04,
-    },
-  },
-};
-
-const letterVariants = {
-  hidden: {
-    opacity: 0,
-    y: 45,
-    filter: "blur(8px)",
-  },
-
-  visible: {
-    opacity: 1,
-    y: 0,
-    filter: "blur(0px)",
-
-    transition: {
-      duration: 0.55,
-      ease: [0.22, 1, 0.36, 1],
-    },
-  },
-};
-
-/* =====================================================
-   ABOUT COMPONENT
-===================================================== */
-
 const About = () => {
-  const sectionRef = useRef(null);
-
-  const isInView = useInView(sectionRef, {
-    amount: 0.2,
-    once: false,
-  });
-
   return (
     <section
-      ref={sectionRef}
       className="
         relative
         overflow-hidden
@@ -90,7 +41,7 @@ const About = () => {
       >
         {/* =====================================================
             HEADING
-            ONLY THIS SECTION HAS ANIMATION
+            STATIC - NO ANIMATION
         ====================================================== */}
 
         <div
@@ -127,55 +78,34 @@ const About = () => {
           </span>
 
           {/* HEADING */}
+<h2
+              className="
+                mt-4
+                sm:mt-5
+                text-3xl
+                sm:text-4xl
+                lg:text-5xl
+                font-bold
+                leading-tight
+                text-gray-900
+              "
+            >
+           Your Success,{" "}
 
-          <motion.h2
-            variants={containerVariants}
-            initial="hidden"
-            animate={isInView ? "visible" : "hidden"}
-            className="
-              mt-4
-              sm:mt-5
-              text-2xl
-              sm:text-3xl
-              md:text-4xl
-              lg:text-5xl
-              font-extrabold
-              leading-tight
-              flex
-              flex-wrap
-            "
-          >
-            {title.split("").map((char, index) => {
-              let color = "text-gray-900";
+          
 
-              /* Your → Blue */
-
-              if (index >= 0 && index <= 3) {
-                color = "text-[#0B4EA2]";
-              }
-
-              /* Success → Green */
-
-              if (index >= 5 && index <= 11) {
-                color = "text-green-500";
-              }
-
-              return (
-                <motion.span
-                  key={index}
-                  variants={letterVariants}
-                  className={`
-                    ${color}
-                    inline-block
-                  `}
-                >
-                  {char === " " ? "\u00A0" : char}
-                </motion.span>
-              );
-            })}
-          </motion.h2>
-
-        
+              <span
+                className="
+                  bg-gradient-to-r
+                  from-blue-600
+                  to-green-500
+                  bg-clip-text
+                  text-transparent
+                "
+              >
+                Our Mission
+              </span>
+            </h2>
         </div>
 
         {/* =====================================================
@@ -335,7 +265,9 @@ const About = () => {
               lg:grid-cols-4
             "
           >
-            {/* STAT 1 */}
+            {/* =================================================
+                STAT 1
+            ================================================= */}
 
             <div
               className="
@@ -411,7 +343,9 @@ const About = () => {
               </p>
             </div>
 
-            {/* STAT 2 */}
+            {/* =================================================
+                STAT 2
+            ================================================= */}
 
             <div
               className="
@@ -486,7 +420,9 @@ const About = () => {
               </p>
             </div>
 
-            {/* STAT 3 */}
+            {/* =================================================
+                STAT 3
+            ================================================= */}
 
             <div
               className="
@@ -559,7 +495,9 @@ const About = () => {
               </p>
             </div>
 
-            {/* STAT 4 */}
+            {/* =================================================
+                STAT 4
+            ================================================= */}
 
             <div
               className="
