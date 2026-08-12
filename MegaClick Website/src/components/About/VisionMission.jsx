@@ -1,11 +1,9 @@
-
 import React, { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import {
   Eye,
   Target,
   CheckCircle2,
-  ArrowRight,
 } from "lucide-react";
 
 const VisionMission = () => {
@@ -28,7 +26,7 @@ const VisionMission = () => {
         bg-blue-50
       "
     >
-      {/* Background Shapes */}
+      {/* ================= BACKGROUND SHAPES ================= */}
 
       <div
         className="
@@ -41,6 +39,7 @@ const VisionMission = () => {
           bg-blue-200
           blur-3xl
           opacity-50
+          pointer-events-none
         "
       />
 
@@ -55,10 +54,11 @@ const VisionMission = () => {
           bg-green-100
           blur-3xl
           opacity-40
+          pointer-events-none
         "
       />
 
-       <div
+      <div
         className="
           max-w-[1500px]
           mx-auto
@@ -74,30 +74,15 @@ const VisionMission = () => {
           lg:pb-10
         "
       >
+        {/* =================================================
+            HEADER
+            NO ANIMATION HERE
+        ================================================= */}
 
-        {/* ================= HEADER ================= */}
+        <div className="mb-10 lg:mb-14">
 
-        <motion.div
-          initial={{
-            opacity: 0,
-            y: 25,
-          }}
-          animate={
-            isInView
-              ? {
-                  opacity: 1,
-                  y: 0,
-                }
-              : {
-                  opacity: 0,
-                  y: 25,
-                }
-          }
-          transition={{
-            duration: 0.7,
-          }}
-          className="mb-10 lg:mb-14"
-        >
+          {/* BADGE - STATIC */}
+
           <span
             className="
               inline-flex
@@ -122,6 +107,8 @@ const VisionMission = () => {
             OUR PURPOSE
           </span>
 
+          {/* HEADING - STATIC */}
+
           <h2
             className="
               mt-5
@@ -145,12 +132,11 @@ const VisionMission = () => {
             </span>
           </h2>
 
-         
-        </motion.div>
-
+        </div>
 
         {/* =================================================
             VISION + MISSION
+            CARDS ANIMATION REMAINS
         ================================================= */}
 
         <div
@@ -201,6 +187,8 @@ const VisionMission = () => {
               duration-500
             "
           >
+
+            {/* BLUE SIDE LINE */}
 
             <div
               className="
@@ -300,7 +288,6 @@ const VisionMission = () => {
 
               </div>
 
-
               {/* RIGHT CONTENT */}
 
               <div className="flex-1">
@@ -341,9 +328,6 @@ const VisionMission = () => {
                   />
 
                   Building a trusted future
-
-             
-
                 </div>
 
               </div>
@@ -351,7 +335,6 @@ const VisionMission = () => {
             </div>
 
           </motion.div>
-
 
           {/* ================= MISSION ================= */}
 
@@ -392,6 +375,8 @@ const VisionMission = () => {
               duration-500
             "
           >
+
+            {/* GREEN SIDE LINE */}
 
             <div
               className="
@@ -491,7 +476,6 @@ const VisionMission = () => {
 
               </div>
 
-
               {/* RIGHT CONTENT */}
 
               <div className="flex-1">
@@ -532,8 +516,6 @@ const VisionMission = () => {
                   />
 
                   Making business simpler
-
-                 
                 </div>
 
               </div>
@@ -543,40 +525,6 @@ const VisionMission = () => {
           </motion.div>
 
         </div>
-
-
-        {/* ================= BOTTOM POINTS ================= */}
-
-        <motion.div
-          initial={{
-            opacity: 0,
-            y: 25,
-          }}
-          animate={
-            isInView
-              ? {
-                  opacity: 1,
-                  y: 0,
-                }
-              : {
-                  opacity: 0,
-                  y: 25,
-                }
-          }
-          transition={{
-            duration: 0.7,
-            delay: 0.45,
-          }}
-          className="
-            mt-8
-            grid
-            sm:grid-cols-2
-            gap-4
-            max-w-4xl
-          "
-        >
-
-        </motion.div>
 
       </div>
     </section>

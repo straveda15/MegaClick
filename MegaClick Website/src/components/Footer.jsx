@@ -17,35 +17,25 @@ const Footer = () => {
   // =================================================
   // EMAIL COMPOSE
   // Desktop → Gmail Web Compose
-  // Mobile  → Direct Email Compose
+  // Mobile  → Default Email App
+  // Only recipient is pre-filled
   // =================================================
+
   const openGmailCompose = () => {
     const email = "megaclickofficial@gmail.com";
-
-    const subject = "Business Service Inquiry";
-
-    const body =
-      "Hello MegaClick,\n\nI would like to know more about your business services.";
 
     const isMobile = /Android|iPhone|iPad|iPod/i.test(
       navigator.userAgent
     );
 
     if (isMobile) {
-      // Mobile → opens default email app in compose mode
-      const mailtoUrl =
-        `mailto:${email}` +
-        `?subject=${encodeURIComponent(subject)}` +
-        `&body=${encodeURIComponent(body)}`;
-
-      window.location.href = mailtoUrl;
+      // Mobile → Default Email App
+      window.location.href = `mailto:${email}`;
     } else {
       // Desktop → Gmail Web Compose
       const gmailComposeUrl =
         `https://mail.google.com/mail/?view=cm&fs=1` +
-        `&to=${encodeURIComponent(email)}` +
-        `&su=${encodeURIComponent(subject)}` +
-        `&body=${encodeURIComponent(body)}`;
+        `&to=${encodeURIComponent(email)}`;
 
       window.open(gmailComposeUrl, "_blank");
     }
@@ -54,6 +44,7 @@ const Footer = () => {
   // =================================================
   // SCROLL TO TOP
   // =================================================
+
   const scrollToTop = () => {
     if (window.location.pathname !== "/") {
       navigate("/");
@@ -75,6 +66,7 @@ const Footer = () => {
   // =================================================
   // SERVICES
   // =================================================
+
   const services = [
     "Business Registration",
     "Tax & Compliance Services",
@@ -84,6 +76,7 @@ const Footer = () => {
   // =================================================
   // QUICK LINKS
   // =================================================
+
   const quickLinks = [
     {
       name: "Home",
@@ -110,6 +103,7 @@ const Footer = () => {
   // =================================================
   // SOCIAL LINKS
   // =================================================
+
   const socialLinks = [
     {
       icon: FaFacebookF,
@@ -131,6 +125,7 @@ const Footer = () => {
   // =================================================
   // HANDLE NAVIGATION
   // =================================================
+
   const handleNavigation = (path) => {
     navigate(path);
 
@@ -146,14 +141,17 @@ const Footer = () => {
 
   return (
     <footer className="bg-[#083A7A] text-white relative overflow-hidden">
+
       {/* =================================================
           TOP GREEN LINE
       ================================================= */}
+
       <div className="h-1 bg-green-400" />
 
       {/* =================================================
           MAIN FOOTER
       ================================================= */}
+
       <div
         className="
           max-w-[1500px]
@@ -182,12 +180,17 @@ const Footer = () => {
             xl:gap-16
           "
         >
+
           {/* =================================================
               COMPANY
           ================================================= */}
+
           <div className="sm:col-span-2 lg:col-span-1">
+
             {/* Logo + Name */}
+
             <div className="flex items-center gap-3 mb-5 sm:mb-6">
+
               <img
                 src={logo}
                 alt="MegaClick"
@@ -220,13 +223,19 @@ const Footer = () => {
                   tracking-wide
                 "
               >
-                <span className="text-white">Mega</span>
+                <span className="text-white">
+                  Mega
+                </span>
 
-                <span className="text-green-400">Click</span>
+                <span className="text-green-400">
+                  Click
+                </span>
               </h2>
+
             </div>
 
             {/* Description */}
+
             <p
               className="
                 text-blue-100
@@ -244,7 +253,9 @@ const Footer = () => {
             {/* =================================================
                 SOCIAL ICONS
             ================================================= */}
+
             <div className="flex gap-3 mt-5 sm:mt-6">
+
               {socialLinks.map((social, index) => {
                 const Icon = social.icon;
 
@@ -281,13 +292,16 @@ const Footer = () => {
                   </a>
                 );
               })}
+
             </div>
           </div>
 
           {/* =================================================
               EXPLORE
           ================================================= */}
+
           <div>
+
             <h3
               className="
                 text-lg
@@ -301,11 +315,15 @@ const Footer = () => {
             </h3>
 
             <ul className="space-y-3 sm:space-y-4">
+
               {quickLinks.map((item, index) => (
                 <li key={index}>
+
                   <button
                     type="button"
-                    onClick={() => handleNavigation(item.path)}
+                    onClick={() =>
+                      handleNavigation(item.path)
+                    }
                     className="
                       group
                       relative
@@ -325,6 +343,7 @@ const Footer = () => {
                       active:scale-[0.98]
                     "
                   >
+
                     <span
                       className="
                         w-1
@@ -344,16 +363,21 @@ const Footer = () => {
                     />
 
                     {item.name}
+
                   </button>
+
                 </li>
               ))}
+
             </ul>
           </div>
 
           {/* =================================================
               OUR SERVICES
           ================================================= */}
+
           <div>
+
             <h3
               className="
                 text-lg
@@ -367,6 +391,7 @@ const Footer = () => {
             </h3>
 
             <ul className="space-y-3 sm:space-y-4">
+
               {services.map((service, index) => (
                 <li
                   key={index}
@@ -389,6 +414,7 @@ const Footer = () => {
                     active:scale-[0.98]
                   "
                 >
+
                   <span
                     className="
                       w-1
@@ -408,15 +434,19 @@ const Footer = () => {
                   />
 
                   {service}
+
                 </li>
               ))}
+
             </ul>
           </div>
 
           {/* =================================================
               CONTACT
           ================================================= */}
+
           <div>
+
             <h3
               className="
                 text-lg
@@ -430,9 +460,11 @@ const Footer = () => {
             </h3>
 
             <div className="space-y-4 sm:space-y-5">
+
               {/* =================================================
                   PHONE
               ================================================= */}
+
               <a
                 href="tel:+919921611911"
                 className="
@@ -448,6 +480,7 @@ const Footer = () => {
                   active:scale-[0.98]
                 "
               >
+
                 <Phone
                   size={19}
                   className="
@@ -472,11 +505,13 @@ const Footer = () => {
                 >
                   +91 9921611911
                 </span>
+
               </a>
 
               {/* =================================================
                   EMAIL
               ================================================= */}
+
               <button
                 type="button"
                 onClick={openGmailCompose}
@@ -500,6 +535,7 @@ const Footer = () => {
                   cursor-pointer
                 "
               >
+
                 <Mail
                   size={19}
                   className="
@@ -525,11 +561,13 @@ const Footer = () => {
                 >
                   megaclickofficial@gmail.com
                 </span>
+
               </button>
 
               {/* =================================================
                   ADDRESS
               ================================================= */}
+
               <a
                 href="https://www.google.com/maps/search/?api=1&query=4th+Floor+Tristar+Complex+Jehan+Circle+Gangapur+Road+Nashik+Maharashtra+422005"
                 target="_blank"
@@ -547,6 +585,7 @@ const Footer = () => {
                   active:scale-[0.98]
                 "
               >
+
                 <MapPin
                   size={22}
                   className="
@@ -581,7 +620,9 @@ const Footer = () => {
                   <br />
                   Nashik, Maharashtra 422005
                 </span>
+
               </a>
+
             </div>
           </div>
         </div>
@@ -590,7 +631,9 @@ const Footer = () => {
       {/* =================================================
           BOTTOM FOOTER
       ================================================= */}
+
       <div className="border-t border-white/10">
+
         <div
           className="
             max-w-[1500px]
@@ -610,7 +653,9 @@ const Footer = () => {
             sm:text-left
           "
         >
+
           {/* Copyright */}
+
           <p
             className="
               text-xs
@@ -634,6 +679,7 @@ const Footer = () => {
           {/* =================================================
               BACK TO TOP
           ================================================= */}
+
           <button
             type="button"
             onClick={scrollToTop}
@@ -662,6 +708,7 @@ const Footer = () => {
               active:scale-95
             "
           >
+
             <span
               className="
                 w-6
@@ -677,6 +724,7 @@ const Footer = () => {
                 group-active:bg-white
               "
             >
+
               <span
                 className="
                   text-sm
@@ -688,10 +736,13 @@ const Footer = () => {
               >
                 ↑
               </span>
+
             </span>
 
             Back to Top
+
           </button>
+
         </div>
       </div>
     </footer>

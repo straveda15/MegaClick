@@ -1,15 +1,10 @@
 import React from "react";
 import ServiceCard from "./ServiceCard";
 
-const ServicesGrid = ({
-  services,
-  selectedCategory
-}) => {
+const ServicesGrid = ({ services, selectedCategory }) => {
   return (
     <div className="space-y-10">
-
       {/* MAIN CATEGORY CARD */}
-
       <div
         className="
           bg-blue-50
@@ -17,88 +12,87 @@ const ServicesGrid = ({
           border
           border-gray-200
           shadow-[0_8px_30px_rgba(0,0,0,0.08)]
-          p-6
+          p-4
+          sm:p-6
         "
       >
-
-        {/* Heading inside card */}
-
+        {/* HEADING */}
         <div
           className="
             flex
             items-center
             justify-between
-            mb-6
+            gap-3
+            mb-5
+            sm:mb-6
           "
         >
-
-          <div>
-
+          <div className="min-w-0">
             <h2
               className="
-                text-2xl
+                text-xl
+                sm:text-2xl
                 font-bold
                 text-gray-800
+                truncate
               "
             >
-              {
-                selectedCategory === "All Services"
-                  ? "All Services"
-                  : selectedCategory
-              }
+              {selectedCategory === "All Services"
+                ? "All Services"
+                : selectedCategory}
             </h2>
 
             <p
               className="
-                text-sm
+                text-xs
+                sm:text-sm
                 text-gray-500
                 mt-1
               "
             >
               Explore our professional services
             </p>
-
           </div>
 
-          {/* Count */}
-
+          {/* COUNT */}
           <div
             className="
-              bg-blue-50
-              px-4
-              py-2
+              flex-shrink-0
+              bg-blue-100
+              px-3
+              sm:px-4
+              py-1.5
+              sm:py-2
               rounded-xl
               text-blue-700
               font-semibold
-              text-sm
+              text-xs
+              sm:text-sm
             "
           >
             {services.length} Services
           </div>
-
         </div>
 
-        {/* SUB SERVICE CARDS */}
-
+        {/* SERVICE CARDS */}
         <div
           className="
             grid
-            grid-cols-1
-            sm:grid-cols-2
+            grid-cols-2
+            gap-3
+            sm:gap-4
             lg:grid-cols-3
-            gap-5
+            lg:gap-5
           "
         >
           {services.map((service, index) => (
             <ServiceCard
-              key={index}
+              key={service.slug || index}
               service={service}
             />
           ))}
         </div>
-
       </div>
-
     </div>
   );
 };

@@ -3,466 +3,642 @@ import { BriefcaseBusiness } from "lucide-react";
 import img1 from "../../assets/img1.jpg";
 
 const HeroSection = () => {
- 
-
   return (
-    <>
-      {/* =========================================================
-          WAVE ANIMATION
-      ========================================================= */}
+    <section
+      className="
+        relative
+        overflow-hidden
+        bg-[#073FA8]
+        min-h-[540px]
+        sm:min-h-[570px]
+        md:min-h-[600px]
+        lg:min-h-[620px]
+        flex
+        items-center
+      "
+    >
+      {/* =====================================================
+          BLUE BACKGROUND
+      ====================================================== */}
 
-      <style>
-        {`
-          @keyframes letterWave {
-            0%,
-            100% {
-              transform: translate3d(0, 0, 0);
-            }
-
-            20% {
-              transform: translate3d(0, -7px, 0);
-            }
-
-            40% {
-              transform: translate3d(0, 0, 0);
-            }
-
-            60% {
-              transform: translate3d(0, 4px, 0);
-            }
-
-            80% {
-              transform: translate3d(0, 0, 0);
-            }
-          }
-
-          .wave-letter {
-            display: inline-block;
-            animation-name: letterWave;
-            animation-duration: 1.8s;
-            animation-timing-function: ease-in-out;
-            animation-iteration-count: infinite;
-            animation-fill-mode: both;
-            will-change: transform;
-            transform: translate3d(0, 0, 0);
-          }
-
-          /* =====================================================
-             MOBILE
-             Keep the animation active on mobile
-          ===================================================== */
-
-          @media (max-width: 639px) {
-            .wave-letter {
-              animation-duration: 1.7s;
-              will-change: transform;
-            }
-          }
-
-          /* =====================================================
-             TABLET
-          ===================================================== */
-
-          @media (min-width: 640px) and (max-width: 1023px) {
-            .wave-letter {
-              animation-duration: 1.8s;
-            }
-          }
-
-          /* =====================================================
-             REDUCED MOTION
-          ===================================================== */
-
-          @media (prefers-reduced-motion: reduce) {
-            .wave-letter {
-              animation: none !important;
-              transform: none !important;
-            }
-          }
-        `}
-      </style>
-
-      {/* =========================================================
-          HERO SECTION
-      ========================================================= */}
-
-      <section
+      <div
         className="
-          relative
-          overflow-hidden
-          bg-gradient-to-r
-          from-[#0B4EA2]
-          to-blue-700
-          py-8
-          sm:py-10
-          md:py-12
-          lg:py-16
+          absolute
+          inset-0
+          bg-gradient-to-br
+          from-[#063D9E]
+          via-[#0847C5]
+          to-[#0641A9]
+          pointer-events-none
+        "
+      />
+
+      {/* =====================================================
+          LEFT GREEN SLANT
+      ====================================================== */}
+
+      <div
+        className="
+          absolute
+          left-0
+          top-0
+          bottom-0
+          w-[70px]
+          sm:w-[95px]
+          md:w-[125px]
+          lg:w-[180px]
+          xl:w-[210px]
+          2xl:w-[230px]
+          bg-[#00A86B]
+          pointer-events-none
+          z-[1]
+        "
+        style={{
+          clipPath: "polygon(0 0, 100% 0, 58% 100%, 0 100%)",
+        }}
+      />
+
+      {/* =====================================================
+          RIGHT GREEN SLANT
+      ====================================================== */}
+
+      <div
+        className="
+          absolute
+          right-0
+          top-0
+          bottom-0
+          w-[75px]
+          sm:w-[100px]
+          md:w-[125px]
+          lg:w-[165px]
+          xl:w-[195px]
+          2xl:w-[220px]
+          bg-[#00A86B]
+          pointer-events-none
+          z-[1]
+        "
+        style={{
+          clipPath: "polygon(42% 0, 100% 0, 100% 100%, 0 100%)",
+        }}
+      />
+
+      {/* =====================================================
+          TOP LEFT DOTS
+      ====================================================== */}
+
+      <div
+        className="
+          absolute
+          left-[22px]
+          sm:left-[30px]
+          lg:left-[42px]
+          top-[30px]
+          sm:top-[40px]
+          lg:top-[48px]
+          z-[2]
+          opacity-50
+          pointer-events-none
         "
       >
+        <div className="grid grid-cols-6 gap-[6px]">
+          {Array.from({ length: 24 }).map((_, index) => (
+            <span
+              key={index}
+              className="
+                w-[4px]
+                h-[4px]
+                rounded-full
+                bg-white
+              "
+            />
+          ))}
+        </div>
+      </div>
 
-        {/* =======================================================
-            LEFT GREEN SLANT
-        ======================================================= */}
+      {/* =====================================================
+          TOP RIGHT DOTS
+      ====================================================== */}
 
+      <div
+        className="
+          absolute
+          right-[65px]
+          sm:right-[85px]
+          lg:right-[135px]
+          xl:right-[165px]
+          top-[25px]
+          sm:top-[35px]
+          lg:top-[42px]
+          z-[2]
+          opacity-20
+          pointer-events-none
+        "
+      >
+        <div className="grid grid-cols-7 gap-[7px]">
+          {Array.from({ length: 28 }).map((_, index) => (
+            <span
+              key={index}
+              className="
+                w-[4px]
+                h-[4px]
+                rounded-full
+                bg-white
+              "
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* =====================================================
+          BOTTOM RIGHT DOTS
+      ====================================================== */}
+
+      <div
+        className="
+          absolute
+          right-[25px]
+          sm:right-[40px]
+          lg:right-[70px]
+          xl:right-[90px]
+          bottom-[45px]
+          sm:bottom-[55px]
+          lg:bottom-[70px]
+          z-[2]
+          opacity-35
+          pointer-events-none
+        "
+      >
+        <div className="grid grid-cols-6 gap-[6px]">
+          {Array.from({ length: 24 }).map((_, index) => (
+            <span
+              key={index}
+              className="
+                w-[4px]
+                h-[4px]
+                rounded-full
+                bg-white
+              "
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* =====================================================
+          MAIN CONTAINER
+      ====================================================== */}
+
+      <div
+        className="
+          relative
+          z-10
+          w-full
+          max-w-[1500px]
+          mx-auto
+          px-4
+          sm:px-6
+          md:px-8
+          lg:px-14
+          xl:px-20
+          py-7
+          sm:py-8
+          md:py-9
+          lg:py-10
+        "
+      >
         <div
           className="
-            absolute
-            left-0
-            top-0
-            h-full
-            w-7
-            sm:w-12
-            md:w-20
-            lg:w-52
-            xl:w-64
-            bg-green-600
-            opacity-80
-            pointer-events-none
-          "
-          style={{
-            clipPath:
-              "polygon(0 0, 100% 0, 60% 100%, 0 100%)",
-          }}
-        />
-
-        {/* =======================================================
-            RIGHT GREEN SLANT
-        ======================================================= */}
-
-        <div
-          className="
-            absolute
-            right-0
-            top-0
-            h-full
-            w-7
-            sm:w-12
-            md:w-20
-            lg:w-44
-            xl:w-56
-            bg-green-600
-            opacity-80
-            pointer-events-none
-          "
-          style={{
-            clipPath:
-              "polygon(40% 0, 100% 0, 100% 100%, 0 100%)",
-          }}
-        />
-
-        {/* =======================================================
-            MAIN CONTAINER
-        ======================================================= */}
-
-        <div
-          className="
-            relative
-            z-10
-            w-full
-            max-w-[1500px]
-            mx-auto
-            px-4
-            sm:px-6
-            md:px-8
-            lg:px-16
-            xl:px-24
+            grid
+            grid-cols-1
+            lg:grid-cols-[0.92fr_1.08fr]
+            items-center
+            gap-7
+            sm:gap-8
+            md:gap-9
+            lg:gap-8
+            xl:gap-10
+            min-w-0
           "
         >
+          {/* =================================================
+              IMAGE SECTION
+          ================================================== */}
 
           <div
             className="
-              grid
-              grid-cols-1
-              lg:grid-cols-[0.9fr_1.1fr]
+              relative
+              flex
+              justify-center
               items-center
-              gap-8
-              sm:gap-9
-              md:gap-10
-              lg:gap-12
+              w-full
               min-w-0
             "
           >
+            <div
+              className="
+                relative
+                flex
+                items-center
+                justify-center
+                w-[220px]
+                h-[220px]
+                sm:w-[260px]
+                sm:h-[260px]
+                md:w-[290px]
+                md:h-[290px]
+                lg:w-[330px]
+                lg:h-[330px]
+                xl:w-[350px]
+                xl:h-[350px]
+              "
+            >
+              {/* OUTER GLOW */}
 
+              <div
+                className="
+                  absolute
+                  inset-[-10px]
+                  rounded-full
+                  border
+                  border-white/20
+                  shadow-[0_0_30px_rgba(255,255,255,0.12)]
+                "
+              />
+
+              {/* OUTER WHITE RING */}
+
+              <div
+                className="
+                  absolute
+                  inset-[-6px]
+                  rounded-full
+                  border-2
+                  border-white/70
+                "
+              />
+
+              {/* BLUE INNER RING */}
+
+              <div
+                className="
+                  absolute
+                  inset-[-2px]
+                  rounded-full
+                  border-4
+                  border-[#0B4EA2]
+                  shadow-[0_0_22px_rgba(75,160,255,0.5)]
+                "
+              />
+
+              {/* IMAGE */}
+
+              <div
+                className="
+                  relative
+                  z-10
+                  w-[195px]
+                  h-[195px]
+                  sm:w-[230px]
+                  sm:h-[230px]
+                  md:w-[255px]
+                  md:h-[255px]
+                  lg:w-[290px]
+                  lg:h-[290px]
+                  xl:w-[310px]
+                  xl:h-[310px]
+                  rounded-full
+                  overflow-hidden
+                  border-[5px]
+                  sm:border-[6px]
+                  border-white
+                  shadow-[0_12px_35px_rgba(0,0,0,0.35)]
+                  bg-white
+                "
+              >
+                <img
+                  src={img1}
+                  alt="MegaClick Professional Services"
+                  className="
+                    w-full
+                    h-full
+                    object-cover
+                  "
+                />
+              </div>
+
+              {/* TOP RIGHT GREEN DOT */}
+
+              <span
+                className="
+                  absolute
+                  z-30
+                  right-0
+                  sm:right-1
+                  md:right-2
+                  top-[30px]
+                  sm:top-[35px]
+                  md:top-[40px]
+                  w-4
+                  h-4
+                  sm:w-5
+                  sm:h-5
+                  rounded-full
+                  bg-green-400
+                  border-2
+                  border-white
+                  shadow-[0_0_10px_rgba(74,222,128,0.9)]
+                "
+              />
+
+              {/* BOTTOM LEFT GREEN DOT */}
+
+              <span
+                className="
+                  absolute
+                  z-30
+                  left-0
+                  sm:left-1
+                  md:left-2
+                  bottom-[28px]
+                  sm:bottom-[34px]
+                  md:bottom-[38px]
+                  w-4
+                  h-4
+                  sm:w-5
+                  sm:h-5
+                  rounded-full
+                  bg-green-400
+                  border-2
+                  border-white
+                  shadow-[0_0_10px_rgba(74,222,128,0.9)]
+                "
+              />
+
+              {/* DOTTED ORBIT */}
+
+              <div
+                className="
+                  absolute
+                  inset-[-24px]
+                  rounded-full
+                  border
+                  border-dashed
+                  border-white/20
+                  pointer-events-none
+                "
+              />
+
+              {/* ORBIT ARC */}
+
+              <div
+                className="
+                  absolute
+                  inset-[-18px]
+                  rounded-full
+                  border-t-2
+                  border-l-2
+                  border-white/50
+                  rotate-[18deg]
+                  pointer-events-none
+                "
+              />
+            </div>
+          </div>
+
+          {/* =================================================
+              RIGHT CONTENT
+          ================================================== */}
+
+          <div
+            className="
+              relative
+              z-20
+              w-full
+              min-w-0
+              max-w-full
+              overflow-hidden
+              text-white
+              text-center
+              lg:text-left
+            "
+          >
             {/* =================================================
-                LEFT IMAGE
-                POSITION UNCHANGED
-            ================================================= */}
+                BADGE
+            ================================================== */}
 
             <div
               className="
                 flex
                 justify-center
-                lg:justify-baseline
-                items-center
-                order-1
+                lg:justify-start
                 w-full
-                min-w-0
               "
             >
-
-              <div
+              <span
                 className="
-                  relative
-                  translate-x-3
-                  sm:translate-x-5
-                  md:translate-x-6
-                  lg:translate-x-10
-                  xl:translate-x-14
+                  inline-flex
+                  max-w-full
+                  items-center
+                  justify-center
+                  gap-2
+                  px-3
+                  sm:px-4
+                  py-1.5
+                  sm:py-2
+                  rounded-full
+                  border
+                  border-white/25
+                  bg-white/5
+                  shadow-[0_5px_18px_rgba(0,0,0,0.15)]
+                  text-xs
+                  sm:text-sm
+                  font-semibold
+                  whitespace-nowrap
                 "
               >
-
-                {/* Decorative Circle */}
-
-                <div
+                <BriefcaseBusiness
+                  size={16}
                   className="
-                    absolute
-                    -inset-2
-                    sm:-inset-3
-                    md:-inset-4
-                    rounded-full
-                    border
-                    border-white/20
-                    pointer-events-none
+                    text-green-400
+                    flex-shrink-0
                   "
                 />
 
-                {/* Outer Decorative Circle */}
-
-                <div
-                  className="
-                    absolute
-                    -inset-4
-                    sm:-inset-5
-                    md:-inset-6
-                    rounded-full
-                    border
-                    border-white/10
-                    pointer-events-none
-                  "
-                />
-
-                {/* Image */}
-
-                <div
-                  className="
-                    relative
-                    w-40
-                    h-40
-                    sm:w-48
-                    sm:h-48
-                    md:w-56
-                    md:h-56
-                    lg:w-64
-                    lg:h-64
-                    xl:w-72
-                    xl:h-72
-                    rounded-full
-                    overflow-hidden
-                    border-4
-                    sm:border-[6px]
-                    border-white/20
-                    shadow-2xl
-                    bg-white/10
-                  "
-                >
-
-                  <img
-                    src={img1}
-                    alt="MegaClick Services"
-                    className="
-                      w-full
-                      h-full
-                      object-cover
-                    "
-                  />
-
-                </div>
-
-              </div>
+                <span>
+                  Our Professional Services
+                </span>
+              </span>
             </div>
 
-
             {/* =================================================
-                RIGHT CONTENT
-            ================================================= */}
+                MAIN HEADING
+            ================================================== */}
 
-            <div
+            <h1
               className="
-                relative
-                z-20
-                order-2
+                mt-4
+                sm:mt-5
+                lg:mt-6
                 w-full
-                min-w-0
-                max-w-3xl
-                mx-auto
-                lg:mx-0
-                text-white
-                text-center
-                lg:text-left
+                max-w-full
+                font-extrabold
+                tracking-tight
+                leading-[1.08]
+                break-words
               "
             >
-
-              {/* =================================================
-                  BADGE
-              ================================================= */}
-
-              <div
+              <span
                 className="
-                  flex
-                  justify-center
-                  lg:justify-start
-                  w-full
-                "
-              >
-
-                <span
-                  className="
-                    inline-flex
-                    max-w-full
-                    items-center
-                    justify-center
-                    gap-2
-                    bg-white/10
-                    backdrop-blur-md
-                    border
-                    border-white/10
-                    px-3
-                    sm:px-4
-                    py-2
-                    rounded-full
-                    text-xs
-                    sm:text-sm
-                    font-semibold
-                    whitespace-nowrap
-                  "
-                >
-
-                  <BriefcaseBusiness
-                    size={17}
-                    className="
-                      text-green-300
-                      flex-shrink-0
-                    "
-                  />
-
-                  <span>
-                    Our Professional Services
-                  </span>
-
-                </span>
-
-              </div>
-
-
-              {/* =================================================
-                  MAIN HEADING
-              ================================================= */}
-
-              <h1
-                className="
-                  mt-4
-                  sm:mt-5
-                  md:mt-6
-                  text-[27px]
-                  leading-[1.15]
-                  sm:text-3xl
-                  sm:leading-tight
-                  md:text-4xl
-                  lg:text-[42px]
-                  lg:leading-[1.15]
-                  xl:text-[48px]
-                  font-bold
-                  tracking-tight
+                  block
+                  text-[28px]
+                  sm:text-[35px]
+                  md:text-[42px]
+                  lg:text-[45px]
+                  xl:text-[52px]
+                  text-white
                   break-words
                 "
               >
+                Professional Services
+              </span>
 
-                <span className="block">
-                  Professional Services
-                </span>
+              <span
+                className="
+                  block
+                  mt-1
+                  sm:mt-2
+                  text-[23px]
+                  sm:text-[30px]
+                  md:text-[36px]
+                  lg:text-[40px]
+                  xl:text-[47px]
+                  text-green-300
+                  break-words
+                "
+              >
+                Designed for Every Business
+              </span>
+            </h1>
 
-                <span
-                  className="
-                    block
-                    mt-1
-                    sm:mt-2
-                    text-[23px]
-                    leading-[1.2]
-                    sm:text-3xl
-                    md:text-4xl
-                    lg:text-[40px]
-                    lg:leading-[1.15]
-                    xl:text-[46px]
-                    text-green-300
-                    break-words
-                  "
-                >
-                  Designed for Every Business
-                </span>
+            {/* =================================================
+                UNDERLINE
+            ================================================== */}
 
-              </h1>
-
-
-              {/* =================================================
-                  QUOTE WITH WAVE ANIMATION
-              ================================================= */}
+            <div
+              className="
+                mt-4
+                sm:mt-5
+                flex
+                justify-center
+                lg:justify-start
+                items-center
+                max-w-full
+              "
+            >
+              <div
+                className="
+                  h-[3px]
+                  w-14
+                  sm:w-20
+                  bg-green-400
+                  rounded-full
+                  flex-shrink-0
+                "
+              />
 
               <div
                 className="
-                  mt-5
-                  sm:mt-6
-                  md:mt-7
-                  w-full
-                  max-w-2xl
-                  mx-auto
-                  lg:mx-0
-                  px-1
-                  sm:px-2
-                  overflow-visible
+                  h-[2px]
+                  w-20
+                  sm:w-28
+                  bg-white/20
+                  flex-shrink-0
                 "
-              >
-
-                <p
-                  className="
-                    text-black
-                    text-[15px]
-                    leading-7
-                    sm:text-lg
-                    sm:leading-8
-                    md:text-xl
-                    md:leading-9
-                    lg:text-2xl
-                    lg:leading-relaxed
-                    xl:text-[25px]
-                    italic
-                    font-semibold
-                    break-words
-                  "
-                >
-
-               <span className="block">
-  “ONE PLATFORM.
-</span>
-
-<span className="block">
-  COMPLETE SOLUTIONS FOR
-</span>
-
-<span className="block">
-  BUSINESSES &amp; INDIVIDUALS”
-</span>
-
-                </p>
-
-              </div>
-
+              />
             </div>
 
-          </div>
+            {/* =================================================
+                QUOTE
+            ================================================== */}
 
+            <div
+              className="
+                mt-4
+                sm:mt-5
+                lg:mt-6
+                w-full
+                max-w-[600px]
+                mx-auto
+                lg:mx-0
+                overflow-hidden
+              "
+            >
+              <p
+                className="
+                  text-black
+                  italic
+                  font-bold
+                  text-[15px]
+                  sm:text-[18px]
+                  md:text-[20px]
+                  lg:text-[22px]
+                  xl:text-[24px]
+                  leading-[1.55]
+                  break-words
+                "
+              >
+                <span className="block">
+                  “ONE PLATFORM.
+                </span>
+
+                <span className="block">
+                  COMPLETE SOLUTIONS FOR
+                </span>
+
+                <span className="block">
+                  BUSINESSES &amp; INDIVIDUALS”
+                </span>
+              </p>
+            </div>
+          </div>
         </div>
-      </section>
-    </>
+      </div>
+
+      {/* =====================================================
+          BOTTOM LINE
+      ====================================================== */}
+
+      <div
+        className="
+          absolute
+          bottom-0
+          left-0
+          right-0
+          h-px
+          bg-white/20
+          z-20
+        "
+      />
+
+      {/* CENTER GLOW */}
+
+      <div
+        className="
+          absolute
+          bottom-0
+          left-1/2
+          -translate-x-1/2
+          w-24
+          sm:w-32
+          h-[3px]
+          bg-white
+          rounded-full
+          blur-[4px]
+          opacity-70
+          z-20
+        "
+      />
+    </section>
   );
 };
 
