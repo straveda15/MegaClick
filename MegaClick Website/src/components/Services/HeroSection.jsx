@@ -1,34 +1,43 @@
 import React from "react";
-import { BriefcaseBusiness } from "lucide-react";
+import { BriefcaseBusiness, ArrowRight } from "lucide-react";
 import img1 from "../../assets/img1.jpg";
 
 const HeroSection = () => {
+  // Smooth scroll to services section
+  const scrollToServices = () => {
+    const servicesSection = document.getElementById("services-section");
+    if (servicesSection) {
+      servicesSection.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <section
       className="
         relative
         overflow-hidden
         bg-[#073FA8]
-        min-h-[540px]
-        sm:min-h-[570px]
-        md:min-h-[600px]
-        lg:min-h-[620px]
+        min-h-[460px]
+        sm:min-h-[500px]
+        lg:min-h-[540px]
         flex
         items-center
+        py-6
+        sm:py-8
+        lg:py-10
       "
     >
       {/* =====================================================
           BLUE BACKGROUND
       ====================================================== */}
-
       <div
         className="
           absolute
           inset-0
           bg-gradient-to-br
-          from-[#063D9E]
-          via-[#0847C5]
-          to-[#0641A9]
+          from-[#053285]
+          via-[#0747C9]
+          to-[#053BA1]
           pointer-events-none
         "
       />
@@ -36,22 +45,21 @@ const HeroSection = () => {
       {/* =====================================================
           LEFT GREEN SLANT
       ====================================================== */}
-
       <div
         className="
           absolute
           left-0
           top-0
           bottom-0
-          w-[70px]
-          sm:w-[95px]
-          md:w-[125px]
-          lg:w-[180px]
-          xl:w-[210px]
-          2xl:w-[230px]
+          w-[50px]
+          sm:w-[80px]
+          md:w-[110px]
+          lg:w-[160px]
+          xl:w-[190px]
           bg-[#00A86B]
           pointer-events-none
           z-[1]
+          opacity-90
         "
         style={{
           clipPath: "polygon(0 0, 100% 0, 58% 100%, 0 100%)",
@@ -61,22 +69,21 @@ const HeroSection = () => {
       {/* =====================================================
           RIGHT GREEN SLANT
       ====================================================== */}
-
       <div
         className="
           absolute
           right-0
           top-0
           bottom-0
-          w-[75px]
-          sm:w-[100px]
-          md:w-[125px]
-          lg:w-[165px]
-          xl:w-[195px]
-          2xl:w-[220px]
+          w-[55px]
+          sm:w-[85px]
+          md:w-[115px]
+          lg:w-[150px]
+          xl:w-[180px]
           bg-[#00A86B]
           pointer-events-none
           z-[1]
+          opacity-90
         "
         style={{
           clipPath: "polygon(42% 0, 100% 0, 100% 100%, 0 100%)",
@@ -86,31 +93,24 @@ const HeroSection = () => {
       {/* =====================================================
           TOP LEFT DOTS
       ====================================================== */}
-
       <div
         className="
           absolute
-          left-[22px]
-          sm:left-[30px]
-          lg:left-[42px]
-          top-[30px]
-          sm:top-[40px]
-          lg:top-[48px]
+          left-[15px]
+          sm:left-[28px]
+          lg:left-[38px]
+          top-[20px]
+          sm:top-[32px]
           z-[2]
-          opacity-50
+          opacity-40
           pointer-events-none
         "
       >
-        <div className="grid grid-cols-6 gap-[6px]">
+        <div className="grid grid-cols-6 gap-[5px]">
           {Array.from({ length: 24 }).map((_, index) => (
             <span
               key={index}
-              className="
-                w-[4px]
-                h-[4px]
-                rounded-full
-                bg-white
-              "
+              className="w-[3px] h-[3px] sm:w-[4px] sm:h-[4px] rounded-full bg-white"
             />
           ))}
         </div>
@@ -119,32 +119,24 @@ const HeroSection = () => {
       {/* =====================================================
           TOP RIGHT DOTS
       ====================================================== */}
-
       <div
         className="
           absolute
-          right-[65px]
-          sm:right-[85px]
-          lg:right-[135px]
-          xl:right-[165px]
-          top-[25px]
-          sm:top-[35px]
-          lg:top-[42px]
+          right-[50px]
+          sm:right-[75px]
+          lg:right-[120px]
+          top-[18px]
+          sm:top-[28px]
           z-[2]
           opacity-20
           pointer-events-none
         "
       >
-        <div className="grid grid-cols-7 gap-[7px]">
+        <div className="grid grid-cols-7 gap-[6px]">
           {Array.from({ length: 28 }).map((_, index) => (
             <span
               key={index}
-              className="
-                w-[4px]
-                h-[4px]
-                rounded-full
-                bg-white
-              "
+              className="w-[3px] h-[3px] sm:w-[4px] sm:h-[4px] rounded-full bg-white"
             />
           ))}
         </div>
@@ -153,41 +145,32 @@ const HeroSection = () => {
       {/* =====================================================
           BOTTOM RIGHT DOTS
       ====================================================== */}
-
       <div
         className="
           absolute
-          right-[25px]
-          sm:right-[40px]
-          lg:right-[70px]
-          xl:right-[90px]
-          bottom-[45px]
-          sm:bottom-[55px]
-          lg:bottom-[70px]
+          right-[18px]
+          sm:right-[32px]
+          lg:right-[60px]
+          bottom-[30px]
+          sm:bottom-[45px]
           z-[2]
           opacity-35
           pointer-events-none
         "
       >
-        <div className="grid grid-cols-6 gap-[6px]">
+        <div className="grid grid-cols-6 gap-[5px]">
           {Array.from({ length: 24 }).map((_, index) => (
             <span
               key={index}
-              className="
-                w-[4px]
-                h-[4px]
-                rounded-full
-                bg-white
-              "
+              className="w-[3px] h-[3px] sm:w-[4px] sm:h-[4px] rounded-full bg-white"
             />
           ))}
         </div>
       </div>
 
       {/* =====================================================
-          MAIN CONTAINER
+          MAIN CONTAINER (MOBILE SAFE & PAGE UTILIZED)
       ====================================================== */}
-
       <div
         className="
           relative
@@ -197,33 +180,25 @@ const HeroSection = () => {
           mx-auto
           px-4
           sm:px-6
-          md:px-8
-          lg:px-14
-          xl:px-20
-          py-7
-          sm:py-8
-          md:py-9
-          lg:py-10
+          lg:px-12
+          xl:px-16
         "
       >
         <div
           className="
             grid
             grid-cols-1
-            lg:grid-cols-[0.92fr_1.08fr]
+            lg:grid-cols-[0.9fr_1.1fr]
             items-center
-            gap-7
+            gap-6
             sm:gap-8
-            md:gap-9
-            lg:gap-8
-            xl:gap-10
+            lg:gap-10
             min-w-0
           "
         >
           {/* =================================================
-              IMAGE SECTION
+              IMAGE SECTION (CLEAN - NO BADGES)
           ================================================== */}
-
           <div
             className="
               relative
@@ -240,24 +215,23 @@ const HeroSection = () => {
                 flex
                 items-center
                 justify-center
-                w-[220px]
-                h-[220px]
-                sm:w-[260px]
-                sm:h-[260px]
-                md:w-[290px]
-                md:h-[290px]
-                lg:w-[330px]
-                lg:h-[330px]
-                xl:w-[350px]
-                xl:h-[350px]
+                w-[180px]
+                h-[180px]
+                sm:w-[230px]
+                sm:h-[230px]
+                md:w-[270px]
+                md:h-[270px]
+                lg:w-[310px]
+                lg:h-[310px]
+                xl:w-[330px]
+                xl:h-[330px]
               "
             >
               {/* OUTER GLOW */}
-
               <div
                 className="
                   absolute
-                  inset-[-10px]
+                  inset-[-8px]
                   rounded-full
                   border
                   border-white/20
@@ -266,11 +240,10 @@ const HeroSection = () => {
               />
 
               {/* OUTER WHITE RING */}
-
               <div
                 className="
                   absolute
-                  inset-[-6px]
+                  inset-[-5px]
                   rounded-full
                   border-2
                   border-white/70
@@ -278,40 +251,39 @@ const HeroSection = () => {
               />
 
               {/* BLUE INNER RING */}
-
               <div
                 className="
                   absolute
                   inset-[-2px]
                   rounded-full
-                  border-4
+                  border-[3px]
+                  sm:border-4
                   border-[#0B4EA2]
-                  shadow-[0_0_22px_rgba(75,160,255,0.5)]
+                  shadow-[0_0_20px_rgba(75,160,255,0.5)]
                 "
               />
 
               {/* IMAGE */}
-
               <div
                 className="
                   relative
                   z-10
-                  w-[195px]
-                  h-[195px]
-                  sm:w-[230px]
-                  sm:h-[230px]
-                  md:w-[255px]
-                  md:h-[255px]
-                  lg:w-[290px]
-                  lg:h-[290px]
-                  xl:w-[310px]
-                  xl:h-[310px]
+                  w-[155px]
+                  h-[155px]
+                  sm:w-[200px]
+                  sm:h-[200px]
+                  md:w-[235px]
+                  md:h-[235px]
+                  lg:w-[270px]
+                  lg:h-[270px]
+                  xl:w-[290px]
+                  xl:h-[290px]
                   rounded-full
                   overflow-hidden
-                  border-[5px]
-                  sm:border-[6px]
+                  border-[4px]
+                  sm:border-[5px]
                   border-white
-                  shadow-[0_12px_35px_rgba(0,0,0,0.35)]
+                  shadow-[0_10px_30px_rgba(0,0,0,0.35)]
                   bg-white
                 "
               >
@@ -327,21 +299,18 @@ const HeroSection = () => {
               </div>
 
               {/* TOP RIGHT GREEN DOT */}
-
               <span
                 className="
                   absolute
                   z-30
                   right-0
                   sm:right-1
-                  md:right-2
-                  top-[30px]
-                  sm:top-[35px]
-                  md:top-[40px]
-                  w-4
-                  h-4
-                  sm:w-5
-                  sm:h-5
+                  top-[22px]
+                  sm:top-[30px]
+                  w-3.5
+                  h-3.5
+                  sm:w-4.5
+                  sm:h-4.5
                   rounded-full
                   bg-green-400
                   border-2
@@ -351,21 +320,18 @@ const HeroSection = () => {
               />
 
               {/* BOTTOM LEFT GREEN DOT */}
-
               <span
                 className="
                   absolute
                   z-30
                   left-0
                   sm:left-1
-                  md:left-2
-                  bottom-[28px]
-                  sm:bottom-[34px]
-                  md:bottom-[38px]
-                  w-4
-                  h-4
-                  sm:w-5
-                  sm:h-5
+                  bottom-[20px]
+                  sm:bottom-[28px]
+                  w-3.5
+                  h-3.5
+                  sm:w-4.5
+                  sm:h-4.5
                   rounded-full
                   bg-green-400
                   border-2
@@ -375,11 +341,10 @@ const HeroSection = () => {
               />
 
               {/* DOTTED ORBIT */}
-
               <div
                 className="
                   absolute
-                  inset-[-24px]
+                  inset-[-20px]
                   rounded-full
                   border
                   border-dashed
@@ -388,27 +353,25 @@ const HeroSection = () => {
                 "
               />
 
-              {/* ORBIT ARC */}
-
+              {/* ROTATING ORBIT ARC */}
               <div
                 className="
                   absolute
-                  inset-[-18px]
+                  inset-[-15px]
                   rounded-full
                   border-t-2
                   border-l-2
-                  border-white/50
-                  rotate-[18deg]
+                  border-white/60
                   pointer-events-none
+                  animate-[spin_18s_linear_infinite]
                 "
               />
             </div>
           </div>
 
           {/* =================================================
-              RIGHT CONTENT
+              RIGHT CONTENT (MOBILE SAFE - NO OVERFLOW)
           ================================================== */}
-
           <div
             className="
               relative
@@ -422,10 +385,7 @@ const HeroSection = () => {
               lg:text-left
             "
           >
-            {/* =================================================
-                BADGE
-            ================================================== */}
-
+            {/* BADGE */}
             <div
               className="
                 flex
@@ -440,63 +400,58 @@ const HeroSection = () => {
                   max-w-full
                   items-center
                   justify-center
-                  gap-2
+                  gap-1.5
+                  sm:gap-2
                   px-3
                   sm:px-4
-                  py-1.5
-                  sm:py-2
+                  py-1
+                  sm:py-1.5
                   rounded-full
                   border
                   border-white/25
-                  bg-white/5
-                  shadow-[0_5px_18px_rgba(0,0,0,0.15)]
-                  text-xs
-                  sm:text-sm
+                  bg-white/10
+                  backdrop-blur-md
+                  shadow-xs
+                  text-[11px]
+                  sm:text-xs
+                  md:text-sm
                   font-semibold
                   whitespace-nowrap
                 "
               >
                 <BriefcaseBusiness
-                  size={16}
+                  size={15}
                   className="
                     text-green-400
                     flex-shrink-0
                   "
                 />
-
-                <span>
-                  Our Professional Services
-                </span>
+                <span>Our Professional Services</span>
               </span>
             </div>
 
-            {/* =================================================
-                MAIN HEADING
-            ================================================== */}
-
+            {/* MAIN HEADING WITH GRADIENT */}
             <h1
               className="
-                mt-4
-                sm:mt-5
-                lg:mt-6
+                mt-3
+                sm:mt-4
                 w-full
                 max-w-full
                 font-extrabold
                 tracking-tight
-                leading-[1.08]
+                leading-[1.12]
                 break-words
               "
             >
               <span
                 className="
                   block
-                  text-[28px]
-                  sm:text-[35px]
-                  md:text-[42px]
-                  lg:text-[45px]
-                  xl:text-[52px]
+                  text-[22px]
+                  sm:text-[30px]
+                  md:text-[36px]
+                  lg:text-[40px]
+                  xl:text-[48px]
                   text-white
-                  break-words
                 "
               >
                 Professional Services
@@ -506,28 +461,28 @@ const HeroSection = () => {
                 className="
                   block
                   mt-1
-                  sm:mt-2
-                  text-[23px]
-                  sm:text-[30px]
-                  md:text-[36px]
-                  lg:text-[40px]
-                  xl:text-[47px]
-                  text-green-300
-                  break-words
+                  bg-gradient-to-r
+                  from-green-300
+                  via-emerald-400
+                  to-teal-200
+                  bg-clip-text
+                  text-transparent
+                  text-[19px]
+                  sm:text-[26px]
+                  md:text-[32px]
+                  lg:text-[36px]
+                  xl:text-[42px]
                 "
               >
                 Designed for Every Business
               </span>
             </h1>
 
-            {/* =================================================
-                UNDERLINE
-            ================================================== */}
-
+            {/* UNDERLINE ACCENT */}
             <div
               className="
-                mt-4
-                sm:mt-5
+                mt-3
+                sm:mt-4
                 flex
                 justify-center
                 lg:justify-start
@@ -535,109 +490,95 @@ const HeroSection = () => {
                 max-w-full
               "
             >
-              <div
-                className="
-                  h-[3px]
-                  w-14
-                  sm:w-20
-                  bg-green-400
-                  rounded-full
-                  flex-shrink-0
-                "
-              />
-
-              <div
-                className="
-                  h-[2px]
-                  w-20
-                  sm:w-28
-                  bg-white/20
-                  flex-shrink-0
-                "
-              />
+              <div className="h-[3px] w-12 sm:w-16 bg-green-400 rounded-full flex-shrink-0" />
+              <div className="h-[2px] w-16 sm:w-24 bg-white/25 flex-shrink-0" />
             </div>
 
-            {/* =================================================
-                QUOTE
-            ================================================== */}
-
+            {/* QUOTE (HIGH-CONTRAST READABLE TEXT) */}
             <div
               className="
-                mt-4
-                sm:mt-5
-                lg:mt-6
+                mt-3.5
+                sm:mt-4.5
                 w-full
-                max-w-[600px]
+                max-w-[580px]
                 mx-auto
                 lg:mx-0
-                overflow-hidden
               "
             >
               <p
                 className="
-                  text-black
-                  italic
-                  font-bold
-                  text-[15px]
-                  sm:text-[18px]
-                  md:text-[20px]
-                  lg:text-[22px]
-                  xl:text-[24px]
-                  leading-[1.55]
+                  text-emerald-300
+                  font-extrabold
+                  text-[13px]
+                  sm:text-[16px]
+                  md:text-[18px]
+                  lg:text-[20px]
+                  leading-[1.4]
+                  uppercase
+                  tracking-wide
+                  drop-shadow-xs
                   break-words
                 "
               >
                 <span className="block">
                   “ONE PLATFORM.
                 </span>
-
                 <span className="block">
                   COMPLETE SOLUTIONS FOR
                 </span>
-
                 <span className="block">
                   BUSINESSES &amp; INDIVIDUALS”
                 </span>
               </p>
             </div>
+
+            {/* ACTION CTA BUTTON */}
+            <div className="mt-5 sm:mt-6 flex justify-center lg:justify-start">
+              <button
+                type="button"
+                onClick={scrollToServices}
+                className="
+                  group
+                  inline-flex
+                  items-center
+                  gap-2
+                  bg-green-500
+                  hover:bg-green-400
+                  active:bg-green-600
+                  text-gray-950
+                  font-extrabold
+                  text-xs
+                  sm:text-sm
+                  px-5
+                  sm:px-6
+                  py-2.5
+                  sm:py-3
+                  rounded-xl
+                  shadow-md
+                  shadow-green-500/25
+                  transition-all
+                  duration-300
+                  hover:-translate-y-0.5
+                  cursor-pointer
+                "
+              >
+                <span>Explore All Services</span>
+                <ArrowRight
+                  size={16}
+                  className="transition-transform duration-300 group-hover:translate-x-1"
+                />
+              </button>
+            </div>
+
           </div>
         </div>
       </div>
 
       {/* =====================================================
-          BOTTOM LINE
+          BOTTOM LINE & GLOW
       ====================================================== */}
-
-      <div
-        className="
-          absolute
-          bottom-0
-          left-0
-          right-0
-          h-px
-          bg-white/20
-          z-20
-        "
-      />
-
-      {/* CENTER GLOW */}
-
-      <div
-        className="
-          absolute
-          bottom-0
-          left-1/2
-          -translate-x-1/2
-          w-24
-          sm:w-32
-          h-[3px]
-          bg-white
-          rounded-full
-          blur-[4px]
-          opacity-70
-          z-20
-        "
-      />
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-white/20 z-20" />
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-24 sm:w-32 h-[3px] bg-white rounded-full blur-[4px] opacity-80 z-20" />
     </section>
   );
 };

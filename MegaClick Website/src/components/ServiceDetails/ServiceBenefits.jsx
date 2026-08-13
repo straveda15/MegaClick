@@ -1,6 +1,5 @@
-
 import React from "react";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Sparkles } from "lucide-react";
 
 const ServiceBenefits = ({ service }) => {
   if (!service?.benefits?.length) {
@@ -8,7 +7,7 @@ const ServiceBenefits = ({ service }) => {
   }
 
   return (
-    <section className="w-full bg-white">
+    <section className="w-full bg-white py-12 sm:py-16 lg:py-20 overflow-hidden">
       <div
         className="
           max-w-[1500px]
@@ -17,60 +16,75 @@ const ServiceBenefits = ({ service }) => {
           sm:px-8
           lg:px-16
           xl:px-24
-          pt-5
-          sm:pt-7
-          lg:pt-9
-          pb-8
-          sm:pb-10
-          lg:pb-12
         "
       >
-        {/* =========================
+        {/* =========================================
             HEADER
-        ========================== */}
+        ========================================== */}
 
-        <div className="mb-7 sm:mb-8 lg:mb-9">
+        <div className="mb-10 sm:mb-12 text-left">
+          {/* BADGE */}
+          <span
+            className="
+              inline-flex
+              items-center
+              gap-1.5
+              rounded-full
+              bg-blue-600
+              border
+              border-blue-100
+              px-3.5
+              py-1
+              text-xs
+              font-bold
+              text-white
+              mb-3
+            "
+          >
+            <Sparkles size={13} className="text-white" />
+            Key Advantages
+          </span>
+
+          {/* TITLE */}
           <h2
             className="
-              text-3xl
+              text-2xl
               sm:text-4xl
-              lg:text-[42px]
-              font-bold
+              font-extrabold
               tracking-tight
               text-gray-900
-              leading-tight
             "
           >
-            Benefits
+            Why Choose{" "}
+            <span
+              className="
+                bg-gradient-to-r
+                from-[#0B4EA2]
+                to-green-500
+                bg-clip-text
+                text-transparent
+              "
+            >
+              Our Services?
+            </span>
           </h2>
 
-          
-          <p
-            className="
-              mt-3
-              max-w-2xl
-              text-sm
-              sm:text-[15px]
-              leading-6
-              text-gray-500
-            "
-          >
-            Key advantages you receive with our service,
-            designed to make the entire process simple and reliable.
+          <p className="mt-2 text-sm sm:text-base text-gray-500 max-w-2xl">
+            Key benefits you receive with our service, designed to make the entire process simple, fast, and reliable.
           </p>
         </div>
 
-        {/* =========================
-            BENEFITS
-        ========================== */}
+        {/* =========================================
+            MINIMALIST LEFT-BORDER ROW GRID
+        ========================================== */}
 
         <div
           className="
             grid
             grid-cols-1
             md:grid-cols-2
-            gap-x-14
-            lg:gap-x-20
+            gap-4
+            sm:gap-6
           "
         >
           {service.benefits.map((item, index) => (
@@ -81,96 +95,72 @@ const ServiceBenefits = ({ service }) => {
                 relative
                 flex
                 items-center
+                justify-between
                 gap-4
+                pl-5
+                pr-4
                 py-4
                 sm:py-5
-                border-b
-                border-gray-200/70
+                bg-slate-100
+                border
+                border-slate-200/60
+                hover:bg-[#F0F6FF]
+                hover:border-blue-200/80
+                border-l-4
+                border-l-gray-400
+                hover:border-l-[#0B4EA2]
+                rounded-r-2xl
                 transition-all
                 duration-300
+                cursor-pointer
               "
             >
-              {/* NUMBER */}
-
-              <div
-                className="
-                  shrink-0
-                  w-11
-                  sm:w-13
-                "
-              >
+              <div className="flex items-center gap-3.5">
+                {/* Number Prefix */}
                 <span
                   className="
-                    text-2xl
-                    sm:text-3xl
-                    font-bold
-                    leading-none
-                    text-green-200
+                    text-xs
+                    sm:text-sm
+                    font-extrabold
+                    text-gray-500
+                    group-hover:text-[#0B4EA2]
                     transition-colors
-                    duration-300
-                    group-hover:text-[#0B4EA2]/20
                   "
                 >
-                  {String(index + 1).padStart(2, "0")}
+                  {String(index + 1).padStart(2, "0")}.
                 </span>
-              </div>
 
-              {/* BENEFIT TEXT */}
-
-              <div className="flex-1">
+                {/* Benefit Text */}
                 <p
                   className="
                     text-sm
-                    sm:text-[15px]
-                    lg:text-base
-                    font-medium
-                    leading-6
-                    text-[#374A59]
-                    transition-all
-                    duration-300
-                    group-hover:text-gray-900
-                    group-hover:translate-x-1
+                    sm:text-base
+                    font-bold
+                    text-gray-800
+                    group-hover:text-gray-950
+                    transition-colors
+                    leading-snug
                   "
                 >
                   {item}
                 </p>
               </div>
 
-              {/* ARROW */}
-
-              <ArrowUpRight
-                size={17}
-                strokeWidth={1.8}
+              {/* Minimal Arrow Micro-Interaction */}
+              <div
                 className="
                   shrink-0
-                  text-gray-300
-                  opacity-0
-                  -translate-x-1
-                  translate-y-1
-                  transition-all
-                  duration-300
-                  group-hover:opacity-100
+                  text-gray-400
                   group-hover:text-[#0B4EA2]
-                  group-hover:translate-x-0
-                  group-hover:translate-y-0
-                "
-              />
-
-              {/* HOVER ACCENT */}
-
-              <span
-                className="
-                  absolute
-                  bottom-0
-                  left-0
-                  h-[2px]
-                  w-0
-                  bg-[#0B4EA2]
+                  group-hover:translate-x-0.5
+                  group-hover:-translate-y-0.5
                   transition-all
                   duration-300
-                  group-hover:w-12
+                  pr-1
                 "
-              />
+              >
+                <ArrowUpRight size={18} strokeWidth={2.5} />
+              </div>
             </div>
           ))}
         </div>

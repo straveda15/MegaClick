@@ -1,10 +1,9 @@
-
 import React from "react";
 import { Star, ShieldCheck } from "lucide-react";
 
 const ServiceHero = ({ service }) => {
   return (
-    <section className="w-full bg-gray-50">
+    <section className="w-full bg-slate-50 py-4 sm:py-6 lg:py-8">
       <div
         className="
           max-w-[1500px]
@@ -13,75 +12,75 @@ const ServiceHero = ({ service }) => {
           sm:px-8
           lg:px-16
           xl:px-24
-          pt-6
-          sm:pt-8
-          lg:pt-10
-          pb-6
-          sm:pb-8
-          lg:pb-10
         "
       >
-        {/* =========================
-            HERO
-        ========================== */}
+        {/* =========================================
+            HERO CONTAINER (RICH GRADIENT & GLOWS)
+        ========================================== */}
         <div
           className="
             relative
             overflow-hidden
             rounded-3xl
-            bg-[#0B4EA2]
+            bg-gradient-to-r
+            from-[#0B4EA2]
+            via-[#093e82]
+            to-[#0A8F55]
+            px-6
+            sm:px-10
+            lg:px-12
+            py-8
+            sm:py-12
+            lg:py-14
+            shadow-xl
             border
-            border-[#0B4EA2]
-            px-5
-            sm:px-8
-            lg:px-10
-            py-7
-            sm:py-9
-            lg:py-10
+            border-blue-900/40
           "
         >
-          {/* Subtle Background Shape */}
+          {/* Glowing Background Blobs */}
           <div
             className="
               absolute
-              -right-20
-              -top-20
-              w-56
-              h-56
+              -right-16
+              -top-16
+              w-72
+              h-72
               rounded-full
-              border
-              border-white/10
+              bg-white/10
+              blur-3xl
+              pointer-events-none
             "
           />
-
           <div
             className="
               absolute
-              -right-10
-              -top-10
-              w-36
-              h-36
+              right-1/4
+              -bottom-20
+              w-64
+              h-64
               rounded-full
-              border
-              border-white/10
+              bg-emerald-500/20
+              blur-3xl
+              pointer-events-none
             "
           />
 
-          {/* CONTENT */}
+          {/* CONTENT GRID */}
           <div
             className="
               relative
+              z-10
               flex
               flex-col
               lg:flex-row
               lg:items-center
               gap-6
-              lg:gap-8
+              lg:gap-10
             "
           >
-            {/* =========================
-                ICON
-            ========================== */}
+            {/* =========================================
+                ICON (WITH PREMIUM GLOW & SCALE)
+            ========================================== */}
             <div
               className="
                 w-16
@@ -96,15 +95,21 @@ const ServiceHero = ({ service }) => {
                 justify-center
                 text-3xl
                 sm:text-4xl
-                shadow-[0_8px_25px_rgba(0,0,0,0.12)]
+                shadow-[0_12px_30px_rgba(0,0,0,0.15)]
+                ring-4
+                ring-white/10
+                transition-all
+                duration-300
+                hover:scale-105
+                hover:rotate-3
               "
             >
               {service.emoji}
             </div>
 
-            {/* =========================
+            {/* =========================================
                 TEXT CONTENT
-            ========================== */}
+            ========================================== */}
             <div className="flex-1 min-w-0">
               {/* TITLE */}
               <h1
@@ -112,7 +117,7 @@ const ServiceHero = ({ service }) => {
                   text-2xl
                   sm:text-3xl
                   lg:text-4xl
-                  font-bold
+                  font-extrabold
                   text-white
                   leading-tight
                   tracking-tight
@@ -129,54 +134,58 @@ const ServiceHero = ({ service }) => {
                   text-sm
                   sm:text-base
                   lg:text-lg
-                  text-blue-100
-                  leading-7
+                  text-blue-50/90
+                  font-medium
+                  leading-relaxed
                 "
               >
                 {service.description}
               </p>
 
-              {/* =========================
-                  RATING
-              ========================== */}
+              {/* =========================================
+                  GLASSMORPHIC RATING BADGE
+              ========================================== */}
               <div
                 className="
-                  mt-5
+                  mt-6
                   inline-flex
                   items-center
-                  gap-3
-                  bg-white
+                  gap-3.5
+                  bg-white/10
+                  backdrop-blur-md
+                  border
+                  border-white/15
                   rounded-xl
-                  px-3
-                  sm:px-4
+                  px-4
                   py-2.5
-                  shadow-[0_6px_20px_rgba(0,0,0,0.10)]
+                  shadow-lg
                 "
               >
-                {/* GOOGLE */}
+                {/* Google "G" Icon Badge */}
                 <div
                   className="
-                    w-9
-                    h-9
+                    w-8
+                    h-8
                     rounded-lg
-                    bg-gray-50
+                    bg-white
                     flex
                     items-center
                     justify-center
                     shrink-0
+                    shadow-xs
                   "
                 >
-                  <span className="text-lg">G</span>
+                  <span className="text-base font-extrabold text-blue-800">G</span>
                 </div>
 
-                {/* RATING CONTENT */}
+                {/* Rating Content */}
                 <div>
                   <div className="flex items-center gap-2">
                     <span
                       className="
                         text-sm
-                        font-bold
-                        text-gray-900
+                        font-extrabold
+                        text-white
                       "
                     >
                       4.9
@@ -186,7 +195,7 @@ const ServiceHero = ({ service }) => {
                       {[...Array(5)].map((_, i) => (
                         <Star
                           key={i}
-                          size={13}
+                          size={12}
                           className="
                             fill-yellow-400
                             text-yellow-400
@@ -198,9 +207,10 @@ const ServiceHero = ({ service }) => {
 
                   <p
                     className="
-                      text-[11px]
+                      text-[10px]
                       sm:text-xs
-                      text-gray-500
+                      text-blue-200/90
+                      font-semibold
                       mt-0.5
                     "
                   >
@@ -210,17 +220,17 @@ const ServiceHero = ({ service }) => {
               </div>
             </div>
 
-            {/* =========================
-                TRUST BADGE
-            ========================== */}
+            {/* =========================================
+                TRUST BADGE (RESPONSIVE ALIGNMENT)
+            ========================================== */}
             <div
               className="
-                hidden
-                lg:flex
+                flex
                 items-center
-                gap-2
+                gap-2.5
                 shrink-0
                 self-start
+                lg:self-center
                 bg-white/10
                 border
                 border-white/15
@@ -228,16 +238,20 @@ const ServiceHero = ({ service }) => {
                 px-4
                 py-3
                 text-white
+                shadow-xs
+                transition-all
+                duration-300
+                hover:bg-white/15
               "
             >
-              <ShieldCheck size={20} />
+              <ShieldCheck size={20} className="text-emerald-400" />
 
               <div>
-                <p className="text-xs font-semibold">
+                <p className="text-xs font-bold tracking-wide uppercase">
                   Trusted Service
                 </p>
 
-                <p className="text-[11px] text-blue-100 mt-0.5">
+                <p className="text-[10px] text-blue-100/80 mt-0.5 font-medium">
                   Professional Support
                 </p>
               </div>

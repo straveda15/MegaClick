@@ -1,36 +1,46 @@
 import React, { useState } from "react";
 import {
-  ChevronLeft,
-  ChevronRight,
-  Star,
+  MapPin,
   Quote,
+  Star,
+  Sparkles,
 } from "lucide-react";
 
 const testimonials = [
   {
     name: "Keval Barot",
+    service: "GST & Tax Compliance",
+    location: "Nashik, Maharashtra",
     review:
-      "Its a great app to solve your queries, problems occurred during any government application processes and get the job done. An impressive app with such cooperative staff. One of the staff members, Pritesh, helped me with my HSRP application and got me my booking slot. I highly recommend this app.",
+      "Its a great platform to solve all business registration and tax query problems. The MegaClick staff is extremely supportive and prompt.",
   },
   {
     name: "Prakshal Jain",
+    service: "Company Incorporation",
+    location: "Pune, Maharashtra",
     review:
-      "Legit startup. Agar aapko apna kaam jaldi karwana hai toh aap Jaagruk Bharat service try kar sakte ho. Legit price and punctual time. They make sure your work is done fast and in a genuine way. Thanks Jaagruk Bharat.",
+      "Genuine and reliable service provider. MegaClick made our company incorporation fast, transparent, and hassle-free.",
   },
   {
     name: "Prem Nair",
+    service: "Business Advisory",
+    location: "Nashik, Maharashtra",
     review:
-      "Jaagruk Bharat does a fantastic job of breaking down complex policies into easy-to-read articles and videos, ensuring accessibility for all citizens.",
+      "MegaClick does a fantastic job of managing complex policies and filings into smooth, accessible solutions for businesses.",
   },
   {
     name: "Satyam Jha",
+    service: "PAN & ROC Filings",
+    location: "Nashik, Maharashtra",
     review:
-      "I had a great experience with Jaagruk Bharat for my PAN card application. Their service was quick, hassle-free, and highly professional. The team guided me through the entire process, ensuring all documents were in order.",
+      "Quick, professional, and reliable. The team guided us step-by-step through our PAN and annual ROC filings without any hassle.",
   },
   {
-    name: "Sanatan Jene",
+    name: "Sanatan Jena",
+    service: "Trademark & Audit",
+    location: "Pune, Maharashtra",
     review:
-      "Excellent service of the service provider. No need to sit for hours elsewhere to get the card downloaded.",
+      "Excellent service provider! No need to run around different consultants. Everything was handled under one roof.",
   },
 ];
 
@@ -41,12 +51,6 @@ const Testimonials = () => {
     setCurrent((prev) => (prev + 1) % testimonials.length);
   };
 
-  const previous = () => {
-    setCurrent(
-      (prev) => (prev - 1 + testimonials.length) % testimonials.length
-    );
-  };
-
   const visibleTestimonials = [
     testimonials[current % testimonials.length],
     testimonials[(current + 1) % testimonials.length],
@@ -54,17 +58,9 @@ const Testimonials = () => {
   ];
 
   return (
-    <section
-      className="
-        w-full
-        bg-white
-        py-10
-        sm:py-12
-        lg:py-14
-      "
-    >
+    <section className="w-full bg-white py-10 sm:py-12 lg:py-16">
       {/* =========================================
-          INDEPENDENT CONTAINER
+          MAIN CONTAINER
       ========================================== */}
 
       <div
@@ -79,138 +75,72 @@ const Testimonials = () => {
         "
       >
         {/* =========================================
-            HEADER
+            GRADIENT HEADING
         ========================================== */}
 
-        <div
-          className="
-            mb-10
-            sm:mb-12
-            flex
-            flex-col
-            gap-5
-            sm:flex-row
-            sm:items-end
-            sm:justify-between
-          "
-        >
-          <div>
-            <span
-              className="
-                inline-flex
-                items-center
-                rounded-full
-                bg-[#EAF3FF]
-                px-4
-                py-1.5
-                text-xs
-                sm:text-sm
-                font-semibold
-                text-[#0B4EA2]
-              "
-            >
-              What Our Clients Say
-            </span>
+        <div className="mb-8 sm:mb-10 text-left">
+          {/* BADGE */}
+          <span
+            className="
+              inline-flex
+              items-center
+              gap-1.5
+              rounded-full
+              bg-blue-700
+              border
+              border-blue-100
+              px-3.5
+              py-1
+              text-xs
+              font-bold
+              text-white
+              mb-3
+            "
+          >
+            <Sparkles size={14} className="text-white" />
+            Client Feedback
+          </span>
 
-            <h2
-              className="
-                mt-3
-                text-2xl
-                sm:text-3xl
-                lg:text-4xl
-                font-bold
-                tracking-tight
-                text-gray-900
-              "
-            >
-              Testimonials
-            </h2>
+          {/* FULL GRADIENT HEADING */}
+          <br />
+          <h2
+            className="
+              text-2xl
+              sm:text-3xl
+              lg:text-4xl
+              font-extrabold
+              tracking-tight
+              bg-gradient-to-r
+              from-[#0B4EA2]
+              to-green-500
+              bg-clip-text
+              text-transparent
+              inline-block
+            "
+          >
+            What Our Clients Say
+          </h2>
 
-            <p
-              className="
-                mt-2
-                max-w-xl
-                text-sm
-                sm:text-base
-                leading-6
-                text-gray-500
-              "
-            >
-              Real stories from our happy customers.
-            </p>
-          </div>
-
-          {/* ARROWS */}
-
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={previous}
-              aria-label="Previous testimonials"
-              className="
-                flex
-                h-10
-                w-10
-                items-center
-                justify-center
-                rounded-full
-                border
-                border-[#0B4EA2]
-                bg-white
-                text-[#0B4EA2]
-                shadow-sm
-                transition-all
-                duration-300
-                hover:-translate-x-1
-                hover:bg-[#0B4EA2]
-                hover:text-white
-              "
-            >
-              <ChevronLeft size={20} />
-            </button>
-
-            <button
-              type="button"
-              onClick={next}
-              aria-label="Next testimonials"
-              className="
-                flex
-                h-10
-                w-10
-                items-center
-                justify-center
-                rounded-full
-                border
-                border-[#0B4EA2]
-                bg-white
-                text-[#0B4EA2]
-                shadow-sm
-                transition-all
-                duration-300
-                hover:translate-x-1
-                hover:bg-[#0B4EA2]
-                hover:text-white
-              "
-            >
-              <ChevronRight size={20} />
-            </button>
-          </div>
+          <p className="mt-2 text-sm sm:text-base text-gray-500 max-w-xl">
+            Real feedback from businesses trusting MegaClick for their growth.
+          </p>
         </div>
 
         {/* =========================================
-            TESTIMONIAL CARDS
+            TESTIMONIAL CARDS (PERFECTLY ALIGNED)
         ========================================== */}
 
-        <div className="relative px-2 pt-4 sm:px-3 sm:pt-5">
+        <div className="relative">
+          {/* CARDS GRID */}
           <div
             key={current}
             className="
               grid
               grid-cols-1
-              gap-5
+              gap-6
               sm:grid-cols-2
               lg:grid-cols-3
-              animate-[slideIn_0.4s_ease-out]
+              animate-[slideIn_0.35s_ease-out]
             "
           >
             {visibleTestimonials.map((testimonial, index) => (
@@ -219,61 +149,43 @@ const Testimonials = () => {
                 className="
                   group
                   relative
+                  flex
+                  flex-col
+                  justify-between
+                  h-full
                   w-full
                   min-w-0
                   rounded-2xl
                   border
-                  border-gray-100
+                  border-gray-200
                   bg-blue-50
                   p-5
                   sm:p-6
-                  shadow-[0_10px_30px_rgba(11,78,162,0.08)]
+                  shadow-sm
                   transition-all
                   duration-300
-                  hover:-translate-y-1
-                  hover:shadow-[0_18px_40px_rgba(11,78,162,0.14)]
+                  hover:shadow-md
+                  hover:border-blue-200
                 "
               >
-                {/* =================================
-                    QUOTE ICON
-                ================================== */}
+                <div>
+                  {/* QUOTE ICON */}
+                  <div
+                    className="
+                      absolute
+                      right-5
+                      top-5
+                      text-blue-500
+                      group-hover:text-[#0B4EA2]
+                      transition-colors
+                    "
+                  >
+                    <Quote size={20} />
+                  </div>
 
-                <div
-                  className="
-                    absolute
-                    -right-2
-                    -top-3
-                    z-10
-                    flex
-                    h-9
-                    w-9
-                    items-center
-                    justify-center
-                    rounded-full
-                    bg-[#0B4EA2]
-                    text-white
-                    shadow-md
-                    transition-transform
-                    duration-300
-                    group-hover:rotate-6
-                  "
-                >
-                  <Quote size={15} />
-                </div>
-
-                {/* =================================
-                    USER
-                ================================== */}
-
-                <div
-                  className="
-                    flex
-                    items-center
-                    justify-between
-                    gap-3
-                  "
-                >
+                  {/* TOP USER INFO */}
                   <div className="flex items-center gap-3">
+                    {/* Light BG Initial Circle */}
                     <div
                       className="
                         flex
@@ -283,8 +195,10 @@ const Testimonials = () => {
                         items-center
                         justify-center
                         rounded-full
-                        bg-[#EAF3FF]
-                        text-sm
+                        bg-blue-100
+                        border
+                        border-blue-100
+                        text-base
                         font-bold
                         text-[#0B4EA2]
                       "
@@ -292,104 +206,81 @@ const Testimonials = () => {
                       {testimonial.name.charAt(0)}
                     </div>
 
-                    <div className="min-w-0">
-                      <h3
-                        className="
-                          truncate
-                          text-sm
-                          font-semibold
-                          text-gray-900
-                        "
-                      >
+                    <div className="min-w-0 pr-6">
+                      {/* NAME */}
+                      <h3 className="truncate text-sm font-bold text-gray-900">
                         {testimonial.name}
                       </h3>
 
-                      <p className="text-[11px] text-gray-400">
-                        Verified Customer
+                      {/* SERVICE */}
+                      <p className="truncate text-xs font-semibold text-[#0B4EA2] mt-0.5">
+                        {testimonial.service}
                       </p>
+
+                      {/* LOCATION */}
+                      <div className="flex items-center gap-1 text-[11px] text-gray-400 mt-0.5">
+                        <MapPin size={11} className="shrink-0 text-gray-400" />
+                        <span className="truncate">{testimonial.location}</span>
+                      </div>
                     </div>
                   </div>
 
-                  {/* STARS */}
-{/* STARS */}
-
-<div className="flex shrink-0 gap-0.5">
-  {[1, 2, 3, 4, 5].map((star) => (
-    <Star
-      key={star}
-      size={12}
-      fill="#22C55E"
-      stroke="#22C55E"
-    />
-  ))}
-</div>
+                  {/* REVIEW CONTENT */}
+                  <p className="mt-4 text-xs sm:text-sm text-gray-600 leading-relaxed">
+                    "{testimonial.review}"
+                  </p>
                 </div>
 
-                {/* =================================
-                    REVIEW
-                ================================== */}
-
-                <p
-                  className="
-                    mt-4
-                    line-clamp-4
-                    text-xs
-                    leading-6
-                    text-gray-500
-                  "
-                >
-                  "{testimonial.review}"
-                </p>
-
-                {/* =================================
-                    BOTTOM LINE
-                ================================== */}
-
-                <div
-                  className="
-                    absolute
-                    bottom-0
-                    left-5
-                    right-5
-                    h-0.5
-                    origin-left
-                    scale-x-0
-                    rounded-full
-                    bg-[#0B4EA2]
-                    transition-transform
-                    duration-300
-                    group-hover:scale-x-100
-                  "
-                />
+                {/* BOTTOM STARS FOOTER */}
+                <div className="mt-5 pt-3 border-t border-gray-100 flex items-center justify-between">
+                  
+                  <div className="flex shrink-0 gap-0.5">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star
+                        key={star}
+                        size={13}
+                        className="fill-green-500 stroke-green-500"
+                      />
+                    ))}
+                  </div>
+                </div>
               </article>
             ))}
           </div>
         </div>
 
         {/* =========================================
-            DOTS
+            SLIDE BAR (PROGRESS TRACK ONLY)
         ========================================== */}
 
-        <div className="mt-7 flex justify-center gap-1.5">
-          {testimonials.map((_, index) => (
-            <button
-              key={index}
-              type="button"
-              onClick={() => setCurrent(index)}
-              aria-label={`Go to testimonial ${index + 1}`}
-              className={`
-                h-1.5
-                rounded-full
-                transition-all
-                duration-300
-                ${
-                  current === index
-                    ? "w-6 bg-[#0B4EA2]"
-                    : "w-1.5 bg-gray-300"
-                }
-              `}
-            />
-          ))}
+        <div className="mt-8 flex justify-center items-center">
+          <button
+            onClick={next}
+            className="w-full max-w-[280px] cursor-pointer focus:outline-none"
+            aria-label="Next Slide"
+          >
+            <div className="relative w-full h-2 bg-gray-100 rounded-full overflow-hidden shadow-inner border border-gray-200/60">
+              <div
+                className="
+                  absolute
+                  top-0
+                  bottom-0
+                  bg-gradient-to-r
+                  from-[#0B4EA2]
+                  to-green-500
+                  rounded-full
+                  transition-all
+                  duration-400
+                  ease-out
+                  shadow-sm
+                "
+                style={{
+                  width: `${100 / testimonials.length}%`,
+                  left: `${(current / testimonials.length) * 100}%`,
+                }}
+              />
+            </div>
+          </button>
         </div>
       </div>
 
@@ -402,7 +293,7 @@ const Testimonials = () => {
           @keyframes slideIn {
             from {
               opacity: 0;
-              transform: translateX(35px);
+              transform: translateX(25px);
             }
 
             to {

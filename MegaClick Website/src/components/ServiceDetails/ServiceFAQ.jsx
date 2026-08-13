@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, HelpCircle } from "lucide-react";
 
 const ServiceFAQ = ({ service }) => {
   const [openIndex, setOpenIndex] = useState(0);
 
-  // FAQ data
+  // Complete, clean default FAQ list
   const defaultFAQs = [
     {
       question: "What is Udyam Registration, and is it mandatory?",
@@ -95,11 +95,6 @@ const ServiceFAQ = ({ service }) => {
         "Yes, registration on the official portal is completely free. No government fee is charged for applying for the certificate.",
     },
     {
-      question: "What are MSME fees?",
-      answer:
-        "There are no government fees for MSME registration under the Udyam system. Charges apply only if a business uses private assistance services.",
-    },
-    {
       question: "Who is eligible for Udyam registration?",
       answer:
         "Any micro, small, or medium enterprise engaged in manufacturing, services, retail, or wholesale trade can apply.",
@@ -140,34 +135,9 @@ const ServiceFAQ = ({ service }) => {
         "Registered MSMEs may receive tax rebates, subsidies, and government support programs. Benefits depend on applicable schemes.",
     },
     {
-      question: "What are the Udyam registration fees?",
-      answer:
-        "The government does not charge any fee for Udyam registration. The application and certificate downloads are free on the official portal.",
-    },
-    {
       question: "Is the Udyam certificate proof of business?",
       answer:
         "Yes, it serves as official proof that the enterprise is registered as an MSME. It is often used when applying for loans or schemes.",
-    },
-    {
-      question: "What documents are required for Udyam Registration?",
-      answer:
-        "Applicants generally need Aadhaar, PAN, and basic business details. GST details may also be required if applicable.",
-    },
-    {
-      question: "How long does the Udyam registration process take?",
-      answer:
-        "The process is usually completed within a few minutes after submitting the online form. The certificate is issued digitally.",
-    },
-    {
-      question: "Is there a fee for Udyam Registration?",
-      answer:
-        "No government fee is charged for Udyam registration. Businesses can apply directly on the official portal for free.",
-    },
-    {
-      question: "What are the benefits of registering under Udyam?",
-      answer:
-        "MSMEs get access to government schemes, easier loans, and support in public procurement. It also provides legal recognition.",
     },
     {
       question:
@@ -182,21 +152,9 @@ const ServiceFAQ = ({ service }) => {
     },
     {
       question:
-        "How do I verify or print my Udyam certificate after registration?",
-      answer:
-        "You can verify or download the certificate using your registration number on the official Udyam portal.",
-    },
-    {
-      question:
         "What happens if my turnover or investment exceeds the prescribed limit after I’ve registered?",
       answer:
         "The system automatically updates the enterprise category using GST and income tax data.",
-    },
-    {
-      question:
-        "Can a foreign-owned or joint-venture enterprise apply for Udyam Registration?",
-      answer:
-        "Yes, foreign-owned or joint-venture enterprises operating in India can apply if they meet MSME criteria.",
     },
     {
       question:
@@ -204,79 +162,89 @@ const ServiceFAQ = ({ service }) => {
       answer:
         "Retail and wholesale traders are also eligible for Udyam registration under the MSME category.",
     },
-    {
-      question:
-        "How do the older schemes like Udyog Aadhaar Memorandum (UAM) or Udyog Aadhaar transition into Udyam?",
-      answer:
-        "Businesses registered under Udyog Aadhaar were required to migrate to the Udyam portal to continue MSME registration.",
-    },
-    {
-      question: "What is the difference between Udyam and Udyog Aadhaar?",
-      answer:
-        "Udyog Aadhaar was the older MSME system based on self-declaration. Udyam registration verifies business data through PAN, GST, and government databases.",
-    },
   ];
 
-  // If service-specific FAQ exists, use it.
-  // Otherwise use the Udyam/MSME FAQ above.
-  const faqs =
-    service?.faqs?.length > 0 ? service.faqs : defaultFAQs;
+  // Stable rendering fallback checks
+  const faqs = (service && service.faqs && service.faqs.length > 0) 
+    ? service.faqs 
+    : defaultFAQs;
 
   const toggleFAQ = (index) => {
     setOpenIndex(openIndex === index ? null : index);
   };
 
   return (
-    <section className="w-full bg-blue-50">
-     
-          <div
-  className="
-    max-w-[1500px]
-    mx-auto
-    px-4
-    sm:px-8
-    lg:px-16
-    xl:px-24
-    pt-2
-    sm:pt-3
-    lg:pt-4
-    pb-3
-    sm:pb-6
-    lg:pb-8
-  "
->
-        {/* =================================
-                    HEADING
-        ================================== */}
+    <section className="w-full bg-blue-50 py-5 sm:py-12 lg:py-16">
+      <div
+        className="
+          max-w-[1500px]
+          mx-auto
+          px-4
+          sm:px-8
+          lg:px-16
+          xl:px-24
+        "
+      >
+        {/* =========================================
+            HEADER (LEFT ALIGNED WITH BADGE)
+        ========================================== */}
 
-        <h2
-          className="
-            text-2xl
-            sm:text-3xl
-            font-bold
-            text-gray-900
-            mb-8
-          "
-        >
-          FAQ's
-        </h2>
+        <div className="mb-6 sm:mb-8 text-left">
+          {/* BADGE */}
+          <span
+            className="
+              inline-flex
+              items-center
+              gap-1.5
+              rounded-full
+              bg-blue-600
+              border
+              border-blue-200/80
+              px-4
+              py-1.5
+              text-xs
+              font-bold
+              text-white
+              mb-3
+            "
+          >
+            <HelpCircle size={13} className="text-white" />
+            FAQ's
+          </span>
 
-        {/* =================================
-                    FAQ LIST
-        ================================== */}
+          {/* MAIN GRADIENT HEADING */}
+          <br />
+          <h2
+            className="
+              text-2xl
+              sm:text-3xl
+              lg:text-4xl
+              font-extrabold
+              tracking-tight
+              bg-gradient-to-r
+              from-[#0B4EA2]
+              to-green-500
+              bg-clip-text
+              text-transparent
+              inline-block
+            "
+          >
+            Frequently Asked Questions
+          </h2>
+        </div>
 
-        <div className="space-y-0">
+        {/* =========================================
+            CLEAN ACCORDION DIVIDER LIST
+        ========================================== */}
+
+        <div className="divide-y divide-gray-200 border-t border-b border-gray-200">
           {faqs.map((faq, index) => {
             const isOpen = openIndex === index;
 
             return (
               <div
                 key={index}
-                className="
-                  border-b
-                  border-gray-200
-                  last:border-b-0
-                "
+                className="py-4 sm:py-5"
               >
                 {/* QUESTION */}
 
@@ -289,52 +257,51 @@ const ServiceFAQ = ({ service }) => {
                     items-center
                     justify-between
                     gap-4
+                    py-1
                     text-left
-                    py-5
                     focus:outline-none
+                    cursor-pointer
                   "
                   aria-expanded={isOpen}
                 >
                   <span
-                    className="
+                    className={`
                       text-base
                       sm:text-lg
-                      font-semibold
-                      text-[#374A59]
-                      leading-7
-                      pr-2
-                    "
+                      font-bold
+                      leading-snug
+                      transition-colors
+                      ${isOpen ? "text-[#0B4EA2]" : "text-gray-900 hover:text-[#0B4EA2]"}
+                    `}
                   >
                     {faq.question}
                   </span>
 
-                  {/* CHEVRON */}
+                  {/* CHEVRON ICON */}
 
-                  <span
-                    className="
+                  <div
+                    className={`
                       shrink-0
+                      w-8
+                      h-8
+                      rounded-full
                       flex
                       items-center
                       justify-center
-                    "
+                      transition-all
+                      duration-300
+                      ${
+                        isOpen
+                          ? "bg-[#0B4EA2] text-white rotate-180 shadow-xs"
+                          : "bg-gray-100 text-gray-500"
+                      }
+                    `}
                   >
-                    {isOpen ? (
-                      <ChevronUp
-                        size={22}
-                        strokeWidth={2}
-                        className="text-[#848484]"
-                      />
-                    ) : (
-                      <ChevronDown
-                        size={22}
-                        strokeWidth={2}
-                        className="text-[#848484]"
-                      />
-                    )}
-                  </span>
+                    <ChevronDown size={18} strokeWidth={2.5} />
+                  </div>
                 </button>
 
-                {/* ANSWER */}
+                {/* ANSWER COLLAPSIBLE */}
 
                 <div
                   className={`
@@ -344,7 +311,7 @@ const ServiceFAQ = ({ service }) => {
                     ease-in-out
                     ${
                       isOpen
-                        ? "grid-rows-[1fr] opacity-100"
+                        ? "grid-rows-[1fr] opacity-100 mt-2"
                         : "grid-rows-[0fr] opacity-0"
                     }
                   `}
@@ -352,12 +319,14 @@ const ServiceFAQ = ({ service }) => {
                   <div className="overflow-hidden">
                     <div
                       className="
-                        pb-5
-                        pr-8
-                        text-base
-                        text-[#374A59]
-                        leading-[25.6px]
+                        text-sm
+                        sm:text-base
+                        text-gray-700
+                        leading-relaxed
                         font-normal
+                        pt-1
+                        pb-2
+                        text-left
                       "
                     >
                       {faq.answer}
