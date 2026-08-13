@@ -188,10 +188,9 @@ const FAQ = () => {
               max-w-xl
             "
           >
-            Find answers to the most common questions about our
-            business registration, legal documentation, financial
-            services and consultation process. Our experts are
-            always ready to guide you with reliable solutions.
+            Find answers to common questions about our business, legal, financial, 
+           and registration services. 
+           Our experts are here to provide clear guidance and reliable support.
           </p>
         </div>
 

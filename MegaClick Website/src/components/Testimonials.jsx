@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Quote, Star } from "lucide-react";
+import { Quote, Star, Users } from "lucide-react";
 
 import clientImg from "../assets/client.png";
 
@@ -35,7 +35,7 @@ const testimonials = [
 ];
 
 const Testimonials = () => {
-  const [isTouching, setIsTouching] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
 
   return (
     <section className="w-full bg-white">
@@ -60,6 +60,36 @@ const Testimonials = () => {
         "
       >
         {/* =================================
+            TESTIMONIALS BADGE
+        ================================= */}
+
+        <span
+          className="
+            inline-flex
+            items-center
+            gap-2
+            bg-[#0B4EA2]
+            text-white
+            px-3
+            sm:px-4
+            py-2
+            rounded-full
+            text-[11px]
+            sm:text-xs
+            font-semibold
+            mb-3
+            sm:mb-4
+          "
+        >
+          <Users
+            size={14}
+            className="text-green-300 sm:w-[15px] sm:h-[15px]"
+          />
+
+          Testimonials
+        </span>
+
+        {/* =================================
             HEADER
         ================================= */}
 
@@ -76,7 +106,9 @@ const Testimonials = () => {
             lg:mb-14
           "
         >
-          {/* LEFT CONTENT */}
+          {/* =========================
+              LEFT CONTENT
+          ========================== */}
 
           <div>
             <h2
@@ -129,7 +161,9 @@ const Testimonials = () => {
             </p>
           </div>
 
-          {/* CLIENT IMAGE */}
+          {/* =========================
+              CLIENT IMAGE
+          ========================== */}
 
           <div className="flex justify-center lg:justify-center">
             <div
@@ -166,14 +200,10 @@ const Testimonials = () => {
             relative
             overflow-hidden
             w-full
-            touch-pan-y
           "
-          onTouchStart={() => setIsTouching(true)}
-          onTouchEnd={() => setIsTouching(false)}
-          onTouchCancel={() => setIsTouching(false)}
         >
           <div
-            className={`
+            className="
               testimonials-track
               flex
               gap-5
@@ -181,13 +211,10 @@ const Testimonials = () => {
               w-max
               animate-testimonials
               py-3
-
-              ${
-                isTouching
-                  ? "[animation-play-state:paused]"
-                  : "[animation-play-state:running]"
-              }
-            `}
+            "
+            style={{
+              animationPlayState: isPaused ? "paused" : "running",
+            }}
           >
             {[...testimonials, ...testimonials].map(
               (item, index) => (
@@ -214,8 +241,27 @@ const Testimonials = () => {
                     hover:border-blue-200
                     hover:shadow-[0_12px_35px_rgba(11,78,162,0.10)]
                   "
+
+                  /* =================================
+                      DESKTOP
+                      HOVER → PAUSE
+                  ================================= */
+
+                  onMouseEnter={() => setIsPaused(true)}
+                  onMouseLeave={() => setIsPaused(false)}
+
+                  /* =================================
+                      MOBILE
+                      TOUCH → PAUSE
+                  ================================= */
+
+                  onTouchStart={() => setIsPaused(true)}
+                  onTouchEnd={() => setIsPaused(false)}
+                  onTouchCancel={() => setIsPaused(false)}
                 >
-                  {/* TOP ACCENT */}
+                  {/* =================================
+                      TOP ACCENT
+                  ================================= */}
 
                   <div
                     className="
@@ -229,7 +275,9 @@ const Testimonials = () => {
                     "
                   />
 
-                  {/* QUOTE */}
+                  {/* =================================
+                      QUOTE ICON
+                  ================================= */}
 
                   <div
                     className="
@@ -249,7 +297,9 @@ const Testimonials = () => {
                     />
                   </div>
 
-                  {/* REVIEW */}
+                  {/* =================================
+                      REVIEW
+                  ================================= */}
 
                   <p
                     className="
@@ -263,7 +313,9 @@ const Testimonials = () => {
                     "{item.review}"
                   </p>
 
-                  {/* STARS */}
+                  {/* =================================
+                      STARS
+                  ================================= */}
 
                   <div className="flex items-center gap-1 mt-5">
                     {[1, 2, 3, 4, 5].map((star) => (
@@ -276,11 +328,15 @@ const Testimonials = () => {
                     ))}
                   </div>
 
-                  {/* DIVIDER */}
+                  {/* =================================
+                      DIVIDER
+                  ================================= */}
 
                   <div className="my-5 h-px bg-gray-100" />
 
-                  {/* CLIENT */}
+                  {/* =================================
+                      CLIENT DETAILS
+                  ================================= */}
 
                   <div className="flex items-start gap-3">
                     {/* AVATAR */}

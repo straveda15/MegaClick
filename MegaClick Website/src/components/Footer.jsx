@@ -1,12 +1,10 @@
 import React from "react";
 import { Phone, Mail, MapPin } from "lucide-react";
-
 import {
   FaFacebookF,
   FaInstagram,
   FaLinkedinIn,
 } from "react-icons/fa";
-
 import { useNavigate } from "react-router-dom";
 
 import logo from "../assets/LOGO.png";
@@ -20,7 +18,6 @@ const Footer = () => {
   // Mobile  → Default Email App
   // Only recipient is pre-filled
   // =================================================
-
   const openGmailCompose = () => {
     const email = "megaclickofficial@gmail.com";
 
@@ -44,7 +41,6 @@ const Footer = () => {
   // =================================================
   // SCROLL TO TOP
   // =================================================
-
   const scrollToTop = () => {
     if (window.location.pathname !== "/") {
       navigate("/");
@@ -66,7 +62,6 @@ const Footer = () => {
   // =================================================
   // SERVICES
   // =================================================
-
   const services = [
     "Business Registration",
     "Tax & Compliance Services",
@@ -76,7 +71,6 @@ const Footer = () => {
   // =================================================
   // QUICK LINKS
   // =================================================
-
   const quickLinks = [
     {
       name: "Home",
@@ -103,7 +97,6 @@ const Footer = () => {
   // =================================================
   // SOCIAL LINKS
   // =================================================
-
   const socialLinks = [
     {
       icon: FaFacebookF,
@@ -125,7 +118,6 @@ const Footer = () => {
   // =================================================
   // HANDLE NAVIGATION
   // =================================================
-
   const handleNavigation = (path) => {
     navigate(path);
 
@@ -145,27 +137,25 @@ const Footer = () => {
       {/* =================================================
           TOP GREEN LINE
       ================================================= */}
-
       <div className="h-1 bg-green-400" />
 
       {/* =================================================
           MAIN FOOTER
       ================================================= */}
-
       <div
         className="
           max-w-[1500px]
           mx-auto
-          px-4
+          px-5
           sm:px-8
           lg:px-16
           xl:px-24
-          pt-2
-          sm:pt-3
-          lg:pt-4
-          pb-6
-          sm:pb-8
-          lg:pb-10
+          pt-8
+          sm:pt-12
+          lg:pt-14
+          pb-8
+          sm:pb-10
+          lg:pb-12
         "
       >
         <div
@@ -174,9 +164,9 @@ const Footer = () => {
             grid-cols-1
             sm:grid-cols-2
             lg:grid-cols-4
-            gap-10
-            sm:gap-12
-            lg:gap-14
+            gap-8
+            sm:gap-10
+            lg:gap-12
             xl:gap-16
           "
         >
@@ -184,13 +174,10 @@ const Footer = () => {
           {/* =================================================
               COMPANY
           ================================================= */}
-
-          <div className="sm:col-span-2 lg:col-span-1">
+          <div className="sm:col-span-2 lg:col-span-1 flex flex-col items-start">
 
             {/* Logo + Name */}
-
-            <div className="flex items-center gap-3 mb-5 sm:mb-6">
-
+            <div className="flex items-center gap-3 mb-4 sm:mb-5">
               <img
                 src={logo}
                 alt="MegaClick"
@@ -199,7 +186,6 @@ const Footer = () => {
                   h-11
                   sm:w-12
                   sm:h-12
-                  -ml-1
                   rounded-full
                   object-contain
                   p-1
@@ -223,19 +209,12 @@ const Footer = () => {
                   tracking-wide
                 "
               >
-                <span className="text-white">
-                  Mega
-                </span>
-
-                <span className="text-green-400">
-                  Click
-                </span>
+                <span className="text-white">Mega</span>
+                <span className="text-green-400">Click</span>
               </h2>
-
             </div>
 
             {/* Description */}
-
             <p
               className="
                 text-blue-100
@@ -250,12 +229,8 @@ const Footer = () => {
               grow faster.
             </p>
 
-            {/* =================================================
-                SOCIAL ICONS
-            ================================================= */}
-
-            <div className="flex gap-3 mt-5 sm:mt-6">
-
+            {/* SOCIAL ICONS */}
+            <div className="flex flex-wrap gap-3 mt-5 sm:mt-6">
               {socialLinks.map((social, index) => {
                 const Icon = social.icon;
 
@@ -292,50 +267,49 @@ const Footer = () => {
                   </a>
                 );
               })}
-
             </div>
+
           </div>
 
           {/* =================================================
               EXPLORE
           ================================================= */}
-
-          <div>
-
+          <div className="flex flex-col items-start">
             <h3
               className="
                 text-lg
                 sm:text-xl
                 font-bold
-                mb-5
-                sm:mb-7
+                mb-4
+                sm:mb-6
+                text-white
+                w-full
+                border-b
+                border-white/10
+                sm:border-none
+                pb-2
+                sm:pb-0
               "
             >
               Explore
             </h3>
 
-            <ul className="space-y-3 sm:space-y-4">
-
+            <ul className="space-y-2.5 sm:space-y-3.5 w-full">
               {quickLinks.map((item, index) => (
                 <li key={index}>
-
                   <button
                     type="button"
-                    onClick={() =>
-                      handleNavigation(item.path)
-                    }
+                    onClick={() => handleNavigation(item.path)}
                     className="
-                      group
-                      relative
-                      flex
-                      items-center
-                      gap-2
+                      block
+                      w-full
+                      text-left
                       text-sm
                       text-blue-100
                       cursor-pointer
                       transition-all
                       duration-300
-                      text-left
+                      py-1
                       hover:text-white
                       hover:translate-x-1
                       active:text-green-300
@@ -343,128 +317,87 @@ const Footer = () => {
                       active:scale-[0.98]
                     "
                   >
-
-                    <span
-                      className="
-                        w-1
-                        h-1
-                        rounded-full
-                        bg-green-400
-                        opacity-0
-                        transition-all
-                        duration-300
-                        group-hover:opacity-100
-                        group-hover:w-1.5
-                        group-hover:h-1.5
-                        group-active:opacity-100
-                        group-active:w-1.5
-                        group-active:h-1.5
-                      "
-                    />
-
                     {item.name}
-
                   </button>
-
                 </li>
               ))}
-
             </ul>
           </div>
 
           {/* =================================================
               OUR SERVICES
           ================================================= */}
-
-          <div>
-
+          <div className="flex flex-col items-start">
             <h3
               className="
                 text-lg
                 sm:text-xl
                 font-bold
-                mb-5
-                sm:mb-7
+                mb-4
+                sm:mb-6
+                text-white
+                w-full
+                border-b
+                border-white/10
+                sm:border-none
+                pb-2
+                sm:pb-0
               "
             >
               Our Services
             </h3>
 
-            <ul className="space-y-3 sm:space-y-4">
-
+            <ul className="space-y-2.5 sm:space-y-3.5 w-full">
               {services.map((service, index) => (
-                <li
-                  key={index}
-                  className="
-                    group
-                    relative
-                    flex
-                    items-center
-                    gap-2
-                    text-sm
-                    leading-6
-                    text-blue-100
-                    cursor-pointer
-                    transition-all
-                    duration-300
-                    hover:text-white
-                    hover:translate-x-1
-                    active:text-green-300
-                    active:translate-x-1
-                    active:scale-[0.98]
-                  "
-                >
-
+                <li key={index}>
                   <span
                     className="
-                      w-1
-                      h-1
-                      rounded-full
-                      bg-green-400
-                      opacity-0
+                      block
+                      text-sm
+                      leading-6
+                      text-blue-100
                       transition-all
                       duration-300
-                      group-hover:opacity-100
-                      group-hover:w-1.5
-                      group-hover:h-1.5
-                      group-active:opacity-100
-                      group-active:w-1.5
-                      group-active:h-1.5
+                      py-1
+                      hover:text-white
+                      hover:translate-x-1
+                      active:text-green-300
+                      active:translate-x-1
                     "
-                  />
-
-                  {service}
-
+                  >
+                    {service}
+                  </span>
                 </li>
               ))}
-
             </ul>
           </div>
 
           {/* =================================================
               CONTACT
           ================================================= */}
-
-          <div>
-
+          <div className="flex flex-col items-start">
             <h3
               className="
                 text-lg
                 sm:text-xl
                 font-bold
-                mb-5
-                sm:mb-7
+                mb-4
+                sm:mb-6
+                text-white
+                w-full
+                border-b
+                border-white/10
+                sm:border-none
+                pb-2
+                sm:pb-0
               "
             >
               Contact Us
             </h3>
 
-            <div className="space-y-4 sm:space-y-5">
+            <div className="space-y-4 sm:space-y-5 w-full">
 
-              {/* =================================================
-                  PHONE
-              ================================================= */}
-
+              {/* PHONE */}
               <a
                 href="tel:+919921611911"
                 className="
@@ -472,27 +405,27 @@ const Footer = () => {
                   flex
                   items-center
                   gap-3
-                  w-fit
+                  w-full
                   transition-all
                   duration-300
                   hover:translate-x-1
                   active:translate-x-1
                   active:scale-[0.98]
+                  py-0.5
                 "
               >
-
-                <Phone
-                  size={19}
-                  className="
-                    text-green-400
-                    flex-shrink-0
-                    transition-transform
-                    duration-300
-                    group-hover:scale-110
-                    group-active:scale-110
-                  "
-                />
-
+                <div className="w-6 h-6 flex items-center justify-center shrink-0">
+                  <Phone
+                    size={18}
+                    className="
+                      text-green-400
+                      transition-transform
+                      duration-300
+                      group-hover:scale-110
+                      group-active:scale-110
+                    "
+                  />
+                </div>
                 <span
                   className="
                     text-sm
@@ -505,13 +438,9 @@ const Footer = () => {
                 >
                   +91 9921611911
                 </span>
-
               </a>
 
-              {/* =================================================
-                  EMAIL
-              ================================================= */}
-
+              {/* EMAIL */}
               <button
                 type="button"
                 onClick={openGmailCompose}
@@ -521,7 +450,7 @@ const Footer = () => {
                   flex
                   items-center
                   gap-3
-                  w-fit
+                  w-full
                   max-w-full
                   transition-all
                   duration-300
@@ -533,21 +462,21 @@ const Footer = () => {
                   border-0
                   p-0
                   cursor-pointer
+                  py-0.5
                 "
               >
-
-                <Mail
-                  size={19}
-                  className="
-                    text-green-400
-                    flex-shrink-0
-                    transition-transform
-                    duration-300
-                    group-hover:scale-110
-                    group-active:scale-110
-                  "
-                />
-
+                <div className="w-6 h-6 flex items-center justify-center shrink-0">
+                  <Mail
+                    size={18}
+                    className="
+                      text-green-400
+                      transition-transform
+                      duration-300
+                      group-hover:scale-110
+                      group-active:scale-110
+                    "
+                  />
+                </div>
                 <span
                   className="
                     text-sm
@@ -561,13 +490,9 @@ const Footer = () => {
                 >
                   megaclickofficial@gmail.com
                 </span>
-
               </button>
 
-              {/* =================================================
-                  ADDRESS
-              ================================================= */}
-
+              {/* ADDRESS */}
               <a
                 href="https://www.google.com/maps/search/?api=1&query=4th+Floor+Tristar+Complex+Jehan+Circle+Gangapur+Road+Nashik+Maharashtra+422005"
                 target="_blank"
@@ -583,22 +508,21 @@ const Footer = () => {
                   hover:translate-x-1
                   active:translate-x-1
                   active:scale-[0.98]
+                  py-0.5
                 "
               >
-
-                <MapPin
-                  size={22}
-                  className="
-                    text-green-400
-                    mt-0.5
-                    flex-shrink-0
-                    transition-transform
-                    duration-300
-                    group-hover:scale-110
-                    group-active:scale-110
-                  "
-                />
-
+                <div className="w-6 h-6 flex items-center justify-center shrink-0 mt-0.5">
+                  <MapPin
+                    size={20}
+                    className="
+                      text-green-400
+                      transition-transform
+                      duration-300
+                      group-hover:scale-110
+                      group-active:scale-110
+                    "
+                  />
+                </div>
                 <span
                   className="
                     text-sm
@@ -620,20 +544,18 @@ const Footer = () => {
                   <br />
                   Nashik, Maharashtra 422005
                 </span>
-
               </a>
 
             </div>
           </div>
+
         </div>
       </div>
 
       {/* =================================================
           BOTTOM FOOTER
       ================================================= */}
-
       <div className="border-t border-white/10">
-
         <div
           className="
             max-w-[1500px]
@@ -653,33 +575,15 @@ const Footer = () => {
             sm:text-left
           "
         >
-
           {/* Copyright */}
-
-          <p
-            className="
-              text-xs
-              sm:text-sm
-              text-blue-100
-            "
-          >
+          <p className="text-xs sm:text-sm text-blue-100">
             © 2026{" "}
-
-            <span className="text-white font-semibold">
-              Mega
-            </span>
-
-            <span className="text-green-400 font-semibold">
-              Click
-            </span>
-
+            <span className="text-white font-semibold">Mega</span>
+            <span className="text-green-400 font-semibold">Click</span>
             . All Rights Reserved.
           </p>
 
-          {/* =================================================
-              BACK TO TOP
-          ================================================= */}
-
+          {/* BACK TO TOP */}
           <button
             type="button"
             onClick={scrollToTop}
@@ -694,7 +598,7 @@ const Footer = () => {
               active:bg-green-500
               border
               border-white/10
-              px-3
+              px-3.5
               py-1.5
               rounded-full
               text-xs
@@ -708,7 +612,6 @@ const Footer = () => {
               active:scale-95
             "
           >
-
             <span
               className="
                 w-6
@@ -724,7 +627,6 @@ const Footer = () => {
                 group-active:bg-white
               "
             >
-
               <span
                 className="
                   text-sm
@@ -736,15 +638,12 @@ const Footer = () => {
               >
                 ↑
               </span>
-
             </span>
-
             Back to Top
-
           </button>
-
         </div>
       </div>
+
     </footer>
   );
 };

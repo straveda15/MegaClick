@@ -1,5 +1,4 @@
 import React from "react";
-
 import {
   ArrowRight,
   CheckCircle2,
@@ -292,7 +291,6 @@ const Hero = () => {
                 xl:h-[480px]
               "
             >
-
               {/* =================================================
                   MAIN CENTER CARD
               ================================================== */}
@@ -301,44 +299,31 @@ const Hero = () => {
                 className="
                   absolute
                   z-10
-
                   left-1/2
                   -translate-x-1/2
 
                   top-[65px]
-
                   sm:top-[70px]
-
                   md:top-[75px]
-
                   lg:top-[80px]
-
                   xl:top-[85px]
 
                   w-[245px]
-
                   sm:w-[310px]
-
                   md:w-[350px]
-
                   lg:w-[380px]
-
                   xl:w-[440px]
                 "
               >
                 <div className="hero-float-main">
-
                   <div
                     className="
                       bg-white
                       rounded-2xl
                       sm:rounded-[22px]
-
                       border
                       border-blue-100
-
                       shadow-[0_20px_40px_rgba(11,78,162,0.14)]
-
                       p-4
                       sm:p-5
                       md:p-6
@@ -346,7 +331,6 @@ const Hero = () => {
                       xl:p-8
                     "
                   >
-
                     {/* MAIN CARD HEADER */}
 
                     <div
@@ -357,23 +341,17 @@ const Hero = () => {
                         sm:gap-4
                       "
                     >
-
                       <div
                         className="
                           w-10
                           h-10
-
                           sm:w-12
                           sm:h-12
-
                           xl:w-14
                           xl:h-14
-
                           rounded-xl
                           sm:rounded-2xl
-
                           bg-blue-100
-
                           flex
                           items-center
                           justify-center
@@ -428,16 +406,13 @@ const Hero = () => {
                         mt-5
                         sm:mt-6
                         xl:mt-8
-
                         grid
                         grid-cols-3
-
                         gap-2
                         sm:gap-3
                         xl:gap-4
                       "
                     >
-
                       {/* CLIENTS */}
 
                       <div
@@ -445,11 +420,9 @@ const Hero = () => {
                           bg-blue-50
                           rounded-lg
                           sm:rounded-xl
-
                           p-2
                           sm:p-3
                           xl:p-4
-
                           text-center
                         "
                       >
@@ -484,11 +457,9 @@ const Hero = () => {
                           bg-green-50
                           rounded-lg
                           sm:rounded-xl
-
                           p-2
                           sm:p-3
                           xl:p-4
-
                           text-center
                         "
                       >
@@ -523,11 +494,9 @@ const Hero = () => {
                           bg-blue-50
                           rounded-lg
                           sm:rounded-xl
-
                           p-2
                           sm:p-3
                           xl:p-4
-
                           text-center
                         "
                       >
@@ -554,7 +523,6 @@ const Hero = () => {
                           Years
                         </p>
                       </div>
-
                     </div>
 
                     {/* TRUSTED */}
@@ -564,14 +532,11 @@ const Hero = () => {
                         mt-4
                         sm:mt-5
                         xl:mt-6
-
                         flex
                         items-center
                         gap-2
-
                         text-xs
                         sm:text-sm
-
                         font-semibold
                         text-green-600
                       "
@@ -586,20 +551,18 @@ const Hero = () => {
 
                       Trusted Business Partner
                     </div>
-
                   </div>
                 </div>
               </div>
 
               {/* =================================================
-                  LEFT SMALL CARD
+                  LEFT SMALL CARD - 15000+
               ================================================== */}
 
               <div
                 className="
                   absolute
                   z-20
-
                   left-[0px]
                   top-[15px]
 
@@ -616,37 +579,27 @@ const Hero = () => {
                   xl:top-[25px]
 
                   w-[105px]
-
                   sm:w-[135px]
-
                   md:w-[150px]
-
                   lg:w-[165px]
-
                   xl:w-[180px]
                 "
               >
                 <div className="hero-float-left">
-
                   <div
                     className="
                       bg-white
-
                       rounded-xl
                       sm:rounded-2xl
-
                       border
                       border-blue-100
-
                       shadow-[0_15px_30px_rgba(11,78,162,0.13)]
-
                       p-2.5
                       sm:p-3.5
                       md:p-4
                       xl:p-5
                     "
                   >
-
                     <div
                       className="
                         flex
@@ -655,27 +608,20 @@ const Hero = () => {
                         sm:gap-3
                       "
                     >
-
                       <div
                         className="
                           w-7
                           h-7
-
                           sm:w-9
                           sm:h-9
-
                           xl:w-10
                           xl:h-10
-
                           rounded-lg
                           sm:rounded-xl
-
                           bg-blue-100
-
                           flex
                           items-center
                           justify-center
-
                           flex-shrink-0
                         "
                       >
@@ -690,7 +636,6 @@ const Hero = () => {
                       </div>
 
                       <div>
-
                         <h4
                           className="
                             font-bold
@@ -712,18 +657,14 @@ const Hero = () => {
                         >
                           Happy Clients
                         </p>
-
                       </div>
-
                     </div>
-
                   </div>
-
                 </div>
               </div>
 
               {/* =================================================
-                  RIGHT / BOTTOM SMALL CARD
+                  RIGHT / BOTTOM SMALL CARD - SECURE
               ================================================== */}
 
               <div
@@ -731,15 +672,24 @@ const Hero = () => {
                   absolute
                   z-20
 
-                  right-[0px]
-                  bottom-[20px]
+                  /* MOBILE:
+                     Keep Secure badge close to
+                     the bottom of the main card */
+                  left-1/2
+                  -translate-x-1/2
+                  bottom-[5px]
 
+                  /* SMALL */
+                  sm:left-auto
+                  sm:translate-x-0
                   sm:right-[0px]
                   sm:bottom-[35px]
 
+                  /* TABLET */
                   md:right-[5px]
                   md:bottom-[45px]
 
+                  /* DESKTOP */
                   lg:right-[5px]
                   lg:bottom-[50px]
 
@@ -747,37 +697,27 @@ const Hero = () => {
                   xl:bottom-[55px]
 
                   w-[110px]
-
                   sm:w-[145px]
-
                   md:w-[160px]
-
                   lg:w-[175px]
-
                   xl:w-[200px]
                 "
               >
                 <div className="hero-float-right">
-
                   <div
                     className="
                       bg-white
-
                       rounded-xl
                       sm:rounded-2xl
-
                       border
                       border-blue-100
-
                       shadow-[0_15px_30px_rgba(11,78,162,0.13)]
-
                       p-2.5
                       sm:p-3.5
                       md:p-4
                       xl:p-5
                     "
                   >
-
                     <div
                       className="
                         flex
@@ -786,27 +726,20 @@ const Hero = () => {
                         sm:gap-3
                       "
                     >
-
                       <div
                         className="
                           w-7
                           h-7
-
                           sm:w-9
                           sm:h-9
-
                           xl:w-10
                           xl:h-10
-
                           rounded-lg
                           sm:rounded-xl
-
                           bg-green-100
-
                           flex
                           items-center
                           justify-center
-
                           flex-shrink-0
                         "
                       >
@@ -821,7 +754,6 @@ const Hero = () => {
                       </div>
 
                       <div>
-
                         <h4
                           className="
                             font-bold
@@ -844,13 +776,9 @@ const Hero = () => {
                         >
                           Compliance
                         </p>
-
                       </div>
-
                     </div>
-
                   </div>
-
                 </div>
               </div>
 
@@ -880,64 +808,46 @@ const Hero = () => {
                 "
               >
                 <div className="hero-float-status">
-
                   <div
                     className="
                       flex
                       items-center
                       gap-1.5
                       sm:gap-2
-
                       bg-blue-50
-
                       border
                       border-blue-200
-
                       rounded-full
-
                       px-2.5
                       sm:px-4
                       xl:px-5
-
                       py-1.5
                       sm:py-2
-
                       text-[8px]
                       sm:text-xs
                       xl:text-sm
-
                       font-bold
                       text-[#0B4EA2]
-
                       whitespace-nowrap
-
                       shadow-sm
                     "
                   >
-
                     <span
                       className="
                         w-1.5
                         h-1.5
-
                         sm:w-2
                         sm:h-2
-
                         rounded-full
-
                         bg-green-500
-
                         shadow-[0_0_6px_rgba(34,197,94,0.8)]
                       "
                     />
 
                     Services Active
-
                   </div>
-
                 </div>
               </div>
-
             </div>
           </div>
         </div>
