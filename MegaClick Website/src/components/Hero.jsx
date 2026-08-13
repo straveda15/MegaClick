@@ -44,7 +44,7 @@ const Hero = () => {
           "
         >
           {/* =====================================================
-              LEFT CONTENT
+              LEFT CONTENT (CENTERED ON MOBILE, LEFT ON DESKTOP)
           ====================================================== */}
 
           <div
@@ -53,6 +53,12 @@ const Hero = () => {
               sm:space-y-6
               md:space-y-7
               w-full
+              flex
+              flex-col
+              items-center
+              sm:items-start
+              text-center
+              sm:text-left
             "
           >
             {/* BADGE */}
@@ -118,6 +124,8 @@ const Hero = () => {
                 leading-7
                 md:leading-relaxed
                 max-w-xl
+                mx-auto
+                sm:mx-0
               "
             >
               Complete business solutions to simplify registrations,
@@ -133,9 +141,12 @@ const Hero = () => {
                 sm:gap-8
                 md:gap-10
                 flex-wrap
+                justify-center
+                sm:justify-start
+                w-full
               "
             >
-              <div>
+              <div className="text-center sm:text-left">
                 <h3
                   className="
                     text-2xl
@@ -152,7 +163,7 @@ const Hero = () => {
                 </p>
               </div>
 
-              <div>
+              <div className="text-center sm:text-left">
                 <h3
                   className="
                     text-2xl
@@ -169,7 +180,7 @@ const Hero = () => {
                 </p>
               </div>
 
-              <div>
+              <div className="text-center sm:text-left">
                 <h3
                   className="
                     text-2xl
@@ -197,6 +208,10 @@ const Hero = () => {
                 gap-3
                 sm:gap-4
                 pt-2
+                w-full
+                sm:w-auto
+                justify-center
+                sm:justify-start
               "
             >
               <button
@@ -261,7 +276,7 @@ const Hero = () => {
               flex
               justify-center
               items-center
-              mt-6
+              mt-4
               lg:mt-0
               overflow-visible
             "
@@ -276,7 +291,7 @@ const Hero = () => {
                 flex-shrink-0
 
                 w-[320px]
-                h-[390px]
+                h-[320px]
 
                 sm:w-[390px]
                 sm:h-[420px]
@@ -302,13 +317,13 @@ const Hero = () => {
                   left-1/2
                   -translate-x-1/2
 
-                  top-[65px]
+                  top-[50px]
                   sm:top-[70px]
                   md:top-[75px]
                   lg:top-[80px]
                   xl:top-[85px]
 
-                  w-[245px]
+                  w-[260px]
                   sm:w-[310px]
                   md:w-[350px]
                   lg:w-[380px]
@@ -403,7 +418,7 @@ const Hero = () => {
 
                     <div
                       className="
-                        mt-5
+                        mt-4
                         sm:mt-6
                         xl:mt-8
                         grid
@@ -428,7 +443,7 @@ const Hero = () => {
                       >
                         <h4
                           className="
-                            text-lg
+                            text-base
                             sm:text-xl
                             xl:text-2xl
                             font-bold
@@ -465,7 +480,7 @@ const Hero = () => {
                       >
                         <h4
                           className="
-                            text-lg
+                            text-base
                             sm:text-xl
                             xl:text-2xl
                             font-bold
@@ -502,7 +517,7 @@ const Hero = () => {
                       >
                         <h4
                           className="
-                            text-lg
+                            text-base
                             sm:text-xl
                             xl:text-2xl
                             font-bold
@@ -529,11 +544,13 @@ const Hero = () => {
 
                     <div
                       className="
-                        mt-4
+                        mt-3
                         sm:mt-5
                         xl:mt-6
                         flex
                         items-center
+                        justify-center
+                        sm:justify-start
                         gap-2
                         text-xs
                         sm:text-sm
@@ -564,7 +581,7 @@ const Hero = () => {
                   absolute
                   z-20
                   left-[0px]
-                  top-[15px]
+                  top-[10px]
 
                   sm:left-[5px]
                   sm:top-[10px]
@@ -578,7 +595,7 @@ const Hero = () => {
                   xl:left-[35px]
                   xl:top-[25px]
 
-                  w-[105px]
+                  w-[115px]
                   sm:w-[135px]
                   md:w-[150px]
                   lg:w-[165px]
@@ -664,7 +681,7 @@ const Hero = () => {
               </div>
 
               {/* =================================================
-                  RIGHT / BOTTOM SMALL CARD - SECURE
+                  BOTTOM SMALL CARD - SECURE (MOVED UP TO TOUCH MAIN CARD ON MOBILE)
               ================================================== */}
 
               <div
@@ -672,14 +689,13 @@ const Hero = () => {
                   absolute
                   z-20
 
-                  /* MOBILE:
-                     Keep Secure badge close to
-                     the bottom of the main card */
+                  /* MOBILE: Positioned directly touching the bottom of main card */
                   left-1/2
                   -translate-x-1/2
-                  bottom-[5px]
+                  top-[240px]
 
-                  /* SMALL */
+                  /* SMALL & UP: Standard Floating Position */
+                  sm:top-auto
                   sm:left-auto
                   sm:translate-x-0
                   sm:right-[0px]
@@ -696,7 +712,7 @@ const Hero = () => {
                   xl:right-[0px]
                   xl:bottom-[55px]
 
-                  w-[110px]
+                  w-[125px]
                   sm:w-[145px]
                   md:w-[160px]
                   lg:w-[175px]
@@ -791,8 +807,8 @@ const Hero = () => {
                   absolute
                   z-30
 
-                  right-[5px]
-                  top-[20px]
+                  right-[0px]
+                  top-[10px]
 
                   sm:right-[15px]
                   sm:top-[25px]

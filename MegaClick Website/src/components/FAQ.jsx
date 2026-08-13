@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-
 import {
   ChevronDown,
   CheckCircle,
@@ -89,22 +88,22 @@ const FAQ = () => {
         "
       />
 
-          <div
-  className="
-    max-w-[1500px]
-    mx-auto
-    px-4
-    sm:px-8
-    lg:px-16
-    xl:px-24
-    pt-2
-    sm:pt-3
-    lg:pt-4
-    pb-3
-    sm:pb-6
-    lg:pb-8
-  "
->
+      <div
+        className="
+          max-w-[1500px]
+          mx-auto
+          px-4
+          sm:px-8
+          lg:px-16
+          xl:px-24
+          pt-2
+          sm:pt-3
+          lg:pt-4
+          pb-3
+          sm:pb-6
+          lg:pb-8
+        "
+      >
         {/* =====================================================
             HEADING
         ====================================================== */}
@@ -117,14 +116,14 @@ const FAQ = () => {
             lg:mb-12
           "
         >
-          {/* BADGE */}
+          {/* BADGE (CHANGED TO "FAQ'S" TO AVOID REPETITION) */}
 
           <span
             className="
               inline-flex
               items-center
               gap-2
-             bg-[#0B4EA2]
+              bg-[#0B4EA2]
               text-white
               px-3
               sm:px-4
@@ -142,33 +141,31 @@ const FAQ = () => {
               className="text-green-300"
             />
 
-            Frequently Asked Questions
+            FAQ's
           </span>
 
           {/* HEADING */}
 
           <h2
             className="
-              text-3xl
+              text-2xl
               sm:text-4xl
-              lg:text-5xl
-              font-bold
-              leading-tight
-              text-black
+              font-extrabold
+              tracking-tight
+              text-gray-900
             "
           >
-            Frequently Asked{" "}
-
+            Frequently{" "}
             <span
               className="
                 bg-gradient-to-r
-                from-blue-600
+                from-[#0B4EA2]
                 to-green-500
                 bg-clip-text
                 text-transparent
               "
             >
-              Questions
+              Asked Questions
             </span>
           </h2>
 
@@ -181,16 +178,13 @@ const FAQ = () => {
               leading-6
               sm:leading-7
               text-sm
-              text-justify
-              sm:text-base
               text-left
               sm:text-justify
               max-w-xl
             "
           >
             Find answers to common questions about our business, legal, financial, 
-           and registration services. 
-           Our experts are here to provide clear guidance and reliable support.
+            and registration services. Our experts are here to provide clear guidance and reliable support.
           </p>
         </div>
 
@@ -199,109 +193,126 @@ const FAQ = () => {
         ====================================================== */}
 
         <div className="space-y-3 sm:space-y-4">
-          {faqs.map((faq, index) => (
-            <div
-              key={index}
-              className="
-                group
-                bg-white
-                rounded-xl
-                border
-                border-blue-200
-                shadow-md
-                hover:shadow-lg
-                hover:border-blue-400
-                overflow-hidden
-              "
-            >
-              {/* =================================================
-                  QUESTION
-              ================================================== */}
+          {faqs.map((faq, index) => {
+            const isOpen = openIndex === index;
 
-              <button
-                type="button"
-                onClick={() => toggleFAQ(index)}
+            return (
+              <div
+                key={index}
                 className="
-                  w-full
-                  flex
-                  items-center
-                  justify-between
-                  gap-4
-                  px-4
-                  sm:px-5
-                  py-4
-                  sm:py-5
-                  text-left
+                  group
+                  bg-white
+                  rounded-xl
+                  border
+                  border-blue-200
+                  shadow-md
+                  hover:shadow-lg
+                  hover:border-blue-400
+                  overflow-hidden
+                  transition-all
+                  duration-200
                 "
               >
-                <h3
-                  className="
-                    text-sm
-                    sm:text-base
-                    lg:text-lg
-                    font-semibold
-                    text-gray-900
-                    group-hover:text-blue-600
-                    transition-colors
-                    duration-200
-                  "
-                >
-                  {faq.question}
-                </h3>
+                {/* =================================================
+                    QUESTION
+                ================================================== */}
 
-                {/* ARROW */}
-
-                <div
+                <button
+                  type="button"
+                  onClick={() => toggleFAQ(index)}
                   className="
-                    flex-shrink-0
-                    w-8
-                    h-8
-                    rounded-full
-                    bg-green-50
+                    w-full
                     flex
                     items-center
-                    justify-center
-                  "
-                >
-                  <ChevronDown
-                    size={18}
-                    className="text-green-600"
-                  />
-                </div>
-              </button>
-
-              {/* =================================================
-                  ANSWER
-                  NO ANIMATION
-              ================================================== */}
-
-              {openIndex === index && (
-                <div
-                  className="
-                    border-t
-                    border-blue-100
+                    justify-between
+                    gap-4
                     px-4
                     sm:px-5
                     py-4
-                    bg-blue-50/40
+                    sm:py-5
+                    text-left
+                    focus:outline-none
+                    cursor-pointer
                   "
                 >
-                  <p
-                    className="
-                      text-gray-600
-                      leading-6
-                      sm:leading-7
+                  <h3
+                    className={`
                       text-sm
                       sm:text-base
-                      text-left
-                    "
+                      lg:text-lg
+                      font-semibold
+                      transition-colors
+                      duration-200
+                      ${isOpen ? "text-[#0B4EA2]" : "text-gray-900 group-hover:text-[#0B4EA2]"}
+                    `}
                   >
-                    {faq.answer}
-                  </p>
+                    {faq.question}
+                  </h3>
+
+                  {/* ARROW ICON WITH ROTATING ANIMATION */}
+
+                  <div
+                    className={`
+                      flex-shrink-0
+                      w-8
+                      h-8
+                      rounded-full
+                      flex
+                      items-center
+                      justify-center
+                      transition-all
+                      duration-300
+                      ${
+                        isOpen
+                          ? "bg-[#0B4EA2] text-white rotate-180"
+                          : "bg-green-50 text-green-600"
+                      }
+                    `}
+                  >
+                    <ChevronDown
+                      size={18}
+                      className="transition-transform duration-200"
+                    />
+                  </div>
+                </button>
+
+                {/* =================================================
+                    ANSWER (SMOOTH SLIDE HEIGHT ANIMATION)
+                ================================================== */}
+
+                <div
+                  className={`
+                    grid
+                    transition-all
+                    duration-300
+                    ease-in-out
+                    ${
+                      isOpen
+                        ? "grid-rows-[1fr] opacity-100 border-t border-blue-100"
+                        : "grid-rows-[0fr] opacity-0 border-t-0"
+                    }
+                  `}
+                >
+                  <div className="overflow-hidden">
+                    <div className="px-4 sm:px-5 py-4 bg-blue-50/40">
+                      <p
+                        className="
+                          text-gray-600
+                          leading-6
+                          sm:leading-7
+                          text-sm
+                          sm:text-base
+                          text-left
+                        "
+                      >
+                        {faq.answer}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-              )}
-            </div>
-          ))}
+              </div>
+            );
+          })}
         </div>
 
         {/* =====================================================

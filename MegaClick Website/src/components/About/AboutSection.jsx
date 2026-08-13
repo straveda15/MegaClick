@@ -13,7 +13,7 @@ const About = () => {
       className="
         relative
         overflow-hidden
-        py-8
+        py-4
         sm:py-10
         lg:py-14
         bg-white
@@ -31,10 +31,10 @@ const About = () => {
           sm:px-8
           lg:px-16
           xl:px-24
-          pt-2
+          pt-0
           sm:pt-3
           lg:pt-4
-          pb-6
+          pb-2
           sm:pb-8
           lg:pb-10
         "
@@ -46,7 +46,7 @@ const About = () => {
 
         <div
           className="
-            mb-8
+            mb-4
             sm:mb-10
             lg:mb-12
           "
@@ -78,34 +78,31 @@ const About = () => {
           </span>
 
           {/* HEADING */}
-<h2
+          <h2
+            className="
+              mt-2.5
+              sm:mt-5
+              text-2xl
+              sm:text-4xl
+              lg:text-5xl
+              font-bold
+              leading-tight
+              text-gray-900
+            "
+          >
+            Your Success,{" "}
+            <span
               className="
-                mt-4
-                sm:mt-5
-                text-3xl
-                sm:text-4xl
-                lg:text-5xl
-                font-bold
-                leading-tight
-                text-gray-900
+                bg-gradient-to-r
+                from-blue-600
+                to-green-500
+                bg-clip-text
+                text-transparent
               "
             >
-           Your Success,{" "}
-
-          
-
-              <span
-                className="
-                  bg-gradient-to-r
-                  from-blue-600
-                  to-green-500
-                  bg-clip-text
-                  text-transparent
-                "
-              >
-                Our Mission
-              </span>
-            </h2>
+              Our Mission
+            </span>
+          </h2>
         </div>
 
         {/* =====================================================
@@ -116,7 +113,7 @@ const About = () => {
         <div
           className="
             w-full
-            space-y-5
+            space-y-3.5
             sm:space-y-7
             lg:space-y-8
           "
@@ -125,14 +122,15 @@ const About = () => {
 
           <p
             className="
-              text-base
+              text-sm
               sm:text-lg
               lg:text-[22px]
-              leading-7
+              leading-6
               sm:leading-8
               lg:leading-10
               text-gray-700
-              text-justify
+              text-left
+              sm:text-justify
             "
           >
             <span className="font-bold">
@@ -163,14 +161,15 @@ const About = () => {
 
           <p
             className="
-              text-base
+              text-sm
               sm:text-lg
               lg:text-[22px]
-              leading-7
+              leading-6
               sm:leading-8
               lg:leading-10
               text-gray-700
-              text-justify
+              text-left
+              sm:text-justify
             "
           >
             By bringing together legal, financial,
@@ -211,7 +210,7 @@ const About = () => {
         <div
           className="
             relative
-            mt-8
+            mt-5
             sm:mt-10
             lg:mt-14
             w-full
@@ -278,7 +277,7 @@ const About = () => {
                 text-center
                 px-3
                 sm:px-4
-                py-5
+                py-3.5
                 sm:py-7
                 lg:py-8
                 border-b
@@ -290,8 +289,8 @@ const About = () => {
             >
               <div
                 className="
-                  w-10
-                  h-10
+                  w-9
+                  h-9
                   sm:w-12
                   sm:h-12
                   lg:w-14
@@ -301,15 +300,15 @@ const About = () => {
                   flex
                   items-center
                   justify-center
-                  mb-3
+                  mb-2
                   sm:mb-4
                   shadow-lg
                 "
               >
                 <Users
                   className="
-                    w-5
-                    h-5
+                    w-4
+                    h-4
                     sm:w-6
                     sm:h-6
                     text-[#0B4EA2]
@@ -319,7 +318,7 @@ const About = () => {
 
               <h3
                 className="
-                  text-2xl
+                  text-xl
                   sm:text-3xl
                   lg:text-4xl
                   font-bold
@@ -331,10 +330,10 @@ const About = () => {
 
               <p
                 className="
-                  text-xs
+                  text-[11px]
                   sm:text-sm
                   text-white/80
-                  mt-1
+                  mt-0.5
                   sm:mt-2
                   font-medium
                 "
@@ -356,7 +355,7 @@ const About = () => {
                 text-center
                 px-3
                 sm:px-4
-                py-5
+                py-3.5
                 sm:py-7
                 lg:py-8
                 border-b
@@ -367,8 +366,8 @@ const About = () => {
             >
               <div
                 className="
-                  w-10
-                  h-10
+                  w-9
+                  h-9
                   sm:w-12
                   sm:h-12
                   lg:w-14
@@ -378,15 +377,15 @@ const About = () => {
                   flex
                   items-center
                   justify-center
-                  mb-3
+                  mb-2
                   sm:mb-4
                   shadow-lg
                 "
               >
                 <Building2
                   className="
-                    w-5
-                    h-5
+                    w-4
+                    h-4
                     sm:w-6
                     sm:h-6
                     text-green-500
@@ -396,7 +395,7 @@ const About = () => {
 
               <h3
                 className="
-                  text-2xl
+                  text-xl
                   sm:text-3xl
                   lg:text-4xl
                   font-bold
@@ -408,10 +407,10 @@ const About = () => {
 
               <p
                 className="
-                  text-xs
+                  text-[11px]
                   sm:text-sm
                   text-white/80
-                  mt-1
+                  mt-0.5
                   sm:mt-2
                   font-medium
                 "
@@ -433,7 +432,7 @@ const About = () => {
                 text-center
                 px-3
                 sm:px-4
-                py-5
+                py-3.5
                 sm:py-7
                 lg:py-8
                 border-r
@@ -442,8 +441,8 @@ const About = () => {
             >
               <div
                 className="
-                  w-10
-                  h-10
+                  w-9
+                  h-9
                   sm:w-12
                   sm:h-12
                   lg:w-14
@@ -453,15 +452,15 @@ const About = () => {
                   flex
                   items-center
                   justify-center
-                  mb-3
+                  mb-2
                   sm:mb-4
                   shadow-lg
                 "
               >
                 <ShieldCheck
                   className="
-                    w-5
-                    h-5
+                    w-4
+                    h-4
                     sm:w-6
                     sm:h-6
                     text-emerald-500
@@ -471,7 +470,7 @@ const About = () => {
 
               <h3
                 className="
-                  text-2xl
+                  text-xl
                   sm:text-3xl
                   lg:text-4xl
                   font-bold
@@ -483,10 +482,10 @@ const About = () => {
 
               <p
                 className="
-                  text-xs
+                  text-[11px]
                   sm:text-sm
                   text-white/80
-                  mt-1
+                  mt-0.5
                   sm:mt-2
                   font-medium
                 "
@@ -508,15 +507,15 @@ const About = () => {
                 text-center
                 px-3
                 sm:px-4
-                py-5
+                py-3.5
                 sm:py-7
                 lg:py-8
               "
             >
               <div
                 className="
-                  w-10
-                  h-10
+                  w-9
+                  h-9
                   sm:w-12
                   sm:h-12
                   lg:w-14
@@ -526,15 +525,15 @@ const About = () => {
                   flex
                   items-center
                   justify-center
-                  mb-3
+                  mb-2
                   sm:mb-4
                   shadow-lg
                 "
               >
                 <BadgeCheck
                   className="
-                    w-5
-                    h-5
+                    w-4
+                    h-4
                     sm:w-6
                     sm:h-6
                     text-[#0B4EA2]
@@ -544,7 +543,7 @@ const About = () => {
 
               <h3
                 className="
-                  text-2xl
+                  text-xl
                   sm:text-3xl
                   lg:text-4xl
                   font-bold
@@ -556,10 +555,10 @@ const About = () => {
 
               <p
                 className="
-                  text-xs
+                  text-[11px]
                   sm:text-sm
                   text-white/80
-                  mt-1
+                  mt-0.5
                   sm:mt-2
                   font-medium
                 "

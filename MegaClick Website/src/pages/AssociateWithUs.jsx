@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 
 import {
@@ -57,30 +56,67 @@ const states = [
   "Puducherry",
 ];
 
-const expertise = [
-  "Income Tax",
-  "GST",
-  "Audit",
-  "ROC Filing",
-  "TDS",
-  "Bookkeeping",
-  "CFO Services",
-  "Business Advisory",
-  "ITR Filing",
-];
-
 const AssociateWithUs = () => {
-  const [selectedExpertise, setSelectedExpertise] = useState([]);
+  const [selectedProfession, setSelectedProfession] = useState("");
+  const [selectedState, setSelectedState] = useState("");
 
-  const toggleExpertise = (item) => {
-    if (selectedExpertise.includes(item)) {
-      setSelectedExpertise(
-        selectedExpertise.filter((skill) => skill !== item)
-      );
-    } else {
-      setSelectedExpertise([...selectedExpertise, item]);
+  // Base style for standard text inputs
+  const inputBaseStyle = `
+    w-full
+    max-w-full
+    h-12
+    sm:h-14
+    rounded-xl
+    bg-gray-50
+    border
+    border-gray-300
+    px-4
+    text-sm
+    sm:text-base
+    text-gray-900
+    font-semibold
+    placeholder:text-gray-400
+    placeholder:font-normal
+    outline-none
+    focus:bg-white
+    focus:border-[#0B4EA2]
+    focus:ring-4
+    focus:ring-blue-100
+    transition
+  `;
+
+  // Custom styling for Select boxes to force high contrast text
+  const getSelectStyle = (value) => `
+    w-full
+    max-w-full
+    h-12
+    sm:h-14
+    rounded-xl
+    border
+    px-4
+    pr-10
+    text-sm
+    sm:text-base
+    outline-none
+    transition
+    cursor-pointer
+    appearance-none
+    bg-no-repeat
+    bg-[right_1rem_center]
+    bg-[length:1.25rem_1.25rem]
+    ${
+      value
+        ? "bg-white text-gray-900 font-bold border-gray-400 shadow-sm"
+        : "bg-gray-50 text-gray-400 font-normal border-gray-300"
     }
-  };
+    focus:bg-white
+    focus:text-gray-900
+    focus:border-[#0B4EA2]
+    focus:ring-4
+    focus:ring-blue-100
+  `;
+
+  const dropdownArrowSvg = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2' stroke='%23374151'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5' /%3E%3C/svg%3E")`;
 
   return (
     <section className="w-full bg-gray-50 py-10 sm:py-14 lg:py-20 overflow-hidden">
@@ -394,24 +430,7 @@ const AssociateWithUs = () => {
                       name="full_name"
                       required
                       placeholder="Enter your name"
-                      className="
-                        w-full
-                        max-w-full
-                        h-12
-                        sm:h-14
-                        rounded-xl
-                        bg-gray-50
-                        border
-                        border-gray-200
-                        px-4
-                        text-sm
-                        outline-none
-                        focus:bg-white
-                        focus:border-[#0B4EA2]
-                        focus:ring-4
-                        focus:ring-blue-100
-                        transition
-                      "
+                      className={inputBaseStyle}
                     />
 
                   </div>
@@ -440,24 +459,7 @@ const AssociateWithUs = () => {
                       name="phone"
                       required
                       placeholder="Enter your mobile number"
-                      className="
-                        w-full
-                        max-w-full
-                        h-12
-                        sm:h-14
-                        rounded-xl
-                        bg-gray-50
-                        border
-                        border-gray-200
-                        px-4
-                        text-sm
-                        outline-none
-                        focus:bg-white
-                        focus:border-[#0B4EA2]
-                        focus:ring-4
-                        focus:ring-blue-100
-                        transition
-                      "
+                      className={inputBaseStyle}
                     />
 
                   </div>
@@ -486,24 +488,7 @@ const AssociateWithUs = () => {
                       name="email"
                       required
                       placeholder="Enter your email address"
-                      className="
-                        w-full
-                        max-w-full
-                        h-12
-                        sm:h-14
-                        rounded-xl
-                        bg-gray-50
-                        border
-                        border-gray-200
-                        px-4
-                        text-sm
-                        outline-none
-                        focus:bg-white
-                        focus:border-[#0B4EA2]
-                        focus:ring-4
-                        focus:ring-blue-100
-                        transition
-                      "
+                      className={inputBaseStyle}
                     />
 
                   </div>
@@ -531,27 +516,13 @@ const AssociateWithUs = () => {
                     <select
                       name="profession"
                       required
-                      className="
-                        w-full
-                        max-w-full
-                        h-12
-                        sm:h-14
-                        rounded-xl
-                        bg-gray-50
-                        border
-                        border-gray-200
-                        px-4
-                        text-sm
-                        outline-none
-                        focus:bg-white
-                        focus:border-[#0B4EA2]
-                        focus:ring-4
-                        focus:ring-blue-100
-                        transition
-                      "
+                      value={selectedProfession}
+                      onChange={(e) => setSelectedProfession(e.target.value)}
+                      className={getSelectStyle(selectedProfession)}
+                      style={{ backgroundImage: dropdownArrowSvg }}
                     >
 
-                      <option value="">
+                      <option value="" className="text-gray-400 bg-white">
                         Select Profession
                       </option>
 
@@ -559,6 +530,7 @@ const AssociateWithUs = () => {
                         <option
                           key={profession}
                           value={profession}
+                          className="text-gray-900 font-bold bg-white py-2"
                         >
                           {profession}
                         </option>
@@ -592,24 +564,7 @@ const AssociateWithUs = () => {
                       name="firm_name"
                       required
                       placeholder="Enter your firm name"
-                      className="
-                        w-full
-                        max-w-full
-                        h-12
-                        sm:h-14
-                        rounded-xl
-                        bg-gray-50
-                        border
-                        border-gray-200
-                        px-4
-                        text-sm
-                        outline-none
-                        focus:bg-white
-                        focus:border-[#0B4EA2]
-                        focus:ring-4
-                        focus:ring-blue-100
-                        transition
-                      "
+                      className={inputBaseStyle}
                     />
 
                   </div>
@@ -639,24 +594,7 @@ const AssociateWithUs = () => {
                       name="experience_years"
                       required
                       placeholder="Enter years of experience"
-                      className="
-                        w-full
-                        max-w-full
-                        h-12
-                        sm:h-14
-                        rounded-xl
-                        bg-gray-50
-                        border
-                        border-gray-200
-                        px-4
-                        text-sm
-                        outline-none
-                        focus:bg-white
-                        focus:border-[#0B4EA2]
-                        focus:ring-4
-                        focus:ring-blue-100
-                        transition
-                      "
+                      className={inputBaseStyle}
                     />
 
                   </div>
@@ -684,24 +622,7 @@ const AssociateWithUs = () => {
                       type="url"
                       name="linkedin_profile"
                       placeholder="Enter LinkedIn profile URL"
-                      className="
-                        w-full
-                        max-w-full
-                        h-12
-                        sm:h-14
-                        rounded-xl
-                        bg-gray-50
-                        border
-                        border-gray-200
-                        px-4
-                        text-sm
-                        outline-none
-                        focus:bg-white
-                        focus:border-[#0B4EA2]
-                        focus:ring-4
-                        focus:ring-blue-100
-                        transition
-                      "
+                      className={inputBaseStyle}
                     />
 
                   </div>
@@ -729,24 +650,7 @@ const AssociateWithUs = () => {
                       type="url"
                       name="website"
                       placeholder="Enter your website URL"
-                      className="
-                        w-full
-                        max-w-full
-                        h-12
-                        sm:h-14
-                        rounded-xl
-                        bg-gray-50
-                        border
-                        border-gray-200
-                        px-4
-                        text-sm
-                        outline-none
-                        focus:bg-white
-                        focus:border-[#0B4EA2]
-                        focus:ring-4
-                        focus:ring-blue-100
-                        transition
-                      "
+                      className={inputBaseStyle}
                     />
 
                   </div>
@@ -793,24 +697,7 @@ const AssociateWithUs = () => {
                         placeholder="6-digit pincode"
                         maxLength="6"
                         inputMode="numeric"
-                        className="
-                          w-full
-                          max-w-full
-                          h-12
-                          sm:h-14
-                          rounded-xl
-                          bg-gray-50
-                          border
-                          border-gray-200
-                          px-4
-                          text-sm
-                          outline-none
-                          focus:bg-white
-                          focus:border-[#0B4EA2]
-                          focus:ring-4
-                          focus:ring-blue-100
-                          transition
-                        "
+                        className={inputBaseStyle}
                       />
 
                     </div>
@@ -837,24 +724,7 @@ const AssociateWithUs = () => {
                         name="city"
                         required
                         placeholder="Enter city"
-                        className="
-                          w-full
-                          max-w-full
-                          h-12
-                          sm:h-14
-                          rounded-xl
-                          bg-gray-50
-                          border
-                          border-gray-200
-                          px-4
-                          text-sm
-                          outline-none
-                          focus:bg-white
-                          focus:border-[#0B4EA2]
-                          focus:ring-4
-                          focus:ring-blue-100
-                          transition
-                        "
+                        className={inputBaseStyle}
                       />
 
                     </div>
@@ -879,27 +749,13 @@ const AssociateWithUs = () => {
                       <select
                         name="state"
                         required
-                        className="
-                          w-full
-                          max-w-full
-                          h-12
-                          sm:h-14
-                          rounded-xl
-                          bg-gray-50
-                          border
-                          border-gray-200
-                          px-4
-                          text-sm
-                          outline-none
-                          focus:bg-white
-                          focus:border-[#0B4EA2]
-                          focus:ring-4
-                          focus:ring-blue-100
-                          transition
-                        "
+                        value={selectedState}
+                        onChange={(e) => setSelectedState(e.target.value)}
+                        className={getSelectStyle(selectedState)}
+                        style={{ backgroundImage: dropdownArrowSvg }}
                       >
 
-                        <option value="">
+                        <option value="" className="text-gray-400 bg-white">
                           Select State
                         </option>
 
@@ -907,6 +763,7 @@ const AssociateWithUs = () => {
                           <option
                             key={state}
                             value={state}
+                            className="text-gray-900 font-bold bg-white py-2"
                           >
                             {state}
                           </option>
@@ -950,10 +807,15 @@ const AssociateWithUs = () => {
                         rounded-xl
                         bg-gray-50
                         border
-                        border-gray-200
+                        border-gray-300
                         px-4
                         py-4
                         text-sm
+                        sm:text-base
+                        text-gray-900
+                        font-semibold
+                        placeholder:text-gray-400
+                        placeholder:font-normal
                         outline-none
                         resize-y
                         focus:bg-white
