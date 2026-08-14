@@ -19,7 +19,9 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // src/shared/utils → Backend root is three levels up
 const BACKEND_ROOT = path.resolve(__dirname, "../../../");
 
-export const MEDIA_ROOT = process.env.UPLOAD_DIR
+export const MEDIA_ROOT = process.env.VERCEL
+  ? path.join("/tmp", "media")
+  : process.env.UPLOAD_DIR
   ? path.resolve(process.env.UPLOAD_DIR)
   : path.join(BACKEND_ROOT, "public", "media");
 
@@ -29,7 +31,11 @@ export const MEDIA_ROOT = process.env.UPLOAD_DIR
 const PUBLIC_BASE = (process.env.MEDIA_BASE_URL || "").replace(/\/+$/, "");
 
 // Ensure the root exists so express.static has something to serve on boot.
-fs.mkdirSync(MEDIA_ROOT, { recursive: true });
+try {
+  fs.mkdirSync(MEDIA_ROOT, { recursive: true });
+} catch (err) {
+  console.warn(`[Warning] Could not create MEDIA_ROOT directory: ${err.message}`);
+}
 
 /** slug/filename → filesystem-safe (lowercase, hyphens, no traversal). */
 const sanitize = (name) =>
