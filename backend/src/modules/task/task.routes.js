@@ -12,6 +12,8 @@ router.get("/:id", authenticateUser, taskController.getTaskById);
 router.patch("/:id/status", authenticateUser, taskController.updateTaskStatus);
 router.patch("/:id/cancel", authenticateUser, taskController.cancelTask);
 router.post("/manual", authenticateUser, taskController.createManualTask);
+// Bulk service-request import from a CSV/Excel upload parsed client-side.
+router.post("/service-import", authenticateUser, taskController.importServiceTasks);
 
 // Issue management
 router.post("/:id/issue", authenticateUser, taskController.raiseIssue);

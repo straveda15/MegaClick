@@ -76,6 +76,25 @@ export const createManualTask = async (req, res, next) => {
   }
 };
 
+export const importServiceTasks = async (req, res, next) => {
+  try {
+    const { rows, fallbackAssignedTo } = req.body;
+
+    const result = await taskService.importServiceTasks(
+      { rows, fallbackAssignedTo },
+      req.user._id
+    );
+
+    res.status(201).json({
+      success: true,
+      message: `Imported ${result.imported} service${result.imported === 1 ? "" : "s"}`,
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const cancelTask = async (req, res, next) => {
   try {
     const { id } = req.params;

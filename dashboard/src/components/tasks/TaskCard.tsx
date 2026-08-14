@@ -4,6 +4,7 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import type { Task } from "@/hooks/useTasks";
+import ServiceRequestPanel from "./ServiceRequestPanel";
 
 // ── Shared visual constants ───────────────────────────────────────────────────
 
@@ -200,8 +201,13 @@ export const TaskCard = ({ task, myId, oversight, onComplete, onStart, onCancel,
               </span>
             </div>
           )}
-          {/* Description */}
-          {task.description && (
+          {/* Service request details — replaces the description, which just
+              restates the same client/service in prose. */}
+          {task.serviceRequest?.clientName ? (
+            <div className="pt-1">
+              <ServiceRequestPanel request={task.serviceRequest} variant="compact" />
+            </div>
+          ) : task.description ? (
             <div className="pt-1">
               <p className="text-[10px] uppercase tracking-wide text-muted-foreground mb-2">
                 Description
@@ -212,7 +218,7 @@ export const TaskCard = ({ task, myId, oversight, onComplete, onStart, onCancel,
                 </p>
               </div>
             </div>
-          )}
+          ) : null}
 
         </div>
 

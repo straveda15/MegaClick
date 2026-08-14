@@ -1,13 +1,5 @@
 import mongoose from "mongoose";
 
-const uri = process.env.MONGO_URI || process.env.LOCAL_MONGO_URI;
-
-if (!uri) {
-  throw new Error(
-    "No MongoDB URI found. Set MONGO_URI or LOCAL_MONGO_URI in your .env"
-  );
-}
-
 let cached = global._mongooseConn;
 if (!cached) {
   cached = global._mongooseConn = { conn: null, promise: null };
@@ -15,6 +7,13 @@ if (!cached) {
 
 const connectDB = async () => {
   if (cached.conn) return cached.conn;
+
+  const uri = process.env.MONGO_URI || process.env.LOCAL_MONGO_URI;
+  if (!uri) {
+    throw new Error(
+      "No MongoDB URI found. Set MONGO_URI or LOCAL_MONGO_URI in your .env"
+    );
+  }
 
   if (!cached.promise) {
     cached.promise = mongoose

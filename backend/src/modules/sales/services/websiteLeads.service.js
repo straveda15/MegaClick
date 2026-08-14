@@ -138,7 +138,7 @@ export const syncCartLeads = async (actorId) => {
  *   4. Fire-and-forget email to the round-robin recipient
  */
 export const createContactLead = async (contactData) => {
-    const { name, email, phone, message } = contactData;
+    const { name, email, phone, message, service, serviceSlug, serviceCategory } = contactData;
 
     // ── 1. Round-robin (outside transaction — counter is best-effort) ─────────
     // The counter lives in MongoDB so it survives restarts and is shared across
@@ -157,12 +157,13 @@ export const createContactLead = async (contactData) => {
         logger.warn("[createContactLead] CONTACT_RECIPIENTS is not configured — email notification skipped.");
     }
 
-    // ── 2. Admin placeholder (outside transaction — read-only lookup) ─────────
-    // Contact-form leads have no acting user, so they are held under an active
-    // admin and marked pool:true. The auto-distribute job spreads them later.
+    // ── 2. Admin reference (outside transaction — read-only lookup) ───────────
+    // Contact-form leads arrive UNASSIGNED: they land on the dashboard's Leads
+    // board for someone to pick up with "Assign to". An admin is still looked up
+    // to attribute the status-history entry, but the lead is not held by them —
+    // and the lookup failing no longer costs us the lead.
     const holder = await User.findOne({ role: "admin", isActive: true }).select("_id");
-    if (!holder) throw new Error("No active admin found to hold the contact lead.");
-    const ownerId = holder._id;
+    const ownerId = holder?._id ?? null;
 
     // ── 3. Transaction: customer upsert + lead creation ───────────────────────
     // Wrapping both writes in one transaction ensures that a failed lead creation
@@ -176,7 +177,8 @@ export const createContactLead = async (contactData) => {
             let customer = await SalesCustomer.findOne({ phone }).session(session);
             if (!customer) {
                 [customer] = await SalesCustomer.create(
-                    [{ name, email, phone, source: "web" }],
+                    // Email is optional on the form — don't store an empty string.
+                    [{ name, email: email || undefined, phone, source: "web" }],
                     { session }
                 );
             } else {
@@ -187,17 +189,22 @@ export const createContactLead = async (contactData) => {
 
             [newLead] = await SalesLead.create([{
                 customer:        customer._id,
-                assignedTo:      ownerId,
-                pool:            true,
+                // Left unassigned and un-pooled so it shows as "Unassigned" on
+                // the Leads board and waits for a deliberate "Assign to".
+                pool:            false,
                 status:          "NEW",
                 source:          "website_contact",
-                productInterest: "Contact Us Inquiry",
+                // What the visitor actually picked in the form's dropdown.
+                productInterest: service || "Contact Us Inquiry",
+                serviceSlug:     serviceSlug || undefined,
+                serviceCategory: serviceCategory || undefined,
+                serviceStage:    "documents_pending",
                 message:         message || undefined,
                 assignedEmail:   recipient || undefined,
                 statusHistory: [{
                     status:    "NEW",
                     changedBy: ownerId,
-                    note:      `Lead from Website Contact Form: ${message || "No message provided"}`,
+                    note:      `Lead from Website Contact Form${service ? ` — ${service}` : ""}: ${message || "No message provided"}`,
                 }],
             }], { session });
         });

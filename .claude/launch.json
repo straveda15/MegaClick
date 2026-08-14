@@ -6,6 +6,24 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["--prefix", "website", "run", "dev"],
       "port": 5173
+    },
+    {
+      "name": "megaclick-backend",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "backend", "run", "dev"],
+      "port": 5000
+    },
+    {
+      "name": "megaclick-dashboard",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "dashboard", "run", "dev"],
+      "port": 8080
+    },
+    {
+      "name": "megaclick-dashboard-preview",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "dashboard", "run", "preview", "--", "--port", "4173"],
+      "port": 4173
     }
   ]
 }

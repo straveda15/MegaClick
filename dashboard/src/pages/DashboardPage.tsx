@@ -90,7 +90,7 @@ const DashboardPage = () => {
         />
         <ListCard
           title="Upcoming Deadlines"
-          footerAction={{ label: 'View all', onClick: () => navigate('/services') }}
+          footerAction={{ label: 'View all', onClick: () => navigate('/leads') }}
           items={MOCK_UPCOMING_DEADLINES.map((item) => (
             <div key={item.id} className="flex items-center justify-between gap-3">
               <div className="min-w-0">

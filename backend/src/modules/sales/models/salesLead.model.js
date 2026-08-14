@@ -7,10 +7,12 @@ const salesLeadSchema = new mongoose.Schema(
       ref: "SalesCustomer",
       required: true,
     },
+    // Optional: a lead captured on the Leads page starts with nobody on it, and
+    // stays that way until someone is picked via "Assign to". Leads flowing in
+    // from the website/CSV pipelines still get an owner immediately.
     assignedTo: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
     },
     status: {
       type: String,
@@ -30,8 +32,40 @@ const salesLeadSchema = new mongoose.Schema(
       enum: ["website_cart", "website_order", "telephony", "website_contact", "csv", "excel", "manual", "scraped", "offline_orders"],
       default: "telephony",
     },
+    // Title of the service / product the lead is interested in.
     productInterest: {
       type: String,
+    },
+    // The service this lead wants, picked from the website catalog. The title
+    // lives in productInterest above; these carry the catalog identity so an
+    // assigned task can be stamped with the same service.
+    serviceSlug: {
+      type: String,
+      trim: true,
+    },
+    serviceCategory: {
+      type: String,
+      trim: true,
+    },
+    // Where the request sits in the filing pipeline. Tracked on the lead so the
+    // Leads board shows progress before and after a task is assigned.
+    serviceStage: {
+      type: String,
+      enum: [
+        "documents_pending",
+        "documents_received",
+        "application_submitted",
+        "government_verification",
+        "approval_received",
+        "certificate_ready",
+        "completed",
+      ],
+      default: "documents_pending",
+    },
+    priority: {
+      type: String,
+      enum: ["LOW", "MEDIUM", "HIGH", "URGENT"],
+      default: "MEDIUM",
     },
     // Raw message text submitted via the website contact form.
     // Also echoed into statusHistory[0].note for the timeline view.

@@ -1,18 +1,40 @@
 import Joi from "joi";
 
 /**
- * Validates the body sent by the website contact form.
- * The frontend prepends +91 to the 10-digit number before submitting,
- * so the backend receives phone in the format +91XXXXXXXXXX.
+ * Accepts an Indian mobile in whatever shape a visitor types it — "9876543210",
+ * "+91 98765 43210", "098765-43210" — and normalizes to +91XXXXXXXXXX so every
+ * stored customer has the same phone format (it is the de-dupe key).
+ */
+const normalizeIndianPhone = (value, helpers) => {
+  const digits = String(value).replace(/\D/g, "");
+
+  const local =
+    digits.length === 12 && digits.startsWith("91") ? digits.slice(2) :
+    digits.length === 11 && digits.startsWith("0")  ? digits.slice(1) :
+    digits;
+
+  if (!/^[6-9]\d{9}$/.test(local)) return helpers.error("string.pattern.base");
+  return `+91${local}`;
+};
+
+/**
+ * Validates the body sent by the website contact form. Phone is normalized to
+ * +91XXXXXXXXXX here, so the form may submit it in any common format.
  */
 export const contactUsSchema = Joi.object({
   name:    Joi.string().trim().min(2).max(100).required()
              .messages({ "string.min": "Name must be at least 2 characters." }),
-  email:   Joi.string().trim().email({ tlds: { allow: false } }).lowercase().required()
+  // Optional — the form labels this field "Email Address (Optional)".
+  email:   Joi.string().trim().email({ tlds: { allow: false } }).lowercase().optional().allow("")
              .messages({ "string.email": "A valid email address is required." }),
-  phone:   Joi.string().trim().pattern(/^\+91\d{10}$/).required()
-             .messages({ "string.pattern.base": "Phone must be a valid Indian mobile number (+91 followed by 10 digits)." }),
+  phone:   Joi.string().trim().custom(normalizeIndianPhone).required()
+             .messages({ "string.pattern.base": "Enter a valid 10-digit Indian mobile number." }),
   message: Joi.string().trim().max(2000).optional().allow(""),
+  // The service picked in the form's dropdown, carried through to the lead so
+  // the Leads board shows what the visitor actually asked about.
+  service:         Joi.string().trim().max(200).optional().allow(""),
+  serviceSlug:     Joi.string().trim().max(200).optional().allow(""),
+  serviceCategory: Joi.string().trim().max(200).optional().allow(""),
 });
 
 export const orderCSVSchema = Joi.object({
