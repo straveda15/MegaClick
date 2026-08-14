@@ -1,16 +1,39 @@
 import mongoose from "mongoose";
 
-const connectDB = async () => {
-  const uri = process.env.MONGO_URI || process.env.LOCAL_MONGO_URI;
+const uri = process.env.MONGO_URI || process.env.LOCAL_MONGO_URI;
 
-  if (!uri) {
-    throw new Error(
-      "No MongoDB URI found. Set MONGO_URI or LOCAL_MONGO_URI in your .env"
-    );
+if (!uri) {
+  throw new Error(
+    "No MongoDB URI found. Set MONGO_URI or LOCAL_MONGO_URI in your .env"
+  );
+}
+
+// Reuse the connection across serverless invocations (important on Vercel)
+let cached = global._mongooseConn;
+
+if (!cached) {
+  cached = global._mongooseConn = { conn: null, promise: null };
+}
+
+const connectDB = async () => {
+  if (cached.conn) {
+    return cached.conn;
   }
 
-  await mongoose.connect(uri);
-  console.log("MongoDB connected:", mongoose.connection.name);
+  if (!cached.promise) {
+    cached.promise = mongoose
+      .connect(uri, {
+        maxPoolSize: 10,
+        serverSelectionTimeoutMS: 5000, // fail fast instead of hanging 10s
+      })
+      .then((mongooseInstance) => {
+        console.log("MongoDB connected:", mongooseInstance.connection.name);
+        return mongooseInstance;
+      });
+  }
+
+  cached.conn = await cached.promise;
+  return cached.conn;
 };
 
 export default connectDB;
