@@ -1,0 +1,160 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Outfit:wght@100..900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 220 13% 9%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 13% 9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 13% 9%;
+    --primary: 221 83% 53%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 20% 98%;
+    --secondary-foreground: 220 13% 9%;
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 9% 46%;
+    --accent: 214 100% 97%;
+    --accent-foreground: 221 83% 53%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 221 83% 53%;
+    --radius: 0.5rem;
+
+    --sidebar-background: 210 17% 98%;
+    --sidebar-foreground: 220 9% 46%;
+    --sidebar-primary: 221 83% 53%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 214 100% 97%;
+    --sidebar-accent-foreground: 221 83% 53%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 221 83% 53%;
+    --sidebar-active: 221 83% 53%;
+    --sidebar-active-bg: 214 100% 97%;
+
+    --chart-green: 142 64% 24%;
+    --chart-red: 0 84% 60%;
+    --chart-amber: 38 92% 50%;
+    --chart-slate: 215 16% 47%;
+    --chart-dark-green: 149 76% 22%;
+
+    --success: 142 72% 29%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+    --info: 217 91% 60%;
+    --info-foreground: 0 0% 100%;
+
+    --topbar-height: 52px;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  /* Hide number input arrows (spinners) */
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+
+  /* Restore number input arrows (spinners) on demand */
+  input[type="number"].show-spinners::-webkit-inner-spin-button,
+  input[type="number"].show-spinners::-webkit-outer-spin-button {
+    -webkit-appearance: auto !important;
+    appearance: auto !important;
+    margin: 0;
+    opacity: 1;
+  }
+  input[type="number"].show-spinners {
+    -moz-appearance: auto !important;
+    appearance: auto !important;
+  }
+}
+
+@layer components {
+  .section-label {
+    @apply text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground px-3 py-2 mt-5 first:mt-0;
+  }
+  .kpi-card {
+    @apply bg-card border border-border rounded-lg p-5 relative;
+  }
+  .kpi-value {
+    @apply text-[28px] font-bold text-foreground leading-tight;
+  }
+  .kpi-label {
+    @apply text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground mt-1;
+  }
+  .kpi-trend-up {
+    @apply text-[13px] font-medium flex items-center gap-1;
+    color: hsl(var(--success));
+  }
+  .kpi-trend-down {
+    @apply text-[13px] font-medium flex items-center gap-1;
+    color: hsl(var(--destructive));
+  }
+  .kpi-icon-circle {
+    @apply w-10 h-10 rounded-full flex items-center justify-center;
+    background: hsl(var(--accent));
+    color: hsl(var(--primary));
+  }
+  .status-badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+  .status-delivered {
+    @apply bg-green-100 text-green-800;
+  }
+  .status-pending {
+    @apply bg-amber-100 text-amber-800;
+  }
+  .status-transit {
+    @apply bg-blue-100 text-blue-800;
+  }
+  .status-returned {
+    @apply bg-red-100 text-red-800;
+  }
+  .status-cancelled {
+    @apply bg-gray-100 text-gray-800;
+  }
+  .page-title {
+    @apply text-2xl font-bold text-foreground;
+  }
+  .page-subtitle {
+    @apply text-sm text-muted-foreground;
+  }
+  
+  @media (max-width: 640px) {
+    .page-title {
+      @apply text-xl;
+    }
+    .kpi-value {
+      @apply text-[22px];
+    }
+    .kpi-card {
+      @apply p-4;
+    }
+  }
+  .table-header {
+    @apply text-[11px] font-semibold uppercase tracking-[0.05em] text-muted-foreground;
+  }
+  .mobile-sync-badge {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-blue-50 text-blue-700;
+  }
+}

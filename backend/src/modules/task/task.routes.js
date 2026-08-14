@@ -1,0 +1,30 @@
+import express from "express";
+import * as taskController from "./task.controller.js";
+import { authenticateUser } from "../../shared/middleware/auth.middleware.js";
+
+const router = express.Router();
+
+// Role validation will be via a wrapper imported from shared later, 
+// for now standard authenticateUser ensures they are logged in.
+
+router.get("/my", authenticateUser, taskController.getMyTasks);
+router.get("/:id", authenticateUser, taskController.getTaskById);
+router.patch("/:id/status", authenticateUser, taskController.updateTaskStatus);
+router.patch("/:id/cancel", authenticateUser, taskController.cancelTask);
+router.post("/manual", authenticateUser, taskController.createManualTask);
+
+// Issue management
+router.post("/:id/issue", authenticateUser, taskController.raiseIssue);
+router.patch("/:id/issue/:flagId/respond", authenticateUser, taskController.respondToIssue);
+
+// Follow-up: tag followers + post follow-up notes
+router.patch("/:id/followers", authenticateUser, taskController.updateFollowers);
+router.post("/:id/follow-up", authenticateUser, taskController.addFollowUp);
+
+// Admin task management
+router.patch("/:id/extend-due", authenticateUser, taskController.extendDueDate);
+router.patch("/:id/reassign", authenticateUser, taskController.reassignTask);
+router.patch("/:id/ack-cancel", authenticateUser, taskController.acknowledgeCancelAlert);
+router.post("/:id/assign-more", authenticateUser, taskController.assignMore);
+
+export default router;
