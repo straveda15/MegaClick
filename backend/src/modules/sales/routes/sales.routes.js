@@ -43,11 +43,15 @@ router.post("/leads/sweep", requireSalesManager, salesLeadController.sweepLeads)
 
 // --- Leads ---
 router.post("/leads", salesLeadController.createManualLead);
+// Bulk lead import from a CSV/Excel upload parsed client-side.
+router.post("/leads/import", salesLeadController.importLeads);
 router.get("/leads/my", salesLeadController.getMyLeads);
 router.get("/leads/my/stats", salesLeadController.getMyLeadStats);
 router.get("/notices", salesLeadController.getSalesNotices);
 router.get("/leads/backlog", salesLeadController.getBacklogLeads);
 router.patch("/leads/:id/assign", requireSalesManager, salesLeadController.assignLead);
+// Turn a lead into assigned work: creates the task and links it to the lead.
+router.post("/leads/:id/assign-task", salesLeadController.assignLeadAsTask);
 router.patch("/leads/:id/status", salesLeadController.updateLeadStatus);
 router.patch("/leads/:id/customer", salesLeadController.updateLeadCustomer);
 router.patch("/leads/:id/convert", salesLeadController.convertLead);

@@ -17,10 +17,42 @@ export interface TeamMember {
   email: string;
 }
 
+export const SERVICE_STAGES = [
+  "documents_pending",
+  "documents_received",
+  "application_submitted",
+  "government_verification",
+  "approval_received",
+  "certificate_ready",
+  "completed",
+] as const;
+
+export type ServiceStage = (typeof SERVICE_STAGES)[number];
+
+/**
+ * Present when the task IS a client service request. Carries the service asked
+ * for plus the client's contact details, so the assignee has full context on
+ * their task board without looking anything up elsewhere.
+ */
+export interface TaskServiceRequest {
+  serviceTitle?: string;
+  serviceSlug?: string;
+  serviceCategory?: string;
+  serviceCategorySlug?: string;
+  clientName?: string;
+  clientEmail?: string;
+  clientPhone?: string;
+  clientCompany?: string;
+  clientAddress?: string;
+  notes?: string;
+  stage?: ServiceStage;
+}
+
 export interface Task {
   _id: string;
   title: string;
   description?: string;
+  serviceRequest?: TaskServiceRequest | null;
   type: string;
   status: "pending" | "in_progress" | "completed" | "cancelled" | "overdue";
   priority: "low" | "medium" | "high" | "urgent" | "critical";
@@ -132,7 +164,7 @@ export function useUpdateTaskStatus() {
 export function useCreateManualTask() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (payload: { title: string; type?: string; priority?: string; dueAt?: string; assignedTo?: string | string[]; followers?: string[]; description?: string }) => {
+    mutationFn: async (payload: { title: string; type?: string; priority?: string; dueAt?: string; assignedTo?: string | string[]; followers?: string[]; description?: string; serviceRequest?: TaskServiceRequest }) => {
       const res = await fetch(`${BASE_URL}/manual`, {
         method: "POST",
         headers: { "Content-Type": "application/json", ...authHeaders() },
@@ -141,6 +173,45 @@ export function useCreateManualTask() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Failed to create task");
       return data.data;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["tasks"] });
+    },
+  });
+}
+
+export interface ServiceImportRow {
+  serviceTitle: string;
+  serviceCategory?: string;
+  clientName: string;
+  clientEmail?: string;
+  clientPhone?: string;
+  clientCompany?: string;
+  clientAddress?: string;
+  notes?: string;
+  assignedToName?: string;
+  stage?: string;
+  priority?: string;
+  dueAt?: string;
+}
+
+/**
+ * Bulk-creates service request tasks from a parsed spreadsheet. Rows whose
+ * assignee can't be matched fall back to `fallbackAssignedTo`; anything still
+ * unresolvable comes back in `skipped` rather than failing the whole import.
+ */
+export function useImportServiceTasks() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ rows, fallbackAssignedTo }: { rows: ServiceImportRow[]; fallbackAssignedTo?: string }) => {
+      const res = await fetch(`${BASE_URL}/service-import`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...authHeaders() },
+        body: JSON.stringify({ rows, fallbackAssignedTo }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Failed to import services");
+      return data.data as { imported: number; skipped: Array<{ row: number; reason: string }> };
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["tasks"] });

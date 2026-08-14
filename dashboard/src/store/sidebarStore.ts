@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import {
-  LayoutDashboard, Target, Users, Briefcase, ListTodo, ClipboardList,
+  LayoutDashboard, Target, Users, ListTodo, ClipboardList,
   UsersRound, CalendarCheck, MapPin, Building2, BarChart3, Bell, Settings,
   type LucideIcon,
 } from 'lucide-react';
@@ -28,9 +28,8 @@ export const ALL_SECTIONS: NavSection[] = [
     label: 'Main',
     items: [
       { title: 'Dashboard',       path: '/dashboard',             icon: LayoutDashboard },
-      { title: 'Lead Management', path: '/leads',                 icon: Target },
+      { title: 'Leads',           path: '/leads',                  icon: Target },
       { title: 'Clients',         path: '/clients',                icon: Users },
-      { title: 'Services',        path: '/services',               icon: Briefcase },
       { title: 'Tasks',           path: '/tasks',                  icon: ListTodo },
       // Admin/founder/cofounder only — stripped for other roles in getSectionsForRole.
       { title: 'Team Logs',       path: '/tasks/team-logs',        icon: ClipboardList },
@@ -66,9 +65,8 @@ export interface PagePermission {
 
 export const DASHBOARD_PAGES: PagePermission[] = [
   { section: 'Business Ops', label: 'Dashboard',        path: '/dashboard' },
-  { section: 'Business Ops', label: 'Lead Management',  path: '/leads' },
+  { section: 'Business Ops', label: 'Leads',            path: '/leads' },
   { section: 'Business Ops', label: 'Clients',          path: '/clients' },
-  { section: 'Business Ops', label: 'Services',         path: '/services' },
   { section: 'Business Ops', label: 'Departments',      path: '/departments' },
   { section: 'Business Ops', label: 'Reports',          path: '/reports' },
   { section: 'Business Ops', label: 'Notifications',    path: '/notifications' },

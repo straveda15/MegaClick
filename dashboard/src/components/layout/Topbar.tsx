@@ -45,8 +45,7 @@ const Topbar = () => {
     const routeMap: Record<string, string> = {
       '/': 'Dashboard',
       '/clients': 'Clients',
-      '/leads': 'Lead Management',
-      '/services': 'Service Management',
+      '/leads': 'Leads',
       '/tasks': 'Tasks',
       '/employees': 'Employees',
       '/departments': 'Departments',
@@ -108,11 +107,11 @@ const Topbar = () => {
       <div className="hidden sm:flex items-center gap-2">
         {location.pathname === '/leads' && (
           <button
-            onClick={() => toast.info('Add Lead is coming soon.')}
+            onClick={() => window.dispatchEvent(new CustomEvent('openAddLeadModal'))}
             className="flex items-center gap-1.5 h-9 px-4 rounded-full bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors shadow-sm"
           >
             <Plus className="w-4 h-4" />
-            New Lead
+            Add Lead
           </button>
         )}
         {location.pathname === '/clients' && (
@@ -122,15 +121,6 @@ const Topbar = () => {
           >
             <Plus className="w-4 h-4" />
             New Client
-          </button>
-        )}
-        {location.pathname === '/services' && (
-          <button
-            onClick={() => window.dispatchEvent(new CustomEvent('openAssignServiceModal'))}
-            className="flex items-center gap-1.5 h-9 px-4 rounded-full bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors shadow-sm"
-          >
-            <Plus className="w-4 h-4" />
-            Assign Service
           </button>
         )}
         {location.pathname === '/employees' && (

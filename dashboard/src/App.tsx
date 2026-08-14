@@ -10,11 +10,10 @@ import AppLayout from '@/components/layout/AppLayout';
 // ── Login flow ───────────────────────────────────────────────────────────────
 import LoginPage from '@/pages/LoginPage';
 
-// ── Business Ops: dashboard, leads, clients, services ─────────────────────────
+// ── Business Ops: dashboard, leads, clients ──────────────────────────────────
 import DashboardPage from '@/pages/DashboardPage';
-import LeadManagementPage from '@/pages/LeadManagementPage';
+import LeadsPage from '@/pages/LeadsPage';
 import ClientsPage from '@/pages/ClientsPage';
-import ServicesPage from '@/pages/ServicesPage';
 import DepartmentsPage from '@/pages/DepartmentsPage';
 import ReportsPage from '@/pages/ReportsPage';
 import NotificationsPage from '@/pages/NotificationsPage';
@@ -71,15 +70,13 @@ const App = () => (
                       />
                       <Route
                         path="/leads"
-                        element={<RoleGuard><LeadManagementPage /></RoleGuard>}
+                        element={<RoleGuard><LeadsPage /></RoleGuard>}
                       />
+                      {/* The Services page became Leads — keep old links working. */}
+                      <Route path="/services" element={<Navigate to="/leads" replace />} />
                       <Route
                         path="/clients"
                         element={<RoleGuard><ClientsPage /></RoleGuard>}
-                      />
-                      <Route
-                        path="/services"
-                        element={<RoleGuard><ServicesPage /></RoleGuard>}
                       />
                       <Route
                         path="/departments"

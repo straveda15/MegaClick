@@ -61,6 +61,38 @@ const taskSchema = new mongoose.Schema(
         type: mongoose.Schema.Types.ObjectId,
       },
     },
+    // Set when the task IS a client service request (assigned from the Services
+    // page or bulk-imported from a spreadsheet). Carries everything the assignee
+    // needs to actually do the work — which service was requested and the full
+    // contact details of the client who asked for it — so the employee never has
+    // to go hunting for context outside the task.
+    serviceRequest: {
+      serviceTitle: { type: String, trim: true },
+      serviceSlug: { type: String, trim: true },
+      serviceCategory: { type: String, trim: true },
+      serviceCategorySlug: { type: String, trim: true },
+      clientName: { type: String, trim: true },
+      clientEmail: { type: String, trim: true, lowercase: true },
+      clientPhone: { type: String, trim: true },
+      clientCompany: { type: String, trim: true },
+      clientAddress: { type: String, trim: true },
+      notes: { type: String, trim: true },
+      // Where the request sits in the government/filing pipeline. Tracked
+      // separately from `status` (which is about the employee's own progress).
+      stage: {
+        type: String,
+        enum: [
+          "documents_pending",
+          "documents_received",
+          "application_submitted",
+          "government_verification",
+          "approval_received",
+          "certificate_ready",
+          "completed",
+        ],
+        default: "documents_pending",
+      },
+    },
     dueAt: {
       type: Date,
     },

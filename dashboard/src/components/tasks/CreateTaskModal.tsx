@@ -1,11 +1,14 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { CalendarPlus, User, Check, Search, X, CalendarClock, AlertCircle, Bell } from "lucide-react";
+import { CalendarPlus, User, Check, Search, X, CalendarClock, AlertCircle, Bell, Briefcase } from "lucide-react";
 import { toast } from "sonner";
 import { useTeam } from "@/hooks/useTeam";
 import { useUsers } from "@/hooks/useUsers";
 import { useAuth } from "@/context/AuthContext";
-import { useCreateManualTask } from "@/hooks/useTasks";
+import { useCreateManualTask, type TaskServiceRequest } from "@/hooks/useTasks";
+import { useLeads, type SalesLead } from "@/hooks/useLeads";
+import type { CatalogService } from "@/hooks/useServiceCatalog";
+import ServiceCatalogPicker from "@/components/ServiceCatalogPicker";
 
 export const ROLE_CATEGORIES = [
   { label: "All Staff", value: "all" },
@@ -62,9 +65,55 @@ export function CreateTaskModal({ onClose }: { onClose: () => void }) {
   const [followerIds, setFollowerIds] = useState<string[]>([]);
   const [followerSearch, setFollowerSearch] = useState("");
 
+  // A task can be created straight from the service catalog, optionally tied to
+  // an existing lead so the client's contact details ride along on the task.
+  const [selectedService, setSelectedService] = useState<CatalogService | null>(null);
+  const [attachedLead, setAttachedLead] = useState<SalesLead | null>(null);
+  const [showServicePicker, setShowServicePicker] = useState(false);
+  const [leadSearch, setLeadSearch] = useState("");
+
   const { data: team = [] }  = useTeam();
   const { user }             = useAuth();
   const createTask           = useCreateManualTask();
+  const { data: leads = [] } = useLeads();
+
+  const leadClientName = (lead: SalesLead) =>
+    lead.customer?.name?.trim() || lead.customer?.phone || "Unnamed lead";
+
+  const matchingLeads = useMemo(() => {
+    const q = leadSearch.trim().toLowerCase();
+    if (!q) return leads.slice(0, 8);
+    return leads.filter((l) =>
+      leadClientName(l).toLowerCase().includes(q) ||
+      (l.productInterest ?? "").toLowerCase().includes(q) ||
+      (l.customer?.phone ?? "").includes(q) ||
+      (l.customer?.company ?? "").toLowerCase().includes(q)
+    ).slice(0, 8);
+  }, [leads, leadSearch]);
+
+  /** Picking a service names the task after it. */
+  const chooseService = (service: CatalogService | null) => {
+    setSelectedService(service);
+    if (service) {
+      setTitle(service.title);
+      setShowServicePicker(false);
+    }
+  };
+
+  /** Attaching a lead pulls its service across too, when it has one. */
+  const chooseLead = (lead: SalesLead | null) => {
+    setAttachedLead(lead);
+    setLeadSearch("");
+    if (lead?.productInterest && !selectedService) {
+      setTitle(lead.productInterest);
+      setSelectedService({
+        title: lead.productInterest,
+        slug: lead.serviceSlug ?? "",
+        category: lead.serviceCategory ?? "",
+        categorySlug: "",
+      });
+    }
+  };
 
   // Founders / co-founders / admins are seeded with role "admin" and usually
   // don't have an EmployeeProfile, so they're absent from the team list. When
@@ -179,7 +228,10 @@ export function CreateTaskModal({ onClose }: { onClose: () => void }) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) return toast.error("Task Title is required");
-    if (!/^[A-Za-z0-9\s]+$/.test(title.trim()))
+    // Catalog service names legitimately carry punctuation ("Govt. Gazette –
+    // Name / DOB Change"), so the letters-and-numbers rule only applies to
+    // titles the user typed themselves.
+    if (!selectedService && !/^[A-Za-z0-9\s]+$/.test(title.trim()))
       return toast.error("Title can only contain letters, numbers and spaces");
     if (!dueAt) return toast.error("Deadline is required");
     if (new Date(dueAt).getTime() < Date.now()) {
@@ -187,6 +239,25 @@ export function CreateTaskModal({ onClose }: { onClose: () => void }) {
     }
     if (!priority) return toast.error("Priority is required");
     if (assignedToIds.length === 0) return toast.error("Please select at least one staff member to assign this task");
+
+    // Stamp the task with the service + client details so the assignee sees the
+    // same "Client Service Request" panel as a lead assigned from the Leads page.
+    const serviceRequest: TaskServiceRequest | undefined =
+      selectedService || attachedLead
+        ? {
+            serviceTitle: selectedService?.title || attachedLead?.productInterest || title,
+            serviceSlug: selectedService?.slug || attachedLead?.serviceSlug,
+            serviceCategory: selectedService?.category || attachedLead?.serviceCategory,
+            serviceCategorySlug: selectedService?.categorySlug,
+            clientName: attachedLead ? leadClientName(attachedLead) : undefined,
+            clientEmail: attachedLead?.customer?.email,
+            clientPhone: attachedLead?.customer?.phone,
+            clientCompany: attachedLead?.customer?.company,
+            clientAddress: attachedLead?.customer?.city,
+            notes: description.trim() || undefined,
+            stage: attachedLead?.serviceStage ?? "documents_pending",
+          }
+        : undefined;
 
     createTask.mutate(
       {
@@ -197,6 +268,7 @@ export function CreateTaskModal({ onClose }: { onClose: () => void }) {
         assignedTo: assignedToIds,
         followers: followerIds,
         type: "manual",
+        serviceRequest,
       },
       {
         onSuccess: () => {
@@ -234,6 +306,112 @@ export function CreateTaskModal({ onClose }: { onClose: () => void }) {
         <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
           <div className="p-6 space-y-5 overflow-y-auto flex-1 custom-scrollbar">
 
+          {/* Service — create the task straight from the website catalog */}
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+              <Briefcase className="w-3.5 h-3.5" />
+              Service <span className="text-muted-foreground font-normal normal-case">(optional)</span>
+            </label>
+
+            {selectedService ? (
+              <div className="rounded-lg border border-blue-200 bg-blue-50/60 px-3 py-2.5 flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold text-foreground truncate">{selectedService.title}</p>
+                  {selectedService.category && (
+                    <p className="text-[11px] text-muted-foreground truncate">{selectedService.category}</p>
+                  )}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => { chooseService(null); setShowServicePicker(false); }}
+                  className="shrink-0 p-1 rounded-md hover:bg-blue-100 text-muted-foreground"
+                  title="Clear service"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            ) : showServicePicker ? (
+              <div className="rounded-lg border border-border p-3">
+                <ServiceCatalogPicker
+                  selectedSlug=""
+                  onSelect={chooseService}
+                  height="h-[220px]"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowServicePicker(false)}
+                  className="mt-2 text-[11px] text-muted-foreground hover:text-foreground"
+                >
+                  Cancel
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setShowServicePicker(true)}
+                className="w-full h-10 px-3 rounded-lg border border-dashed border-border bg-background text-sm text-muted-foreground hover:border-blue-400 hover:bg-blue-50/40 transition-colors text-left"
+              >
+                Pick a service from the catalog…
+              </button>
+            )}
+          </div>
+
+          {/* Lead — attach a client so their details ride along on the task */}
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+              <User className="w-3.5 h-3.5" />
+              Client Lead <span className="text-muted-foreground font-normal normal-case">(optional)</span>
+            </label>
+
+            {attachedLead ? (
+              <div className="rounded-lg border border-blue-200 bg-blue-50/60 px-3 py-2.5 flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold text-foreground truncate">{leadClientName(attachedLead)}</p>
+                  <p className="text-[11px] text-muted-foreground truncate">
+                    {[attachedLead.customer?.phone, attachedLead.customer?.company].filter(Boolean).join(' · ') || 'No contact details'}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => chooseLead(null)}
+                  className="shrink-0 p-1 rounded-md hover:bg-blue-100 text-muted-foreground"
+                  title="Detach lead"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            ) : (
+              <>
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+                  <input
+                    className="w-full h-10 pl-9 pr-3 rounded-lg border border-border bg-background text-sm focus:ring-2 focus:ring-primary/40 focus:border-primary outline-none transition-shadow"
+                    value={leadSearch}
+                    onChange={(e) => setLeadSearch(e.target.value)}
+                    placeholder="Search leads by client, phone or service…"
+                  />
+                </div>
+                {matchingLeads.length > 0 && (
+                  <div className="mt-1.5 border border-border rounded-lg divide-y divide-border max-h-[176px] overflow-y-auto">
+                    {matchingLeads.map((lead) => (
+                      <button
+                        key={lead._id}
+                        type="button"
+                        onClick={() => chooseLead(lead)}
+                        className="w-full text-left px-3 py-2 hover:bg-muted/50 transition-colors"
+                      >
+                        <p className="text-sm font-medium text-foreground truncate">{leadClientName(lead)}</p>
+                        <p className="text-[11px] text-muted-foreground truncate">
+                          {[lead.productInterest, lead.customer?.phone].filter(Boolean).join(' · ') || 'No service selected'}
+                        </p>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+
           {/* Title */}
           <div className="space-y-1.5">
             <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
@@ -244,7 +422,12 @@ export function CreateTaskModal({ onClose }: { onClose: () => void }) {
               autoFocus
               className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm focus:ring-2 focus:ring-primary/40 focus:border-primary outline-none transition-shadow"
               value={title}
-              onChange={(e) => setTitle(e.target.value.replace(/[^A-Za-z0-9\s]/g, ""))}
+              // Free-typed titles stay letters/numbers only; a title that came
+              // from the catalog keeps its punctuation intact.
+              onChange={(e) => {
+                setSelectedService(null);
+                setTitle(e.target.value.replace(/[^A-Za-z0-9\s]/g, ""));
+              }}
               placeholder="E.g., Prepare batch for production"
             />
           </div>

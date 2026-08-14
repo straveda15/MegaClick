@@ -22,60 +22,48 @@ import {
   FaInstagram,
 } from "react-icons/fa";
 
+import serviceCategories from "../../data/servicesData";
+import { submitContactForm } from "../../lib/api";
+
 // =====================================================
 // SERVICE OPTIONS
 // =====================================================
 
-const serviceOptions = [
-  {
-    value: "Company Registration",
-    label: "Company Registration",
-  },
-  {
-    value: "Private Limited Company",
-    label: "Private Limited Company",
-  },
-  {
-    value: "LLP Registration",
-    label: "LLP Registration",
-  },
-  {
-    value: "OPC Registration",
-    label: "OPC Registration",
-  },
-  {
-    value: "GST Registration",
-    label: "GST Registration",
-  },
-  {
-    value: "Trademark Registration",
-    label: "Trademark Registration",
-  },
-  {
-    value: "MSME Registration",
-    label: "MSME Registration",
-  },
-  {
-    value: "ISO Certification",
-    label: "ISO Certification",
-  },
-  {
-    value: "FSSAI Registration",
-    label: "FSSAI Registration",
-  },
-  {
-    value: "Import Export Code (IEC)",
-    label: "Import Export Code (IEC)",
-  },
-  {
-    value: "Income Tax Return",
-    label: "Income Tax Return",
-  },
-  {
-    value: "GST Return Filing",
-    label: "GST Return Filing",
-  },
-];
+// Built from the real service catalog (the same data that drives the Services
+// pages and the dashboard), grouped one group per category so a visitor can
+// either scan by category or type to search across all of them.
+const serviceOptions = serviceCategories.map((category) => ({
+  label: category.title,
+  emoji: category.emoji,
+  options: category.services.map((service) => ({
+    value: service.slug,
+    label: service.title,
+    emoji: service.emoji,
+    title: service.title,
+    slug: service.slug,
+    category: category.title,
+    categorySlug: category.slug,
+  })),
+}));
+
+const totalServiceCount = serviceOptions.reduce(
+  (sum, group) => sum + group.options.length,
+  0
+);
+
+/**
+ * Matches on the service name AND its category, so typing "legal" surfaces
+ * every legal service and "gst" finds GST wherever it sits.
+ */
+const filterServiceOption = (option, rawInput) => {
+  const input = rawInput.trim().toLowerCase();
+  if (!input) return true;
+
+  const haystack = `${option.data.title} ${option.data.category}`.toLowerCase();
+  // Every whitespace-separated term must appear, so "gst filing" narrows down
+  // rather than widening out.
+  return input.split(/\s+/).every((term) => haystack.includes(term));
+};
 
 // =====================================================
 // BENEFITS
@@ -105,20 +93,57 @@ const benefits = [
 
 const ContactSection = () => {
   const [selectedService, setSelectedService] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
+  // { type: "success" | "error", message: string }
+  const [submitState, setSubmitState] = useState(null);
 
   // =====================================================
   // FORM SUBMIT
   // =====================================================
+  // Creates an unassigned lead on the dashboard's Leads board, carrying the
+  // visitor's details and the service they picked.
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (submitting) return;
+
+    const form = e.currentTarget;
+    const data = new FormData(form);
 
     if (!selectedService) {
-      alert("Please select a service.");
+      setSubmitState({
+        type: "error",
+        message: "Please select the service you're interested in.",
+      });
       return;
     }
 
-    alert("Form Submitted Successfully!");
+    setSubmitting(true);
+    setSubmitState(null);
+
+    try {
+      await submitContactForm({
+        name: String(data.get("name") || "").trim(),
+        phone: String(data.get("phone") || "").trim(),
+        email: String(data.get("email") || "").trim(),
+        message: String(data.get("message") || "").trim(),
+        service: selectedService.title,
+        serviceSlug: selectedService.slug,
+        serviceCategory: selectedService.category,
+      });
+
+      setSubmitState({
+        type: "success",
+        message:
+          "Thank you! Your request has been received — our team will contact you shortly.",
+      });
+      form.reset();
+      setSelectedService(null);
+    } catch (err) {
+      setSubmitState({ type: "error", message: err.message });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -513,11 +538,42 @@ const ContactSection = () => {
                   <Select
                     options={serviceOptions}
                     value={selectedService}
-                    onChange={setSelectedService}
+                    onChange={(option) => {
+                      setSelectedService(option);
+                      setSubmitState(null);
+                    }}
                     isSearchable
-                    placeholder="Search & Select Service *"
+                    filterOption={filterServiceOption}
+                    maxMenuHeight={320}
+                    placeholder={`Search ${totalServiceCount} services *`}
+                    noOptionsMessage={() => "No service matches that search."}
                     className="w-full text-sm"
                     classNamePrefix="service-select"
+                    // Category header, with a count so long groups read clearly.
+                    formatGroupLabel={(group) => (
+                      <div className="flex items-center justify-between">
+                        <span className="text-[11px] font-bold uppercase tracking-wider text-[#0B4EA2]">
+                          {group.emoji ? `${group.emoji} ` : ""}
+                          {group.label}
+                        </span>
+                        <span className="rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-semibold text-[#0B4EA2]">
+                          {group.options.length}
+                        </span>
+                      </div>
+                    )}
+                    formatOptionLabel={(option, meta) => (
+                      <span className="flex items-center gap-2">
+                        {option.emoji && <span>{option.emoji}</span>}
+                        <span className="min-w-0 truncate">{option.title}</span>
+                        {/* Category shown in the menu only — the closed control
+                            keeps just the service name so it doesn't overflow. */}
+                        {meta.context === "menu" && (
+                          <span className="ml-auto shrink-0 text-[10px] text-gray-400">
+                            {option.category}
+                          </span>
+                        )}
+                      </span>
+                    )}
                     styles={{
                       control: (base, state) => ({
                         ...base,
@@ -565,6 +621,21 @@ const ContactSection = () => {
                         zIndex: 9999,
                       }),
 
+                      group: (base) => ({
+                        ...base,
+                        paddingTop: 4,
+                        paddingBottom: 4,
+                      }),
+
+                      groupHeading: (base) => ({
+                        ...base,
+                        marginBottom: 4,
+                        padding: "6px 12px",
+                        backgroundColor: "#F5F8FF",
+                        textTransform: "none",
+                        fontSize: "11px",
+                      }),
+
                       option: (base, state) => ({
                         ...base,
                         backgroundColor: state.isSelected
@@ -580,23 +651,10 @@ const ContactSection = () => {
                     }}
                   />
 
-                  {!selectedService && (
-                    <input
-                      required
-                      tabIndex={-1}
-                      value=""
-                      onChange={() => {}}
-                      autoComplete="off"
-                      aria-hidden="true"
-                      className="
-                        pointer-events-none
-                        absolute
-                        h-0
-                        w-0
-                        opacity-0
-                      "
-                    />
-                  )}
+                  {/* A hidden `required` input used to gate this field, but an
+                      invisible control the browser can't focus blocks submit
+                      with no message at all. handleSubmit checks the selection
+                      and shows a real error instead. */}
                 </div>
               </div>
 
@@ -637,6 +695,7 @@ const ContactSection = () => {
 
               <button
                 type="submit"
+                disabled={submitting}
                 className="
                   group
                   flex
@@ -654,22 +713,58 @@ const ContactSection = () => {
                   hover:-translate-y-1
                   hover:bg-green-600
                   hover:shadow-xl
+                  disabled:pointer-events-none
+                  disabled:opacity-60
                   sm:text-base
                 "
               >
                 <span className="flex items-center justify-center gap-2">
-                  Send Message
+                  {submitting ? "Sending…" : "Send Message"}
 
-                  <ArrowRight
-                    size={18}
-                    className="
-                      transition
-                      duration-300
-                      group-hover:translate-x-1
-                    "
-                  />
+                  {!submitting && (
+                    <ArrowRight
+                      size={18}
+                      className="
+                        transition
+                        duration-300
+                        group-hover:translate-x-1
+                      "
+                    />
+                  )}
                 </span>
               </button>
+
+              {/* =================================================
+                  SUBMIT RESULT
+              ================================================== */}
+
+              {submitState && (
+                <div
+                  role="status"
+                  aria-live="polite"
+                  className={`
+                    flex
+                    items-start
+                    gap-2
+                    rounded-xl
+                    border
+                    p-3
+                    text-sm
+                    ${
+                      submitState.type === "success"
+                        ? "border-green-200 bg-green-50 text-green-800"
+                        : "border-red-200 bg-red-50 text-red-700"
+                    }
+                  `}
+                >
+                  {submitState.type === "success" ? (
+                    <CheckCircle2 size={18} className="mt-0.5 shrink-0" />
+                  ) : (
+                    <span className="mt-0.5 shrink-0 font-bold">!</span>
+                  )}
+                  <span>{submitState.message}</span>
+                </div>
+              )}
 
               {/* =================================================
                   TRUST POINTS

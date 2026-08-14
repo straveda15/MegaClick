@@ -5,6 +5,7 @@ import { useMyTasks, useUpdateTaskStatus, useCreateManualTask, useCancelTask, Ta
 import { CreateTaskModal, ROLE_CATEGORIES } from "@/components/tasks/CreateTaskModal";
 import { ReassignTaskModal } from "@/components/tasks/ReassignTaskModal";
 import { TaskCard } from "@/components/tasks/TaskCard";
+import ServiceRequestPanel from "@/components/tasks/ServiceRequestPanel";
 import { WorkLogsPanel } from "@/components/tasks/WorkLogsPanel";
 import { useTeam, EmployeeProfile } from "@/hooks/useTeam";
 import { useAuth } from "@/context/AuthContext";
@@ -1001,17 +1002,25 @@ function TaskDetailModal({
             </div>
           )}
 
-          {/* Description */}
-          <div className="rounded-xl border border-border bg-muted/20 p-4">
-            <p className="text-[9px] uppercase tracking-wider font-bold text-muted-foreground mb-2 flex items-center gap-1">
-              <FileText className="w-3 h-3" /> Description
-            </p>
-            {task.description ? (
-              <p className="text-sm text-foreground leading-relaxed">{task.description}</p>
-            ) : (
-              <p className="text-xs text-muted-foreground italic">No description provided.</p>
-            )}
-          </div>
+          {/* Service request — the client and service this task is actually for */}
+          {task.serviceRequest?.clientName && (
+            <ServiceRequestPanel request={task.serviceRequest} />
+          )}
+
+          {/* Description — skipped for service requests, where the panel above
+              already carries the same client/service details in full. */}
+          {!task.serviceRequest?.clientName && (
+            <div className="rounded-xl border border-border bg-muted/20 p-4">
+              <p className="text-[9px] uppercase tracking-wider font-bold text-muted-foreground mb-2 flex items-center gap-1">
+                <FileText className="w-3 h-3" /> Description
+              </p>
+              {task.description ? (
+                <p className="text-sm text-foreground leading-relaxed">{task.description}</p>
+              ) : (
+                <p className="text-xs text-muted-foreground italic">No description provided.</p>
+              )}
+            </div>
+          )}
 
           {/* ── Reported Issues (visible to assigner, assignee AND admins) ── */}
           {task.flags && task.flags.length > 0 && (

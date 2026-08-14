@@ -355,6 +355,142 @@ export const bulkCreateTasks = async (taskDataArray, session) => {
     return await Task.insertMany(taskDataArray, { session });
 };
 
+const SERVICE_STAGES = [
+  "documents_pending",
+  "documents_received",
+  "application_submitted",
+  "government_verification",
+  "approval_received",
+  "certificate_ready",
+  "completed",
+];
+
+const PRIORITIES = ["low", "medium", "high", "urgent", "critical"];
+
+const normalizeName = (value) => String(value ?? "").trim().toLowerCase().replace(/\s+/g, " ");
+
+/**
+ * Bulk-create service request tasks from an imported spreadsheet (CSV/Excel).
+ *
+ * Each row must name the service and the client. The assignee is resolved from
+ * the sheet's "Assigned To" column (matched against active staff by full name,
+ * first name or email); rows that don't match fall back to `fallbackAssignedTo`.
+ * Rows that can't be resolved at all are skipped and reported back rather than
+ * failing the whole import, so a client can fix a few bad rows and re-import.
+ */
+export const importServiceTasks = async ({ rows, fallbackAssignedTo }, actorId) => {
+  if (!Array.isArray(rows) || rows.length === 0) {
+    throw new AppError("No rows to import.", 400);
+  }
+  if (rows.length > 2000) {
+    throw new AppError("Too many rows — import at most 2000 at a time.", 400);
+  }
+
+  // Build a name/email → id lookup over active staff so sheet columns that carry
+  // a person's name (not their database id) still resolve to a real assignee.
+  const activeUsers = await User.find({ isActive: { $ne: false } }).select("name lastName email").lean();
+  const byName = new Map();
+  for (const u of activeUsers) {
+    const id = String(u._id);
+    const full = normalizeName([u.name, u.lastName].filter(Boolean).join(" "));
+    if (full && !byName.has(full)) byName.set(full, id);
+    const first = normalizeName(u.name);
+    if (first && !byName.has(first)) byName.set(first, id);
+    const email = normalizeName(u.email);
+    if (email && !byName.has(email)) byName.set(email, id);
+  }
+  const activeIds = new Set(activeUsers.map((u) => String(u._id)));
+
+  if (fallbackAssignedTo && !activeIds.has(String(fallbackAssignedTo))) {
+    throw new AppError("The fallback assignee is not an active staff member.", 400);
+  }
+
+  const docs = [];
+  const skipped = [];
+
+  rows.forEach((row, index) => {
+    // Row number as the client sees it in their spreadsheet: +2 for the header.
+    const rowNumber = index + 2;
+
+    const serviceTitle = String(row.serviceTitle ?? "").trim();
+    const clientName = String(row.clientName ?? "").trim();
+
+    if (!serviceTitle) {
+      skipped.push({ row: rowNumber, reason: "Missing service name" });
+      return;
+    }
+    if (!clientName) {
+      skipped.push({ row: rowNumber, reason: `Missing client name for "${serviceTitle}"` });
+      return;
+    }
+
+    const rawAssignee = String(row.assignedToName ?? "").trim();
+    const assignedTo = (rawAssignee && byName.get(normalizeName(rawAssignee))) || fallbackAssignedTo;
+
+    if (!assignedTo) {
+      skipped.push({
+        row: rowNumber,
+        reason: rawAssignee
+          ? `No active employee matches "${rawAssignee}"`
+          : "No assignee given and no fallback selected",
+      });
+      return;
+    }
+
+    const stage = SERVICE_STAGES.includes(row.stage) ? row.stage : "documents_pending";
+    const priority = PRIORITIES.includes(String(row.priority ?? "").toLowerCase())
+      ? String(row.priority).toLowerCase()
+      : "medium";
+
+    let dueAt = null;
+    if (row.dueAt) {
+      const parsed = new Date(row.dueAt);
+      if (!Number.isNaN(parsed.getTime())) dueAt = parsed;
+    }
+
+    const isDone = stage === "completed";
+
+    docs.push({
+      title: serviceTitle,
+      description: [
+        `Service request: ${serviceTitle}`,
+        `Client: ${clientName}`,
+        row.notes ? `Notes: ${String(row.notes).trim()}` : null,
+      ].filter(Boolean).join("\n"),
+      type: "manual",
+      source: "csv_upload",
+      status: isDone ? "completed" : "pending",
+      completedAt: isDone ? new Date() : undefined,
+      priority,
+      dueAt,
+      assignedTo,
+      assignedBy: actorId,
+      serviceRequest: {
+        serviceTitle,
+        serviceCategory: String(row.serviceCategory ?? "").trim() || undefined,
+        clientName,
+        clientEmail: String(row.clientEmail ?? "").trim() || undefined,
+        clientPhone: String(row.clientPhone ?? "").trim() || undefined,
+        clientCompany: String(row.clientCompany ?? "").trim() || undefined,
+        clientAddress: String(row.clientAddress ?? "").trim() || undefined,
+        notes: String(row.notes ?? "").trim() || undefined,
+        stage,
+      },
+    });
+  });
+
+  if (docs.length === 0) {
+    throw new AppError(
+      `No valid rows found. ${skipped[0]?.reason ?? "Check the column headers against the template."}`,
+      400
+    );
+  }
+
+  const created = await Task.insertMany(docs);
+
+  return { imported: created.length, skipped };
+};
+
 export const cancelTask = async (taskId, actorId, scope = "all") => {
   const task = await Task.findById(taskId);
   if (!task) throw new AppError("Task not found.", 404);

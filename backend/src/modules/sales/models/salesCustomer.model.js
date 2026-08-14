@@ -20,6 +20,10 @@ const salesCustomerSchema = new mongoose.Schema(
       unique: true,
       trim: true,
     },
+    company: {
+      type: String,
+      trim: true,
+    },
     address: {
       type: String,
     },

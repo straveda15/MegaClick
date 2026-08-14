@@ -1,5 +1,6 @@
 import SalesCustomer from "../models/salesCustomer.model.js";
 import SalesLead from "../models/salesLead.model.js";
+import AppError from "../../../shared/utils/appError.js";
 import SalesActivityLog from "../models/salesActivityLog.model.js";
 import Task from "../../task/task.model.js";
 import User from "../../user/user.model.js";
@@ -471,6 +472,9 @@ export const getAssignedLeads = async (user, filters = {}) => {
         .populate("customer")
         .populate("orderId", "orderNumber orderStatus pricing items")
         .populate("assignedTo", "name lastName email")
+        // Lets the Leads board show whether a request has been handed to
+        // someone yet, and how that work is going.
+        .populate("taskId", "title status dueAt priority")
         .populate("followUpHistory.createdBy", "name email")
         .sort({ createdAt: -1 });
 };
@@ -517,75 +521,316 @@ export const getBacklogLeads = async (userId) => {
     }).populate("customer").sort({ followUpAt: 1 });
 };
 
-export const createManualLead = async (actorId, data) => {
-    const { 
-        firstName, 
-        lastName, 
-        phone, 
-        email, 
-        flat, 
-        area, 
-        landmark, 
-        city, 
-        state, 
-        pincode, 
-        productInterest, 
-        source = "telephony" 
-    } = data;
+export const LEAD_PRIORITIES = ["LOW", "MEDIUM", "HIGH", "URGENT"];
+export const LEAD_STATUSES = ["NEW", "CONTACTED", "FOLLOW_UP", "CONVERTED", "DROPPED"];
+export const SERVICE_STAGES = [
+    "documents_pending",
+    "documents_received",
+    "application_submitted",
+    "government_verification",
+    "approval_received",
+    "certificate_ready",
+    "completed",
+];
+const LEAD_SOURCES = ["website_cart", "website_order", "telephony", "website_contact", "csv", "excel", "manual", "scraped", "offline_orders"];
 
-    const name = data.name || `${firstName || ""} ${lastName || ""}`.trim();
+/**
+ * Normalizes one lead's worth of user/spreadsheet input into the customer and
+ * lead documents. Shared by single-lead creation and bulk import so both accept
+ * exactly the same fields and coerce them the same way.
+ */
+const buildLeadInput = (data) => {
+    const name = (data.name || `${data.firstName || ""} ${data.lastName || ""}`).trim();
+    const phone = String(data.phone ?? "").trim();
 
-    // 1. Upsert Customer
-    const customer = await SalesCustomer.findOneAndUpdate(
-        { phone },
-        { 
-            $set: {
-                name,
-                email,
-                addressLine1: flat,
-                addressLine2: area,
-                landmark,
-                city,
-                state,
-                postalCode: pincode
-            },
-            $setOnInsert: { 
+    const priority = LEAD_PRIORITIES.includes(String(data.priority ?? "").toUpperCase())
+        ? String(data.priority).toUpperCase()
+        : "MEDIUM";
+    const status = LEAD_STATUSES.includes(String(data.status ?? "").toUpperCase())
+        ? String(data.status).toUpperCase()
+        : "NEW";
+    const source = LEAD_SOURCES.includes(data.source) ? data.source : "manual";
+
+    let followUpAt = null;
+    if (data.followUpAt) {
+        const parsed = new Date(data.followUpAt);
+        if (!Number.isNaN(parsed.getTime())) followUpAt = parsed;
+    }
+
+    return {
+        name,
+        phone,
+        email: String(data.email ?? "").trim() || undefined,
+        company: String(data.company ?? "").trim() || undefined,
+        city: String(data.city ?? "").trim() || undefined,
+        state: String(data.state ?? "").trim() || undefined,
+        addressLine1: data.flat,
+        addressLine2: data.area,
+        landmark: data.landmark,
+        postalCode: data.pincode,
+        productInterest: String(data.productInterest ?? "").trim() || undefined,
+        serviceSlug: String(data.serviceSlug ?? "").trim() || undefined,
+        serviceCategory: String(data.serviceCategory ?? "").trim() || undefined,
+        serviceStage: SERVICE_STAGES.includes(data.serviceStage) ? data.serviceStage : "documents_pending",
+        priority,
+        status,
+        source,
+        followUpAt,
+        message: data.message,
+    };
+};
+
+/** Upserts the customer behind a lead. Phone is the identity key. */
+const upsertLeadCustomer = async (input, actorId) => {
+    const set = {};
+    // Only overwrite fields the caller actually supplied — a second lead for an
+    // existing customer must not blank out details captured the first time.
+    for (const field of ["name", "email", "company", "city", "state", "addressLine1", "addressLine2", "landmark", "postalCode"]) {
+        if (input[field]) set[field] = input[field];
+    }
+
+    return await SalesCustomer.findOneAndUpdate(
+        { phone: input.phone },
+        {
+            $set: set,
+            $setOnInsert: {
+                phone: input.phone,
                 source: "manual",
                 createdBy: actorId,
-                createdAt: new Date()
-            } 
+                createdAt: new Date(),
+            },
         },
-        { upsert: true, new: true }
+        { upsert: true, new: true, setDefaultsOnInsert: true }
     );
+};
 
-    // 2. Create Lead — pooled so the auto-distribute job spreads it across the
-    // roster equally (never accumulating on the creator, admin or manager).
+export const createManualLead = async (actorId, data) => {
+    const input = buildLeadInput(data);
+
+    if (!input.phone) {
+        const err = new Error("Phone number is required — it identifies the customer.");
+        err.statusCode = 400;
+        throw err;
+    }
+
+    const customer = await upsertLeadCustomer(input, actorId);
+
+    // A lead captured here stays deliberately unassigned until someone uses
+    // "Assign to" — it is NOT pooled, so the auto-distribute job leaves it be.
     const lead = await SalesLead.create({
         customer: customer._id,
-        assignedTo: actorId, // holding placeholder while pooled
-        pool: true,
-        status: "NEW",
-        source, // e.g., telephony
-        productInterest,
+        assignedTo: data.assignedTo || undefined,
+        pool: false,
+        status: input.status,
+        source: input.source,
+        productInterest: input.productInterest,
+        serviceSlug: input.serviceSlug,
+        serviceCategory: input.serviceCategory,
+        serviceStage: input.serviceStage,
+        priority: input.priority,
+        followUpAt: input.followUpAt,
+        message: input.message,
         statusHistory: [{
-            status: "NEW",
+            status: input.status,
             changedBy: actorId,
-            note: "Manually created lead"
-        }]
+            note: "Manually created lead",
+        }],
     });
-
-    // Automated task creation removed as per requirement.
-    return await lead.populate("customer");
 
     await SalesActivityLog.create({
         actor: actorId,
         action: "MANUAL_LEAD_CREATED",
         entityType: "SalesLead",
         entityId: lead._id,
-        metadata: { source }
+        metadata: { source: input.source },
     });
 
-    return await lead.populate("customer");
+    return await SalesLead.findById(lead._id)
+        .populate("customer")
+        .populate("assignedTo", "name lastName email");
+};
+
+/**
+ * Bulk-creates leads from an imported spreadsheet (CSV/Excel).
+ *
+ * Rows are validated individually: anything missing a phone number (the
+ * customer identity key) is skipped and reported back rather than failing the
+ * whole import, so a client can fix a few bad rows and re-import.
+ */
+export const importLeads = async (actorId, { rows, fallbackAssignedTo }) => {
+    if (!Array.isArray(rows) || rows.length === 0) {
+        const err = new Error("No rows to import.");
+        err.statusCode = 400;
+        throw err;
+    }
+    if (rows.length > 2000) {
+        const err = new Error("Too many rows — import at most 2000 at a time.");
+        err.statusCode = 400;
+        throw err;
+    }
+
+    // Resolve "Assigned To" names against active staff so a sheet carrying a
+    // person's name (not their database id) still lands on the right rep.
+    const activeUsers = await User.find({ isActive: { $ne: false } }).select("name lastName email").lean();
+    const byName = new Map();
+    for (const u of activeUsers) {
+        const id = String(u._id);
+        const keys = [
+            [u.name, u.lastName].filter(Boolean).join(" "),
+            u.name,
+            u.email,
+        ];
+        for (const key of keys) {
+            const normalized = String(key ?? "").trim().toLowerCase().replace(/\s+/g, " ");
+            if (normalized && !byName.has(normalized)) byName.set(normalized, id);
+        }
+    }
+
+    const skipped = [];
+    let imported = 0;
+
+    for (const [index, row] of rows.entries()) {
+        // Row number as the client sees it in their spreadsheet: +2 for the header.
+        const rowNumber = index + 2;
+        const input = buildLeadInput({ ...row, source: row.source || "excel" });
+
+        if (!input.phone) {
+            skipped.push({ row: rowNumber, reason: `Missing phone number${input.name ? ` for ${input.name}` : ""}` });
+            continue;
+        }
+
+        const rawAssignee = String(row.assignedToName ?? "").trim();
+        const matched = rawAssignee
+            ? byName.get(rawAssignee.toLowerCase().replace(/\s+/g, " "))
+            : undefined;
+        // Unmatched rows stay unassigned and wait for a manual "Assign to",
+        // rather than silently landing on whoever ran the import.
+        const assignedTo = matched || fallbackAssignedTo || undefined;
+
+        try {
+            const customer = await upsertLeadCustomer(input, actorId);
+
+            await SalesLead.create({
+                customer: customer._id,
+                assignedTo,
+                pool: false,
+                status: input.status,
+                source: input.source,
+                productInterest: input.productInterest,
+                serviceSlug: input.serviceSlug,
+                serviceCategory: input.serviceCategory,
+                serviceStage: input.serviceStage,
+                priority: input.priority,
+                followUpAt: input.followUpAt,
+                statusHistory: [{
+                    status: input.status,
+                    changedBy: actorId,
+                    note: "Imported from spreadsheet",
+                }],
+            });
+
+            imported += 1;
+        } catch (error) {
+            skipped.push({ row: rowNumber, reason: error.message || "Could not be saved" });
+        }
+    }
+
+    if (imported === 0) {
+        const err = new Error(
+            `No valid rows found. ${skipped[0]?.reason ?? "Check the column headers against the template."}`
+        );
+        err.statusCode = 400;
+        throw err;
+    }
+
+    return { imported, skipped };
+};
+
+/**
+ * Turns a lead into assigned work: creates a Task stamped with the service and
+ * the client's full contact details, puts the assignee on the lead, and links
+ * the two so the Leads board can show what happened to each request.
+ *
+ * Re-assigning a lead that already has a task creates a fresh task for the new
+ * assignee and re-points the link; the old task is left alone so its history
+ * (and any work logged against it) survives.
+ */
+export const assignLeadAsTask = async (leadId, actorId, { assignedTo, dueAt, priority, notes }) => {
+    const lead = await SalesLead.findById(leadId).populate("customer");
+    if (!lead) throw new AppError("Lead not found", 404);
+    if (!assignedTo) throw new AppError("An assignee is required.", 400);
+
+    const assignee = await User.findById(assignedTo).select("name lastName isActive");
+    if (!assignee) throw new AppError("That employee no longer exists.", 400);
+    if (assignee.isActive === false) {
+        const name = [assignee.name, assignee.lastName].filter(Boolean).join(" ") || "That employee";
+        throw new AppError(`${name} is deactivated — reactivate the account first.`, 400);
+    }
+
+    const serviceTitle = lead.productInterest || "Service request";
+    const clientName = lead.customer?.name?.trim() || lead.customer?.phone || "Client";
+
+    const taskPriority = ["low", "medium", "high", "urgent", "critical"].includes(String(priority ?? "").toLowerCase())
+        ? String(priority).toLowerCase()
+        : (lead.priority || "MEDIUM").toLowerCase();
+
+    let due = null;
+    if (dueAt) {
+        const parsed = new Date(dueAt);
+        if (!Number.isNaN(parsed.getTime())) due = parsed;
+    }
+
+    const task = await Task.create({
+        title: serviceTitle,
+        description: [
+            `Service request: ${serviceTitle}`,
+            `Client: ${clientName}`,
+            notes ? `Notes: ${String(notes).trim()}` : null,
+        ].filter(Boolean).join("\n"),
+        type: "manual",
+        source: "manual",
+        status: "pending",
+        priority: taskPriority,
+        dueAt: due,
+        assignedTo,
+        assignedBy: actorId,
+        relatedEntity: { entityType: "SalesLead", entityId: lead._id },
+        serviceRequest: {
+            serviceTitle,
+            serviceSlug: lead.serviceSlug,
+            serviceCategory: lead.serviceCategory,
+            clientName,
+            clientEmail: lead.customer?.email,
+            clientPhone: lead.customer?.phone,
+            clientCompany: lead.customer?.company,
+            clientAddress: [lead.customer?.addressLine1, lead.customer?.addressLine2, lead.customer?.city, lead.customer?.state]
+                .filter(Boolean).join(", ") || undefined,
+            notes: notes ? String(notes).trim() : undefined,
+            stage: lead.serviceStage || "documents_pending",
+        },
+    });
+
+    lead.assignedTo = assignedTo;
+    lead.taskId = task._id;
+    lead.pool = false;
+    // Handing the request to someone is the first real contact on it.
+    if (lead.status === "NEW") {
+        lead.status = "CONTACTED";
+        lead.statusHistory.push({ status: "CONTACTED", changedBy: actorId, note: "Assigned to an employee" });
+    }
+    await lead.save();
+
+    await SalesActivityLog.create({
+        actor: actorId,
+        action: "LEAD_ASSIGNED_AS_TASK",
+        entityType: "SalesLead",
+        entityId: lead._id,
+        metadata: { taskId: String(task._id), assignedTo: String(assignedTo) },
+    });
+
+    return await SalesLead.findById(lead._id)
+        .populate("customer")
+        .populate("assignedTo", "name lastName email");
 };
 
 export const updateLeadCustomer = async (leadId, customerData) => {
@@ -739,7 +984,11 @@ export const autoDistributeLeads = async (actorId = null) => {
         status: { $in: OPEN_LEAD_STATUSES },
         $or: [
             { pool: true },
-            { assignedTo: { $nin: available } },
+            // Reclaim leads held by someone no longer available. `$exists`/`$ne: null`
+            // matter: a deliberately unassigned lead (captured on the Leads page and
+            // waiting for a manual "Assign to") also satisfies `$nin`, and must NOT
+            // be swept up by this job.
+            { assignedTo: { $exists: true, $ne: null, $nin: available } },
         ],
     }).select("_id status").lean();
     if (pool.length === 0) return { distributed: 0, members: available.length };

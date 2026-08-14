@@ -152,6 +152,40 @@ export const createManualLead = async (req, res, next) => {
         next(error);
     }
 };
+export const importLeads = async (req, res, next) => {
+    try {
+        const { rows, fallbackAssignedTo } = req.body;
+
+        const result = await salesLeadService.importLeads(req.user._id, { rows, fallbackAssignedTo });
+
+        res.status(201).json({
+            success: true,
+            message: `Imported ${result.imported} lead${result.imported === 1 ? "" : "s"}`,
+            data: result
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const assignLeadAsTask = async (req, res, next) => {
+    try {
+        const { assignedTo, dueAt, priority, notes } = req.body;
+
+        const lead = await salesLeadService.assignLeadAsTask(req.params.id, req.user._id, {
+            assignedTo, dueAt, priority, notes
+        });
+
+        res.status(201).json({
+            success: true,
+            message: "Lead assigned as a task",
+            data: lead
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 export const updateLeadCustomer = async (req, res, next) => {
     try {
         const leadId = req.params.id;
