@@ -8,23 +8,19 @@ if (!uri) {
   );
 }
 
-// Reuse the connection across serverless invocations (important on Vercel)
 let cached = global._mongooseConn;
-
 if (!cached) {
   cached = global._mongooseConn = { conn: null, promise: null };
 }
 
 const connectDB = async () => {
-  if (cached.conn) {
-    return cached.conn;
-  }
+  if (cached.conn) return cached.conn;
 
   if (!cached.promise) {
     cached.promise = mongoose
       .connect(uri, {
         maxPoolSize: 10,
-        serverSelectionTimeoutMS: 5000, // fail fast instead of hanging 10s
+        serverSelectionTimeoutMS: 5000,
       })
       .then((mongooseInstance) => {
         console.log("MongoDB connected:", mongooseInstance.connection.name);
