@@ -6,6 +6,7 @@ import {
   Mail,
   ArrowUpRight,
 } from "lucide-react";
+import { FaWhatsapp } from "react-icons/fa";
 
 const ContactInfo = () => {
   // =================================================
@@ -436,6 +437,150 @@ const ContactInfo = () => {
             "
           >
             {/* =================================================
+                WHATSAPP CARD
+            ================================================= */}
+
+            <div
+              className="
+                group
+                relative
+                overflow-hidden
+                rounded-2xl
+                sm:rounded-[28px]
+                lg:rounded-[32px]
+                bg-white
+                border
+                border-gray-200
+                p-5
+                sm:p-6
+                lg:p-8
+                shadow-[0_15px_45px_rgba(0,0,0,0.08)]
+                hover:shadow-2xl
+                hover:-translate-y-2
+                transition-all
+                duration-500
+                w-full
+              "
+            >
+
+
+              <div
+                className="
+                  relative
+                  flex
+                  items-center
+                  justify-between
+                  gap-3
+                "
+              >
+                <div
+                  className="
+                    flex
+                    items-center
+                    gap-3
+                    sm:gap-5
+                    min-w-0
+                  "
+                >
+                  <div
+                    className="
+                      w-12
+                      h-12
+                      sm:w-14
+                      sm:h-14
+                      lg:w-16
+                      lg:h-16
+                      flex-shrink-0
+                      rounded-xl
+                      sm:rounded-2xl
+                      bg-green-100
+                      flex
+                      items-center
+                      justify-center
+                      group-hover:bg-[#25D366]
+                      transition-all
+                      duration-300
+                    "
+                  >
+                    <FaWhatsapp
+                      size={24}
+                      className="
+                        sm:w-8
+                        sm:h-8
+                        text-[#25D366]
+                        group-hover:text-white
+                        transition
+                      "
+                    />
+                  </div>
+
+                  <div className="min-w-0">
+                    <h3
+                      className="
+                        text-lg
+                        sm:text-xl
+                        font-bold
+                        text-gray-900
+                      "
+                    >
+                      WhatsApp Us
+                    </h3>
+
+                    <p
+                      className="
+                        mt-1
+                        text-sm
+                        sm:text-base
+                        text-gray-600
+                      "
+                    >
+                      +91 99216 11911
+                    </p>
+                  </div>
+                </div>
+
+                <ArrowUpRight
+                  size={22}
+                  className="
+                    flex-shrink-0
+                    text-gray-300
+                    group-hover:text-[#25D366]
+                    group-hover:rotate-45
+                    transition
+                  "
+                />
+              </div>
+
+              <a
+                href={`https://wa.me/919921611911`}
+                target="_blank"
+                rel="noreferrer"
+                className="
+                  mt-5
+                  sm:mt-7
+                  w-full
+                  py-3
+                  sm:py-3.5
+                  rounded-xl
+                  bg-[#25D366]
+                  text-white
+                  text-sm
+                  sm:text-base
+                  font-semibold
+                  flex
+                  items-center
+                  justify-center
+                  gap-2
+                  hover:bg-[#1ebd5b]
+                  transition
+                "
+              >
+                <FaWhatsapp size={19} />
+                WhatsApp Now
+              </a>
+            </div>
+
+            {/* =================================================
                 CALL CARD
             ================================================= */}
 
@@ -461,22 +606,7 @@ const ContactInfo = () => {
                 w-full
               "
             >
-              {/* GLOW */}
 
-              <div
-                className="
-                  absolute
-                  -right-16
-                  -top-16
-                  w-40
-                  h-40
-                  sm:w-48
-                  sm:h-48
-                  rounded-full
-                  bg-green-100
-                  blur-3xl
-                "
-              />
 
               <div
                 className="
@@ -618,22 +748,7 @@ const ContactInfo = () => {
                 w-full
               "
             >
-              {/* GLOW */}
 
-              <div
-                className="
-                  absolute
-                  -right-16
-                  -top-16
-                  w-40
-                  h-40
-                  sm:w-48
-                  sm:h-48
-                  rounded-full
-                  bg-blue-100
-                  blur-3xl
-                "
-              />
 
               <div
                 className="
