@@ -1,0 +1,46 @@
+{
+  "name": "victory-media-dashboard-backend",
+  "version": "1.0.0",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "create:admin": "node scripts/create-admin.js",
+    "fetch:geoip": "node scripts/fetch-geoip.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "Victory Media Dashboard backend — modular Express + Mongoose",
+  "dependencies": {
+    "axios": "^1.15.0",
+    "bcrypt": "^6.0.0",
+    "bcryptjs": "^3.0.3",
+    "cloudinary": "^2.10.0",
+    "cors": "^2.8.6",
+    "csv-parse": "^6.2.1",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.5.2",
+    "google-auth-library": "^10.6.2",
+    "helmet": "^8.1.0",
+    "imagekit": "^5.2.0",
+    "joi": "^18.1.2",
+    "jsonwebtoken": "^9.0.3",
+    "libphonenumber-js": "^1.12.41",
+    "maxmind": "^4.3.29",
+    "mongoose": "^9.3.3",
+    "morgan": "^1.10.1",
+    "multer": "^2.1.1",
+    "pdfkit": "^0.19.1",
+    "nodemailer": "^9.0.1",
+    "socket.io": "^4.8.3",
+    "uuid": "^13.0.0",
+    "winston": "^3.19.0",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}

@@ -1,0 +1,304 @@
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { API_BASE } from "./api-config";
+
+const BASE_URL = `${API_BASE}/api/v1/tasks`;
+
+function authHeaders(): Record<string, string> {
+  const token = localStorage.getItem("opsos_access_token");
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
+// ── Types ──────────────────────────────────────────────────────────────────
+
+export interface TeamMember {
+  _id: string;
+  name: string;
+  lastName?: string;
+  email: string;
+}
+
+export interface Task {
+  _id: string;
+  title: string;
+  description?: string;
+  type: string;
+  status: "pending" | "in_progress" | "completed" | "cancelled" | "overdue";
+  priority: "low" | "medium" | "high" | "urgent" | "critical";
+  cancelReason?: "manual" | "assignee_inactive";
+  cancelAlertAck?: boolean;
+  cancelledAt?: string;
+  assignedTo: TeamMember;
+  assignedBy?: TeamMember;
+  createdBy?: TeamMember | string;
+  dueAt: string;
+  startedAt?: string;
+  completedAt?: string;
+  timeTakenMinutes?: number;
+  relatedEntity?: {
+    entityType: "SalesLead" | "Order" | "SalesReturn" | "None";
+    entityId: string | null;
+  } | null;
+  createdAt: string;
+  updatedAt: string;
+  taskGroup?: string;
+  followers?: TeamMember[];
+  followUps?: Array<{
+    _id: string;
+    message: string;
+    author?: TeamMember;
+    createdAt: string;
+  }>;
+  flags?: Array<{
+    _id: string;
+    message: string;
+    raisedBy: TeamMember;
+    raisedAt: string;
+    adminResponse?: string;
+    adminResponseAt?: string;
+    resolvedAt?: string;
+  }>;
+}
+
+export interface TaskFilters {
+  status?: string;
+  type?: string;
+  assignedTo?: string;
+  view?: "assigned_by_me" | "assigned_to_me" | "all" | "following";
+}
+
+// ── Hooks ──────────────────────────────────────────────────────────────────
+
+export function useMyTasks(filters?: TaskFilters, options?: { enabled?: boolean }) {
+  const params = new URLSearchParams();
+  if (filters?.status && filters.status !== "all") params.append("status", filters.status);
+  if (filters?.type && filters.type !== "all") params.append("type", filters.type);
+  if (filters?.assignedTo) params.append("assignedTo", filters.assignedTo);
+  if (filters?.view) params.append("view", filters.view);
+
+  const qs = params.toString() ? `?${params.toString()}` : "";
+
+  return useQuery({
+    enabled: options?.enabled ?? true,
+    queryKey: ["tasks", filters],
+    queryFn: async (): Promise<Task[]> => {
+      const res = await fetch(`${BASE_URL}/my${qs}`, { headers: authHeaders() });
+      if (!res.ok) {
+        let message = "";
+
+        try {
+          const body = await res.text();
+          if (body) {
+            try {
+              const parsed = JSON.parse(body);
+              message = parsed?.message || parsed?.error || body;
+            } catch {
+              message = body;
+            }
+          }
+        } catch {
+          message = "";
+        }
+
+        throw new Error(
+          `Failed to fetch tasks (${res.status} ${res.statusText})${message ? `: ${message}` : ""}`
+        );
+      }
+
+      const data = await res.json();
+      return data.data || [];
+    },
+  });
+}
+
+export function useUpdateTaskStatus() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, status }: { id: string; status: string }) => {
+      const res = await fetch(`${BASE_URL}/${id}/status`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", ...authHeaders() },
+        body: JSON.stringify({ status }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Failed to update task");
+      return data.data;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["tasks"] });
+    },
+  });
+}
+
+export function useCreateManualTask() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (payload: { title: string; type?: string; priority?: string; dueAt?: string; assignedTo?: string | string[]; followers?: string[]; description?: string }) => {
+      const res = await fetch(`${BASE_URL}/manual`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...authHeaders() },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Failed to create task");
+      return data.data;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["tasks"] });
+    },
+  });
+}
+
+export function useCancelTask() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, scope = "all" }: { id: string; scope?: "all" | "single" }) => {
+      const res = await fetch(`${BASE_URL}/${id}/cancel`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", ...authHeaders() },
+        body: JSON.stringify({ scope }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Failed to cancel task");
+      return data.data;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["tasks"] });
+    },
+  });
+}
+
+export function useAdminRespondToFlag() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, flagId, response }: { id: string; flagId: string; response: string }) => {
+      const res = await fetch(`${BASE_URL}/${id}/issue/${flagId}/respond`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", ...authHeaders() },
+        body: JSON.stringify({ response }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Failed to respond");
+      return data.data;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["tasks"] });
+    },
+  });
+}
+
+export function useExtendTaskDue() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, dueAt }: { id: string; dueAt: string }) => {
+      const res = await fetch(`${BASE_URL}/${id}/extend-due`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", ...authHeaders() },
+        body: JSON.stringify({ dueAt }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Failed to extend due date");
+      return data.data;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["tasks"] });
+    },
+  });
+}
+
+export function useReassignTask() {
+  const qc = useQueryClient();
+  return useMutation({
+    // assignedTo may be a single id or an array (reassign to several people at once).
+    mutationFn: async ({ id, assignedTo }: { id: string; assignedTo: string | string[] }) => {
+      const body = Array.isArray(assignedTo) ? { assigneeIds: assignedTo } : { assignedTo };
+      const res = await fetch(`${BASE_URL}/${id}/reassign`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", ...authHeaders() },
+        body: JSON.stringify(body),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Failed to reassign task");
+      return data.data;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["tasks"] });
+    },
+  });
+}
+
+export function useAcknowledgeCancelAlert() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id }: { id: string }) => {
+      const res = await fetch(`${BASE_URL}/${id}/ack-cancel`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", ...authHeaders() },
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Failed to acknowledge cancellation");
+      return data.data;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["tasks"] });
+    },
+  });
+}
+
+export function useAddFollowUp() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, message }: { id: string; message: string }) => {
+      const res = await fetch(`${BASE_URL}/${id}/follow-up`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...authHeaders() },
+        body: JSON.stringify({ message }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Failed to add follow-up");
+      return data.data;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["tasks"] });
+    },
+  });
+}
+
+export function useUpdateFollowers() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, followerIds }: { id: string; followerIds: string[] }) => {
+      const res = await fetch(`${BASE_URL}/${id}/followers`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", ...authHeaders() },
+        body: JSON.stringify({ followerIds }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Failed to update follow-up tags");
+      return data.data;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["tasks"] });
+    },
+  });
+}
+
+export function useAssignMoreToTask() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, assigneeIds }: { id: string; assigneeIds: string[] }) => {
+      const res = await fetch(`${BASE_URL}/${id}/assign-more`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...authHeaders() },
+        body: JSON.stringify({ assigneeIds }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Failed to assign more staff");
+      return data.data;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["tasks"] });
+    },
+  });
+}
+
+
