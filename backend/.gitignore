@@ -40,3 +40,4 @@ Thumbs.db
 # MaxMind GeoLite2 geo-IP database (download separately; do not commit)
 *.mmdb
 data/
+package-lock.json
