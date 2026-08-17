@@ -181,33 +181,22 @@ const WhyChoose = () => {
                   tracking-wide
                 "
               >
-                <CheckCircle
-                  size={15}
-                  className="text-green-300"
-                />
-
+                <CheckCircle size={15} className="text-green-300" />
                 WHY CHOOSE US
               </span>
             </div>
 
             {/* ================= HEADING ================= */}
 
-            <h2
-              className="section-heading text-black"
-            >
+            <h2 className="section-heading text-black">
               Your Trusted
               <br />
-
-              <span className="text-[#0B4EA2]">
-                Partner
-              </span>
+              <span className="text-[#0B4EA2]">Partner</span>
             </h2>
 
             {/* ================= DESCRIPTION ================= */}
 
-            <p
-              className="section-text mt-3 sm:mt-4 text-gray-700 max-w-xl text-left"
-            >
+            <p className="section-text mt-3 sm:mt-4 text-gray-700 max-w-xl text-left">
               MegaClick brings together trusted professionals, complete
               business solutions and reliable support to simplify every
               step of your business journey.
@@ -229,7 +218,6 @@ const WhyChoose = () => {
               "
             >
               {/* CLIENTS */}
-
               <div>
                 <h3
                   className="
@@ -241,7 +229,6 @@ const WhyChoose = () => {
                 >
                   15K+
                 </h3>
-
                 <p
                   className="
                     mt-1
@@ -256,7 +243,6 @@ const WhyChoose = () => {
               </div>
 
               {/* SUCCESS RATE */}
-
               <div>
                 <h3
                   className="
@@ -268,7 +254,6 @@ const WhyChoose = () => {
                 >
                   99%
                 </h3>
-
                 <p
                   className="
                     mt-1
@@ -283,7 +268,6 @@ const WhyChoose = () => {
               </div>
 
               {/* SERVICES */}
-
               <div>
                 <h3
                   className="
@@ -295,7 +279,6 @@ const WhyChoose = () => {
                 >
                   25+
                 </h3>
-
                 <p
                   className="
                     mt-1
@@ -353,13 +336,12 @@ const WhyChoose = () => {
 
 const FeatureCard = ({ item }) => {
   const Icon = item.icon;
-
   const isBlue = item.color === "blue";
 
   return (
-    <div className="group relative">
+    /* h-full ensures all cards in the same grid row stretch to equal height */
+    <div className="group relative h-full">
       {/* CARD */}
-
       <div
         className="
           relative
@@ -384,7 +366,6 @@ const FeatureCard = ({ item }) => {
         "
       >
         {/* ICON */}
-
         <div
           className={`
             w-12
@@ -397,6 +378,7 @@ const FeatureCard = ({ item }) => {
             justify-center
             mb-3
             sm:mb-4
+            flex-shrink-0
             animate-float-medium
             transition-transform
             duration-300
@@ -413,10 +395,14 @@ const FeatureCard = ({ item }) => {
           />
         </div>
 
-        {/* TITLE */}
-
+        {/* TITLE — fixed min-height so all cards align regardless of line count */}
         <h3
           className="
+            min-h-[3.5rem]
+            sm:min-h-[4rem]
+            flex
+            items-center
+            justify-center
             text-[11px]
             sm:text-xs
             lg:text-sm
@@ -431,7 +417,6 @@ const FeatureCard = ({ item }) => {
         </h3>
 
         {/* ACCENT UNDERLINE */}
-
         <div
           className={`
             mt-3
@@ -439,6 +424,7 @@ const FeatureCard = ({ item }) => {
             h-1
             w-8
             rounded-full
+            flex-shrink-0
             ${isBlue ? "bg-[#0B4EA2]" : "bg-[#0A8F55]"}
           `}
         />

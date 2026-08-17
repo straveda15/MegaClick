@@ -121,8 +121,6 @@ const Partners = () => {
             w-full
             touch-pan-y
             bg-white
-            rounded-2xl
-            sm:rounded-3xl
             border
             border-blue-100
             shadow-lg
