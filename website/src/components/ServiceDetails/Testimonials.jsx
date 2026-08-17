@@ -4,6 +4,8 @@ import {
   Quote,
   Star,
   Sparkles,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 
 const testimonials = [
@@ -47,8 +49,12 @@ const testimonials = [
 const Testimonials = () => {
   const [current, setCurrent] = useState(0);
 
-  const goToSlide = (index) => {
-    setCurrent(index);
+  const goPrev = () => {
+    setCurrent((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+  };
+
+  const goNext = () => {
+    setCurrent((prev) => (prev + 1) % testimonials.length);
   };
 
   const visibleTestimonials = [
@@ -103,9 +109,7 @@ const Testimonials = () => {
 
           {/* FULL GRADIENT HEADING */}
           <br />
-          <h2
-            className="section-heading text-[#0B4EA2]"
-          >
+          <h2 className="section-heading text-[#0B4EA2]">
             What Our Clients Say
           </h2>
 
@@ -235,7 +239,6 @@ const Testimonials = () => {
 
                 {/* BOTTOM STARS FOOTER */}
                 <div className="mt-5 pt-3 border-t border-gray-100 flex items-center justify-between">
-                  
                   <div className="flex shrink-0 gap-0.5">
                     {[1, 2, 3, 4, 5].map((star) => (
                       <Star
@@ -252,30 +255,63 @@ const Testimonials = () => {
         </div>
 
         {/* =========================================
-            SLIDE DOTS
+            ARROW NAVIGATION (replaces dots)
         ========================================== */}
 
-        <div className="mt-8 flex justify-center items-center gap-2.5">
-          {testimonials.map((_, index) => (
-            <button
-              key={index}
-              type="button"
-              onClick={() => goToSlide(index)}
-              aria-label={`Go to slide ${index + 1}`}
-              aria-current={index === current}
-              className={`
-                rounded-full
-                transition-all
-                duration-300
-                cursor-pointer
-                ${
-                  index === current
-                    ? "w-6 h-2.5 bg-[#0B4EA2]"
-                    : "w-2.5 h-2.5 bg-gray-300 hover:bg-gray-400"
-                }
-              `}
-            />
-          ))}
+        <div className="mt-8 flex justify-center items-center gap-4">
+          {/* PREV ARROW < */}
+          <button
+            type="button"
+            onClick={goPrev}
+            aria-label="Previous testimonials"
+            className="
+              flex
+              items-center
+              justify-center
+              w-10
+              h-10
+              rounded-full
+              border-2
+              border-[#0B4EA2]
+              text-[#0B4EA2]
+              bg-white
+              hover:bg-[#0B4EA2]
+              hover:text-white
+              transition-all
+              duration-300
+              cursor-pointer
+              shadow-sm
+            "
+          >
+            <ChevronLeft size={20} />
+          </button>
+
+          {/* NEXT ARROW > */}
+          <button
+            type="button"
+            onClick={goNext}
+            aria-label="Next testimonials"
+            className="
+              flex
+              items-center
+              justify-center
+              w-10
+              h-10
+              rounded-full
+              border-2
+              border-[#0B4EA2]
+              text-[#0B4EA2]
+              bg-white
+              hover:bg-[#0B4EA2]
+              hover:text-white
+              transition-all
+              duration-300
+              cursor-pointer
+              shadow-sm
+            "
+          >
+            <ChevronRight size={20} />
+          </button>
         </div>
       </div>
 

@@ -1,4 +1,3 @@
-
 import React from "react";
 
 const HowItWorks = ({ service }) => {
@@ -56,29 +55,113 @@ const HowItWorks = ({ service }) => {
               Simple Process
             </p>
 
-            <h2
-              className="section-heading text-gray-900"
-            >
+            <h2 className="section-heading text-gray-900">
               How It Works
             </h2>
 
-            <p
-              className="section-text mt-3 max-w-2xl"
-            >
-              Our process is designed to make the entire service
-              simple, transparent, and hassle-free.
+            <p className="section-text mt-3 max-w-2xl">
+              Our process is designed to make the entire service simple,
+              transparent, and hassle-free.
             </p>
           </div>
 
-          {/* =========================
-              HORIZONTAL TIMELINE
-          ========================== */}
-          <div className="relative">
-            {/* CONNECTING LINE */}
+          {/* ===================================================
+              MOBILE / TABLET — VERTICAL TIMELINE (below lg)
+          ==================================================== */}
+          <div className="flex flex-col relative lg:hidden">
+            {/* VERTICAL CONNECTING LINE */}
             <div
               className="
-                hidden
-                lg:block
+                absolute
+                left-[23px]
+                top-6
+                bottom-6
+                w-px
+                bg-gray-200
+              "
+            />
+
+            {service.process.map((step, index) => (
+              <div
+                key={index}
+                className="relative flex gap-5 pb-10 last:pb-0"
+              >
+                {/* STEP NUMBER CIRCLE */}
+                <div
+                  className="
+                    relative
+                    z-10
+                    flex-shrink-0
+                    w-12
+                    h-12
+                    rounded-full
+                    bg-[#0B4EA2]
+                    text-white
+                    flex
+                    items-center
+                    justify-center
+                    text-sm
+                    font-bold
+                    ring-8
+                    ring-white
+                    shadow-[0_5px_15px_rgba(11,78,162,0.15)]
+                  "
+                >
+                  {String(step.step || index + 1).padStart(2, "0")}
+                </div>
+
+                {/* STEP CONTENT */}
+                <div className="pt-1 pb-2">
+                  {/* STEP LABEL */}
+                  <p
+                    className="
+                      text-xs
+                      font-semibold
+                      uppercase
+                      tracking-[0.12em]
+                      text-[#0B4EA2]
+                      mb-1.5
+                    "
+                  >
+                    Step {String(index + 1).padStart(2, "0")}
+                  </p>
+
+                  {/* TITLE */}
+                  <h3
+                    className="
+                      text-base
+                      sm:text-lg
+                      font-bold
+                      text-gray-900
+                      leading-snug
+                      mb-2
+                    "
+                  >
+                    {step.title}
+                  </h3>
+
+                  {/* DESCRIPTION */}
+                  <p
+                    className="
+                      text-sm
+                      text-gray-600
+                      leading-7
+                    "
+                  >
+                    {step.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* ===================================================
+              DESKTOP — HORIZONTAL TIMELINE (lg and above)
+          ==================================================== */}
+          <div className="relative hidden lg:block">
+            {/* HORIZONTAL CONNECTING LINE */}
+            <div
+              className="
                 absolute
                 top-6
                 left-6
@@ -92,16 +175,7 @@ const HowItWorks = ({ service }) => {
             <div
               className="
                 flex
-                gap-8
-                overflow-x-auto
-                pb-4
-                snap-x
-                snap-mandatory
-                scrollbar-thin
-                scrollbar-thumb-gray-300
-                scrollbar-track-transparent
-                lg:gap-6
-                lg:overflow-visible
+                gap-6
               "
             >
               {service.process.map((step, index) => (
@@ -109,12 +183,8 @@ const HowItWorks = ({ service }) => {
                   key={index}
                   className="
                     relative
-                    flex-shrink-0
-                    w-[280px]
-                    sm:w-[320px]
-                    lg:w-0
-                    lg:flex-1
-                    snap-start
+                    flex-1
+                    min-w-0
                   "
                 >
                   {/* STEP NUMBER */}
@@ -160,8 +230,7 @@ const HowItWorks = ({ service }) => {
                     {/* TITLE */}
                     <h3
                       className="
-                        text-lg
-                        sm:text-xl
+                        text-xl
                         font-bold
                         text-gray-900
                         leading-snug
@@ -175,10 +244,8 @@ const HowItWorks = ({ service }) => {
                     <p
                       className="
                         text-sm
-                        sm:text-base
                         text-gray-600
                         leading-7
-                        max-w-sm
                       "
                     >
                       {step.description}
