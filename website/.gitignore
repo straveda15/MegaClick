@@ -27,4 +27,9 @@ dist-ssr
 .env
 .env.local
 .env.*.local
+<<<<<<< HEAD
 package-lock.json
+=======
+
+package-lock.json
+>>>>>>> c39b447214aae709d90e6af6fa8e1fc13bafe8d8
