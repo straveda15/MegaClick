@@ -195,15 +195,12 @@ const Hero = () => {
             <div
               className="
                 flex
-                flex-col
-                sm:flex-row
+                flex-row
                 gap-3
                 sm:gap-4
                 pt-2
+                justify-start
                 w-full
-                sm:w-auto
-                justify-center
-                sm:justify-start
               "
             >
               <button
@@ -225,8 +222,6 @@ const Hero = () => {
                   text-sm
                   sm:text-base
                   transition
-                  w-full
-                  sm:w-auto
                 "
               >
                 Get Started
@@ -248,8 +243,6 @@ const Hero = () => {
                   text-sm
                   sm:text-base
                   transition
-                  w-full
-                  sm:w-auto
                 "
               >
                 Contact Us
@@ -671,7 +664,7 @@ const Hero = () => {
               </div>
 
               {/* =================================================
-                  BOTTOM SMALL CARD - SECURE (MOVED UP TO TOUCH MAIN CARD ON MOBILE)
+                  BOTTOM SMALL CARD - SECURE
               ================================================== */}
 
               <div
@@ -685,11 +678,9 @@ const Hero = () => {
                   sm:right-[0px]
                   sm:bottom-[35px]
 
-                  /* TABLET */
                   md:right-[5px]
                   md:bottom-[45px]
 
-                  /* DESKTOP */
                   lg:right-[5px]
                   lg:bottom-[50px]
 

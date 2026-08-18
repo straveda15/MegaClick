@@ -1,10 +1,21 @@
-
-import React from "react";
+import React, { useState } from "react";
 
 const HowItWorks = ({ service }) => {
+  const [currentStep, setCurrentStep] = useState(0);
+
   if (!service?.process?.length) {
     return null;
   }
+
+  const totalSteps = service.process.length;
+
+  const handlePrev = () => {
+    setCurrentStep((prev) => Math.max(0, prev - 1));
+  };
+
+  const handleNext = () => {
+    setCurrentStep((prev) => Math.min(totalSteps - 1, prev + 1));
+  };
 
   return (
     <section className="w-full bg-blue-100">
@@ -21,9 +32,6 @@ const HowItWorks = ({ service }) => {
           lg:py-16
         "
       >
-        {/* =========================
-            MAIN SECTION
-        ========================== */}
         <div
           className="
             bg-white
@@ -39,46 +47,189 @@ const HowItWorks = ({ service }) => {
           "
         >
           {/* =========================
-              HEADING
+              HEADING + MOBILE ARROWS
           ========================== */}
-          <div className="mb-10 sm:mb-12">
-            <p
-              className="
-                text-xs
-                sm:text-sm
-                font-semibold
-                text-[#0B4EA2]
-                uppercase
-                tracking-[0.15em]
-                mb-3
-              "
-            >
-              Simple Process
-            </p>
+          <div className="mb-10 sm:mb-12 flex items-start justify-between">
+            {/* LEFT — Heading text */}
+            <div>
+              <p
+                className="
+                  text-xs
+                  sm:text-sm
+                  font-semibold
+                  text-[#0B4EA2]
+                  uppercase
+                  tracking-[0.15em]
+                  mb-3
+                "
+              >
+                Simple Process
+              </p>
 
-            <h2
-              className="section-heading text-gray-900"
-            >
-              How It Works
-            </h2>
+              <h2 className="section-heading text-gray-900">
+                How It Works
+              </h2>
 
-            <p
-              className="section-text mt-3 max-w-2xl"
-            >
-              Our process is designed to make the entire service
-              simple, transparent, and hassle-free.
-            </p>
+              <p className="section-text mt-3 max-w-2xl">
+                Our process is designed to make the entire service simple,
+                transparent, and hassle-free.
+              </p>
+            </div>
+
+            {/* RIGHT — Mobile-only navigation arrows */}
+            <div className="flex items-center gap-2 lg:hidden flex-shrink-0 mt-1">
+              <button
+                onClick={handlePrev}
+                disabled={currentStep === 0}
+                className="
+                  w-10
+                  h-10
+                  rounded-full
+                  border
+                  border-gray-200
+                  flex
+                  items-center
+                  justify-center
+                  text-gray-600
+                  transition-all
+                  duration-200
+                  disabled:opacity-30
+                  disabled:cursor-not-allowed
+                  active:scale-95
+                "
+                aria-label="Previous step"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="15 18 9 12 15 6" />
+                </svg>
+              </button>
+
+              <button
+                onClick={handleNext}
+                disabled={currentStep === totalSteps - 1}
+                className="
+                  w-10
+                  h-10
+                  rounded-full
+                  border
+                  border-gray-200
+                  flex
+                  items-center
+                  justify-center
+                  text-gray-600
+                  transition-all
+                  duration-200
+                  disabled:opacity-30
+                  disabled:cursor-not-allowed
+                  active:scale-95
+                "
+                aria-label="Next step"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="9 18 15 12 9 6" />
+                </svg>
+              </button>
+            </div>
           </div>
 
-          {/* =========================
-              HORIZONTAL TIMELINE
-          ========================== */}
-          <div className="relative">
-            {/* CONNECTING LINE */}
+          {/* ===================================================
+              MOBILE / TABLET — SINGLE STEP WITH ARROWS (below lg)
+          ==================================================== */}
+          <div className="flex flex-col relative lg:hidden">
+            {/* Show only the current step */}
+            {(() => {
+              const step = service.process[currentStep];
+              const index = currentStep;
+              return (
+                <div className="relative flex gap-5">
+                  {/* STEP NUMBER CIRCLE */}
+                  <div
+                    className="
+                      relative
+                      z-10
+                      flex-shrink-0
+                      w-12
+                      h-12
+                      rounded-full
+                      bg-[#0B4EA2]
+                      text-white
+                      flex
+                      items-center
+                      justify-center
+                      text-sm
+                      font-bold
+                      shadow-[0_5px_15px_rgba(11,78,162,0.15)]
+                    "
+                  >
+                    {String(step.step || index + 1).padStart(2, "0")}
+                  </div>
+
+                  {/* STEP CONTENT */}
+                  <div className="pt-1 pb-2">
+                    {/* STEP LABEL */}
+                    <p
+                      className="
+                        text-xs
+                        font-semibold
+                        uppercase
+                        tracking-[0.12em]
+                        text-[#0B4EA2]
+                        mb-1.5
+                      "
+                    >
+                      Step {String(index + 1).padStart(2, "0")}
+                    </p>
+
+                    {/* TITLE */}
+                    <h3
+                      className="
+                        text-base
+                        sm:text-lg
+                        font-bold
+                        text-gray-900
+                        leading-snug
+                        mb-2
+                      "
+                    >
+                      {step.title}
+                    </h3>
+
+                    {/* DESCRIPTION */}
+                    <p
+                      className="
+                        text-sm
+                        text-gray-600
+                        leading-7
+                      "
+                    >
+                      {step.description}
+                    </p>
+                  </div>
+                </div>
+              );
+            })()}
+
+            {/* DOT INDICATORS */}
+            <div className="flex justify-center gap-2 mt-6">
+              {service.process.map((_, i) => (
+                <span
+                  key={i}
+                  className={`
+                    w-2 h-2 rounded-full transition-all duration-200
+                    ${i === currentStep ? "bg-[#0B4EA2] w-5" : "bg-gray-300"}
+                  `}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* ===================================================
+              DESKTOP — HORIZONTAL TIMELINE (lg and above)
+          ==================================================== */}
+          <div className="relative hidden lg:block">
+            {/* HORIZONTAL CONNECTING LINE */}
             <div
               className="
-                hidden
-                lg:block
                 absolute
                 top-6
                 left-6
@@ -89,33 +240,11 @@ const HowItWorks = ({ service }) => {
             />
 
             {/* PROCESS ITEMS */}
-            <div
-              className="
-                flex
-                gap-8
-                overflow-x-auto
-                pb-4
-                snap-x
-                snap-mandatory
-                scrollbar-thin
-                scrollbar-thumb-gray-300
-                scrollbar-track-transparent
-                lg:gap-6
-                lg:overflow-visible
-              "
-            >
+            <div className="flex gap-6">
               {service.process.map((step, index) => (
                 <div
                   key={index}
-                  className="
-                    relative
-                    flex-shrink-0
-                    w-[280px]
-                    sm:w-[320px]
-                    lg:w-0
-                    lg:flex-1
-                    snap-start
-                  "
+                  className="relative flex-1 min-w-0"
                 >
                   {/* STEP NUMBER */}
                   <div
@@ -143,7 +272,6 @@ const HowItWorks = ({ service }) => {
 
                   {/* STEP CONTENT */}
                   <div className="pr-4">
-                    {/* STEP LABEL */}
                     <p
                       className="
                         text-xs
@@ -157,11 +285,9 @@ const HowItWorks = ({ service }) => {
                       Step {String(index + 1).padStart(2, "0")}
                     </p>
 
-                    {/* TITLE */}
                     <h3
                       className="
-                        text-lg
-                        sm:text-xl
+                        text-xl
                         font-bold
                         text-gray-900
                         leading-snug
@@ -171,14 +297,11 @@ const HowItWorks = ({ service }) => {
                       {step.title}
                     </h3>
 
-                    {/* DESCRIPTION */}
                     <p
                       className="
                         text-sm
-                        sm:text-base
                         text-gray-600
                         leading-7
-                        max-w-sm
                       "
                     >
                       {step.description}
