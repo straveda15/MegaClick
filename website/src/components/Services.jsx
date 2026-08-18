@@ -1,12 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 import {
   ArrowRight,
   BriefcaseBusiness,
   ShieldCheck,
   TrendingUp,
-  Layers3,
 } from "lucide-react";
 
 import legalImg from "../assets/legal.jpg";
@@ -22,7 +20,6 @@ const services = [
     short:
       "Professional legal documentation, registrations and compliance support for your business.",
   },
-
   {
     title: "Other Services",
     slug: "other-services",
@@ -31,7 +28,6 @@ const services = [
     short:
       "Complete assistance for licenses, registrations and essential business requirements.",
   },
-
   {
     title: "Business & Financial Services",
     slug: "business-financial-services",
@@ -44,103 +40,32 @@ const services = [
 
 const Services = () => {
   const navigate = useNavigate();
-
-  // Mobile / tablet card animation
   const [activeCard, setActiveCard] = useState(null);
 
   const handleCardClick = (index) => {
-    // Trigger the same animation on touch devices
     setActiveCard(index);
-
-    // Remove active state after animation
     setTimeout(() => {
       setActiveCard(null);
     }, 500);
   };
 
   return (
-    <section
-      className="
-        w-full
-        py-5
-        sm:py-8
-        lg:py-10
-        bg-white
-      "
-    >
-      <div
-        className="
-          max-w-[1500px]
-          mx-auto
-          px-4
-          sm:px-8
-          lg:px-16
-          xl:px-24
-          pt-2
-          sm:pt-3
-          lg:pt-4
-          pb-6
-          sm:pb-8
-          lg:pb-10
-        "
-      >
-        {/* ================= HEADING ================= */}
-
-        <div
-          className="
-            mb-8
-            sm:mb-10
-            lg:mb-12
-            max-w-4xl
-          "
-        >
-          {/* Badge */}
-
-          <span
-            className="
-              inline-flex
-              items-center
-              gap-2
-              bg-[#0B4EA2]
-              text-white
-              px-3
-              sm:px-4
-              py-2
-              rounded-full
-              text-[11px]
-              sm:text-xs
-              font-semibold
-              mb-3
-              sm:mb-4
-            "
-          >
-            <Layers3
-              size={14}
-              className="text-green-300 sm:w-4 sm:h-4"
-            />
-
-            Our Services
-          </span>
-
-          {/* Heading */}
-
+    <section className="w-full py-10 sm:py-12 lg:py-16 bg-white">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-8 lg:px-16 xl:px-20">
+        
+        {/* ================= HEADING AREA ================= */}
+        <div className="mb-8 sm:mb-10 lg:mb-12 w-full">
+          
+          {/* HEADING (Hedvig Letters Serif - Without 'Under One Roof') */}
           <h2
-            className="section-heading text-black"
+            className="text-2xl sm:text-3xl lg:text-[40px] font-normal text-[#0f172a] leading-tight"
+            style={{ fontFamily: '"Hedvig Letters Serif", Georgia, serif', fontWeight: 400 }}
           >
-            Complete Business Solutions{" "}
-
-            <br className="hidden sm:block" />
-
-            <span className="text-[#0B4EA2]">
-              Under One Roof
-            </span>
+            Complete Business <span className="text-[#0B4EA2]">Solutions</span>
           </h2>
 
-          {/* Description */}
-
-          <p
-            className="section-text mt-3 sm:mt-4 text-gray-700 max-w-4xl"
-          >
+          {/* SPREAD PARAGRAPH (Inter Font) */}
+          <p className="mt-3.5 sm:mt-4 text-slate-600 font-normal text-sm sm:text-base md:text-lg leading-relaxed w-full">
             We provide reliable legal, business and financial solutions with
             expert guidance to simplify your business journey. MegaClick
             provides professional assistance for registrations, agreements,
@@ -150,19 +75,7 @@ const Services = () => {
         </div>
 
         {/* ================= SERVICE CARDS ================= */}
-
-        <div
-          className="
-            grid
-            grid-cols-1
-            sm:grid-cols-2
-            lg:grid-cols-3
-            gap-5
-            sm:gap-6
-            lg:gap-7
-            xl:gap-8
-          "
-        >
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7 lg:gap-8">
           {services.map((service, index) => {
             const Icon = service.icon;
 
@@ -175,156 +88,44 @@ const Services = () => {
                   w-full
                   bg-white
                   border
-                  border-blue-200
-                  rounded-xl
-                  sm:rounded-2xl
+                  border-blue-100
+                  rounded-2xl
                   overflow-hidden
-                  shadow-[0_6px_25px_rgba(0,0,0,0.06)]
-                  hover:shadow-[0_15px_40px_rgba(11,78,162,0.14)]
+                  shadow-xs
+                  hover:shadow-lg
                   transition-all
                   duration-300
                   cursor-pointer
-
-                  lg:hover:-translate-y-2
-
-                  ${
-                    activeCard === index
-                      ? "-translate-y-2 shadow-[0_15px_40px_rgba(11,78,162,0.14)]"
-                      : ""
-                  }
+                  lg:hover:-translate-y-1.5
+                  ${activeCard === index ? "-translate-y-1.5 shadow-lg" : ""}
                 `}
               >
-                {/* ================= IMAGE ================= */}
-
-                <div
-                  className="
-                    relative
-                    w-full
-                    h-52
-                    sm:h-56
-                    md:h-60
-                    lg:h-56
-                    xl:h-60
-                    overflow-hidden
-                    bg-gray-100
-                  "
-                >
+                {/* IMAGE */}
+                <div className="relative w-full h-48 sm:h-52 md:h-56 lg:h-52 xl:h-56 overflow-hidden bg-slate-100">
                   <img
                     src={service.image}
                     alt={service.title}
                     loading="lazy"
-                    className={`
-                      w-full
-                      h-full
-                      object-cover
-                      transition-transform
-                      duration-500
-                      group-hover:scale-105
-
-                      ${
-                        activeCard === index
-                          ? "scale-105"
-                          : ""
-                      }
-                    `}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-
-                  {/* Image Overlay */}
-
-                  <div
-                    className={`
-                      absolute
-                      inset-0
-                      bg-black/5
-                      group-hover:bg-black/10
-                      transition-colors
-                      duration-300
-
-                      ${
-                        activeCard === index
-                          ? "bg-black/10"
-                          : ""
-                      }
-                    `}
-                  />
+                  <div className="absolute inset-0 bg-black/5 group-hover:bg-black/10 transition-colors duration-300" />
                 </div>
 
-                {/* ================= CONTENT ================= */}
-
-                <div
-                  className="
-                    p-5
-                    sm:p-6
-                    lg:p-6
-                  "
-                >
-                  {/* Icon + Title */}
-
-                  <div
-                    className="
-                      flex
-                      items-center
-                      gap-3
-                      sm:gap-4
-                      mb-4
-                      sm:mb-5
-                    "
-                  >
-                    {/* Icon */}
-
-                    <div
-                      className="
-                        w-11
-                        h-11
-                        sm:w-12
-                        sm:h-12
-                        rounded-xl
-                        bg-blue-50
-                        border
-                        border-blue-200
-                        flex
-                        items-center
-                        justify-center
-                        flex-shrink-0
-                      "
-                    >
-                      <Icon
-                        size={23}
-                        className="
-                          text-[#0B4EA2]
-                          sm:w-[26px]
-                          sm:h-[26px]
-                        "
-                      />
+                {/* CONTENT (Inter Font) */}
+                <div className="p-5 sm:p-6">
+                  {/* ICON + TITLE */}
+                  <div className="flex items-center gap-3.5 mb-3.5">
+                    <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center flex-shrink-0 text-[#0B4EA2]">
+                      <Icon size={22} className="text-[#0B4EA2]" />
                     </div>
 
-                    {/* Title */}
-
-                    <h3
-                      className="
-                        text-lg
-                        sm:text-xl
-                        lg:text-2xl
-                        font-bold
-                        text-black
-                        leading-tight
-                      "
-                    >
+                    <h3 className="text-base sm:text-lg lg:text-xl font-bold text-[#0f172a] leading-snug">
                       {service.title}
                     </h3>
                   </div>
 
-                  {/* Description */}
-
-                  <p
-                    className="
-                      text-sm
-                      sm:text-base
-                      text-gray-700
-                      leading-6
-                      sm:leading-7
-                    "
-                  >
+                  {/* DESCRIPTION */}
+                  <p className="text-sm text-slate-600 font-normal leading-relaxed">
                     {service.short}
                   </p>
                 </div>
@@ -334,49 +135,16 @@ const Services = () => {
         </div>
 
         {/* ================= VIEW ALL BUTTON ================= */}
-
-        <div
-          className="
-            flex
-            justify-center
-            mt-8
-            sm:mt-10
-            lg:mt-12
-          "
-        >
+        <div className="flex justify-center mt-9 sm:mt-11">
           <button
             onClick={() => navigate("/services")}
-            className="
-              inline-flex
-              items-center
-              justify-center
-              gap-2
-              w-full
-              sm:w-auto
-              bg-[#0B4EA2]
-              hover:bg-blue-700
-              text-white
-              px-7
-              sm:px-8
-              py-3
-              sm:py-3.5
-              rounded-xl
-              text-sm
-              sm:text-base
-              font-semibold
-              transition-all
-              duration-300
-              lg:hover:scale-105
-            "
+            className="inline-flex items-center justify-center gap-2.5 bg-[#0B4EA2] hover:bg-blue-700 text-white px-7 sm:px-8 py-3.5 rounded-full text-sm sm:text-base font-semibold transition-all duration-300 hover:scale-[1.02] shadow-md hover:shadow-lg cursor-pointer"
           >
-            View All Services
-
-            <ArrowRight
-              size={17}
-              className="sm:w-[18px] sm:h-[18px]"
-            />
+            <span>View All Services</span>
+            <ArrowRight size={18} />
           </button>
         </div>
+
       </div>
     </section>
   );
