@@ -66,6 +66,9 @@ const categories = [
   }
 ];
 
+// All categories except "All Services" — used for grouped display
+const serviceCategories = categories.filter((cat) => cat.name !== "All Services");
+
 const CategoriesSidebar = ({
   selectedCategory,
   setSelectedCategory,
@@ -91,7 +94,7 @@ const CategoriesSidebar = ({
       "
     >
       {/* =================================================
-          HEADER (MATCHES SCREENSHOT)
+          HEADER
       ================================================= */}
       <div className="flex items-center gap-3 pb-3 mb-3 border-b border-slate-100">
         <div className="w-8 h-8 rounded-xl bg-amber-100/70 text-amber-700 flex items-center justify-center text-sm shadow-xs">
@@ -109,22 +112,18 @@ const CategoriesSidebar = ({
         {categories.map((category) => {
           const isSelected = selectedCategory === category.name;
           const isOpen = openCategory === category.name;
+          const isAllServices = category.name === "All Services";
 
           return (
             <div key={category.name} className="w-full">
-              
+
               {/* CATEGORY BUTTON */}
               <button
                 type="button"
                 onClick={() => {
                   setSelectedCategory(category.name);
                   setSelectedService(null);
-
-                  if (category.name !== "All Services") {
-                    setOpenCategory(isOpen ? "" : category.name);
-                  } else {
-                    setOpenCategory("");
-                  }
+                  setOpenCategory(isOpen ? "" : category.name);
                 }}
                 className={`
                   w-full
@@ -179,7 +178,70 @@ const CategoriesSidebar = ({
               {/* =================================================
                   SUB SERVICES DROPDOWN
               ================================================= */}
-              {category.name !== "All Services" && isOpen && (
+
+              {/* --- "All Services" grouped dropdown --- */}
+              {isAllServices && isOpen && (
+                <div className="my-2 ml-4 pl-3 border-l-2 border-emerald-300 space-y-4 transition-all">
+                  {serviceCategories.map((group) => (
+                    <div key={group.name}>
+                      {/* GROUP HEADING */}
+                      <p className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 mb-1.5 flex items-center gap-1.5">
+                        <span>{group.icon}</span>
+                        {group.name}
+                      </p>
+
+                      {/* GROUP SERVICES */}
+                      <div className="space-y-1">
+                        {group.services.map((service) => {
+                          const isServiceSelected = selectedService === service;
+
+                          return (
+                            <button
+                              key={service}
+                              type="button"
+                              onClick={() => {
+                                setSelectedCategory(category.name);
+                                setSelectedService(service);
+                              }}
+                              className={`
+                                w-full
+                                text-left
+                                px-3
+                                py-2
+                                rounded-xl
+                                text-xs
+                                font-medium
+                                transition-all
+                                duration-200
+                                flex
+                                items-center
+                                gap-2
+                                ${
+                                  isServiceSelected
+                                    ? "bg-emerald-100/70 text-emerald-900 font-bold"
+                                    : "text-slate-600 hover:text-emerald-700 hover:bg-emerald-50/60"
+                                }
+                              `}
+                            >
+                              <span
+                                className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                                  isServiceSelected
+                                    ? "bg-emerald-600"
+                                    : "bg-slate-300"
+                                }`}
+                              />
+                              <span>{service}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* --- Individual category dropdown --- */}
+              {!isAllServices && isOpen && (
                 <div className="my-2 ml-4 pl-3 border-l-2 border-emerald-300 space-y-1 transition-all">
                   {category.services.map((service) => {
                     const isServiceSelected = selectedService === service;
