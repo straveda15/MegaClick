@@ -4,6 +4,35 @@ import AppError from "../../shared/utils/appError.js";
 import { haversineDistanceMeters } from "../../shared/utils/geo.js";
 import { findLocationForEmployee } from "./workLocation.service.js";
 
+/**
+ * Validates the site an employee declared for off-site work.
+ *
+ * Client-site work has no configured geofence, so there is nothing to check
+ * them against — instead they say where they are, and that is recorded. The
+ * coordinates still have to be real ones, so a typo can't be filed as a
+ * location.
+ */
+const validateSite = (site) => {
+  const name = String(site?.name ?? "").trim();
+  if (!name) {
+    throw new AppError("Enter the name of the site you are working from.", 400);
+  }
+
+  const lat = Number(site?.lat);
+  const lng = Number(site?.lng);
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+    throw new AppError("Enter the site's latitude and longitude.", 400);
+  }
+  if (lat < -90 || lat > 90) {
+    throw new AppError("Latitude must be between -90 and 90.", 400);
+  }
+  if (lng < -180 || lng > 180) {
+    throw new AppError("Longitude must be between -180 and 180.", 400);
+  }
+
+  return { name, lat, lng };
+};
+
 class AttendanceService {
   async verifyWorkLocationGate(userId, gpsLocation, action) {
     const workLocation = await findLocationForEmployee(userId);
@@ -119,7 +148,7 @@ class AttendanceService {
 
   // ── Self-service methods ──────────────────────────────────────────────────────
 
-  async selfPunchIn(userId, gpsLocation, source, isHalfDay = false, halfDayReason = "") {
+  async selfPunchIn(userId, gpsLocation, source, isHalfDay = false, halfDayReason = "", workMode = "office", site = null) {
     const date = new Date().toISOString().split("T")[0];
 
     // ── Criterion 2: one punch-in per calendar day ────────────────────────────
@@ -133,12 +162,24 @@ class AttendanceService {
       throw new AppError("halfDayReason is required when isHalfDay is true.", 400);
     }
 
+    const mode = workMode === "site" ? "site" : "office";
+
     // ── Criterion 1: location gate ────────────────────────────────────────────
-    const { workLocation, gpsVerified } = await this.verifyWorkLocationGate(
-      userId,
-      gpsLocation,
-      "punch in"
-    );
+    // Office work is checked against the assigned geofence. Site work has no
+    // geofence to check, so the declared site stands in its place.
+    let workLocation = null;
+    let gpsVerified = false;
+    let declaredSite;
+
+    if (mode === "site") {
+      declaredSite = validateSite(site);
+    } else {
+      ({ workLocation, gpsVerified } = await this.verifyWorkLocationGate(
+        userId,
+        gpsLocation,
+        "punch in"
+      ));
+    }
 
     const profile = await EmployeeProfile.findOne({ userId }).lean();
 
@@ -150,6 +191,8 @@ class AttendanceService {
       gpsLocation: gpsLocation || undefined,
       gpsVerified,
       locationId: workLocation?._id ?? null,
+      workMode: mode,
+      site: declaredSite,
       source: source || "mobile",
       isHalfDay,
       halfDayReason: isHalfDay ? halfDayReason.trim() : undefined,
@@ -190,11 +233,18 @@ class AttendanceService {
       return { requiresConfirmation: true, message: "Please confirm punch-out." };
     }
 
-    const { workLocation, gpsVerified } = await this.verifyWorkLocationGate(
-      userId,
-      gpsLocation,
-      "punch out"
-    );
+    // Punching out of a site shift is gated the same way it was punched in —
+    // on the declared site, not on an office geofence the employee was never
+    // expected to be inside.
+    let workLocation = null;
+    let gpsVerified = false;
+    if (attendance.workMode !== "site") {
+      ({ workLocation, gpsVerified } = await this.verifyWorkLocationGate(
+        userId,
+        gpsLocation,
+        "punch out"
+      ));
+    }
 
     const punchOutTime = new Date();
     const diffMs = punchOutTime - attendance.punchIn;

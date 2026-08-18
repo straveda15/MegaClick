@@ -7,6 +7,7 @@ import { MarketingEvent, MarketingSession } from "../../marketing/marketing.mode
 import Task from "../../task/task.model.js";
 import logger from "../../../shared/infrastructure/logger.js";
 import { nextRoundRobinIndex } from "./roundRobin.service.js";
+import { buildLeadServices } from "./salesLead.service.js";
 import { getContactRecipients, getSmtpAccountForIndex } from "../../../shared/infrastructure/mailer.js";
 import { sendContactNotification } from "../mailers/contact.mailer.js";
 
@@ -138,7 +139,18 @@ export const syncCartLeads = async (actorId) => {
  *   4. Fire-and-forget email to the round-robin recipient
  */
 export const createContactLead = async (contactData) => {
-    const { name, email, phone, message, service, serviceSlug, serviceCategory } = contactData;
+    const { name, email, phone, message } = contactData;
+
+    // The form can submit several services at once; older clients still send the
+    // single flat fields. buildLeadServices accepts either and hands back one
+    // normalized list, whose first entry mirrors into the flat lead fields.
+    const services = buildLeadServices(contactData);
+    const service = services[0]?.title || contactData.service;
+    const serviceSlug = services[0]?.slug || contactData.serviceSlug;
+    const serviceCategory = services[0]?.category || contactData.serviceCategory;
+    const serviceSummary = services.length > 1
+        ? services.map((s) => s.title).join(", ")
+        : service;
 
     // ── 1. Round-robin (outside transaction — counter is best-effort) ─────────
     // The counter lives in MongoDB so it survives restarts and is shared across
@@ -199,12 +211,15 @@ export const createContactLead = async (contactData) => {
                 serviceSlug:     serviceSlug || undefined,
                 serviceCategory: serviceCategory || undefined,
                 serviceStage:    "documents_pending",
+                // Each of these is assigned to an employee independently once
+                // someone picks the lead up on the Leads board.
+                services,
                 message:         message || undefined,
                 assignedEmail:   recipient || undefined,
                 statusHistory: [{
                     status:    "NEW",
                     changedBy: ownerId,
-                    note:      `Lead from Website Contact Form${service ? ` — ${service}` : ""}: ${message || "No message provided"}`,
+                    note:      `Lead from Website Contact Form${serviceSummary ? ` — ${serviceSummary}` : ""}: ${message || "No message provided"}`,
                 }],
             }], { session });
         });

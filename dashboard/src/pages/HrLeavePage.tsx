@@ -217,7 +217,17 @@ const HrLeavePage = () => {
                       </td>
                       <td className="py-3 text-xs">
                         <div className="text-foreground">{new Date(leave.fromDate).toLocaleDateString()}</div>
-                        <div className="text-muted-foreground">to {new Date(leave.toDate).toLocaleDateString()}</div>
+                        {/* A half day covers one date, so a "to" line would just repeat it. */}
+                        {leave.isHalfDay ? (
+                          <div className="text-violet-700 font-semibold">
+                            Half day · {leave.halfDaySession === "second_half" ? "Afternoon" : "Morning"}
+                          </div>
+                        ) : (
+                          <div className="text-muted-foreground">to {new Date(leave.toDate).toLocaleDateString()}</div>
+                        )}
+                        <div className="text-muted-foreground">
+                          {leave.days} day{leave.days === 1 ? "" : "s"}
+                        </div>
                       </td>
                       <td className="py-3 text-muted-foreground text-xs max-w-xs truncate">{leave.reason}</td>
                         <td className="py-4 px-5">

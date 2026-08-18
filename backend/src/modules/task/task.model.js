@@ -77,6 +77,24 @@ const taskSchema = new mongoose.Schema(
       clientCompany: { type: String, trim: true },
       clientAddress: { type: String, trim: true },
       notes: { type: String, trim: true },
+      // Back-links to the lead this service came off, so the Clients board can
+      // roll several tasks up under one client, and ticking a step here can
+      // push the matching lead service forward.
+      leadId: { type: mongoose.Schema.Types.ObjectId, ref: "SalesLead" },
+      leadServiceId: { type: mongoose.Schema.Types.ObjectId },
+      // The checklist for this service, copied from its step template at
+      // assignment time. Copied rather than referenced so editing a template
+      // later never rewrites the history of work already assigned.
+      steps: [
+        {
+          title: { type: String, required: true, trim: true },
+          description: { type: String, trim: true },
+          order: { type: Number, default: 0 },
+          done: { type: Boolean, default: false },
+          completedAt: { type: Date },
+          completedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        },
+      ],
       // Where the request sits in the government/filing pipeline. Tracked
       // separately from `status` (which is about the employee's own progress).
       stage: {
@@ -133,6 +151,19 @@ const taskSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Task",
       default: null,
+    },
+    // Soft delete: a removed task is hidden everywhere but survives in the
+    // database, so work logs and history that reference it don't dangle.
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
+    deletedAt: {
+      type: Date,
+    },
+    deletedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
     // Employees tagged for follow-up. They are NOT assignees — they can't start
     // or complete the task, but they get visibility of it (via the "Follow Up"

@@ -28,6 +28,8 @@ export interface AttendanceRecord {
   source?: string;
   isHalfDay: boolean;
   halfDayReason?: string;
+  workMode?: "office" | "site";
+  site?: { name?: string; lat?: number; lng?: number };
   halfDayStatus?: "none" | "pending" | "approved" | "rejected";
   halfDayApprovedBy?: any;
   confirmedPunchOut: boolean;
@@ -49,6 +51,9 @@ export interface SelfPunchInInput {
   source?: string;
   isHalfDay?: boolean;
   halfDayReason?: string;
+  /** "office" is gated on the assigned geofence; "site" is declared instead. */
+  workMode?: "office" | "site";
+  site?: { name: string; lat: number; lng: number };
 }
 
 type PunchOutResult =

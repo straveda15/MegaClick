@@ -49,9 +49,27 @@ router.get("/leads/my", salesLeadController.getMyLeads);
 router.get("/leads/my/stats", salesLeadController.getMyLeadStats);
 router.get("/notices", salesLeadController.getSalesNotices);
 router.get("/leads/backlog", salesLeadController.getBacklogLeads);
+
+// --- Follow-ups ---
+// Registered before the /leads/:id wildcard so the board route resolves first.
+router.get("/follow-ups", salesLeadController.getFollowUps);
+router.post("/leads/:id/follow-ups", salesLeadController.logFollowUp);
+
+// --- Clients ---
+// A lead becomes a client once one of its services is assigned. Registered
+// before the /leads/:id wildcard below so "backlog"/"my" keep resolving first.
+router.get("/clients", salesLeadController.getClients);
+router.get("/clients/:id", salesLeadController.getClientById);
+
+// Full lead record for the details popup — must stay last of the /leads GETs so
+// it doesn't swallow /leads/my, /leads/backlog, etc.
+router.get("/leads/:id", salesLeadController.getLeadDetail);
 router.patch("/leads/:id/assign", requireSalesManager, salesLeadController.assignLead);
 // Turn a lead into assigned work: creates the task and links it to the lead.
 router.post("/leads/:id/assign-task", salesLeadController.assignLeadAsTask);
+// Hand ONE of the client's services to an employee, carrying its step checklist.
+router.post("/leads/:id/services/:serviceId/assign", salesLeadController.assignLeadService);
+router.patch("/leads/:id/temperature", salesLeadController.setLeadTemperature);
 router.patch("/leads/:id/status", salesLeadController.updateLeadStatus);
 router.patch("/leads/:id/customer", salesLeadController.updateLeadCustomer);
 router.patch("/leads/:id/convert", salesLeadController.convertLead);

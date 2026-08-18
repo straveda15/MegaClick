@@ -92,7 +92,9 @@ const benefits = [
 // =====================================================
 
 const ContactSection = () => {
-  const [selectedService, setSelectedService] = useState(null);
+  // A visitor can ask about several services at once — each becomes its own
+  // piece of work on the dashboard, assigned to whoever handles that service.
+  const [selectedServices, setSelectedServices] = useState([]);
   const [submitting, setSubmitting] = useState(false);
   // { type: "success" | "error", message: string }
   const [submitState, setSubmitState] = useState(null);
@@ -101,7 +103,7 @@ const ContactSection = () => {
   // FORM SUBMIT
   // =====================================================
   // Creates an unassigned lead on the dashboard's Leads board, carrying the
-  // visitor's details and the service they picked.
+  // visitor's details and every service they picked.
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -110,10 +112,10 @@ const ContactSection = () => {
     const form = e.currentTarget;
     const data = new FormData(form);
 
-    if (!selectedService) {
+    if (selectedServices.length === 0) {
       setSubmitState({
         type: "error",
-        message: "Please select the service you're interested in.",
+        message: "Please select at least one service you're interested in.",
       });
       return;
     }
@@ -122,14 +124,23 @@ const ContactSection = () => {
     setSubmitState(null);
 
     try {
+      const [primary] = selectedServices;
+
       await submitContactForm({
         name: String(data.get("name") || "").trim(),
         phone: String(data.get("phone") || "").trim(),
         email: String(data.get("email") || "").trim(),
         message: String(data.get("message") || "").trim(),
-        service: selectedService.title,
-        serviceSlug: selectedService.slug,
-        serviceCategory: selectedService.category,
+        services: selectedServices.map((option) => ({
+          title: option.title,
+          slug: option.slug,
+          category: option.category,
+          categorySlug: option.categorySlug,
+        })),
+        // The flat fields mirror the first pick, for anything still reading them.
+        service: primary.title,
+        serviceSlug: primary.slug,
+        serviceCategory: primary.category,
       });
 
       setSubmitState({
@@ -138,7 +149,7 @@ const ContactSection = () => {
           "Thank you! Your request has been received — our team will contact you shortly.",
       });
       form.reset();
-      setSelectedService(null);
+      setSelectedServices([]);
     } catch (err) {
       setSubmitState({ type: "error", message: err.message });
     } finally {
@@ -537,15 +548,20 @@ const ContactSection = () => {
 
                   <Select
                     options={serviceOptions}
-                    value={selectedService}
-                    onChange={(option) => {
-                      setSelectedService(option);
+                    value={selectedServices}
+                    onChange={(options) => {
+                      setSelectedServices(options ? [...options] : []);
                       setSubmitState(null);
                     }}
+                    isMulti
+                    // The menu stays open between picks so choosing three
+                    // services doesn't mean reopening it three times.
+                    closeMenuOnSelect={false}
+                    hideSelectedOptions={false}
                     isSearchable
                     filterOption={filterServiceOption}
                     maxMenuHeight={320}
-                    placeholder={`Search ${totalServiceCount} services *`}
+                    placeholder={`Search ${totalServiceCount} services * — pick one or more`}
                     noOptionsMessage={() => "No service matches that search."}
                     className="w-full text-sm"
                     classNamePrefix="service-select"
@@ -579,7 +595,8 @@ const ContactSection = () => {
                         ...base,
                         width: "100%",
                         minHeight: "56px",
-                        height: "56px",
+                        // No fixed height — the control grows as chips are added.
+                        height: "auto",
                         borderRadius: "12px",
                         paddingLeft: "32px",
                         borderColor: state.isFocused
@@ -599,6 +616,9 @@ const ContactSection = () => {
                         minWidth: 0,
                         paddingLeft: "4px",
                         paddingRight: "8px",
+                        paddingTop: "6px",
+                        paddingBottom: "6px",
+                        gap: "4px",
                       }),
 
                       singleValue: (base) => ({
@@ -606,6 +626,31 @@ const ContactSection = () => {
                         overflow: "hidden",
                         textOverflow: "ellipsis",
                         whiteSpace: "nowrap",
+                      }),
+
+                      multiValue: (base) => ({
+                        ...base,
+                        maxWidth: "100%",
+                        borderRadius: "8px",
+                        backgroundColor: "#EAF3FF",
+                        border: "1px solid #BFD9FF",
+                      }),
+
+                      multiValueLabel: (base) => ({
+                        ...base,
+                        color: "#0B4EA2",
+                        fontWeight: 600,
+                        fontSize: "12px",
+                      }),
+
+                      multiValueRemove: (base) => ({
+                        ...base,
+                        color: "#0B4EA2",
+                        borderRadius: "0 8px 8px 0",
+                        ":hover": {
+                          backgroundColor: "#0B4EA2",
+                          color: "#fff",
+                        },
                       }),
 
                       placeholder: (base) => ({

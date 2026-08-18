@@ -15,6 +15,9 @@ export interface LeaveRecord {
   fromDate: string;
   toDate: string;
   days: number;
+  /** True when the request covers half of a single day (0.5 days). */
+  isHalfDay?: boolean;
+  halfDaySession?: "first_half" | "second_half";
   reason: string;
   status: "pending" | "approved" | "rejected";
   approvedBy?: any;
@@ -141,7 +144,16 @@ async function fetchMyLeaveBalance(): Promise<LeaveBalance> {
   return data.data;
 }
 
-async function applyLeaveSelf(body: any): Promise<LeaveRecord> {
+export interface SelfLeaveInput {
+  leaveType: string;
+  fromDate: string;
+  toDate: string;
+  reason: string;
+  isHalfDay?: boolean;
+  halfDaySession?: "first_half" | "second_half";
+}
+
+async function applyLeaveSelf(body: SelfLeaveInput): Promise<LeaveRecord> {
   const res = await fetch(`${BASE}/me/apply`, {
     method: "POST",
     headers: { "Content-Type": "application/json", ...authHeaders() },

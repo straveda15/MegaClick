@@ -1,8 +1,9 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { createPortal } from "react-dom";
 import GenericPage from "@/components/GenericPage";
-import { useMyTasks, useUpdateTaskStatus, useCreateManualTask, useCancelTask, Task, useAdminRespondToFlag, useExtendTaskDue, useReassignTask, useAssignMoreToTask, useAcknowledgeCancelAlert, useAddFollowUp, useUpdateFollowers } from "@/hooks/useTasks";
-import { CreateTaskModal, ROLE_CATEGORIES } from "@/components/tasks/CreateTaskModal";
+import { useMyTasks, useUpdateTaskStatus, useCreateManualTask, useCancelTask, Task, useAdminRespondToFlag, useExtendTaskDue, useReassignTask, useAssignMoreToTask, useAcknowledgeCancelAlert, useAddFollowUp, useUpdateFollowers, useDeleteTask } from "@/hooks/useTasks";
+import { CreateTaskModal } from "@/components/tasks/CreateTaskModal";
+import { ROLE_CATEGORIES } from "@/components/tasks/roleFilter";
 import { ReassignTaskModal } from "@/components/tasks/ReassignTaskModal";
 import { TaskCard } from "@/components/tasks/TaskCard";
 import ServiceRequestPanel from "@/components/tasks/ServiceRequestPanel";
@@ -12,7 +13,7 @@ import { useAuth } from "@/context/AuthContext";
 import {
   CheckCircle, Clock, AlertCircle, Plus, CalendarPlus,
   User, UserCheck, Calendar, ChevronDown, XCircle, X,
-  FileText, Tag, Info, MessageSquareWarning, Send, AlertTriangle, CalendarRange, UserPlus, Eye, Bell, MessageSquare, ClipboardList
+  FileText, Tag, Info, MessageSquareWarning, Send, AlertTriangle, CalendarRange, UserPlus, Eye, Bell, MessageSquare, ClipboardList, Trash2
 } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
@@ -227,6 +228,8 @@ export default function TasksPage() {
 
   const updateStatus = useUpdateTaskStatus();
   const cancelTask = useCancelTask();
+  const deleteTask = useDeleteTask();
+  const [taskToDelete, setTaskToDelete] = useState<Task | null>(null);
   const { data: team = [] } = useTeam();
 
   // Compute all tasks in the same group as the selected task
@@ -596,6 +599,7 @@ export default function TasksPage() {
           onStart={handleStart}
           onComplete={handleComplete}
           onCancel={handleCancel}
+          onDelete={(task) => setTaskToDelete(task)}
           onSelectTask={setSelectedTask}
           team={team}
           relatedTasks={relatedTasks}
@@ -682,6 +686,42 @@ export default function TasksPage() {
         />
       )}
 
+      <AlertDialog open={!!taskToDelete} onOpenChange={(open) => !open && setTaskToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Task</AlertDialogTitle>
+            <AlertDialogDescription>
+              {taskToDelete?.taskGroup
+                ? `"${taskToDelete?.title}" was assigned to several people. Deleting removes every copy from all boards.`
+                : `"${taskToDelete?.title}" will be removed from all boards. This can't be undone from here.`}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleteTask.isPending}>Keep Task</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => {
+                e.preventDefault();
+                if (!taskToDelete) return;
+                deleteTask.mutate(
+                  { id: taskToDelete._id, scope: "all" },
+                  {
+                    onSuccess: () => {
+                      toast.success("Task deleted");
+                      setTaskToDelete(null);
+                    },
+                    onError: (err: Error) => toast.error(err.message || "Failed to delete task"),
+                  }
+                );
+              }}
+              disabled={deleteTask.isPending}
+              className="bg-red-600 text-white hover:bg-red-700"
+            >
+              {deleteTask.isPending ? "Deleting..." : "Delete Task"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       <AlertDialog open={!!taskToCancel} onOpenChange={(open) => !open && setTaskToCancel(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -727,6 +767,7 @@ interface TaskDetailModalProps {
   onStart: (task: Task) => void;
   onComplete: (task: Task) => void;
   onCancel: (task: Task) => void;
+  onDelete?: (task: Task) => void;
   onRespond?: (taskId: string, flagId: string, response: string) => void;
   onExtendDue?: (taskId: string, dueAt: string) => void;
   onReassign?: (taskId: string, assignedTo: string) => void;
@@ -750,7 +791,7 @@ const PRIORITY_LABELS: Record<string, { label: string; bg: string; text: string;
 };
 
 function TaskDetailModal({
-  task, myId, oversight, onClose, onStart, onComplete, onCancel,
+  task, myId, oversight, onClose, onStart, onComplete, onCancel, onDelete,
   onRespond, onExtendDue, onReassign, onAssignMore, onOpenReassign, onAckCancel,
   onAddFollowUp, onUpdateFollowers, onSelectTask, team = [],
   relatedTasks = [], alreadyAssignedIds = new Set()
@@ -1004,7 +1045,7 @@ function TaskDetailModal({
 
           {/* Service request — the client and service this task is actually for */}
           {task.serviceRequest?.clientName && (
-            <ServiceRequestPanel request={task.serviceRequest} />
+            <ServiceRequestPanel request={task.serviceRequest} taskId={task._id} />
           )}
 
           {/* Description — skipped for service requests, where the panel above
@@ -1397,6 +1438,16 @@ function TaskDetailModal({
                 className="flex items-center gap-1.5 px-4 py-2 bg-red-50 text-red-600 text-xs font-bold uppercase tracking-wider rounded-lg shadow-sm hover:bg-red-100 transition-colors border border-red-200"
               >
                 <XCircle className="w-3.5 h-3.5" /> Cancel Task
+              </button>
+            )}
+            {/* Delete removes the task from every board, whatever its status —
+                cancelling only marks it cancelled and leaves it listed. */}
+            {(canManage || oversight) && onDelete && (
+              <button
+                onClick={() => { onDelete(task); onClose(); }}
+                className="flex items-center gap-1.5 px-4 py-2 bg-red-600 text-white text-xs font-bold uppercase tracking-wider rounded-lg shadow-sm hover:bg-red-700 transition-colors"
+              >
+                <Trash2 className="w-3.5 h-3.5" /> Delete
               </button>
             )}
             <button

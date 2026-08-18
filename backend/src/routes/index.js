@@ -13,6 +13,7 @@ import employeeNotificationRoutes from "../modules/notification/employee-notific
 import auditRoutes from "../modules/audit/audit.routes.js";
 import payslipRoutes from "../modules/payslip/payslip.routes.js";
 import serviceCatalogRoutes from "../modules/service-catalog/serviceCatalog.routes.js";
+import serviceStepsRoutes from "../modules/service-steps/serviceSteps.routes.js";
 
 // ── Supporting (surfaces the Sales pipeline reads from / writes to) ──────────
 import orderRoutes from "../modules/order/order.routes.js";
@@ -44,6 +45,7 @@ router.use("/v1/sales", salesRoutes);
 router.use("/v1/tasks", taskRoutes);
 router.use("/v1/worklogs", workLogRoutes);
 router.use("/v1/service-catalog", serviceCatalogRoutes);
+router.use("/v1/service-steps", serviceStepsRoutes);
 
 // ── Supporting surfaces used by the sales pipeline ───────────────────────────
 // Tier and rule routes must be registered BEFORE /v1/shipment to avoid

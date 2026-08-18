@@ -7,6 +7,12 @@ export const applyLeaveSchema = Joi.object({
     .messages({ "date.min": "Cannot apply leave for past dates" }),
   toDate: Joi.date().min(Joi.ref("fromDate")).required(),
   reason: Joi.string().required(),
+  // A half day covers one date only, so the session is required with it and
+  // meaningless without it.
+  isHalfDay: Joi.boolean().default(false),
+  halfDaySession: Joi.string().valid("first_half", "second_half")
+    .when("isHalfDay", { is: true, then: Joi.required(), otherwise: Joi.optional().strip() })
+    .messages({ "any.required": "Pick which half of the day the leave covers." }),
 });
 
 export const updateLeaveStatusSchema = Joi.object({

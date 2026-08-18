@@ -31,6 +31,13 @@ const MyAttendancePage = () => {
 
   const [isHalfDay, setIsHalfDay] = useState(false);
   const [halfDayReason, setHalfDayReason] = useState("");
+  // Where today's shift is being worked from. Office punches are checked
+  // against the assigned geofence; site punches have none, so the employee
+  // says where they are instead.
+  const [workMode, setWorkMode] = useState<"office" | "site">("office");
+  const [siteName, setSiteName] = useState("");
+  const [siteLat, setSiteLat] = useState("");
+  const [siteLng, setSiteLng] = useState("");
   const [locationError, setLocationError] = useState<string | null>(null);
   const [showPunchOutConfirm, setShowPunchOutConfirm] = useState(false);
   const [showEarlyReason, setShowEarlyReason] = useState(false);
@@ -42,7 +49,32 @@ const MyAttendancePage = () => {
   const punchInMutation = useSelfPunchIn();
   const punchOutMutation = useSelfPunchOut();
 
+  /** Fills the site coordinates from the device, so nobody types them by hand. */
+  const useMyLocationForSite = async () => {
+    try {
+      const pos = await new Promise<GeolocationPosition>((resolve, reject) =>
+        navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 5000 })
+      );
+      setSiteLat(String(pos.coords.latitude));
+      setSiteLng(String(pos.coords.longitude));
+      toast.success("Filled in your current coordinates.");
+    } catch {
+      toast.error("Could not read your location. Enter the coordinates manually.");
+    }
+  };
+
   const handlePunchIn = async () => {
+    if (workMode === "site") {
+      if (!siteName.trim()) return toast.error("Enter the name of the site.");
+      const lat = Number(siteLat);
+      const lng = Number(siteLng);
+      if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+        return toast.error("Enter valid latitude and longitude for the site.");
+      }
+      if (lat < -90 || lat > 90) return toast.error("Latitude must be between -90 and 90.");
+      if (lng < -180 || lng > 180) return toast.error("Longitude must be between -180 and 180.");
+    }
+
     const t = toast.loading("Punching in...");
     let gpsLocation: { lat: number; lng: number } | null = null;
 
@@ -64,10 +96,17 @@ const MyAttendancePage = () => {
         source: "dashboard",
         isHalfDay,
         halfDayReason: isHalfDay ? halfDayReason : undefined,
+        workMode,
+        site: workMode === "site"
+          ? { name: siteName.trim(), lat: Number(siteLat), lng: Number(siteLng) }
+          : undefined,
       });
       toast.success("Successfully punched in!", { id: t });
       setIsHalfDay(false);
       setHalfDayReason("");
+      setSiteName("");
+      setSiteLat("");
+      setSiteLng("");
     } catch (err: any) {
       toast.error(err.message, { id: t });
     }
@@ -169,6 +208,23 @@ const MyAttendancePage = () => {
                     <p className="text-sm font-mono">{todayRecord.punchOut ? format(new Date(todayRecord.punchOut), "hh:mm:ss a") : "—"}</p>
                   </div>
                 </div>
+
+                {/* Where this shift is being worked from */}
+                {todayRecord.workMode === "site" && (
+                  <div className="flex items-start gap-2.5 p-3 rounded-xl bg-blue-50 border border-blue-200">
+                    <MapPin className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
+                    <div className="min-w-0">
+                      <p className="text-sm font-bold text-blue-800">
+                        On site — {todayRecord.site?.name || "unnamed site"}
+                      </p>
+                      {Number.isFinite(todayRecord.site?.lat) && Number.isFinite(todayRecord.site?.lng) && (
+                        <p className="text-xs text-blue-600">
+                          {todayRecord.site?.lat}, {todayRecord.site?.lng}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                )}
 
                 {/* Early exit pending notice */}
                 {todayRecord.punchOut && todayRecord.earlyPunchOutStatus === "pending" && (
@@ -273,6 +329,73 @@ const MyAttendancePage = () => {
                   </div>
                   <p className="text-lg font-semibold">Not Punched In</p>
                   <p className="text-sm text-muted-foreground">Start your workday session now.</p>
+                </div>
+
+                {/* Where are you working from? Asked before anything else,
+                    because it decides whether the geofence applies at all. */}
+                <div className="space-y-2 py-2 border-t border-border/50">
+                  <p className="text-sm font-medium text-foreground">Working from</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    {([
+                      { value: "office", label: "Office", hint: "Checked against your work location" },
+                      { value: "site", label: "Site", hint: "Tell us where you are" },
+                    ] as const).map((option) => (
+                      <button
+                        key={option.value}
+                        type="button"
+                        onClick={() => setWorkMode(option.value)}
+                        className={`rounded-lg border p-2.5 text-left transition-colors ${
+                          workMode === option.value
+                            ? "border-primary bg-primary/10"
+                            : "border-border bg-card hover:bg-muted"
+                        }`}
+                      >
+                        <span className={`block text-sm font-semibold ${
+                          workMode === option.value ? "text-primary" : "text-foreground"
+                        }`}>
+                          {option.label}
+                        </span>
+                        <span className="block text-[10px] text-muted-foreground leading-tight mt-0.5">
+                          {option.hint}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+
+                  {workMode === "site" && (
+                    <div className="space-y-2 rounded-lg border border-border bg-muted/20 p-3">
+                      <Input
+                        placeholder="Site name (e.g. Acme Pvt Ltd, Baner)"
+                        value={siteName}
+                        onChange={(e) => setSiteName(e.target.value)}
+                      />
+                      <div className="grid grid-cols-2 gap-2">
+                        <Input
+                          placeholder="Latitude"
+                          inputMode="decimal"
+                          value={siteLat}
+                          onChange={(e) => setSiteLat(e.target.value)}
+                        />
+                        <Input
+                          placeholder="Longitude"
+                          inputMode="decimal"
+                          value={siteLng}
+                          onChange={(e) => setSiteLng(e.target.value)}
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        onClick={useMyLocationForSite}
+                        className="w-full h-8 rounded-md border border-border bg-card text-xs font-medium text-foreground hover:bg-muted transition-colors flex items-center justify-center gap-1.5"
+                      >
+                        <MapPin className="w-3.5 h-3.5" />
+                        Use my current location
+                      </button>
+                      <p className="text-[10px] text-muted-foreground">
+                        Site punches aren't distance-checked — the site you enter is recorded as-is.
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 {/* Half-day toggle */}

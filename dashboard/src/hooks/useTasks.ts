@@ -34,6 +34,15 @@ export type ServiceStage = (typeof SERVICE_STAGES)[number];
  * for plus the client's contact details, so the assignee has full context on
  * their task board without looking anything up elsewhere.
  */
+export interface TaskServiceStep {
+  _id: string;
+  title: string;
+  description?: string;
+  order: number;
+  done: boolean;
+  completedAt?: string;
+}
+
 export interface TaskServiceRequest {
   serviceTitle?: string;
   serviceSlug?: string;
@@ -46,6 +55,15 @@ export interface TaskServiceRequest {
   clientAddress?: string;
   notes?: string;
   stage?: ServiceStage;
+  /** Back-links to the lead service this task was created from. */
+  leadId?: string;
+  leadServiceId?: string;
+  /**
+   * The checklist for this service, copied from its template when the work was
+   * assigned. Ticking these off is what drives the progress bar the client's
+   * record shows.
+   */
+  steps?: TaskServiceStep[];
 }
 
 export interface Task {
@@ -161,6 +179,31 @@ export function useUpdateTaskStatus() {
   });
 }
 
+/**
+ * Ticks one step of a service request's checklist off (or back on). The lead's
+ * service — and so the client's progress bar — follows automatically.
+ */
+export function useUpdateServiceStep() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, stepId, done }: { id: string; stepId: string; done: boolean }) => {
+      const res = await fetch(`${BASE_URL}/${id}/steps/${stepId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", ...authHeaders() },
+        body: JSON.stringify({ done }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Failed to update the checklist");
+      return data.data as Task;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["tasks"] });
+      qc.invalidateQueries({ queryKey: ["clients"] });
+      qc.invalidateQueries({ queryKey: ["leads"] });
+    },
+  });
+}
+
 export function useCreateManualTask() {
   const qc = useQueryClient();
   return useMutation({
@@ -231,6 +274,29 @@ export function useCancelTask() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Failed to cancel task");
       return data.data;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["tasks"] });
+    },
+  });
+}
+
+/**
+ * Removes a task from every board. Soft delete on the server — the row survives
+ * so work logs and follow-up notes pointing at it don't dangle.
+ */
+export function useDeleteTask() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, scope = "all" }: { id: string; scope?: "all" | "single" }) => {
+      const res = await fetch(`${BASE_URL}/${id}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json", ...authHeaders() },
+        body: JSON.stringify({ scope }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Failed to delete task");
+      return data.data as { deleted: number };
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["tasks"] });

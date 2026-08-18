@@ -48,6 +48,21 @@ const attendanceSchema = new mongoose.Schema(
       ref: "WorkLocation",
       default: null,
     },
+    // Where the shift is being worked from. "office" is gated on the assigned
+    // work location's radius; "site" is client-site work where there is no
+    // configured geofence, so the employee declares where they are instead.
+    workMode: {
+      type: String,
+      enum: ["office", "site"],
+      default: "office",
+    },
+    // Only set for workMode "site" — what the employee typed in, kept alongside
+    // their device GPS so the two can be compared later.
+    site: {
+      name: { type: String, trim: true },
+      lat: Number,
+      lng: Number,
+    },
     isHalfDay: {
       type: Boolean,
       default: false,

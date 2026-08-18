@@ -1,12 +1,19 @@
 import { useMemo, useState } from 'react';
-import { Loader2, RefreshCcw, Search, X } from 'lucide-react';
+import { Check, Loader2, RefreshCcw, Search, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useServiceCatalog, type CatalogService } from '@/hooks/useServiceCatalog';
 
 interface ServiceCatalogPickerProps {
-  selectedSlug: string;
-  onSelect: (service: CatalogService | null) => void;
+  selectedSlug?: string;
+  onSelect?: (service: CatalogService | null) => void;
+  /**
+   * Switches the picker to multi-select — pass the slugs already chosen and
+   * handle each tap through `onToggle`. Clients can opt for several services at
+   * once, so lead capture uses this mode.
+   */
+  selectedSlugs?: string[];
+  onToggle?: (service: CatalogService) => void;
   /** Tailwind height class for the scroll area. */
   height?: string;
   /** Shows a "clear selection" control when a service is picked. */
@@ -15,17 +22,22 @@ interface ServiceCatalogPickerProps {
 
 /**
  * Searchable list of the services published on the website. Shared by "Add
- * Lead" and "Create Task" so both pick from exactly the same catalog and store
- * the same slug/category alongside the title.
+ * Lead", "Create Task" and the Service Steps page so all of them pick from
+ * exactly the same catalog and store the same slug/category alongside the title.
  */
 export function ServiceCatalogPicker({
   selectedSlug,
   onSelect,
+  selectedSlugs,
+  onToggle,
   height = 'h-[360px]',
   clearable = false,
 }: ServiceCatalogPickerProps) {
   const [query, setQuery] = useState('');
   const { data, isLoading, isError, error, refetch } = useServiceCatalog();
+
+  const multiple = Array.isArray(selectedSlugs);
+  const chosen = new Set(selectedSlugs ?? (selectedSlug ? [selectedSlug] : []));
 
   const services = data?.services ?? [];
 
@@ -49,10 +61,10 @@ export function ServiceCatalogPicker({
             className="pl-9"
           />
         </div>
-        {clearable && selectedSlug && (
+        {clearable && !multiple && selectedSlug && (
           <button
             type="button"
-            onClick={() => onSelect(null)}
+            onClick={() => onSelect?.(null)}
             className="shrink-0 flex items-center gap-1 h-9 px-2.5 rounded-md border border-border text-xs text-muted-foreground hover:bg-muted transition-colors"
             title="Clear selected service"
           >
@@ -84,13 +96,13 @@ export function ServiceCatalogPicker({
           </p>
         ) : (
           filtered.map((service: CatalogService) => {
-            const selected = selectedSlug === service.slug;
+            const selected = chosen.has(service.slug);
 
             return (
               <button
                 key={`${service.categorySlug}-${service.slug}`}
                 type="button"
-                onClick={() => onSelect(service)}
+                onClick={() => (multiple ? onToggle?.(service) : onSelect?.(service))}
                 className={`w-full text-left rounded-md border px-3 py-2.5 transition-colors ${
                   selected
                     ? 'border-blue-500 bg-blue-50 text-blue-950'
@@ -98,7 +110,16 @@ export function ServiceCatalogPicker({
                 }`}
               >
                 <span className="flex items-start justify-between gap-3">
-                  <span className="min-w-0">
+                  {multiple && (
+                    <span
+                      className={`shrink-0 mt-0.5 w-4 h-4 rounded border flex items-center justify-center ${
+                        selected ? 'border-blue-600 bg-blue-600 text-white' : 'border-border bg-card'
+                      }`}
+                    >
+                      {selected && <Check className="w-3 h-3" />}
+                    </span>
+                  )}
+                  <span className="min-w-0 flex-1">
                     <span className="block text-sm font-semibold leading-5 truncate">{service.title}</span>
                     <span className="block text-xs text-muted-foreground mt-0.5 truncate">{service.category}</span>
                   </span>
