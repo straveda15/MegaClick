@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import { Quote, Star, Users } from "lucide-react";
-
-import clientImg from "../assets/client.png";
+import { Quote, Star } from "lucide-react";
 
 const testimonials = [
   {
@@ -19,7 +17,7 @@ const testimonials = [
       "The entire process was smooth and transparent. We received regular updates and expert guidance throughout the business registration journey.",
   },
   {
-    name: "Amit Patel",
+    name: "Amit Patil",
     service: "Trademark Registration",
     location: "Mumbai, Maharashtra",
     review:
@@ -38,262 +36,60 @@ const Testimonials = () => {
   const [isPaused, setIsPaused] = useState(false);
 
   return (
-    <section className="w-full bg-white">
-      {/* =================================
-          MAIN CONTAINER
-      ================================= */}
+    <section className="w-full bg-white py-10 sm:py-14 lg:py-16">
+      {/* MAIN CONTAINER */}
+      <div className="max-w-[1450px] mx-auto px-4 sm:px-8 lg:px-16 xl:px-20">
+        
+        {/* HEADER AREA */}
+        <div className="mb-8 sm:mb-10 lg:mb-12 w-full text-left">
+          {/* HEADING (Hedvig Letters Serif - Single Line) */}
+          <h2
+            className="text-2xl sm:text-3xl lg:text-[40px] font-normal text-[#0f172a] leading-tight"
+            style={{ fontFamily: '"Hedvig Letters Serif", Georgia, serif', fontWeight: 400 }}
+          >
+            What Our Clients <span className="text-[#0B4EA2]">Say About MegaClick</span>
+          </h2>
 
-      <div
-        className="
-          max-w-[1500px]
-          mx-auto
-          px-4
-          sm:px-8
-          lg:px-16
-          xl:px-24
-          pt-8
-          sm:pt-10
-          lg:pt-12
-          pb-10
-          sm:pb-12
-          lg:pb-16
-        "
-      >
-        {/* =================================
-            TESTIMONIALS BADGE
-        ================================= */}
-
-        <span
-          className="
-            inline-flex
-            items-center
-            gap-2
-            bg-[#0B4EA2]
-            text-white
-            px-3
-            sm:px-4
-            py-2
-            rounded-full
-            text-[11px]
-            sm:text-xs
-            font-semibold
-            mb-3
-            sm:mb-4
-          "
-        >
-          <Users
-            size={14}
-            className="text-green-300 sm:w-[15px] sm:h-[15px]"
-          />
-
-          Testimonials
-        </span>
-
-        {/* =================================
-            HEADER
-        ================================= */}
-
-        <div
-          className="
-            grid
-            grid-cols-1
-            lg:grid-cols-[1fr_auto]
-            gap-8
-            lg:gap-12
-            items-center
-            mb-10
-            sm:mb-12
-            lg:mb-14
-          "
-        >
-          {/* =========================
-              LEFT CONTENT
-          ========================== */}
-
-          <div>
-            <h2
-              className="section-heading mt-4 sm:mt-5 text-gray-900"
-            >
-              What Our Clients
-              <br />
-
-              <span className="text-[#0B4EA2]">
-                Say About MegaClick
-              </span>
-            </h2>
-
-            <p
-              className="section-text mt-4 max-w-2xl"
-            >
-              Thousands of businesses trust{" "}
-              <span className="font-semibold">
-                <span className="text-[#0B4EA2]">Mega</span>
-                <span className="text-green-500">Click</span>
-              </span>{" "}
-              for reliable registrations, transparent guidance
-              and professional support. We simplify every business
-              process with experienced experts and customer-first
-              service.
-            </p>
-          </div>
-
-          {/* =========================
-              CLIENT IMAGE
-          ========================== */}
-
-          <div className="flex justify-center lg:justify-center">
-            <div
-              className="
-                relative
-                rounded-3xl
-                border
-                border-[#0B4EA2]/20
-                bg-blue-50
-                p-3
-                sm:p-4
-              "
-            >
-              <img
-                src={clientImg}
-                alt="Happy MegaClick Clients"
-                className="
-                  w-[170px]
-                  sm:w-[210px]
-                  lg:w-[240px]
-                  object-contain
-                "
-              />
-            </div>
-          </div>
+        
+          
         </div>
 
-        {/* =================================
-            TESTIMONIAL SLIDER
-        ================================= */}
-
-        <div
-          className="
-            relative
-            overflow-hidden
-            w-full
-          "
-        >
+        {/* TESTIMONIAL SLIDER WITH TOUCH / HOVER PAUSE & RESUME */}
+        <div className="relative overflow-hidden w-full">
           <div
-            className="
-              testimonials-track
-              flex
-              gap-5
-              lg:gap-6
-              w-max
-              animate-testimonials
-              py-3
-            "
+            className="testimonials-track flex gap-5 sm:gap-6 w-max animate-testimonials py-4"
             style={{
               animationPlayState: isPaused ? "paused" : "running",
             }}
           >
-            {[...testimonials, ...testimonials].map(
+            {[...testimonials, ...testimonials, ...testimonials].map(
               (item, index) => (
                 <article
                   key={index}
-                  className="
-                    relative
-                    w-[calc(100vw-2rem)]
-                    sm:w-[320px]
-                    md:w-[340px]
-                    lg:w-[350px]
-                    flex-shrink-0
-                    bg-white
-                    rounded-2xl
-                    border
-                    border-gray-200
-                    px-5
-                    py-6
-                    sm:p-6
-                    shadow-[0_6px_25px_rgba(0,0,0,0.05)]
-                    transition-all
-                    duration-300
-                    hover:-translate-y-1
-                    hover:border-blue-200
-                    hover:shadow-[0_12px_35px_rgba(11,78,162,0.10)]
-                  "
-
-                  /* =================================
-                      DESKTOP
-                      HOVER → PAUSE
-                  ================================= */
-
+                  className="relative w-[300px] sm:w-[340px] md:w-[360px] flex-shrink-0 bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs hover:shadow-md transition-all duration-300 hover:-translate-y-1 hover:border-blue-200"
+                  /* DESKTOP HOVER PAUSE & RESUME */
                   onMouseEnter={() => setIsPaused(true)}
                   onMouseLeave={() => setIsPaused(false)}
-
-                  /* =================================
-                      MOBILE
-                      TOUCH → PAUSE
-                  ================================= */
-
+                  /* MOBILE TOUCH PAUSE & RESUME */
                   onTouchStart={() => setIsPaused(true)}
                   onTouchEnd={() => setIsPaused(false)}
                   onTouchCancel={() => setIsPaused(false)}
                 >
-                  {/* =================================
-                      TOP ACCENT
-                  ================================= */}
+                  {/* TOP ACCENT BAR */}
+                  <div className="absolute top-0 left-6 right-6 h-[2.5px] bg-[#0B4EA2] rounded-full" />
 
-                  <div
-                    className="
-                      absolute
-                      top-0
-                      left-6
-                      right-6
-                      h-[2px]
-                      bg-[#0B4EA2]
-                      rounded-full
-                    "
-                  />
-
-                  {/* =================================
-                      QUOTE ICON
-                  ================================= */}
-
-                  <div
-                    className="
-                      w-10
-                      h-10
-                      rounded-xl
-                      bg-blue-50
-                      flex
-                      items-center
-                      justify-center
-                      mb-5
-                    "
-                  >
-                    <Quote
-                      size={20}
-                      className="text-[#0B4EA2]"
-                    />
+                  {/* QUOTE ICON */}
+                  <div className="w-10 h-10 rounded-xl bg-blue-50/80 flex items-center justify-center mb-4">
+                    <Quote size={20} className="text-[#0B4EA2]" />
                   </div>
 
-                  {/* =================================
-                      REVIEW
-                  ================================= */}
-
-                  <p
-                    className="
-                      text-sm
-                      sm:text-[15px]
-                      text-gray-600
-                      leading-7
-                      min-h-[126px]
-                    "
-                  >
+                  {/* REVIEW TEXT */}
+                  <p className="text-sm sm:text-[15px] text-slate-600 leading-relaxed min-h-[110px]">
                     "{item.review}"
                   </p>
 
-                  {/* =================================
-                      STARS
-                  ================================= */}
-
-                  <div className="flex items-center gap-1 mt-5">
+                  {/* RATING STARS */}
+                  <div className="flex items-center gap-1 mt-4">
                     {[1, 2, 3, 4, 5].map((star) => (
                       <Star
                         key={star}
@@ -304,81 +100,27 @@ const Testimonials = () => {
                     ))}
                   </div>
 
-                  {/* =================================
-                      DIVIDER
-                  ================================= */}
+                  {/* DIVIDER LINE */}
+                  <div className="my-4 h-px bg-slate-100" />
 
-                  <div className="my-5 h-px bg-gray-100" />
-
-                  {/* =================================
-                      CLIENT DETAILS
-                  ================================= */}
-
-                  <div className="flex items-start gap-3">
-                    {/* AVATAR */}
-
-                    <div
-                      className="
-                        w-10
-                        h-10
-                        shrink-0
-                        rounded-full
-                        bg-[#0B4EA2]
-                        text-white
-                        flex
-                        items-center
-                        justify-center
-                        font-bold
-                        text-sm
-                      "
-                    >
-                      {item.name.charAt(0)}
-                    </div>
-
-                    {/* DETAILS */}
-
-                    <div className="min-w-0">
-                      <h3
-                        className="
-                          text-sm
-                          sm:text-base
-                          font-bold
-                          text-gray-900
-                          truncate
-                        "
-                      >
-                        {item.name}
-                      </h3>
-
-                      <p
-                        className="
-                          mt-1
-                          text-xs
-                          sm:text-sm
-                          font-medium
-                          text-[#0B4EA2]
-                          leading-5
-                        "
-                      >
-                        {item.service}
-                      </p>
-
-                      <p
-                        className="
-                          mt-0.5
-                          text-xs
-                          text-gray-500
-                        "
-                      >
-                        {item.location}
-                      </p>
-                    </div>
+                  {/* CLIENT DETAILS (No Avatar) */}
+                  <div className="flex flex-col gap-0.5">
+                    <h3 className="text-sm sm:text-base font-bold text-[#0f172a]">
+                      {item.name}
+                    </h3>
+                    <p className="text-xs font-semibold text-[#0B4EA2]">
+                      {item.service}
+                    </p>
+                    <p className="text-[11px] text-slate-500">
+                      {item.location}
+                    </p>
                   </div>
                 </article>
               )
             )}
           </div>
         </div>
+
       </div>
     </section>
   );

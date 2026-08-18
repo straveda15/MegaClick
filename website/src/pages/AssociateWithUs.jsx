@@ -94,7 +94,7 @@ const AssociateWithUs = () => {
     setShowCustomExpertiseInput(false);
   };
 
-  // Base style for standard text inputs
+  // Base style for text inputs (Bold & Inter font)
   const inputBaseStyle = `
     w-full
     max-w-full
@@ -108,7 +108,7 @@ const AssociateWithUs = () => {
     text-sm
     sm:text-base
     text-gray-900
-    font-medium
+    font-semibold
     placeholder:text-gray-400
     placeholder:font-normal
     outline-none
@@ -119,7 +119,7 @@ const AssociateWithUs = () => {
     transition
   `;
 
-  // Custom styling for Select boxes to force high contrast text
+  // Custom styling for Select boxes (Bold & Inter font)
   const getSelectStyle = (value) => `
     w-full
     max-w-full
@@ -140,7 +140,7 @@ const AssociateWithUs = () => {
     bg-[length:1.25rem_1.25rem]
     bg-white
     border-gray-200
-    ${value ? "text-gray-900 font-medium" : "text-gray-400 font-normal"}
+    ${value ? "text-gray-900 font-semibold" : "text-gray-400 font-normal"}
     focus:bg-white
     focus:text-gray-900
     focus:border-[#0B4EA2]
@@ -151,7 +151,7 @@ const AssociateWithUs = () => {
   const dropdownArrowSvg = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2' stroke='%23374151'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5' /%3E%3C/svg%3E")`;
 
   return (
-    <section className="w-full bg-gray-50 pt-6 sm:pt-8 lg:pt-10 pb-10 sm:pb-14 lg:pb-20 overflow-hidden">
+    <section className="w-full bg-gray-50 pt-6 sm:pt-8 lg:pt-10 pb-10 sm:pb-14 lg:pb-20 overflow-hidden font-['Inter',sans-serif]">
       <div className="w-full max-w-[1450px] mx-auto px-4 sm:px-6 lg:px-20">
 
         <div
@@ -168,9 +168,7 @@ const AssociateWithUs = () => {
           {/* =====================================================
               LEFT SECTION
           ====================================================== */}
-
           <div className="lg:col-span-2 w-full">
-
             <div
               className="
                 w-full
@@ -192,63 +190,26 @@ const AssociateWithUs = () => {
               "
             >
 
-              {/* Badge */}
-
-              <div
-                className="
-                  inline-flex
-                  items-center
-                  gap-2
-                  px-4
-                  sm:px-5
-                  py-2
-                  rounded-full
-                  bg-white
-                  border
-                  border-green-200
-                  text-[#0B4EA2]
-                  font-semibold
-                  text-xs
-                  sm:text-sm
-                  shadow-sm
-                  mb-5
-                  sm:mb-6
-                "
-              >
-                <BriefcaseBusiness size={16} className="text-[#0A8F55]" />
-                Contact Us
-              </div>
-
-
-              {/* Heading */}
-
+              {/* Heading (Hedvig Letters Serif) */}
               <h2
                 className="
-                  text-lg
-                  sm:text-xl
-                  lg:text-2xl
-                  font-bold
+                  text-xl
+                  sm:text-2xl
+                  lg:text-3xl
+                  font-normal
                   text-[#0B2545]
                   leading-snug
                 "
+                style={{ fontFamily: '"Hedvig Letters Serif", Georgia, serif' }}
               >
                 We are currently onboarding a limited number of
                 professionals as part of{" "}
-
-                <span className="text-[#0B4EA2]">
-                  Mega
-                </span>
-
-                <span className="text-[#0A8F55]">
-                  Click
-                </span>
-
+                <span className="text-[#0B4EA2]">Mega</span>
+                <span className="text-[#0A8F55]">Click</span>
                 's founding network.
               </h2>
 
-
-              {/* Description */}
-
+              {/* Description (Inter) */}
               <p
                 className="
                   mt-4
@@ -256,7 +217,8 @@ const AssociateWithUs = () => {
                   text-sm
                   sm:text-base
                   text-gray-600
-                  leading-7
+                  font-light
+                  leading-relaxed
                 "
               >
                 If you are interested in being part of
@@ -264,17 +226,11 @@ const AssociateWithUs = () => {
                 and our team will connect with you.
               </p>
 
-
-              {/* =====================================================
-                  CONTACT DETAILS
-              ====================================================== */}
-
+              {/* Contact Details List */}
               <div className="mt-7 sm:mt-8 space-y-5 sm:space-y-6">
 
                 {/* Email */}
-
                 <div className="flex items-start gap-3 sm:gap-4">
-
                   <div
                     className="
                       w-10
@@ -296,33 +252,17 @@ const AssociateWithUs = () => {
                   </div>
 
                   <div className="min-w-0">
-
-                    <strong className="block text-gray-900">
+                    <strong className="block text-gray-900 font-semibold text-sm sm:text-base">
                       Email
                     </strong>
-
-                    <span
-                      className="
-                        block
-                        mt-1
-                        text-sm
-                        sm:text-base
-                        text-gray-600
-                        break-all
-                      "
-                    >
+                    <span className="block mt-0.5 text-sm text-gray-600 font-normal break-all">
                       megaclickofficial@gmail.com
                     </span>
-
                   </div>
-
                 </div>
 
-
                 {/* Coverage */}
-
                 <div className="flex items-start gap-3 sm:gap-4">
-
                   <div
                     className="
                       w-10
@@ -344,24 +284,17 @@ const AssociateWithUs = () => {
                   </div>
 
                   <div className="min-w-0">
-
-                    <strong className="block text-gray-900">
+                    <strong className="block text-gray-900 font-semibold text-sm sm:text-base">
                       Coverage
                     </strong>
-
-                    <span className="block mt-1 text-sm sm:text-base text-gray-600">
+                    <span className="block mt-0.5 text-sm text-gray-600 font-normal">
                       Building India-wide professional network
                     </span>
-
                   </div>
-
                 </div>
 
-
                 {/* Status */}
-
                 <div className="flex items-start gap-3 sm:gap-4">
-
                   <div
                     className="
                       w-10
@@ -383,32 +316,24 @@ const AssociateWithUs = () => {
                   </div>
 
                   <div className="min-w-0">
-
-                    <strong className="block text-gray-900">
+                    <strong className="block text-gray-900 font-semibold text-sm sm:text-base">
                       Status
                     </strong>
-
-                    <span className="block mt-1 text-sm sm:text-base text-gray-600">
+                    <span className="block mt-0.5 text-sm text-gray-600 font-normal">
                       The MegaClick platform is currently being built
                     </span>
-
                   </div>
-
                 </div>
 
               </div>
 
             </div>
-
           </div>
 
-
           {/* =====================================================
-              RIGHT FORM SECTION
+              RIGHT FORM SECTION (BOLD LABELS & VALUES)
           ====================================================== */}
-
           <div className="lg:col-span-3 w-full min-w-0">
-
             <div
               className="
                 w-full
@@ -440,24 +365,19 @@ const AssociateWithUs = () => {
                   "
                 >
 
-                  {/* =====================================================
-                      NAME
-                  ====================================================== */}
-
+                  {/* Name */}
                   <div className="w-full">
-
                     <label
                       className="
                         block
                         mb-2
                         text-sm
-                        font-semibold
-                        text-gray-800
+                        font-bold
+                        text-gray-900
                       "
                     >
                       Name <span className="text-red-500">*</span>
                     </label>
-
                     <input
                       type="text"
                       name="full_name"
@@ -465,28 +385,21 @@ const AssociateWithUs = () => {
                       placeholder="Enter your name"
                       className={inputBaseStyle}
                     />
-
                   </div>
 
-
-                  {/* =====================================================
-                      MOBILE
-                  ====================================================== */}
-
+                  {/* Mobile */}
                   <div className="w-full">
-
                     <label
                       className="
                         block
                         mb-2
                         text-sm
-                        font-semibold
-                        text-gray-800
+                        font-bold
+                        text-gray-900
                       "
                     >
                       Mobile <span className="text-red-500">*</span>
                     </label>
-
                     <input
                       type="tel"
                       name="phone"
@@ -494,28 +407,21 @@ const AssociateWithUs = () => {
                       placeholder="Enter your mobile number"
                       className={inputBaseStyle}
                     />
-
                   </div>
 
-
-                  {/* =====================================================
-                      EMAIL
-                  ====================================================== */}
-
+                  {/* Email */}
                   <div className="w-full">
-
                     <label
                       className="
                         block
                         mb-2
                         text-sm
-                        font-semibold
-                        text-gray-800
+                        font-bold
+                        text-gray-900
                       "
                     >
                       Email <span className="text-red-500">*</span>
                     </label>
-
                     <input
                       type="email"
                       name="email"
@@ -523,23 +429,17 @@ const AssociateWithUs = () => {
                       placeholder="Enter your email address"
                       className={inputBaseStyle}
                     />
-
                   </div>
 
-
-                  {/* =====================================================
-                      PROFESSION
-                  ====================================================== */}
-
+                  {/* Profession */}
                   <div className="w-full">
-
                     <label
                       className="
                         block
                         mb-2
                         text-sm
-                        font-semibold
-                        text-gray-800
+                        font-bold
+                        text-gray-900
                       "
                     >
                       Select Profession{" "}
@@ -554,44 +454,34 @@ const AssociateWithUs = () => {
                       className={getSelectStyle(selectedProfession)}
                       style={{ backgroundImage: dropdownArrowSvg }}
                     >
-
-                      <option value="" className="text-gray-400 bg-white">
+                      <option value="" className="text-gray-400 font-normal bg-white">
                         Select Profession
                       </option>
-
                       {professions.map((profession) => (
                         <option
                           key={profession}
                           value={profession}
-                          className="text-gray-900 font-bold bg-white py-2"
+                          className="text-gray-900 font-semibold bg-white py-2"
                         >
                           {profession}
                         </option>
                       ))}
-
                     </select>
-
                   </div>
 
-
-                  {/* =====================================================
-                      FIRM NAME
-                  ====================================================== */}
-
+                  {/* Firm Name */}
                   <div className="w-full">
-
                     <label
                       className="
                         block
                         mb-2
                         text-sm
-                        font-semibold
-                        text-gray-800
+                        font-bold
+                        text-gray-900
                       "
                     >
                       Firm Name <span className="text-red-500">*</span>
                     </label>
-
                     <input
                       type="text"
                       name="firm_name"
@@ -599,29 +489,22 @@ const AssociateWithUs = () => {
                       placeholder="Enter your firm name"
                       className={inputBaseStyle}
                     />
-
                   </div>
 
-
-                  {/* =====================================================
-                      EXPERIENCE
-                  ====================================================== */}
-
+                  {/* Experience */}
                   <div className="w-full">
-
                     <label
                       className="
                         block
                         mb-2
                         text-sm
-                        font-semibold
-                        text-gray-800
+                        font-bold
+                        text-gray-900
                       "
                     >
                       Years of Experience{" "}
                       <span className="text-red-500">*</span>
                     </label>
-
                     <input
                       type="text"
                       name="experience_years"
@@ -629,70 +512,51 @@ const AssociateWithUs = () => {
                       placeholder="Enter years of experience"
                       className={inputBaseStyle}
                     />
-
                   </div>
 
-
-                  {/* =====================================================
-                      LINKEDIN
-                  ====================================================== */}
-
+                  {/* LinkedIn */}
                   <div className="w-full">
-
                     <label
                       className="
                         block
                         mb-2
                         text-sm
-                        font-semibold
-                        text-gray-800
+                        font-bold
+                        text-gray-900
                       "
                     >
                       LinkedIn Profile
                     </label>
-
                     <input
                       type="url"
                       name="linkedin_profile"
                       placeholder="Enter LinkedIn profile URL"
                       className={inputBaseStyle}
                     />
-
                   </div>
 
-
-                  {/* =====================================================
-                      WEBSITE
-                  ====================================================== */}
-
+                  {/* Website */}
                   <div className="w-full">
-
                     <label
                       className="
                         block
                         mb-2
                         text-sm
-                        font-semibold
-                        text-gray-800
+                        font-bold
+                        text-gray-900
                       "
                     >
                       Website
                     </label>
-
                     <input
                       type="url"
                       name="website"
                       placeholder="Enter your website URL"
                       className={inputBaseStyle}
                     />
-
                   </div>
 
-
-                  {/* =====================================================
-                      PINCODE / CITY / STATE
-                  ====================================================== */}
-
+                  {/* Pincode / City / State */}
                   <div
                     className="
                       col-span-1
@@ -705,24 +569,20 @@ const AssociateWithUs = () => {
                       sm:gap-6
                     "
                   >
-
                     {/* Pincode */}
-
                     <div className="w-full">
-
                       <label
                         className="
                           block
                           mb-2
                           text-sm
-                          font-semibold
-                          text-gray-800
+                          font-bold
+                          text-gray-900
                         "
                       >
                         Pincode{" "}
                         <span className="text-red-500">*</span>
                       </label>
-
                       <input
                         type="text"
                         name="pincode"
@@ -732,26 +592,21 @@ const AssociateWithUs = () => {
                         inputMode="numeric"
                         className={inputBaseStyle}
                       />
-
                     </div>
 
-
                     {/* City */}
-
                     <div className="w-full">
-
                       <label
                         className="
                           block
                           mb-2
                           text-sm
-                          font-semibold
-                          text-gray-800
+                          font-bold
+                          text-gray-900
                         "
                       >
                         City <span className="text-red-500">*</span>
                       </label>
-
                       <input
                         type="text"
                         name="city"
@@ -759,26 +614,21 @@ const AssociateWithUs = () => {
                         placeholder="Enter city"
                         className={inputBaseStyle}
                       />
-
                     </div>
 
-
                     {/* State */}
-
                     <div className="w-full sm:col-span-2 md:col-span-1">
-
                       <label
                         className="
                           block
                           mb-2
                           text-sm
-                          font-semibold
-                          text-gray-800
+                          font-bold
+                          text-gray-900
                         "
                       >
                         State <span className="text-red-500">*</span>
                       </label>
-
                       <select
                         name="state"
                         required
@@ -787,41 +637,31 @@ const AssociateWithUs = () => {
                         className={getSelectStyle(selectedState)}
                         style={{ backgroundImage: dropdownArrowSvg }}
                       >
-
-                        <option value="" className="text-gray-400 bg-white">
+                        <option value="" className="text-gray-400 font-normal bg-white">
                           Select State
                         </option>
-
                         {states.map((state) => (
                           <option
                             key={state}
                             value={state}
-                            className="text-gray-900 font-bold bg-white py-2"
+                            className="text-gray-900 font-semibold bg-white py-2"
                           >
                             {state}
                           </option>
                         ))}
-
                       </select>
-
                     </div>
-
                   </div>
 
-
-                  {/* =====================================================
-                      AREA OF EXPERTISE
-                  ====================================================== */}
-
+                  {/* Area of Expertise */}
                   <div className="col-span-1 md:col-span-2 w-full">
-
                     <label
                       className="
                         block
                         mb-3
                         text-sm
-                        font-semibold
-                        text-gray-800
+                        font-bold
+                        text-gray-900
                       "
                     >
                       Area of Expertise <span className="text-red-500">*</span>
@@ -849,7 +689,6 @@ const AssociateWithUs = () => {
                         sm:gap-3
                       "
                     >
-
                       {expertiseTags.map((tag) => {
                         const isSelected = selectedExpertise.includes(tag);
 
@@ -868,15 +707,14 @@ const AssociateWithUs = () => {
                               rounded-full
                               border
                               text-xs
-                              font-medium
-                              uppercase
+                              font-bold
                               transition-all
                               duration-200
                               cursor-pointer
                               ${
                                 isSelected
                                   ? "bg-gradient-to-r from-[#0B4EA2] to-[#0A8F55] border-transparent text-white shadow-sm"
-                                  : "bg-white border-gray-300 text-gray-700 hover:border-[#0B4EA2] hover:text-[#0B4EA2]"
+                                  : "bg-white border-gray-300 text-gray-800 hover:border-[#0B4EA2] hover:text-[#0B4EA2]"
                               }
                             `}
                           >
@@ -907,11 +745,10 @@ const AssociateWithUs = () => {
                             border
                             border-[#0B4EA2]
                             text-xs
-                            font-medium
+                            font-semibold
                             text-gray-900
                             placeholder:text-gray-400
                             placeholder:font-normal
-                            placeholder:normal-case
                             outline-none
                             w-40
                           "
@@ -930,7 +767,7 @@ const AssociateWithUs = () => {
                             rounded-full
                             border
                             border-gray-300
-                            text-gray-500
+                            text-gray-600
                             hover:border-[#0B4EA2]
                             hover:text-[#0B4EA2]
                             transition-colors
@@ -940,18 +777,11 @@ const AssociateWithUs = () => {
                           <Plus size={16} />
                         </button>
                       )}
-
                     </div>
-
                   </div>
 
-
-                  {/* =====================================================
-                      BUTTON
-                  ====================================================== */}
-
+                  {/* Submit Button */}
                   <div className="col-span-1 md:col-span-2 w-full">
-
                     <button
                       type="submit"
                       id="contactSubmitBtn"
@@ -963,7 +793,9 @@ const AssociateWithUs = () => {
                         rounded-xl
                         bg-[#0A8F55]
                         text-white
-                        font-semibold
+                        font-bold
+                        text-sm
+                        sm:text-base
                         flex
                         items-center
                         justify-center
@@ -972,19 +804,16 @@ const AssociateWithUs = () => {
                         duration-300
                         hover:bg-[#087A48]
                         hover:-translate-y-0.5
-                        hover:shadow-lg
+                        hover:shadow-md
                         active:translate-y-0
+                        cursor-pointer
                       "
                     >
-
                       <span id="contactSubmitText">
                         Submit Interest
                       </span>
-
                       <Send size={18} />
-
                     </button>
-
                   </div>
 
                 </div>
@@ -992,13 +821,11 @@ const AssociateWithUs = () => {
               </form>
 
             </div>
-
           </div>
 
         </div>
 
       </div>
-
     </section>
   );
 };

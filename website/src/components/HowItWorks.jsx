@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-
 import {
   PhoneCall,
   FileText,
@@ -8,9 +7,10 @@ import {
   ShieldCheck,
   Check,
   Award,
+  Target,
+  UserCheck,
+  ClipboardList,
 } from "lucide-react";
-
-import processImg from "../assets/process.png";
 
 const steps = [
   {
@@ -40,17 +40,25 @@ const steps = [
 ];
 
 const points = [
-  "Understand your business requirements",
-  "Get expert guidance for the best solution",
-  "Complete documentation assistance",
-  "Transparent and hassle-free process",
+  {
+    text: "Understand your business requirements",
+    icon: Target,
+  },
+  {
+    text: "Get expert guidance for the best solution",
+    icon: UserCheck,
+  },
+  {
+    text: "Complete documentation assistance",
+    icon: ClipboardList,
+  },
+  {
+    text: "Transparent and hassle-free process",
+    icon: ShieldCheck,
+  },
 ];
 
 const HowItWorks = () => {
-  // =====================================================
-  // MOBILE / TABLET ACTIVE STEP
-  // =====================================================
-
   const [activeStep, setActiveStep] = useState(0);
 
   useEffect(() => {
@@ -63,13 +71,14 @@ const HowItWorks = () => {
 
   return (
     <section
+      id="how-it-works"
       className="
         relative
         overflow-hidden
         bg-blue-100
-        py-3
-        sm:py-6
-        lg:py-8
+        py-6
+        sm:py-8
+        lg:py-12
       "
     >
       <div
@@ -109,37 +118,12 @@ const HowItWorks = () => {
           ================================================= */}
 
           <div className="w-full">
-            {/* BADGE */}
-
-            <span
-              className="
-                inline-flex
-                items-center
-                gap-2
-                bg-[#0B4EA2]
-                text-white
-                px-3
-                sm:px-4
-                py-1.5
-                sm:py-2
-                rounded-full
-                text-xs
-                sm:text-sm
-                font-semibold
-              "
-            >
-              <CheckCircle2
-                size={15}
-                className="text-green-400 sm:w-4 sm:h-4"
-              />
-
-              Our Process
-            </span>
-
-            {/* HEADING */}
+           
+            {/* HEADING (Explicitly using Hedvig Letters Serif) */}
 
             <h2
-              className="section-heading mt-4 sm:mt-5 text-gray-900"
+              className="section-heading mt-4 sm:mt-5 text-gray-900 text-2xl sm:text-3xl lg:text-[40px] font-semibold leading-tight"
+              style={{ fontFamily: '"Hedvig Letters Serif", Georgia, serif' }}
             >
               Get Your Solution
 
@@ -150,10 +134,10 @@ const HowItWorks = () => {
               </span>
             </h2>
 
-            {/* DESCRIPTION */}
+            {/* DESCRIPTION (Inter Font) */}
 
             <p
-              className="section-text mt-4 sm:mt-5 max-w-[640px] text-left sm:text-justify"
+              className="section-text mt-4 sm:mt-5 max-w-[640px] text-gray-600 text-justify text-sm sm:text-base leading-relaxed"
             >
               We follow a simple and transparent process to help businesses
               complete registrations, legal documentation, compliance services
@@ -161,59 +145,63 @@ const HowItWorks = () => {
               every stage ensuring accuracy and reliability.
             </p>
 
-            {/* POINTS */}
+            {/* POINTS — CIRCULAR BLUE ICON LIST DESIGN FROM SCREENSHOT */}
 
             <div
               className="
                 mt-6
                 sm:mt-8
-                space-y-3
-                sm:space-y-4
+                space-y-4
+                sm:space-y-4.5
               "
             >
-              {points.map((item, index) => (
-                <div
-                  key={index}
-                  className="
-                    flex
-                    items-start
-                    gap-3
-                  "
-                >
+              {points.map((item, index) => {
+                const PointIcon = item.icon;
+                return (
                   <div
+                    key={index}
                     className="
-                      flex-shrink-0
-                      w-8
-                      h-8
-                      sm:w-9
-                      sm:h-9
-                      rounded-full
-                      bg-[#0B4EA2]
-                      text-white
                       flex
                       items-center
-                      justify-center
-                      shadow
+                      gap-3.5
+                      sm:gap-4
                     "
                   >
-                    <Check size={16} />
-                  </div>
+                    <div
+                      className="
+                        flex-shrink-0
+                        w-10
+                        h-10
+                        sm:w-11
+                        sm:h-11
+                        rounded-full
+                        bg-blue-50
+                        border
+                        border-blue-100/80
+                        text-[#0B4EA2]
+                        flex
+                        items-center
+                        justify-center
+                        shadow-sm
+                      "
+                    >
+                      <PointIcon size={20} className="text-[#0B4EA2]" />
+                    </div>
 
-                  <p
-                    className="
-                      pt-1
-                      text-sm
-                      sm:text-[15px]
-                      font-semibold
-                      leading-5
-                      sm:leading-6
-                      text-gray-800
-                    "
-                  >
-                    {item}
-                  </p>
-                </div>
-              ))}
+                    <p
+                      className="
+                        text-sm
+                        sm:text-[15px]
+                        font-medium
+                        text-slate-700
+                        leading-snug
+                      "
+                    >
+                      {item.text}
+                    </p>
+                  </div>
+                );
+              })}
             </div>
           </div>
 
@@ -240,7 +228,7 @@ const HowItWorks = () => {
                 overflow-hidden
               "
             >
-              {/* IMAGE */}
+              {/* BRAND GRAPHIC AREA */}
 
               <div
                 className="
@@ -249,21 +237,17 @@ const HowItWorks = () => {
                   to-green-50
                   px-4
                   sm:px-6
-                  py-3
-                  sm:py-4
+                  py-6
+                  flex
+                  flex-col
+                  items-center
+                  justify-center
                 "
               >
-                <img
-                  src={processImg}
-                  alt="Process"
-                  className="
-                    w-full
-                    h-[140px]
-                    sm:h-[160px]
-                    md:h-[170px]
-                    object-contain
-                  "
-                />
+                <div className="w-16 h-16 rounded-2xl bg-white shadow-md border border-blue-100 flex items-center justify-center text-[#0B4EA2] mb-1">
+                  <ShieldCheck size={36} className="text-[#0B4EA2]" />
+                </div>
+                <span className="text-[11px] font-bold uppercase tracking-widest text-[#0B4EA2]">MegaClick Process</span>
               </div>
 
               {/* CARD CONTENT */}
@@ -352,7 +336,7 @@ const HowItWorks = () => {
                     gap-3
                   "
                 >
-                  <div className="flex items-center gap-2 text-sm text-gray-700">
+                  <div className="flex items-center gap-2 text-sm text-gray-700 font-medium">
                     <Check
                       size={15}
                       className="flex-shrink-0 text-green-600"
@@ -360,7 +344,7 @@ const HowItWorks = () => {
                     Secure Docs
                   </div>
 
-                  <div className="flex items-center gap-2 text-sm text-gray-700">
+                  <div className="flex items-center gap-2 text-sm text-gray-700 font-medium">
                     <Check
                       size={15}
                       className="flex-shrink-0 text-green-600"
@@ -368,7 +352,7 @@ const HowItWorks = () => {
                     Expert Support
                   </div>
 
-                  <div className="flex items-center gap-2 text-sm text-gray-700">
+                  <div className="flex items-center gap-2 text-sm text-gray-700 font-medium">
                     <Check
                       size={15}
                       className="flex-shrink-0 text-green-600"
@@ -376,7 +360,7 @@ const HowItWorks = () => {
                     Fast Process
                   </div>
 
-                  <div className="flex items-center gap-2 text-sm text-gray-700">
+                  <div className="flex items-center gap-2 text-sm text-gray-700 font-medium">
                     <Check
                       size={15}
                       className="flex-shrink-0 text-green-600"
@@ -428,7 +412,7 @@ const HowItWorks = () => {
                         mt-1
                       "
                     >
-                      Verified & Reliable Service
+                      Verified &amp; Reliable Service
                     </h4>
                   </div>
 
@@ -455,12 +439,7 @@ const HowItWorks = () => {
         >
           <div className="relative">
 
-            {/* =================================================
-                DESKTOP HORIZONTAL LINE ONLY
-
-                Mobile + Tablet:
-                NO CONNECTING LINE
-            ================================================= */}
+            {/* DESKTOP HORIZONTAL LINE */}
 
             <div
               className="
@@ -479,9 +458,7 @@ const HowItWorks = () => {
               "
             />
 
-            {/* =================================================
-                STEPS
-            ================================================= */}
+            {/* STEPS */}
 
             <div
               className="
@@ -498,8 +475,6 @@ const HowItWorks = () => {
             >
               {steps.map((item, index) => {
                 const Icon = item.icon;
-
-                // Automatic animation below desktop
                 const isMobileActive = activeStep === index;
 
                 return (
@@ -514,9 +489,7 @@ const HowItWorks = () => {
                       relative
                     "
                   >
-                    {/* =================================================
-                        ICON
-                    ================================================= */}
+                    {/* ICON */}
 
                     <div
                       className={`
@@ -546,14 +519,12 @@ const HowItWorks = () => {
                         }
                       `}
                     >
-                      {/* ANIMATED BACKGROUND */}
-
                       <div
                         className={`
                           absolute
                           inset-0
                           rounded-full
-                         bg-green-500
+                          bg-green-500
                           opacity-0
                           group-hover:opacity-100
                           transition-opacity
@@ -566,8 +537,6 @@ const HowItWorks = () => {
                           }
                         `}
                       />
-
-                      {/* ICON */}
 
                       <Icon
                         size={26}
@@ -588,9 +557,7 @@ const HowItWorks = () => {
                       />
                     </div>
 
-                    {/* =================================================
-                        NUMBER
-                    ================================================= */}
+                    {/* NUMBER */}
 
                     <div
                       className={`
@@ -610,9 +577,7 @@ const HowItWorks = () => {
                       STEP {item.number}
                     </div>
 
-                    {/* =================================================
-                        TITLE
-                    ================================================= */}
+                    {/* TITLE */}
 
                     <h4
                       className="
@@ -627,9 +592,7 @@ const HowItWorks = () => {
                       {item.title}
                     </h4>
 
-                    {/* =================================================
-                        DESCRIPTION
-                    ================================================= */}
+                    {/* DESCRIPTION */}
 
                     <p
                       className="
@@ -645,9 +608,7 @@ const HowItWorks = () => {
                       {item.text}
                     </p>
 
-                    {/* =================================================
-                        BADGE
-                    ================================================= */}
+                    {/* BADGE */}
 
                     <div
                       className="
@@ -677,7 +638,7 @@ const HowItWorks = () => {
                           text-[#0B4EA2]
                         "
                       >
-                        Fast & Secure
+                        Fast &amp; Secure
                       </span>
                     </div>
                   </div>
