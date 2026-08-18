@@ -143,6 +143,28 @@ export const addFollowUp = async (req, res, next) => {
   }
 };
 
+export const deleteTask = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { scope } = req.body ?? {};
+    const result = await taskService.deleteTask(id, req.user._id, scope);
+    res.status(200).json({ success: true, message: "Task deleted", data: result });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateServiceStep = async (req, res, next) => {
+  try {
+    const { id, stepId } = req.params;
+    const { done } = req.body;
+    const task = await taskService.updateServiceStep(id, stepId, req.user._id, done);
+    res.status(200).json({ success: true, message: "Checklist updated", data: task });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const updateFollowers = async (req, res, next) => {
   try {
     const { id } = req.params;

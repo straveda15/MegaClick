@@ -1,18 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
-  Search, ChevronUp, ChevronDown, ChevronsUpDown, Loader2, RefreshCcw, Upload, UserPlus, CheckCircle2,
+  Search, ChevronUp, ChevronDown, ChevronsUpDown, Info, Loader2, RefreshCcw, Upload,
 } from 'lucide-react';
-import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
   Select,
@@ -23,55 +13,44 @@ import {
 } from '@/components/ui/select';
 import ExportMenu from '@/components/ExportMenu';
 import ImportSheetDialog from '@/components/ImportSheetDialog';
-import ServiceCatalogPicker from '@/components/ServiceCatalogPicker';
+import AddLeadDialog from '@/components/leads/AddLeadDialog';
+import LeadDetailsDialog from '@/components/leads/LeadDetailsDialog';
 import type { SheetColumn } from '@/lib/sheet';
-import {
-  STAGE_LABELS,
-  STAGE_STYLES,
-  PRIORITY_STYLES,
-  SERVICE_STAGES,
-  stageProgress,
-  type ServiceStage,
-} from '@/data/services';
+import { STAGE_LABELS, SERVICE_STAGES, type ServiceStage } from '@/data/services';
+import { TEMPERATURE_LABELS } from '@/data/leadTemperature';
+import { SOURCE_STYLES, sourceLabel } from '@/data/leadSource';
 import {
   LEAD_PRIORITIES,
   LEAD_STATUSES,
-  useAssignLeadAsTask,
-  useCreateLead,
+  LEAD_TEMPERATURES,
   useImportLeads,
   useLeads,
   type LeadImportRow,
   type LeadPriority,
+  type LeadService,
   type LeadStatus,
+  type LeadTemperature,
   type SalesLead,
 } from '@/hooks/useLeads';
-import type { CatalogService } from '@/hooks/useServiceCatalog';
 import { useTeam } from '@/hooks/useTeam';
 
 /* ── Display constants ──────────────────────────────────────────────────────── */
-
-const KPI_STAGES: ServiceStage[] = [...SERVICE_STAGES];
 
 const STATUS_LABELS: Record<LeadStatus, string> = {
   NEW: 'New', CONTACTED: 'Contacted', FOLLOW_UP: 'Follow Up',
   CONVERTED: 'Converted', DROPPED: 'Dropped',
 };
 
-const STATUS_STYLES: Record<LeadStatus, { bg: string; text: string }> = {
-  NEW:       { bg: 'bg-blue-100',    text: 'text-blue-700'    },
-  CONTACTED: { bg: 'bg-sky-100',     text: 'text-sky-700'     },
-  FOLLOW_UP: { bg: 'bg-amber-100',   text: 'text-amber-700'   },
-  CONVERTED: { bg: 'bg-emerald-100', text: 'text-emerald-700' },
-  DROPPED:   { bg: 'bg-red-100',     text: 'text-red-700'     },
-};
-
 const PRIORITY_LABELS: Record<LeadPriority, string> = {
   LOW: 'Low', MEDIUM: 'Medium', HIGH: 'High', URGENT: 'Urgent',
 };
 
-const LEAD_TO_SERVICE_PRIORITY: Record<LeadPriority, keyof typeof PRIORITY_STYLES> = {
-  LOW: 'Low', MEDIUM: 'Medium', HIGH: 'High', URGENT: 'Urgent',
-};
+/**
+ * The Services column is deliberately fixed rather than fluid: a client with
+ * six services would otherwise stretch the row and push Follow Up and Source
+ * out of view. Past this width the list simply clips with an ellipsis.
+ */
+const SERVICES_COL_WIDTH = 240;
 
 /* ── Helpers ────────────────────────────────────────────────────────────────── */
 
@@ -80,15 +59,7 @@ const formatDateInput = (date: Date) => {
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
 };
 
-const todayDateInput = () => formatDateInput(new Date());
-
-const defaultDeadline = () => {
-  const d = new Date();
-  d.setDate(d.getDate() + 7);
-  return formatDateInput(d);
-};
-
-const formatDate = (iso?: string) => {
+const formatDate = (iso?: string | null) => {
   if (!iso) return '';
   const d = new Date(iso);
   return Number.isNaN(d.getTime()) ? '' : formatDateInput(d);
@@ -111,24 +82,42 @@ interface LeadRow {
   email: string;
   company: string;
   city: string;
-  service: string;
-  category: string;
-  assignedTo: string;
-  isAssigned: boolean;
-  stage: ServiceStage;
-  progress: number;
+  services: LeadService[];
+  serviceNames: string;
+  assignedCount: number;
+  followUp: string;
+  /** Unformatted, for date comparisons the display string cannot do. */
+  followUpAtRaw?: string;
+  followUpNote: string;
   deadline: string;
+  temperature: LeadTemperature;
   priority: LeadPriority;
   status: LeadStatus;
+  /** The raw channel; the board shows `sourceLabel(source)`. */
   source: string;
+  /** Kept for the spreadsheet export, which still ships one stage per lead. */
+  stage: ServiceStage;
 }
+
+/**
+ * The lead's deadline is the soonest date any of its services is due; a lead
+ * with nothing assigned yet falls back to the target date captured up front.
+ * Not a column any more, but still exported to spreadsheets.
+ */
+const leadDeadline = (lead: SalesLead) => {
+  const dates = (lead.services ?? [])
+    .map((service) => service.dueAt)
+    .filter(Boolean) as string[];
+
+  const soonest = dates.sort((a, b) => Number(new Date(a)) - Number(new Date(b)))[0];
+  return formatDate(soonest) || formatDate(lead.taskId?.dueAt);
+};
 
 const toRow = (lead: SalesLead): LeadRow => {
   // Bulk-imported leads can arrive with only a phone number — fall back to it
   // so the row stays identifiable.
   const client = lead.customer?.name?.trim() || lead.customer?.phone || 'Unnamed lead';
-  const stage = lead.serviceStage ?? 'documents_pending';
-  const assignedName = [lead.assignedTo?.name, lead.assignedTo?.lastName].filter(Boolean).join(' ');
+  const services = lead.services ?? [];
 
   return {
     id: lead._id,
@@ -139,17 +128,18 @@ const toRow = (lead: SalesLead): LeadRow => {
     email: lead.customer?.email ?? '',
     company: lead.customer?.company ?? '',
     city: lead.customer?.city ?? '',
-    service: lead.productInterest ?? '',
-    category: lead.serviceCategory ?? '',
-    assignedTo: assignedName || 'Unassigned',
-    isAssigned: Boolean(lead.assignedTo?._id),
-    stage,
-    progress: stageProgress(stage),
-    // Once assigned, the task's own deadline is the one that matters.
-    deadline: formatDate(lead.taskId?.dueAt) || formatDate(lead.followUpAt),
+    services,
+    serviceNames: services.map((s) => s.title).join(', '),
+    assignedCount: services.filter((s) => s.assignedTo?._id).length,
+    followUp: formatDate(lead.followUpAt),
+    followUpAtRaw: lead.followUpAt,
+    followUpNote: lead.followUpNote ?? '',
+    deadline: leadDeadline(lead),
+    temperature: lead.temperature ?? 'WARM',
     priority: lead.priority ?? 'MEDIUM',
     status: lead.status,
     source: lead.source ?? '',
+    stage: lead.serviceStage ?? 'documents_pending',
   };
 };
 
@@ -158,17 +148,22 @@ const toRow = (lead: SalesLead): LeadRow => {
 const LEAD_COLUMNS = [
   { key: 'name',            header: 'Client',            required: true, aliases: ['client name', 'lead name', 'customer', 'customer name', 'name'], value: (r: LeadRow) => r.client },
   { key: 'phone',           header: 'Phone',             required: true, aliases: ['mobile', 'mobile no', 'contact', 'phone no'],                     value: (r: LeadRow) => r.phone },
-  { key: 'productInterest', header: 'Service',           aliases: ['interested service', 'service name', 'interest', 'requirement'],                  value: (r: LeadRow) => r.service },
+  { key: 'productInterest', header: 'Services',          aliases: ['service', 'interested service', 'service name', 'interest', 'requirement'],       value: (r: LeadRow) => r.serviceNames },
   { key: 'email',           header: 'Email',             aliases: ['e-mail', 'email address'],                                                        value: (r: LeadRow) => r.email },
   { key: 'company',         header: 'Company',           aliases: ['organisation', 'organization', 'firm'],                                           value: (r: LeadRow) => r.company },
   { key: 'city',            header: 'City',              aliases: ['location'],                                                                       value: (r: LeadRow) => r.city },
-  { key: 'serviceCategory', header: 'Category',          aliases: ['service category'],                                                               value: (r: LeadRow) => r.category },
-  { key: 'assignedToName',  header: 'Assigned To',       aliases: ['assignee', 'employee', 'owner'],                                                  value: (r: LeadRow) => (r.isAssigned ? r.assignedTo : '') },
+  { key: 'serviceCategory', header: 'Category',          aliases: ['service category'],                                                               value: (r: LeadRow) => r.services[0]?.category ?? '' },
   { key: 'serviceStage',    header: 'Stage',             aliases: ['current stage'],                                                                  value: (r: LeadRow) => r.stage },
+  { key: 'temperature',     header: 'Status',            aliases: ['lead status', 'temperature', 'hot warm cold'],                                     value: (r: LeadRow) => TEMPERATURE_LABELS[r.temperature] },
   { key: 'priority',        header: 'Priority',          aliases: ['urgency'],                                                                        value: (r: LeadRow) => PRIORITY_LABELS[r.priority] },
-  { key: 'status',          header: 'Status',            aliases: ['lead status'],                                                                    value: (r: LeadRow) => STATUS_LABELS[r.status] },
-  { key: 'followUpAt',      header: 'Deadline',          aliases: ['follow up', 'followup', 'due date', 'target date'],                                value: (r: LeadRow) => r.deadline },
-  { key: 'source',          header: 'Source',            aliases: ['lead source'],                                                                    value: (r: LeadRow) => r.source },
+  { key: 'status',          header: 'Pipeline',          aliases: ['pipeline status'],                                                                value: (r: LeadRow) => STATUS_LABELS[r.status] },
+  { key: 'followUpAt',      header: 'Follow Up',         aliases: ['follow up', 'followup', 'follow up date', 'next follow up'],                       value: (r: LeadRow) => r.followUp },
+  { key: 'followUpNote',    header: 'Follow Up Note',    aliases: ['follow up note', 'followup note', 'remark', 'remarks'],                            value: (r: LeadRow) => r.followUpNote },
+  // Export-only: the soonest service target date, which the board no longer
+  // shows as its own column.
+  { key: 'targetDate',      header: 'Deadline',          aliases: ['due date', 'target date'],                                                        value: (r: LeadRow) => r.deadline },
+  { key: 'assignedToName',  header: 'Assigned To',       aliases: ['assignee', 'employee', 'owner'],                                                  value: (r: LeadRow) => r.services.map((s) => s.assignedTo?.name).filter(Boolean).join(', ') },
+  { key: 'source',          header: 'Source',            aliases: ['lead source'],                                                                    value: (r: LeadRow) => sourceLabel(r.source) },
 ] as const satisfies ReadonlyArray<SheetColumn<LeadRow> & { key: string }>;
 
 type LeadColumnKey = (typeof LEAD_COLUMNS)[number]['key'];
@@ -190,6 +185,21 @@ const parsePriority = (value: string): LeadPriority | undefined => {
   const normalized = value.trim().toUpperCase();
   return (LEAD_PRIORITIES as readonly string[]).includes(normalized) ? (normalized as LeadPriority) : undefined;
 };
+
+const parseTemperature = (value: string): LeadTemperature | undefined => {
+  const normalized = value.trim().toUpperCase();
+  return (LEAD_TEMPERATURES as readonly string[]).includes(normalized)
+    ? (normalized as LeadTemperature)
+    : undefined;
+};
+
+/** A sheet cell can list several services — split it back into an array. */
+const parseServices = (value?: string) =>
+  String(value ?? '')
+    .split(/[,;|]/)
+    .map((title) => title.trim())
+    .filter(Boolean)
+    .map((title) => ({ title }));
 
 /* ── Small controls ─────────────────────────────────────────────────────────── */
 
@@ -222,75 +232,24 @@ function FilterSelect({ value, onChange, label, options }: {
   );
 }
 
-function ProgressBar({ value }: { value: number }) {
-  const color =
-    value === 100 ? 'bg-emerald-500' :
-    value >= 70   ? 'bg-blue-600'    :
-    value >= 40   ? 'bg-blue-500'    :
-                    'bg-blue-400';
-
-  return (
-    <div className="flex items-center gap-2">
-      <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden min-w-[90px]">
-        <div className={`h-full rounded-full transition-all ${color}`} style={{ width: `${value}%` }} />
-      </div>
-      <span className="text-xs text-muted-foreground w-8 text-right shrink-0">{value}%</span>
-    </div>
-  );
-}
-
-/* ── Forms ──────────────────────────────────────────────────────────────────── */
-
-interface AddLeadForm {
-  client: string;
-  phone: string;
-  email: string;
-  company: string;
-  city: string;
-  state: string;
-  priority: LeadPriority;
-  followUpAt: string;
-  notes: string;
-}
-
-const EMPTY_LEAD_FORM: AddLeadForm = {
-  client: '', phone: '', email: '', company: '', city: '', state: '',
-  priority: 'MEDIUM', followUpAt: '', notes: '',
-};
-
-interface AssignForm {
-  assignedToId: string;
-  deadline: string;
-  priority: string;
-  notes: string;
-}
-
 /* ── Page ───────────────────────────────────────────────────────────────────── */
 
 const LeadsPage = () => {
   const [query, setQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
+  const [temperatureFilter, setTemperatureFilter] = useState('');
   const [assignedFilter, setAssignedFilter] = useState('');
-  const [stageFilter, setStageFilter] = useState('');
   const [sortKey, setSortKey] = useState<SortKey>(null);
   const [sortDir, setSortDir] = useState<SortDir>('asc');
 
   const [addOpen, setAddOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
   const [importFallbackAssignee, setImportFallbackAssignee] = useState('');
-  const [selectedService, setSelectedService] = useState<CatalogService | null>(null);
-  const [form, setForm] = useState<AddLeadForm>(EMPTY_LEAD_FORM);
 
-  const [assignTarget, setAssignTarget] = useState<LeadRow | null>(null);
-  const [assignForm, setAssignForm] = useState<AssignForm>({
-    assignedToId: '', deadline: defaultDeadline(), priority: 'medium', notes: '',
-  });
+  const [detailsLeadId, setDetailsLeadId] = useState<string | null>(null);
 
   const { data: leads = [], isLoading, isError, error, refetch } = useLeads();
   const { data: team = [], isLoading: teamLoading } = useTeam();
-  const createLead = useCreateLead();
   const importLeads = useImportLeads();
-  const assignLead = useAssignLeadAsTask();
 
   useEffect(() => {
     const openModal = () => setAddOpen(true);
@@ -304,28 +263,51 @@ const LeadsPage = () => {
 
   const allRows = useMemo(() => leads.map(toRow), [leads]);
 
-  const stageCounts = useMemo(() =>
-    KPI_STAGES.reduce((acc, stage) => {
-      acc[stage] = allRows.filter((r) => r.stage === stage).length;
-      return acc;
-    }, {} as Record<ServiceStage, number>),
-  [allRows]);
+  // Counts are per SERVICE, since hot/warm/cold belongs to the request rather
+  // than to the client — one person can be urgent about one thing and relaxed
+  // about another.
+  const kpis = useMemo(() => {
+    const services = allRows.flatMap((r) => r.services);
+    // "Due" is anything already past or landing before midnight tonight — the
+    // calls someone has to make today.
+    const endOfToday = new Date();
+    endOfToday.setHours(23, 59, 59, 999);
+
+    return {
+      total: allRows.length,
+      services: services.length,
+      followUpsDue: allRows.filter(
+        (r) => r.followUpAtRaw && new Date(r.followUpAtRaw) <= endOfToday
+      ).length,
+      hot: services.filter((s) => s.temperature === 'HOT').length,
+      warm: services.filter((s) => (s.temperature ?? 'WARM') === 'WARM').length,
+      cold: services.filter((s) => s.temperature === 'COLD').length,
+      unassigned: services.filter((s) => !s.assignedTo?._id).length,
+    };
+  }, [allRows]);
 
   const rows = useMemo(() => {
     const q = query.toLowerCase();
     let list = allRows.filter((r) => {
       const matchQ = !q
         || r.client.toLowerCase().includes(q)
-        || r.service.toLowerCase().includes(q)
+        || r.serviceNames.toLowerCase().includes(q)
         || r.leadId.toLowerCase().includes(q)
         || r.company.toLowerCase().includes(q)
-        || r.assignedTo.toLowerCase().includes(q)
         || r.phone.includes(q);
-      return matchQ
-        && (!statusFilter || r.status === statusFilter)
-        && (!stageFilter || r.stage === stageFilter)
-        && (!assignedFilter
-          || (assignedFilter === 'unassigned' ? !r.isAssigned : r.assignedTo === assignedFilter));
+
+      const matchAssigned =
+        !assignedFilter
+        || (assignedFilter === 'unassigned'
+          ? r.assignedCount < r.services.length || r.services.length === 0
+          : r.assignedCount === r.services.length && r.services.length > 0);
+
+      // A lead matches a temperature when any of its services carries it.
+      const matchTemperature =
+        !temperatureFilter
+        || r.services.some((s) => (s.temperature ?? 'WARM') === temperatureFilter);
+
+      return matchQ && matchAssigned && matchTemperature;
     });
 
     if (sortKey) {
@@ -335,105 +317,13 @@ const LeadsPage = () => {
       });
     }
     return list;
-  }, [allRows, query, statusFilter, stageFilter, assignedFilter, sortKey, sortDir]);
-
-  const assigneeOptions = useMemo(() => [
-    { value: 'unassigned', label: 'Unassigned only' },
-    ...Array.from(new Set(allRows.filter((r) => r.isAssigned).map((r) => r.assignedTo)))
-      .sort().map((v) => ({ value: v, label: v })),
-  ], [allRows]);
+  }, [allRows, query, temperatureFilter, assignedFilter, sortKey, sortDir]);
 
   const handleSort = (key: keyof LeadRow) => {
     if (sortKey === key) setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
     else { setSortKey(key); setSortDir('asc'); }
   };
 
-  const updateForm = <K extends keyof AddLeadForm>(field: K, value: AddLeadForm[K]) =>
-    setForm((c) => ({ ...c, [field]: value }));
-
-  const resetAddForm = () => {
-    setForm(EMPTY_LEAD_FORM);
-    setSelectedService(null);
-  };
-
-  const handleAddLead = () => {
-    const client = form.client.trim();
-    const phone = form.phone.trim();
-
-    if (!client || !phone) {
-      toast.error('Client name and phone number are required.');
-      return;
-    }
-
-    createLead.mutate(
-      {
-        name: client,
-        phone,
-        email: form.email.trim() || undefined,
-        company: form.company.trim() || undefined,
-        city: form.city.trim() || undefined,
-        state: form.state.trim() || undefined,
-        productInterest: selectedService?.title,
-        serviceSlug: selectedService?.slug,
-        serviceCategory: selectedService?.category,
-        serviceStage: 'documents_pending',
-        priority: form.priority,
-        status: 'NEW',
-        source: 'manual',
-        followUpAt: form.followUpAt || undefined,
-      },
-      {
-        onSuccess: () => {
-          setAddOpen(false);
-          resetAddForm();
-          toast.success(
-            selectedService
-              ? `Lead added — ${client} is interested in ${selectedService.title}.`
-              : `Lead added for ${client}.`
-          );
-        },
-        onError: (err: Error) => toast.error(err?.message || 'Failed to add lead.'),
-      }
-    );
-  };
-
-  const openAssign = (row: LeadRow) => {
-    setAssignTarget(row);
-    setAssignForm({
-      assignedToId: '',
-      deadline: row.deadline && row.deadline >= todayDateInput() ? row.deadline : defaultDeadline(),
-      priority: row.priority.toLowerCase(),
-      notes: '',
-    });
-  };
-
-  const handleAssign = () => {
-    if (!assignTarget || !assignForm.assignedToId) {
-      toast.error('Select an employee to assign this to.');
-      return;
-    }
-    if (!assignForm.deadline || assignForm.deadline < todayDateInput()) {
-      toast.error('Deadline cannot be in the past.');
-      return;
-    }
-
-    assignLead.mutate(
-      {
-        id: assignTarget.id,
-        assignedTo: assignForm.assignedToId,
-        dueAt: new Date(`${assignForm.deadline}T23:59:00`).toISOString(),
-        priority: assignForm.priority,
-        notes: assignForm.notes.trim() || undefined,
-      },
-      {
-        onSuccess: () => {
-          toast.success(`${assignTarget.service || 'Lead'} assigned. Task created for ${assignTarget.client}.`);
-          setAssignTarget(null);
-        },
-        onError: (err: Error) => toast.error(err?.message || 'Failed to assign lead.'),
-      }
-    );
-  };
 
   const handleImport = async (importRows: Array<Record<LeadColumnKey, string>>) => {
     const payload: LeadImportRow[] = importRows.map((row) => ({
@@ -442,14 +332,18 @@ const LeadsPage = () => {
       email: row.email,
       company: row.company,
       city: row.city,
+      // One cell can list several services — they come in as separate entries.
+      services: parseServices(row.productInterest),
       productInterest: row.productInterest,
       serviceCategory: row.serviceCategory,
       serviceStage: row.serviceStage ? parseStage(row.serviceStage) : undefined,
       source: row.source || 'excel',
       assignedToName: row.assignedToName,
+      temperature: row.temperature ? parseTemperature(row.temperature) : undefined,
       priority: row.priority ? parsePriority(row.priority) : undefined,
       status: row.status ? parseStatus(row.status) : undefined,
       followUpAt: row.followUpAt,
+      followUpNote: row.followUpNote,
     }));
 
     return importLeads.mutateAsync({
@@ -466,15 +360,20 @@ const LeadsPage = () => {
 
       {/* ── KPI strip ───────────────────────────────────────────────────────── */}
       <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
-        {KPI_STAGES.map((stage) => {
-          const ss = STAGE_STYLES[stage];
-          return (
-            <div key={stage} className="bg-card border border-border rounded-lg px-4 py-3 flex flex-col gap-1 hover:shadow-sm transition-shadow">
-              <span className={`text-[10px] font-semibold leading-tight ${ss.text}`}>{STAGE_LABELS[stage]}</span>
-              <span className="text-2xl font-bold text-foreground leading-none mt-1">{stageCounts[stage]}</span>
-            </div>
-          );
-        })}
+        {[
+          { label: 'Total Leads',       value: kpis.total,      tone: 'text-foreground'    },
+          { label: 'Follow-ups Due',    value: kpis.followUpsDue, tone: 'text-rose-700'    },
+          { label: 'Hot',               value: kpis.hot,        tone: 'text-red-700'       },
+          { label: 'Warm',              value: kpis.warm,       tone: 'text-amber-700'     },
+          { label: 'Cold',              value: kpis.cold,       tone: 'text-sky-700'       },
+          { label: 'Services Requested',value: kpis.services,   tone: 'text-blue-700'      },
+          { label: 'Unassigned',        value: kpis.unassigned, tone: 'text-orange-600'    },
+        ].map((kpi) => (
+          <div key={kpi.label} className="bg-card border border-border rounded-lg px-4 py-3 flex flex-col gap-1 hover:shadow-sm transition-shadow">
+            <span className={`text-[10px] font-semibold leading-tight ${kpi.tone}`}>{kpi.label}</span>
+            <span className="text-2xl font-bold text-foreground leading-none mt-1">{kpi.value}</span>
+          </div>
+        ))}
       </div>
 
       {/* ── Toolbar ─────────────────────────────────────────────────────────── */}
@@ -491,16 +390,15 @@ const LeadsPage = () => {
         </div>
 
         <FilterSelect
-          value={statusFilter} onChange={setStatusFilter} label="All Status"
-          options={LEAD_STATUSES.map((s) => ({ value: s, label: STATUS_LABELS[s] }))}
+          value={temperatureFilter} onChange={setTemperatureFilter} label="All Status"
+          options={LEAD_TEMPERATURES.map((t) => ({ value: t, label: TEMPERATURE_LABELS[t] }))}
         />
         <FilterSelect
-          value={stageFilter} onChange={setStageFilter} label="All Stages"
-          options={SERVICE_STAGES.map((s) => ({ value: s, label: STAGE_LABELS[s] }))}
-        />
-        <FilterSelect
-          value={assignedFilter} onChange={setAssignedFilter} label="All Assignees"
-          options={assigneeOptions}
+          value={assignedFilter} onChange={setAssignedFilter} label="All Leads"
+          options={[
+            { value: 'unassigned', label: 'Has unassigned work' },
+            { value: 'assigned', label: 'Fully assigned' },
+          ]}
         />
 
         <div className="ml-auto flex items-center gap-2.5">
@@ -527,36 +425,26 @@ const LeadsPage = () => {
                 <th className={thSort} onClick={() => handleSort('client')}>
                   <span className="flex items-center">Client <SortIcon col="client" sortKey={sortKey} sortDir={sortDir} /></span>
                 </th>
-                <th className={thSort} onClick={() => handleSort('service')}>
-                  <span className="flex items-center">Service <SortIcon col="service" sortKey={sortKey} sortDir={sortDir} /></span>
+                {/* Fixed width: a long list of services truncates rather than
+                    pushing the rest of the row off screen. */}
+                <th className={thBase} style={{ width: SERVICES_COL_WIDTH }}>Services</th>
+                <th className={thSort} onClick={() => handleSort('followUp')}>
+                  <span className="flex items-center">Follow Up <SortIcon col="followUp" sortKey={sortKey} sortDir={sortDir} /></span>
                 </th>
-                <th className={thSort} onClick={() => handleSort('assignedTo')}>
-                  <span className="flex items-center">Assigned <SortIcon col="assignedTo" sortKey={sortKey} sortDir={sortDir} /></span>
+                <th className={thSort} onClick={() => handleSort('source')}>
+                  <span className="flex items-center">Source <SortIcon col="source" sortKey={sortKey} sortDir={sortDir} /></span>
                 </th>
-                <th className={thSort} onClick={() => handleSort('stage')}>
-                  <span className="flex items-center">Current Stage <SortIcon col="stage" sortKey={sortKey} sortDir={sortDir} /></span>
-                </th>
-                <th className={thBase} style={{ minWidth: 160 }}>Progress</th>
-                <th className={thSort} onClick={() => handleSort('deadline')}>
-                  <span className="flex items-center">Deadline <SortIcon col="deadline" sortKey={sortKey} sortDir={sortDir} /></span>
-                </th>
-                <th className={thSort} onClick={() => handleSort('priority')}>
-                  <span className="flex items-center">Priority <SortIcon col="priority" sortKey={sortKey} sortDir={sortDir} /></span>
-                </th>
-                <th className={thSort} onClick={() => handleSort('status')}>
-                  <span className="flex items-center">Status <SortIcon col="status" sortKey={sortKey} sortDir={sortDir} /></span>
-                </th>
-                <th className={thBase}>Assign</th>
+                <th className={`${thBase} text-right`}>Details</th>
               </tr>
             </thead>
 
             <tbody className="divide-y divide-border">
               {isLoading ? (
-                <tr><td colSpan={10} className="text-center py-16 text-muted-foreground text-sm">
+                <tr><td colSpan={6} className="text-center py-16 text-muted-foreground text-sm">
                   <Loader2 className="w-4 h-4 animate-spin inline mr-2" />Loading leads…
                 </td></tr>
               ) : isError ? (
-                <tr><td colSpan={10} className="text-center py-16">
+                <tr><td colSpan={6} className="text-center py-16">
                   <p className="text-sm text-destructive mb-3">
                     {error instanceof Error ? error.message : 'Failed to load leads.'}
                   </p>
@@ -565,16 +453,15 @@ const LeadsPage = () => {
                   </Button>
                 </td></tr>
               ) : rows.length === 0 ? (
-                <tr><td colSpan={10} className="text-center py-16 text-muted-foreground text-sm">
+                <tr><td colSpan={6} className="text-center py-16 text-muted-foreground text-sm">
                   {allRows.length === 0
                     ? 'No leads yet. Use “Add Lead” to capture one, or import a spreadsheet.'
                     : 'No leads match your filters.'}
                 </td></tr>
               ) : (
                 rows.map((row) => {
-                  const stageStyle = STAGE_STYLES[row.stage];
-                  const priorityStyle = PRIORITY_STYLES[LEAD_TO_SERVICE_PRIORITY[row.priority]];
-                  const statusStyle = STATUS_STYLES[row.status];
+                  const source = sourceLabel(row.source);
+                  const sourceStyle = SOURCE_STYLES[source];
 
                   return (
                     <tr key={row.id} className="hover:bg-muted/30 transition-colors">
@@ -598,60 +485,45 @@ const LeadsPage = () => {
                         </div>
                       </td>
 
-                      <td className="px-4 py-3 whitespace-nowrap text-foreground text-sm">
-                        {row.service || <span className="text-muted-foreground">—</span>}
-                      </td>
-
-                      <td className="px-4 py-3 whitespace-nowrap text-sm">
-                        {row.isAssigned ? (
-                          <span className="text-foreground">{row.assignedTo}</span>
+                      {/* Services as plain text, clipped to a fixed width. The
+                          full list is in the tooltip and the details popup. */}
+                      <td className="px-4 py-3" style={{ width: SERVICES_COL_WIDTH, maxWidth: SERVICES_COL_WIDTH }}>
+                        {row.services.length === 0 ? (
+                          <span className="text-muted-foreground">—</span>
                         ) : (
-                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-gray-100 text-gray-600">
-                            Unassigned
-                          </span>
+                          <div style={{ maxWidth: SERVICES_COL_WIDTH }}>
+                            <span
+                              title={row.serviceNames}
+                              className="block text-sm text-foreground truncate"
+                            >
+                              {row.serviceNames}
+                            </span>
+                            <span className="block text-[10px] text-muted-foreground mt-0.5">
+                              {row.assignedCount} of {row.services.length} assigned
+                            </span>
+                          </div>
                         )}
                       </td>
 
-                      <td className="px-4 py-3 whitespace-nowrap">
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${stageStyle.bg} ${stageStyle.text}`}>
-                          {STAGE_LABELS[row.stage]}
-                        </span>
-                      </td>
-
-                      <td className="px-4 py-3" style={{ minWidth: 160 }}>
-                        <ProgressBar value={row.progress} />
-                      </td>
-
                       <td className="px-4 py-3 whitespace-nowrap text-foreground text-sm">
-                        {row.deadline || '—'}
+                        {row.followUp || '—'}
                       </td>
 
                       <td className="px-4 py-3 whitespace-nowrap">
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${priorityStyle.bg} ${priorityStyle.text}`}>
-                          {PRIORITY_LABELS[row.priority]}
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${sourceStyle.bg} ${sourceStyle.text}`}>
+                          {source}
                         </span>
                       </td>
 
-                      <td className="px-4 py-3 whitespace-nowrap">
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusStyle.bg} ${statusStyle.text}`}>
-                          {STATUS_LABELS[row.status]}
-                        </span>
-                      </td>
-
-                      {/* Assign to an employee as a task */}
-                      <td className="px-4 py-3 whitespace-nowrap">
+                      {/* In-depth details, and per-service assignment inside */}
+                      <td className="px-4 py-3 whitespace-nowrap text-right">
                         <button
-                          onClick={() => openAssign(row)}
-                          title={row.isAssigned ? `Reassign — currently with ${row.assignedTo}` : 'Assign to an employee'}
-                          className={`inline-flex items-center gap-1.5 h-8 px-2.5 rounded-md border text-xs font-medium transition-colors ${
-                            row.isAssigned
-                              ? 'border-border bg-card text-muted-foreground hover:bg-muted'
-                              : 'border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100'
-                          }`}
+                          onClick={() => setDetailsLeadId(row.id)}
+                          title="View full details"
+                          aria-label={`View details for ${row.client}`}
+                          className="inline-flex items-center justify-center w-8 h-8 rounded-full border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors"
                         >
-                          {row.isAssigned
-                            ? <><CheckCircle2 className="w-3.5 h-3.5" />Reassign</>
-                            : <><UserPlus className="w-3.5 h-3.5" />Assign</>}
+                          <Info className="w-4 h-4" />
                         </button>
                       </td>
                     </tr>
@@ -671,12 +543,19 @@ const LeadsPage = () => {
         )}
       </div>
 
+      {/* ── Lead details ("i") — read-only; assigning happens on Clients ───── */}
+      <LeadDetailsDialog
+        leadId={detailsLeadId}
+        open={Boolean(detailsLeadId)}
+        onOpenChange={(open) => !open && setDetailsLeadId(null)}
+      />
+
       {/* ── Import ──────────────────────────────────────────────────────────── */}
       <ImportSheetDialog<LeadColumnKey>
         open={importOpen}
         onOpenChange={setImportOpen}
         title="Import Leads"
-        description="Upload a CSV or Excel file of leads. The phone number identifies the client — rows sharing a number update the same contact."
+        description="Upload a CSV or Excel file of leads. The phone number identifies the client — rows sharing a number update the same contact. List several services in one cell, separated by commas."
         columns={[...LEAD_COLUMNS]}
         templateBaseName="leads"
         onImport={handleImport}
@@ -703,209 +582,8 @@ const LeadsPage = () => {
         }
       />
 
-      {/* ── Add Lead ────────────────────────────────────────────────────────── */}
-      <Dialog
-        open={addOpen}
-        onOpenChange={(open) => { setAddOpen(open); if (!open) resetAddForm(); }}
-      >
-        <DialogContent className="max-w-4xl p-0 overflow-hidden">
-          <DialogHeader className="px-6 pt-6">
-            <DialogTitle>Add Lead</DialogTitle>
-            <DialogDescription>
-              Capture a client and the service they're interested in. Assign it to an employee later
-              with the Assign button on the row.
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="grid gap-0 md:grid-cols-[minmax(0,1fr)_minmax(320px,1fr)]">
-            <div className="border-y md:border-r md:border-y-0 border-border p-4">
-              <ServiceCatalogPicker
-                selectedSlug={selectedService?.slug ?? ''}
-                onSelect={setSelectedService}
-                height="h-[420px]"
-              />
-            </div>
-
-            <div className="p-4 space-y-3 max-h-[480px] overflow-y-auto">
-              <div className="space-y-2">
-                <Label htmlFor="lead-client">Client name *</Label>
-                <Input id="lead-client" value={form.client} onChange={(e) => updateForm('client', e.target.value)} placeholder="Full name of the client" />
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="space-y-2">
-                  <Label htmlFor="lead-phone">Phone *</Label>
-                  <Input id="lead-phone" value={form.phone} onChange={(e) => updateForm('phone', e.target.value)} placeholder="+91…" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="lead-email">Email</Label>
-                  <Input id="lead-email" type="email" value={form.email} onChange={(e) => updateForm('email', e.target.value)} placeholder="client@example.com" />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="lead-company">Company</Label>
-                <Input id="lead-company" value={form.company} onChange={(e) => updateForm('company', e.target.value)} placeholder="Optional" />
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="space-y-2">
-                  <Label htmlFor="lead-city">City</Label>
-                  <Input id="lead-city" value={form.city} onChange={(e) => updateForm('city', e.target.value)} placeholder="Optional" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="lead-state">State</Label>
-                  <Input id="lead-state" value={form.state} onChange={(e) => updateForm('state', e.target.value)} placeholder="Optional" />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="space-y-2">
-                  <Label>Priority</Label>
-                  <Select value={form.priority} onValueChange={(v) => updateForm('priority', v as LeadPriority)}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      {LEAD_PRIORITIES.map((p) => <SelectItem key={p} value={p}>{PRIORITY_LABELS[p]}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="lead-followup">Target date</Label>
-                  <Input id="lead-followup" type="date" value={form.followUpAt} onChange={(e) => updateForm('followUpAt', e.target.value)} />
-                </div>
-              </div>
-
-              <div className="rounded-md border border-border bg-muted/30 px-3 py-3">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
-                  Interested Service
-                </p>
-                {selectedService ? (
-                  <div className="mt-2">
-                    <p className="text-sm font-semibold text-foreground">{selectedService.title}</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">{selectedService.category}</p>
-                  </div>
-                ) : (
-                  <p className="text-sm text-muted-foreground mt-2">No service selected yet — you can add one later.</p>
-                )}
-              </div>
-            </div>
-          </div>
-
-          <DialogFooter className="px-6 pb-6">
-            <Button variant="outline" onClick={() => setAddOpen(false)}>Cancel</Button>
-            <Button
-              onClick={handleAddLead}
-              disabled={!form.client.trim() || !form.phone.trim() || createLead.isPending}
-            >
-              {createLead.isPending ? 'Adding…' : 'Add Lead'}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* ── Assign lead as a task ───────────────────────────────────────────── */}
-      <Dialog open={!!assignTarget} onOpenChange={(open) => !open && setAssignTarget(null)}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader>
-            <DialogTitle>{assignTarget?.isAssigned ? 'Reassign Lead' : 'Assign Lead'}</DialogTitle>
-            <DialogDescription>
-              Creates a task for the employee, carrying {assignTarget?.client}'s full contact details
-              and the service they want.
-            </DialogDescription>
-          </DialogHeader>
-
-          {assignTarget && (
-            <div className="space-y-4">
-              <div className="rounded-md border border-border bg-muted/30 px-3 py-3 space-y-1">
-                <p className="text-sm font-semibold text-foreground">{assignTarget.service || 'No service selected'}</p>
-                <p className="text-xs text-muted-foreground">
-                  {assignTarget.client}
-                  {assignTarget.phone && ` · ${assignTarget.phone}`}
-                  {assignTarget.company && ` · ${assignTarget.company}`}
-                </p>
-                {assignTarget.isAssigned && (
-                  <p className="text-[11px] text-amber-700 pt-1">
-                    Currently with {assignTarget.assignedTo}. Reassigning creates a fresh task for the
-                    new employee; the existing one is left as-is.
-                  </p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label>Assign to *</Label>
-                <Select
-                  value={assignForm.assignedToId}
-                  onValueChange={(v) => setAssignForm((c) => ({ ...c, assignedToId: v }))}
-                  disabled={teamLoading || activeEmployees.length === 0}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder={teamLoading ? 'Loading employees…' : 'Select employee'} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {activeEmployees.map((e) => {
-                      const id = String(e.userId?._id);
-                      const name = [e.userId?.name, e.userId?.lastName].filter(Boolean).join(' ') || 'Unnamed employee';
-                      const meta = e.designation || e.department || 'Employee';
-                      return <SelectItem key={id} value={id}>{name} - {meta}</SelectItem>;
-                    })}
-                  </SelectContent>
-                </Select>
-                {!teamLoading && activeEmployees.length === 0 && (
-                  <p className="text-xs text-muted-foreground">No active employees available.</p>
-                )}
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-2">
-                  <Label htmlFor="assign-deadline">Deadline</Label>
-                  <Input
-                    id="assign-deadline"
-                    type="date"
-                    min={todayDateInput()}
-                    value={assignForm.deadline}
-                    onChange={(e) => setAssignForm((c) => ({ ...c, deadline: e.target.value }))}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Priority</Label>
-                  <Select
-                    value={assignForm.priority}
-                    onValueChange={(v) => setAssignForm((c) => ({ ...c, priority: v }))}
-                  >
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="low">Low</SelectItem>
-                      <SelectItem value="medium">Medium</SelectItem>
-                      <SelectItem value="high">High</SelectItem>
-                      <SelectItem value="urgent">Urgent</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="assign-notes">Notes for the assignee</Label>
-                <textarea
-                  id="assign-notes"
-                  value={assignForm.notes}
-                  onChange={(e) => setAssignForm((c) => ({ ...c, notes: e.target.value }))}
-                  placeholder="Documents collected, special instructions…"
-                  className="w-full min-h-[64px] rounded-md border border-border bg-card px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
-                />
-              </div>
-            </div>
-          )}
-
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setAssignTarget(null)} disabled={assignLead.isPending}>
-              Cancel
-            </Button>
-            <Button onClick={handleAssign} disabled={!assignForm.assignedToId || assignLead.isPending}>
-              {assignLead.isPending ? 'Assigning…' : 'Assign as Task'}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      {/* ── Add Lead ────────────────────────────────────────────── */}
+      <AddLeadDialog open={addOpen} onOpenChange={setAddOpen} />
     </div>
   );
 };

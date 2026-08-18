@@ -11,6 +11,15 @@ export const selfPunchInSchema = Joi.object({
   isHalfDay: Joi.boolean().default(false),
   // Presence enforced in service (conditional on isHalfDay) with a targeted message.
   halfDayReason: Joi.string().trim().allow("", null),
+  // Office work is gated on the assigned geofence; site work is declared by the
+  // employee, so it carries its own name and coordinates.
+  workMode: Joi.string().valid("office", "site").default("office"),
+  site: Joi.object({
+    name: Joi.string().trim().max(200).required(),
+    lat: Joi.number().min(-90).max(90).required(),
+    lng: Joi.number().min(-180).max(180).required(),
+  }).when("workMode", { is: "site", then: Joi.required(), otherwise: Joi.optional().allow(null) })
+    .messages({ "any.required": "Enter the site name and its latitude and longitude." }),
 });
 
 // Self-service punch-out (employee via /me/punch-out).

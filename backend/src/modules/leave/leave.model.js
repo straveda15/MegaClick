@@ -28,6 +28,17 @@ const leaveSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    // A half day is a single date worked in part. Kept as its own flag rather
+    // than inferred from `days === 0.5`, so the session (morning/afternoon) has
+    // somewhere to live and rounding can never turn a half day into a full one.
+    isHalfDay: {
+      type: Boolean,
+      default: false,
+    },
+    halfDaySession: {
+      type: String,
+      enum: ["first_half", "second_half"],
+    },
     reason: {
       type: String,
       required: true,

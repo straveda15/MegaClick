@@ -1,5 +1,54 @@
 import mongoose from "mongoose";
 
+export const SERVICE_STAGE_VALUES = [
+  "documents_pending",
+  "documents_received",
+  "application_submitted",
+  "government_verification",
+  "approval_received",
+  "certificate_ready",
+  "completed",
+];
+
+/**
+ * One service the client asked for. A lead can carry several of these, and each
+ * is assigned to an employee independently — so the same client can have their
+ * GST filing with one person and their trademark with another.
+ */
+const leadServiceSchema = new mongoose.Schema(
+  {
+    title: { type: String, required: true, trim: true },
+    slug: { type: String, trim: true },
+    category: { type: String, trim: true },
+    categorySlug: { type: String, trim: true },
+    // Where this particular service sits in the filing pipeline.
+    stage: {
+      type: String,
+      enum: SERVICE_STAGE_VALUES,
+      default: "documents_pending",
+    },
+    // How warm this particular request is. A client can be desperate for their
+    // marriage registration and lukewarm about a trademark, so temperature is
+    // tracked per service rather than only on the lead as a whole.
+    temperature: {
+      type: String,
+      enum: ["HOT", "WARM", "COLD"],
+      default: "WARM",
+    },
+    // When work on this service is meant to begin. Captured up front, before
+    // anyone is assigned — `assignedAt` records when it actually started.
+    startAt: { type: Date },
+    // Set once this service has been handed to an employee.
+    taskId: { type: mongoose.Schema.Types.ObjectId, ref: "Task" },
+    assignedTo: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    assignedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    assignedAt: { type: Date },
+    dueAt: { type: Date },
+    notes: { type: String, trim: true },
+  },
+  { _id: true, timestamps: false }
+);
+
 const salesLeadSchema = new mongoose.Schema(
   {
     customer: {
@@ -49,18 +98,24 @@ const salesLeadSchema = new mongoose.Schema(
     },
     // Where the request sits in the filing pipeline. Tracked on the lead so the
     // Leads board shows progress before and after a task is assigned.
+    // Legacy single-service mirror of services[0] — kept so older leads, the CSV
+    // pipelines and anything still reading the flat fields keep working.
     serviceStage: {
       type: String,
-      enum: [
-        "documents_pending",
-        "documents_received",
-        "application_submitted",
-        "government_verification",
-        "approval_received",
-        "certificate_ready",
-        "completed",
-      ],
+      enum: SERVICE_STAGE_VALUES,
       default: "documents_pending",
+    },
+    // Every service the client opted for. Each entry is assigned separately.
+    services: {
+      type: [leadServiceSchema],
+      default: [],
+    },
+    // How warm the lead is. Distinct from `status`, which tracks the sales
+    // pipeline — this is the at-a-glance signal shown on the Leads board.
+    temperature: {
+      type: String,
+      enum: ["HOT", "WARM", "COLD"],
+      default: "WARM",
     },
     priority: {
       type: String,
@@ -82,9 +137,18 @@ const salesLeadSchema = new mongoose.Schema(
     followUpNote: {
       type: String,
     },
+    // One entry per logged follow-up: what happened, when it was logged, and
+    // the next date it was pushed to. The timeline on the Follow-ups page and
+    // in the lead/client popups is read straight off this.
     followUpHistory: [
       {
         note: String,
+        outcome: {
+          type: String,
+          enum: ["contacted", "no_answer", "rescheduled", "meeting_set", "note"],
+          default: "note",
+        },
+        // The next follow-up this entry scheduled.
         followUpAt: { type: Date },
         createdAt: { type: Date, default: Date.now },
         createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
@@ -141,6 +205,7 @@ salesLeadSchema.index({ pool: 1, status: 1 });
 salesLeadSchema.index({ followUpAt: 1 });
 salesLeadSchema.index({ status: 1, followUpAt: 1 });
 salesLeadSchema.index({ customer: 1 });
+salesLeadSchema.index({ "services.assignedTo": 1 });
 
 const SalesLead = mongoose.model("SalesLead", salesLeadSchema);
 

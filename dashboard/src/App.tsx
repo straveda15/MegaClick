@@ -14,6 +14,8 @@ import LoginPage from '@/pages/LoginPage';
 import DashboardPage from '@/pages/DashboardPage';
 import LeadsPage from '@/pages/LeadsPage';
 import ClientsPage from '@/pages/ClientsPage';
+import FollowUpsPage from '@/pages/FollowUpsPage';
+import ServiceStepsPage from '@/pages/ServiceStepsPage';
 import DepartmentsPage from '@/pages/DepartmentsPage';
 import ReportsPage from '@/pages/ReportsPage';
 import NotificationsPage from '@/pages/NotificationsPage';
@@ -77,6 +79,17 @@ const App = () => (
                       <Route
                         path="/clients"
                         element={<RoleGuard><ClientsPage /></RoleGuard>}
+                      />
+                      {/* Everything owed a call back, across leads and clients. */}
+                      <Route
+                        path="/follow-ups"
+                        element={<RoleGuard><FollowUpsPage /></RoleGuard>}
+                      />
+                      {/* Where each service's step checklist is defined —
+                          preloaded into the assign screen on the Leads page. */}
+                      <Route
+                        path="/service-steps"
+                        element={<RoleGuard><ServiceStepsPage /></RoleGuard>}
                       />
                       <Route
                         path="/departments"

@@ -7,9 +7,9 @@ export const employeeLoginSchema = Joi.object({
       "string.empty": "Phone number is required.",
     }),
   email: Joi.string().email().optional(),
-  countryCode: Joi.string().optional().messages({
-    "string.empty": "Country code is required.",
-  }),
+  // The login form no longer asks for a country — every phone login is
+  // assumed Indian unless a caller explicitly says otherwise.
+  countryCode: Joi.string().optional().default("IN"),
   password: Joi.string().required().messages({
     "string.empty": "Password is required.",
   }),

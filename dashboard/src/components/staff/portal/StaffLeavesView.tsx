@@ -41,6 +41,9 @@ export function StaffLeavesView({ onBack }: Props) {
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
   const [reason, setReason] = useState("");
+  // A half day covers one date only, so picking it collapses the range.
+  const [isHalfDay, setIsHalfDay] = useState(false);
+  const [halfDaySession, setHalfDaySession] = useState<"first_half" | "second_half">("first_half");
 
   const { data: leaves = [], isLoading: loadingLeaves } = useMyLeaves();
   const { data: balance } = useMyLeaveBalance();
@@ -85,7 +88,19 @@ export function StaffLeavesView({ onBack }: Props) {
   // calendar resets the range if a user tries to drag across a blocked date.
   const disabledDays = [{ before: today }, ...bookedRanges];
 
+  /** Half day is one date — selecting a range in that mode keeps only the start. */
+  const handleHalfDayToggle = (next: boolean) => {
+    setIsHalfDay(next);
+    if (next && fromDate) setToDate(fromDate);
+  };
+
   const handleRangeSelect = (range: DateRange | undefined) => {
+    if (isHalfDay && range?.from) {
+      const day = format(range.from, "yyyy-MM-dd");
+      setFromDate(day);
+      setToDate(day);
+      return;
+    }
     if (!range || !range.from) {
       setFromDate("");
       setToDate("");
@@ -136,7 +151,9 @@ export function StaffLeavesView({ onBack }: Props) {
     if (toDate < fromDate) { toast.error("End date must be on or after start date"); return; }
 
     if (remainingForType !== null) {
-      const requestedDays = differenceInDays(new Date(toDate), new Date(fromDate)) + 1;
+      const requestedDays = isHalfDay
+        ? 0.5
+        : differenceInDays(new Date(toDate), new Date(fromDate)) + 1;
       if (remainingForType === 0) {
         toast.error(`No ${LEAVE_TYPE_LABELS[leaveType]} remaining`);
         return;
@@ -152,11 +169,15 @@ export function StaffLeavesView({ onBack }: Props) {
       await applyMutation.mutateAsync({
         leaveType,
         fromDate,
-        toDate,
+        // A half day is a single date, whatever the calendar last held.
+        toDate: isHalfDay ? fromDate : toDate,
         reason,
+        isHalfDay,
+        halfDaySession: isHalfDay ? halfDaySession : undefined,
       });
       toast.success("Leave request submitted!", { id: t });
       setShowApply(false);
+      setIsHalfDay(false);
     } catch (err: any) {
       toast.error(err.message, { id: t });
     }
@@ -263,6 +284,12 @@ export function StaffLeavesView({ onBack }: Props) {
                       }`}>
                         {leave.status}
                       </span>
+                      {leave.isHalfDay && (
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-violet-100 text-violet-700 uppercase">
+                          Half day
+                          {leave.halfDaySession === "second_half" ? " · PM" : " · AM"}
+                        </span>
+                      )}
                     </div>
                     <p className="text-sm font-semibold">
                       {leave.fromDate ? format(new Date(leave.fromDate), "d MMM") : "—"} – {leave.toDate ? format(new Date(leave.toDate), "d MMM yyyy") : "—"} · {days} day{days !== 1 ? "s" : ""}
@@ -344,6 +371,53 @@ export function StaffLeavesView({ onBack }: Props) {
                   Dates already on leave are blocked and can't be selected.
                 </div>
               </div>
+
+              {/* Half day — costs 0.5 from the balance and covers one date */}
+              <div className="rounded-xl border border-border bg-muted/20 p-3">
+                <label className="flex items-center gap-2.5 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={isHalfDay}
+                    onChange={(e) => handleHalfDayToggle(e.target.checked)}
+                    className="w-4 h-4 rounded border-border accent-primary"
+                  />
+                  <span className="text-sm font-semibold text-foreground">Half day</span>
+                  <span className="text-[11px] text-muted-foreground">
+                    Counts as 0.5 day
+                  </span>
+                </label>
+
+                {isHalfDay && (
+                  <div className="mt-2.5">
+                    <label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest block mb-1.5">
+                      Which half
+                    </label>
+                    <div className="grid grid-cols-2 gap-2">
+                      {([
+                        { value: "first_half", label: "First half (morning)" },
+                        { value: "second_half", label: "Second half (afternoon)" },
+                      ] as const).map((option) => (
+                        <button
+                          key={option.value}
+                          type="button"
+                          onClick={() => setHalfDaySession(option.value)}
+                          className={`h-9 rounded-lg text-xs font-semibold border transition-colors ${
+                            halfDaySession === option.value
+                              ? "border-primary bg-primary text-primary-foreground"
+                              : "border-border bg-card text-muted-foreground hover:bg-muted"
+                          }`}
+                        >
+                          {option.label}
+                        </button>
+                      ))}
+                    </div>
+                    <p className="text-[10px] text-muted-foreground mt-1.5">
+                      Pick a single date on the calendar above.
+                    </p>
+                  </div>
+                )}
+              </div>
+
               <div>
                 <label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest block mb-1.5">Reason</label>
                 <textarea

@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import { UserPlus, User, Check, Search, X } from "lucide-react";
 import { toast } from "sonner";
 import { useTeam } from "@/hooks/useTeam";
-import { ROLE_CATEGORIES, matchesRoleFilter } from "@/components/tasks/CreateTaskModal";
+import { ROLE_CATEGORIES, matchesRoleFilter } from "@/components/tasks/roleFilter";
 
 interface ReassignTaskModalProps {
   taskTitle: string;

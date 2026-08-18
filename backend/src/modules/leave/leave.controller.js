@@ -122,11 +122,13 @@ export const getMyLeaveBalance = async (req, res) => {
 
 export const applyLeaveForSelf = async (req, res) => {
   try {
-    const { leaveType, fromDate, toDate, reason } = req.body;
+    const { leaveType, fromDate, toDate, reason, isHalfDay, halfDaySession } = req.body;
     if (!leaveType || !fromDate || !toDate || !reason) {
       return res.status(400).json({ success: false, message: "leaveType, fromDate, toDate, and reason are required." });
     }
-    const leave = await leaveService.applyLeaveForSelf(req.user._id, { leaveType, fromDate, toDate, reason });
+    const leave = await leaveService.applyLeaveForSelf(req.user._id, {
+      leaveType, fromDate, toDate, reason, isHalfDay, halfDaySession,
+    });
     return res.status(201).json({ success: true, data: leave });
   } catch (error) {
     return res.status(400).json({ success: false, message: error.message || "Failed to apply leave." });

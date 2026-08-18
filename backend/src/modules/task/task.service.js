@@ -1,5 +1,6 @@
 import Task from "./task.model.js";
 import User from "../user/user.model.js";
+import SalesLead from "../sales/models/salesLead.model.js";
 import AppError from "../../shared/utils/appError.js";
 import taskEventEmitter, { TASK_EVENTS } from "./events/taskEventEmitter.js";
 
@@ -92,6 +93,9 @@ export const getMyTasks = async (userId, filters = {}) => {
   } else if (typeConditions.length > 1) {
     query.$and = [...(query.$and || []), ...typeConditions];
   }
+
+  // A deleted task is gone from every board, whichever view asked for it.
+  query.isDeleted = { $ne: true };
 
   const tasks = await Task.find(query)
     .populate("assignedTo", "name lastName email isActive")
@@ -504,6 +508,41 @@ export const cancelTask = async (taskId, actorId, scope = "all") => {
   return await Task.find(query).populate("assignedTo").populate("assignedBy");
 };
 
+/**
+ * Removes a task from every board.
+ *
+ * Soft delete rather than a hard one: work logs, follow-up notes and history
+ * all point at this id, and destroying the row would leave those dangling.
+ *
+ * Only the person who assigned the task or an admin can remove it — an
+ * assignee who could delete their own work could quietly make it disappear.
+ */
+export const deleteTask = async (taskId, actorId, scope = "all") => {
+  const task = await Task.findById(taskId);
+  if (!task) throw new AppError("Task not found.", 404);
+  if (task.isDeleted) throw new AppError("This task has already been deleted.", 409);
+
+  const actor = await User.findById(actorId).select("role");
+  const isAdmin = actor?.role === "admin";
+  const isAssigner = String(task.assignedBy) === String(actorId);
+  if (!isAdmin && !isAssigner) {
+    throw new AppError("Only the person who assigned this task, or an admin, can delete it.", 403);
+  }
+
+  // "single" removes just this copy; "all" removes every copy created when the
+  // same task was assigned to several people at once.
+  const query =
+    scope === "single" || !task.taskGroup
+      ? { _id: task._id }
+      : { taskGroup: task.taskGroup };
+
+  const result = await Task.updateMany(query, {
+    $set: { isDeleted: true, deletedAt: new Date(), deletedBy: actorId },
+  });
+
+  return { deleted: result.modifiedCount ?? 0 };
+};
+
 export const autoFlagOverdueTasks = async () => {
     try {
         const now = new Date();
@@ -566,6 +605,61 @@ export const addFollowUp = async (taskId, userId, message) => {
 
   task.followUps.push({ message: text, author: userId, createdAt: new Date() });
   await task.save();
+  return await populateTask(task._id);
+};
+
+/**
+ * Ticks (or un-ticks) one step of a service request's checklist.
+ *
+ * The checklist is how progress on a service is actually measured, so the lead
+ * this task came off is nudged along with it: finishing every step marks the
+ * service complete, and the first tick moves it out of "documents pending".
+ */
+export const updateServiceStep = async (taskId, stepId, actorId, done) => {
+  const task = await Task.findById(taskId);
+  if (!task) throw new AppError("Task not found.", 404);
+
+  const step = task.serviceRequest?.steps?.id(stepId);
+  if (!step) throw new AppError("That step is not on this task.", 404);
+
+  const actor = await User.findById(actorId).select("role");
+  const isAdmin = actor?.role === "admin";
+  const isStakeholder =
+    String(task.assignedTo) === String(actorId) ||
+    String(task.assignedBy) === String(actorId);
+  if (!isAdmin && !isStakeholder) {
+    throw new AppError("You don't have access to update this checklist.", 403);
+  }
+
+  step.done = Boolean(done);
+  step.completedAt = step.done ? new Date() : undefined;
+  step.completedBy = step.done ? actorId : undefined;
+
+  const steps = task.serviceRequest.steps;
+  const allDone = steps.length > 0 && steps.every((s) => s.done);
+
+  if (allDone) {
+    task.serviceRequest.stage = "completed";
+  } else if (task.serviceRequest.stage === "completed") {
+    // Re-opening a step means the service is no longer finished.
+    task.serviceRequest.stage = "certificate_ready";
+  } else if (steps.some((s) => s.done) && task.serviceRequest.stage === "documents_pending") {
+    task.serviceRequest.stage = "documents_received";
+  }
+
+  await task.save();
+
+  // Mirror the stage back onto the lead's service so the Leads and Clients
+  // boards agree with the task board without a second write path.
+  const leadId = task.serviceRequest?.leadId;
+  const leadServiceId = task.serviceRequest?.leadServiceId;
+  if (leadId && leadServiceId) {
+    await SalesLead.updateOne(
+      { _id: leadId, "services._id": leadServiceId },
+      { $set: { "services.$.stage": task.serviceRequest.stage } }
+    );
+  }
+
   return await populateTask(task._id);
 };
 

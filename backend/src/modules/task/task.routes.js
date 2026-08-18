@@ -11,6 +11,8 @@ router.get("/my", authenticateUser, taskController.getMyTasks);
 router.get("/:id", authenticateUser, taskController.getTaskById);
 router.patch("/:id/status", authenticateUser, taskController.updateTaskStatus);
 router.patch("/:id/cancel", authenticateUser, taskController.cancelTask);
+// Soft delete — hides the task everywhere but keeps the row for history.
+router.delete("/:id", authenticateUser, taskController.deleteTask);
 router.post("/manual", authenticateUser, taskController.createManualTask);
 // Bulk service-request import from a CSV/Excel upload parsed client-side.
 router.post("/service-import", authenticateUser, taskController.importServiceTasks);
@@ -18,6 +20,9 @@ router.post("/service-import", authenticateUser, taskController.importServiceTas
 // Issue management
 router.post("/:id/issue", authenticateUser, taskController.raiseIssue);
 router.patch("/:id/issue/:flagId/respond", authenticateUser, taskController.respondToIssue);
+
+// Service-request checklist: tick a step off as the work progresses
+router.patch("/:id/steps/:stepId", authenticateUser, taskController.updateServiceStep);
 
 // Follow-up: tag followers + post follow-up notes
 router.patch("/:id/followers", authenticateUser, taskController.updateFollowers);
