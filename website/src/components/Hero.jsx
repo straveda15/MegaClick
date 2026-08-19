@@ -1,3 +1,5 @@
+
+
 import React, { useEffect } from "react";
 import {
   ArrowRight,
@@ -90,7 +92,6 @@ const Hero = () => {
       id="home"
       className="relative overflow-hidden bg-white font-['Inter',sans-serif]"
     >
-      {/* Container aligned with your Navbar */}
       <div
         className="
           max-w-[1500px]
@@ -99,7 +100,7 @@ const Hero = () => {
           sm:px-8
           lg:px-16
           xl:px-24
-          py-8
+          py-6
           sm:py-10
           lg:py-12
         "
@@ -109,18 +110,19 @@ const Hero = () => {
             grid
             grid-cols-1
             lg:grid-cols-2
-            gap-10
+            gap-8
+            sm:gap-10
             lg:gap-12
             xl:gap-16
             items-center
           "
         >
           {/* =====================================================
-              LEFT CONTENT
+              LEFT CONTENT (PERFECT STARTING ALIGNMENT)
           ====================================================== */}
           <div
             className="
-              space-y-5
+              space-y-4
               sm:space-y-6
               md:space-y-7
               w-full
@@ -130,7 +132,7 @@ const Hero = () => {
               text-left
             "
           >
-            {/* TRUSTED BUSINESS SOLUTIONS */}
+            {/* TRUSTED BUSINESS SOLUTIONS BADGE */}
             <div
               className="
                 inline-flex
@@ -141,6 +143,7 @@ const Hero = () => {
                 sm:text-sm
                 font-semibold
                 tracking-wide
+                text-left
               "
             >
               <CheckCircle2 size={18} className="text-[#0B4EA2] flex-shrink-0" />
@@ -157,7 +160,7 @@ const Hero = () => {
                 lg:text-4xl
                 xl:text-5xl
                 font-bold
-                leading-tight
+                leading-[1.18]
                 text-black
                 text-left
               "
@@ -169,14 +172,15 @@ const Hero = () => {
               </span>
             </h1>
 
-            {/* DESCRIPTION */}
+            {/* DESCRIPTION (CLEAN PROPER ALIGNMENT ON MOBILE & DESKTOP) */}
             <p
               className="
                 text-sm
                 sm:text-base
                 md:text-lg
-                text-black
-                leading-7
+                text-slate-700
+                leading-6
+                sm:leading-7
                 md:leading-relaxed
                 max-w-xl
                 text-left
@@ -185,8 +189,7 @@ const Hero = () => {
               Complete business solutions to simplify registrations,
               compliance, finance and growth with trusted expert guidance.
             </p>
-
-            {/* STATS */}
+ {/* STATS */}
             <div
               className="
                 flex
@@ -247,33 +250,36 @@ const Hero = () => {
               </div>
             </div>
 
-            {/* BUTTONS */}
+
+            {/* BUTTONS: SAME STARTING ALIGNMENT IN BOTH MOBILE & DESKTOP */}
             <div
               className="
                 flex
-                flex-col
-                sm:flex-row
+                flex-row
                 gap-3
                 sm:gap-4
                 pt-2
-                justify-start
                 w-full
                 sm:w-auto
+                justify-start
+                items-center
               "
             >
               <button
                 onClick={scrollToHowItWorks}
                 className="
                   group
+                  flex-1
+                  sm:flex-initial
                   inline-flex
                   items-center
                   justify-center
-                  gap-2.5
+                  gap-2
                   bg-green-600
                   hover:bg-green-700
                   active:bg-green-800
                   text-white
-                  px-7
+                  px-5
                   sm:px-8
                   py-3
                   sm:py-3.5
@@ -289,8 +295,8 @@ const Hero = () => {
                   hover:-translate-y-0.5
                   active:translate-y-0
                   cursor-pointer
-                  w-full
-                  sm:w-auto
+                  text-center
+                  whitespace-nowrap
                 "
               >
                 <span>Get Started</span>
@@ -303,6 +309,8 @@ const Hero = () => {
               <button
                 onClick={scrollToFooter}
                 className="
+                  flex-1
+                  sm:flex-initial
                   inline-flex
                   items-center
                   justify-center
@@ -310,7 +318,7 @@ const Hero = () => {
                   hover:bg-blue-700
                   active:bg-blue-800
                   text-white
-                  px-7
+                  px-5
                   sm:px-8
                   py-3
                   sm:py-3.5
@@ -326,8 +334,8 @@ const Hero = () => {
                   hover:-translate-y-0.5
                   active:translate-y-0
                   cursor-pointer
-                  w-full
-                  sm:w-auto
+                  text-center
+                  whitespace-nowrap
                 "
               >
                 Contact Us
@@ -336,7 +344,7 @@ const Hero = () => {
           </div>
 
           {/* =====================================================
-              RIGHT 4 CARDS GRID (CLEAN NATURAL 3-LINE ALIGNMENT)
+              RIGHT 4 CARDS GRID
           ====================================================== */}
           <div className="w-full flex justify-center items-center">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-5 w-full max-w-[620px]">
