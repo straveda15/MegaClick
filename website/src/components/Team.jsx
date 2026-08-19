@@ -1,74 +1,42 @@
 import React, { useEffect, useState } from "react";
 import { X } from "lucide-react";
 
-import team1 from "../assets/team1.jpg";
+import team1 from "../assets/team1.webp";
 import team2 from "../assets/team2.jpg";
 import team3 from "../assets/team3.jpg";
 import team4 from "../assets/team4.jpg";
 import team5 from "../assets/team5.png";
 import team6 from "../assets/team6.png";
 
+/* ------------------- Team data ------------------- */
 const teamMembers = [
-  {
-    image: team1,
-    name: "Rahul Sharma",
-    role: "Founder & CEO",
-  },
-  {
-    image: team2,
-    name: "Priya Deshmukh",
-    role: "Legal Consultant",
-  },
-  {
-    image: team3,
-    name: "Amit Patil",
-    role: "Financial Advisor",
-  },
-  {
-    image: team4,
-    name: "Neha Kulkarni",
-    role: "Business Consultant",
-  },
-  {
-    image: team5,
-    name: "Vaibhav Verma",
-    role: "Operations Lead",
-  },
-  {
-    image: team6,
-    name: "Siddharth Rao",
-    role: "Senior Consultant",
-  },
+  { image: team1, name: "Rahul Sharma",   role: "Founder & CEO" },
+  { image: team2, name: "Priya Deshmukh", role: "Legal Consultant" },
+  { image: team3, name: "Amit Patil",     role: "Financial Advisor" },
+  { image: team4, name: "Neha Kulkarni",  role: "Business Consultant" },
+  { image: team5, name: "Vaibhav Verma",  role: "Operations Lead" },
+  { image: team6, name: "Siddharth Rao", role: "Senior Consultant" },
 ];
 
 const Team = () => {
   const [selectedImage, setSelectedImage] = useState(null);
 
-  /* LOCK BACKGROUND SCROLL WHEN IMAGE MODAL IS OPEN */
+  /* ---- lock body scroll when modal is open ---- */
   useEffect(() => {
-    if (selectedImage) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-
+    document.body.style.overflow = selectedImage ? "hidden" : "";
     return () => {
       document.body.style.overflow = "";
     };
   }, [selectedImage]);
 
-  /* ESCAPE KEY TO CLOSE MODAL */
+  /* ---- close modal with ESC key ---- */
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === "Escape") {
-        setSelectedImage(null);
-      }
+      if (e.key === "Escape") setSelectedImage(null);
     };
-
     if (selectedImage) {
       document.addEventListener("keydown", handleKeyDown);
     }
-
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
@@ -76,38 +44,51 @@ const Team = () => {
 
   return (
     <>
+      {/* ==================== MAIN SECTION ==================== */}
       <section className="w-full py-10 sm:py-12 lg:py-16 bg-white">
-        <div className="max-w-[1300px] mx-auto px-4 sm:px-8 text-center">
-          
-          {/* TOP TAGLINE */}
-          <p className="text-xs font-semibold tracking-[0.25em] uppercase text-[#0B4EA2] mb-1.5">
+        {/* ---------- WRAPPER CONTAINER ---------- */}
+        <div
+          className="
+            max-w-[1500px]
+            mx-auto
+            px-5
+            sm:px-8
+            lg:px-16
+            xl:px-24
+          "
+        >
+          {/* ----- TAGLINE (left-aligned) ----- */}
+          <p className="text-xs font-semibold tracking-[0.25em] uppercase text-[#0B4EA2] mb-1.5 text-left">
             The People Behind It
           </p>
 
-          {/* HEADING (Hedvig Letters Serif - Black & Blue) */}
+          {/* ----- HEADING (Hedvig Letters Serif, left) ----- */}
           <h2
-            className="text-2xl sm:text-3xl lg:text-[40px] font-normal text-[#0f172a] leading-tight mb-3"
-            style={{ fontFamily: '"Hedvig Letters Serif", Georgia, serif', fontWeight: 400 }}
+            className="text-2xl sm:text-3xl lg:text-[40px] font-normal text-[#0f172a] leading-tight mb-3 text-left"
+            style={{
+              fontFamily: '"Hedvig Letters Serif", Georgia, serif',
+              fontWeight: 400,
+            }}
           >
             Meet the <span className="text-[#0B4EA2]">Experts</span>
           </h2>
 
-          {/* SUBTITLE (Inter) */}
-          <p className="text-slate-600 font-normal text-sm sm:text-base leading-relaxed max-w-xl mx-auto mb-8 sm:mb-10">
-            Our experienced professionals are dedicated to providing reliable business solutions and expert guidance.
+          {/* ----- SUB-HEADING (Inter, left & spread full width) ----- */}
+          <p className="text-slate-600 font-normal text-sm sm:text-base leading-relaxed w-full mb-8 sm:mb-10 text-left">
+            Our experienced professionals are dedicated to providing reliable
+            business solutions and expert guidance.
           </p>
 
-          {/* 6-COLUMN TEAM CARDS GRID */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5 sm:gap-4 lg:gap-5 max-w-[1240px] mx-auto">
-            {teamMembers.map((member, index) => (
+          {/* ----- TEAM GRID (full width left-aligned cards) ----- */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5 sm:gap-4 lg:gap-5 w-full">
+            {teamMembers.map((member, idx) => (
               <div
-                key={index}
-                className="group flex flex-col text-left cursor-pointer"
+                key={idx}
+                className="group flex flex-col cursor-pointer"
                 onClick={() => setSelectedImage(member)}
               >
-                {/* COMPACT PHOTO CONTAINER */}
+                {/* Photo container */}
                 <div className="relative w-full h-[160px] sm:h-[180px] lg:h-[175px] xl:h-[185px] rounded-xl bg-blue-50/60 overflow-hidden p-1.5 flex items-end justify-center transition-all duration-300 group-hover:bg-blue-100/60 border border-blue-100/60 shadow-xs">
-                  {/* PORTRAIT IMAGE */}
                   <img
                     src={member.image}
                     alt={member.name}
@@ -116,8 +97,8 @@ const Team = () => {
                   />
                 </div>
 
-                {/* NAME & ROLE BELOW CARD */}
-                <div className="mt-2.5 px-0.5">
+                {/* Name & role */}
+                <div className="mt-2.5 px-0.5 text-left">
                   <h3 className="text-sm font-bold text-[#0B4EA2] leading-snug">
                     {member.name}
                   </h3>
@@ -128,11 +109,10 @@ const Team = () => {
               </div>
             ))}
           </div>
-
         </div>
       </section>
 
-      {/* FULL IMAGE MODAL */}
+      {/* ==================== IMAGE MODAL ==================== */}
       {selectedImage && (
         <div
           className="fixed inset-0 z-[9999] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6"
@@ -142,7 +122,7 @@ const Team = () => {
             className="relative max-w-lg w-full bg-white rounded-2xl overflow-hidden shadow-2xl p-4 text-center"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* CLOSE BUTTON */}
+            {/* Close button */}
             <button
               type="button"
               onClick={() => setSelectedImage(null)}
@@ -157,7 +137,6 @@ const Team = () => {
               alt={selectedImage.name}
               className="w-full h-[280px] sm:h-[340px] object-cover rounded-xl mb-3"
             />
-
             <h3 className="text-lg font-bold text-[#0B4EA2]">
               {selectedImage.name}
             </h3>
