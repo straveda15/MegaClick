@@ -1,477 +1,151 @@
 import React, { useEffect, useState } from "react";
+import { X } from "lucide-react";
 
-import team1 from "../assets/team1.jpg";
+import team1 from "../assets/team1.webp";
 import team2 from "../assets/team2.jpg";
 import team3 from "../assets/team3.jpg";
 import team4 from "../assets/team4.jpg";
+import team5 from "../assets/team5.png";
+import team6 from "../assets/team6.png";
 
-import {
-  Users,
-  X,
-} from "lucide-react";
-
+/* ------------------- Team data ------------------- */
 const teamMembers = [
-  {
-    image: team1,
-    name: "Rahul Sharma",
-    role: "Founder & CEO",
-  },
-  {
-    image: team2,
-    name: "Priya Deshmukh",
-    role: "Legal Consultant",
-  },
-  {
-    image: team3,
-    name: "Amit Patil",
-    role: "Financial Advisor",
-  },
-  {
-    image: team4,
-    name: "Neha Kulkarni",
-    role: "Business Consultant",
-  },
+  { image: team1, name: "Rahul Sharma",   role: "Founder & CEO" },
+  { image: team2, name: "Priya Deshmukh", role: "Legal Consultant" },
+  { image: team3, name: "Amit Patil",     role: "Financial Advisor" },
+  { image: team4, name: "Neha Kulkarni",  role: "Business Consultant" },
+  { image: team5, name: "Vaibhav Verma",  role: "Operations Lead" },
+  { image: team6, name: "Siddharth Rao", role: "Senior Consultant" },
 ];
 
 const Team = () => {
   const [selectedImage, setSelectedImage] = useState(null);
-  const [activeCard, setActiveCard] = useState(null);
 
-  /* =====================================================
-      LOCK BACKGROUND SCROLL WHEN IMAGE MODAL IS OPEN
-  ===================================================== */
-
+  /* ---- lock body scroll when modal is open ---- */
   useEffect(() => {
-    if (selectedImage) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-
+    document.body.style.overflow = selectedImage ? "hidden" : "";
     return () => {
       document.body.style.overflow = "";
     };
   }, [selectedImage]);
 
-  /* =====================================================
-      ESCAPE KEY TO CLOSE MODAL
-  ===================================================== */
-
+  /* ---- close modal with ESC key ---- */
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === "Escape") {
-        setSelectedImage(null);
-        setActiveCard(null);
-      }
+      if (e.key === "Escape") setSelectedImage(null);
     };
-
     if (selectedImage) {
       document.addEventListener("keydown", handleKeyDown);
     }
-
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, [selectedImage]);
 
-  /* =====================================================
-      OPEN IMAGE
-  ===================================================== */
-
-  const handleImageClick = (member, index) => {
-    // Mobile animation trigger
-    setActiveCard(index);
-
-    // Small delay so animation can be seen before modal
-    setTimeout(() => {
-      setSelectedImage(member);
-    }, 150);
-  };
-
-  /* =====================================================
-      CLOSE IMAGE
-  ===================================================== */
-
-  const closeModal = () => {
-    setSelectedImage(null);
-    setActiveCard(null);
-  };
-
   return (
     <>
-      {/* =====================================================
-          TEAM SECTION
-      ===================================================== */}
-
-      <section
-        className="
-          w-full
-          py-5
-          sm:py-8
-          lg:py-10
-          bg-blue-100
-        "
-      >
+      {/* ==================== MAIN SECTION ==================== */}
+      <section className="w-full py-10 sm:py-12 lg:py-16 bg-white">
+        {/* ---------- WRAPPER CONTAINER ---------- */}
         <div
           className="
             max-w-[1500px]
             mx-auto
-            px-4
+            px-5
             sm:px-8
             lg:px-16
             xl:px-24
-            pt-2
-            sm:pt-3
-            lg:pt-4
-            pb-3
-            sm:pb-6
-            lg:pb-8
           "
         >
+          {/* ----- TAGLINE (left-aligned) ----- */}
+          <p className="text-xs font-semibold tracking-[0.25em] uppercase text-[#0B4EA2] mb-1.5 text-left">
+            The People Behind It
+          </p>
 
-          {/* =====================================================
-              HEADING
-          ===================================================== */}
-
-          <div
-            className="
-              mb-10
-              sm:mb-12
-              lg:mb-14
-              max-w-3xl
-            "
+          {/* ----- HEADING (Hedvig Letters Serif, left) ----- */}
+          <h2
+            className="text-2xl sm:text-3xl lg:text-[40px] font-normal text-[#0f172a] leading-tight mb-3 text-left"
+            style={{
+              fontFamily: '"Hedvig Letters Serif", Georgia, serif',
+              fontWeight: 400,
+            }}
           >
+            Meet the <span className="text-[#0B4EA2]">Experts</span>
+          </h2>
 
-            {/* BADGE */}
+          {/* ----- SUB-HEADING (Inter, left & spread full width) ----- */}
+          <p className="text-slate-600 font-normal text-sm sm:text-base leading-relaxed w-full mb-8 sm:mb-10 text-left">
+            Our experienced professionals are dedicated to providing reliable
+            business solutions and expert guidance.
+          </p>
 
-            <span
-              className="
-                inline-flex
-                items-center
-                gap-2
-                bg-[#0B4EA2]
-                text-white
-                px-3
-                sm:px-4
-                py-2
-                rounded-full
-                text-[11px]
-                sm:text-xs
-                font-semibold
-                mb-3
-                sm:mb-4
-              "
-            >
-              <Users
-                size={14}
-                className="text-green-300 sm:w-[15px] sm:h-[15px]"
-              />
-
-              OUR TEAM
-            </span>
-
-            {/* HEADING */}
-
-            <h2
-              className="section-heading mt-4 sm:mt-5 text-gray-900"
-            >
-              Meet Our{" "}
-
-              <span className="text-[#0B4EA2]">
-                Experts
-              </span>
-            </h2>
-
-            {/* DESCRIPTION */}
-
-            <p
-              className="section-text mt-3 sm:mt-4 max-w-2xl text-gray-700"
-            >
-              Our experienced professionals are dedicated to
-              providing reliable business solutions and expert
-              guidance.
-            </p>
-          </div>
-
-
-          {/* =====================================================
-              TEAM CARDS
-          ===================================================== */}
-
-          <div
-            className="
-              grid
-              grid-cols-1
-              sm:grid-cols-2
-              lg:grid-cols-4
-              gap-5
-              sm:gap-6
-              lg:gap-7
-              xl:gap-8
-            "
-          >
-
-            {teamMembers.map((member, index) => (
-
+          {/* ----- TEAM GRID (full width left-aligned cards) ----- */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5 sm:gap-4 lg:gap-5 w-full">
+            {teamMembers.map((member, idx) => (
               <div
-                key={index}
-                className={`
-                  group
-                  w-full
-                  bg-white
-                  rounded-xl
-                  sm:rounded-2xl
-                  border
-                  border-gray-200
-                  overflow-hidden
-                  shadow-[0_8px_30px_rgba(0,0,0,0.06)]
-                  hover:shadow-[0_15px_40px_rgba(11,78,162,0.15)]
-                  transition-all
-                  duration-300
-
-                  ${
-                    activeCard === index
-                      ? "-translate-y-2 shadow-[0_15px_40px_rgba(11,78,162,0.15)]"
-                      : ""
-                  }
-
-                  lg:hover:-translate-y-2
-                `}
+                key={idx}
+                className="group flex flex-col cursor-pointer"
+                onClick={() => setSelectedImage(member)}
               >
-
-                {/* =====================================================
-                    IMAGE
-                ===================================================== */}
-
-                <button
-                  type="button"
-                  onClick={() => handleImageClick(member, index)}
-                  className="
-                    relative
-                    block
-                    w-full
-                    h-64
-                    sm:h-60
-                    md:h-64
-                    lg:h-52
-                    xl:h-56
-                    overflow-hidden
-                    bg-gray-100
-                    cursor-pointer
-                    text-left
-                  "
-                  aria-label={`View ${member.name}'s photo`}
-                >
-
+                {/* Photo container */}
+                <div className="relative w-full h-[160px] sm:h-[180px] lg:h-[175px] xl:h-[185px] rounded-xl bg-blue-50/60 overflow-hidden p-1.5 flex items-end justify-center transition-all duration-300 group-hover:bg-blue-100/60 border border-blue-100/60 shadow-xs">
                   <img
                     src={member.image}
                     alt={member.name}
                     loading="lazy"
-                    className={`
-                      w-full
-                      h-full
-                      object-cover
-                      transition-all
-                      duration-500
-
-                      group-hover:scale-105
-
-                      ${
-                        activeCard === index
-                          ? "scale-105"
-                          : ""
-                      }
-                    `}
+                    className="w-full h-full object-cover rounded-lg transition-transform duration-500 group-hover:scale-102"
                   />
-
-                  {/* =====================================================
-                      OVERLAY
-                  ===================================================== */}
-
-                  <div
-                    className={`
-                      absolute
-                      inset-0
-                      bg-gradient-to-t
-                      from-black/40
-                      via-black/10
-                      to-transparent
-                      transition-opacity
-                      duration-300
-
-                      opacity-0
-                      group-hover:opacity-100
-
-                      ${
-                        activeCard === index
-                          ? "opacity-100"
-                          : ""
-                      }
-                    `}
-                  />
-
-                  {/* =====================================================
-                      ZOOM ICON
-                  ===================================================== */}
-
-              
-
-                </button>
-
-
-                {/* =====================================================
-                    CONTENT
-                ===================================================== */}
-
-                <div
-                  className="
-                    p-5
-                    sm:p-6
-                    text-center
-                  "
-                >
-
-                  <h3
-                    className="
-                      text-lg
-                      sm:text-xl
-                      font-bold
-                      text-gray-900
-                      leading-snug
-                    "
-                  >
-                    {member.name}
-                  </h3>
-
-                  <p
-                    className="
-                      mt-2
-                      text-xs
-                      sm:text-sm
-                      font-medium
-                      text-[#0B4EA2]
-                    "
-                  >
-                    {member.role}
-                  </p>
-
-                  <div
-                    className="
-                      w-8
-                      sm:w-10
-                      h-[2px]
-                      bg-green-500
-                      mx-auto
-                      mt-3
-                      sm:mt-4
-                    "
-                  />
-
                 </div>
 
+                {/* Name & role */}
+                <div className="mt-2.5 px-0.5 text-left">
+                  <h3 className="text-sm font-bold text-[#0B4EA2] leading-snug">
+                    {member.name}
+                  </h3>
+                  <p className="text-[11px] font-medium text-[#0f172a] mt-0.5">
+                    {member.role}
+                  </p>
+                </div>
               </div>
-
             ))}
-
           </div>
-
         </div>
       </section>
 
-
-      {/* =====================================================
-          FULL IMAGE MODAL
-      ===================================================== */}
-
+      {/* ==================== IMAGE MODAL ==================== */}
       {selectedImage && (
-
         <div
-          className="
-            fixed
-            inset-0
-            z-[9999]
-            bg-black/80
-            backdrop-blur-sm
-            flex
-            items-center
-            justify-center
-            p-4
-            sm:p-6
-          "
-          onClick={closeModal}
+          className="fixed inset-0 z-[9999] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6"
+          onClick={() => setSelectedImage(null)}
         >
-
-          {/* =====================================================
-              MODAL CONTENT
-          ===================================================== */}
-
           <div
-            className="
-              relative
-              max-w-4xl
-              w-full
-              max-h-[90vh]
-              flex
-              items-center
-              justify-center
-            "
+            className="relative max-w-lg w-full bg-white rounded-2xl overflow-hidden shadow-2xl p-4 text-center"
             onClick={(e) => e.stopPropagation()}
           >
-
-            {/* CLOSE BUTTON */}
-
+            {/* Close button */}
             <button
               type="button"
-              onClick={closeModal}
-              className="
-                absolute
-                -top-3
-                -right-3
-                sm:-top-4
-                sm:-right-4
-                z-20
-                w-10
-                h-10
-                sm:w-11
-                sm:h-11
-                rounded-full
-                bg-white
-                text-gray-800
-                flex
-                items-center
-                justify-center
-                shadow-xl
-                hover:bg-gray-100
-                transition
-              "
-              aria-label="Close image"
+              onClick={() => setSelectedImage(null)}
+              className="absolute top-3 right-3 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 flex items-center justify-center transition-all"
+              aria-label="Close modal"
             >
-              <X size={21} />
+              <X size={16} />
             </button>
-
-
-            {/* IMAGE */}
 
             <img
               src={selectedImage.image}
               alt={selectedImage.name}
-              className="
-                max-w-full
-                max-h-[80vh]
-                sm:max-h-[85vh]
-                object-contain
-                rounded-xl
-                shadow-2xl
-                animate-[fadeIn_0.25s_ease-out]
-              "
+              className="w-full h-[280px] sm:h-[340px] object-cover rounded-xl mb-3"
             />
-
+            <h3 className="text-lg font-bold text-[#0B4EA2]">
+              {selectedImage.name}
+            </h3>
+            <p className="text-xs font-medium text-[#0f172a] mt-0.5">
+              {selectedImage.role}
+            </p>
           </div>
-
         </div>
-
       )}
-
     </>
   );
 };

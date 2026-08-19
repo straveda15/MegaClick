@@ -10,7 +10,7 @@ import Testimonials from "../components/Testimonials";
 
 
 import FAQ from "../components/FAQ";
-import CTA from "../components/CTA";
+
 
 import Partners from "../components/Partners";
 
@@ -55,10 +55,6 @@ function Home() {
 
 
 
-
-      <section id="contact">
-        <CTA />
-      </section>
 
 
 

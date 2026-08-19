@@ -125,20 +125,19 @@ const Testimonials = () => {
               sm:px-0
               sm:grid
               sm:grid-cols-2
+              lg:grid-cols-3
               sm:gap-6
               sm:overflow-visible
-              lg:grid-cols-3
+              items-stretch
             "
           >
             {visibleTestimonials.map((testimonial, index) => (
               <article
                 key={`${testimonial.name}-${current}-${index}`}
-                className="
+                className={`
                   relative
                   flex
                   flex-col
-                  justify-between
-                  h-full
                   w-[82%]
                   flex-shrink-0
                   snap-center
@@ -152,9 +151,11 @@ const Testimonials = () => {
                   p-5
                   sm:p-6
                   shadow-sm
-                "
+                  ${index === 2 ? "sm:hidden lg:flex" : ""}
+                `}
               >
-                <div>
+                {/* TOP CONTENT — grows to fill */}
+                <div className="flex-1">
                   {/* QUOTE ICON */}
                   <div className="absolute right-5 top-5 text-blue-500">
                     <Quote size={20} />
@@ -202,8 +203,8 @@ const Testimonials = () => {
                   </p>
                 </div>
 
-                {/* STARS */}
-                <div className="mt-5 pt-3 border-t border-gray-100 flex items-center justify-between">
+                {/* STARS — always pinned to bottom */}
+                <div className="mt-5 pt-3 border-t border-gray-100 flex items-center">
                   <div className="flex shrink-0 gap-0.5">
                     {[1, 2, 3, 4, 5].map((star) => (
                       <Star

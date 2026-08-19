@@ -1,33 +1,106 @@
-import React from "react";
+
+
+import React, { useEffect } from "react";
 import {
   ArrowRight,
   CheckCircle2,
-  BriefcaseBusiness,
-  Users,
-  ShieldCheck,
+  FileCheck,
+  CreditCard,
+  Award,
+  ReceiptText,
 } from "lucide-react";
 
+import hero1 from "../assets/hero1.jpg";
+import hero2 from "../assets/hero2.jpg";
+import hero4 from "../assets/hero4.png";
+import hero3 from "../assets/hero3.webp";
+
+const services = [
+  {
+    id: 1,
+    title: "MSME / UDYAM Registration",
+    desc: "Apply for MSME and Udyam certificate online with fast document verification, expert support, and complete registration guidance.",
+    image: hero4,
+    imgClass: "max-h-[75%] max-w-[72%]",
+    fallbackIcon: <FileCheck className="w-8 h-8 text-[#0B4EA2]" />,
+    gradient: "from-sky-100/70 via-blue-50/40 to-white",
+    borderColor: "border-sky-100",
+  },
+  {
+    id: 2,
+    title: "Voter ID, PAN & TAN Services",
+    desc: "Quick assistance for new PAN, TAN, and Voter ID cards, corrections, biometric updates, and timely government processing.",
+    image: hero2,
+    imgClass: "max-h-full max-w-[85%]",
+    fallbackIcon: <CreditCard className="w-8 h-8 text-amber-500" />,
+    gradient: "from-amber-100/60 via-orange-50/30 to-white",
+    borderColor: "border-amber-100",
+  },
+  {
+    id: 3,
+    title: "Trademark Registration",
+    desc: "Secure your brand name, logo, and identity with end-to-end online trademark search, filing, and legal brand protection.",
+    image: hero1,
+    imgClass: "max-h-full max-w-[95%] scale-110",
+    fallbackIcon: <Award className="w-8 h-8 text-emerald-600" />,
+    gradient: "from-emerald-100/60 via-green-50/30 to-white",
+    borderColor: "border-emerald-100",
+  },
+  {
+    id: 4,
+    title: "GST Registration & Filing Services",
+    desc: "Online GST registration, monthly return filings, input tax credit reconciliation, and comprehensive business tax compliance.",
+    image: hero3,
+    imgClass: "max-h-full max-w-[85%]",
+    fallbackIcon: <ReceiptText className="w-8 h-8 text-purple-600" />,
+    gradient: "from-purple-100/60 via-indigo-50/30 to-white",
+    borderColor: "border-purple-100",
+  },
+];
+
 const Hero = () => {
-  const scrollToContact = () => {
-    document
-      .getElementById("contact")
-      ?.scrollIntoView({ behavior: "smooth" });
+  useEffect(() => {
+    const fontId = "google-fonts-hedvig-inter";
+    if (!document.getElementById(fontId)) {
+      const link = document.createElement("link");
+      link.id = fontId;
+      link.rel = "stylesheet";
+      link.href =
+        "https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@400;500;600;700;800&display=swap";
+      document.head.appendChild(link);
+    }
+  }, []);
+
+  const scrollToHowItWorks = () => {
+    const target =
+      document.getElementById("how-it-works") ||
+      document.getElementById("services") ||
+      document.getElementById("contact");
+    target?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const scrollToFooter = () => {
+    const footerTarget =
+      document.getElementById("footer") ||
+      document.querySelector("footer") ||
+      document.getElementById("contact");
+    footerTarget?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
     <section
       id="home"
-      className="relative overflow-hidden bg-white"
+      className="relative overflow-hidden bg-white font-['Inter',sans-serif]"
     >
       <div
         className="
           max-w-[1500px]
           mx-auto
-          px-4
+          px-5
           sm:px-8
           lg:px-16
           xl:px-24
-          py-8
+          py-6
           sm:py-10
           lg:py-12
         "
@@ -37,95 +110,86 @@ const Hero = () => {
             grid
             grid-cols-1
             lg:grid-cols-2
-            gap-10
-            lg:gap-14
-            xl:gap-20
+            gap-8
+            sm:gap-10
+            lg:gap-12
+            xl:gap-16
             items-center
           "
         >
           {/* =====================================================
-              LEFT CONTENT (CENTERED ON MOBILE, LEFT ON DESKTOP)
+              LEFT CONTENT (PERFECT STARTING ALIGNMENT)
           ====================================================== */}
-
           <div
             className="
-              space-y-5
+              space-y-4
               sm:space-y-6
               md:space-y-7
               w-full
               flex
               flex-col
-              items-center
-              sm:items-start
-              text-center
-              sm:text-left
+              items-start
+              text-left
             "
           >
-            {/* BADGE */}
-
+            {/* TRUSTED BUSINESS SOLUTIONS BADGE */}
             <div
               className="
                 inline-flex
                 items-center
                 gap-2
-                bg-[#0B4EA2]
-                text-white
-                px-4
-                sm:px-5
-                py-2
-                rounded-full
+                text-[#0B4EA2]
                 text-xs
                 sm:text-sm
                 font-semibold
+                tracking-wide
+                text-left
               "
             >
-              <CheckCircle2 size={16} />
-              Trusted Business Solutions
+              <CheckCircle2 size={18} className="text-[#0B4EA2] flex-shrink-0" />
+              <span>Trusted Business Solutions</span>
             </div>
 
-            {/* HEADING */}
-
+            {/* HEADING (Hedvig Letters Serif) */}
             <h1
+              style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
               className="
                 text-3xl
-                sm:text-4xl
-                md:text-5xl
-                lg:text-5xl
-                xl:text-6xl
+                sm:text-3xl
+                md:text-4xl
+                lg:text-4xl
+                xl:text-5xl
                 font-bold
-                leading-tight
+                leading-[1.18]
                 text-black
+                text-left
               "
             >
               Grow Your Business
               <br />
-
               <span className="text-[#0B4EA2]">
                 With Smart Solutions
               </span>
             </h1>
 
-            {/* DESCRIPTION */}
-
+            {/* DESCRIPTION (CLEAN PROPER ALIGNMENT ON MOBILE & DESKTOP) */}
             <p
               className="
                 text-sm
                 sm:text-base
                 md:text-lg
-                text-black
-                leading-7
+                text-slate-700
+                leading-6
+                sm:leading-7
                 md:leading-relaxed
                 max-w-xl
-                mx-auto
-                sm:mx-0
+                text-left
               "
             >
               Complete business solutions to simplify registrations,
               compliance, finance and growth with trusted expert guidance.
             </p>
-
-            {/* STATS */}
-
+ {/* STATS */}
             <div
               className="
                 flex
@@ -133,12 +197,11 @@ const Hero = () => {
                 sm:gap-8
                 md:gap-10
                 flex-wrap
-                justify-center
-                sm:justify-start
+                justify-start
                 w-full
               "
             >
-              <div className="text-center sm:text-left">
+              <div className="text-left">
                 <h3
                   className="
                     text-2xl
@@ -149,13 +212,12 @@ const Hero = () => {
                 >
                   15000+
                 </h3>
-
-                <p className="text-black text-xs sm:text-sm">
+                <p className="text-black text-xs sm:text-sm whitespace-nowrap">
                   Happy Clients
                 </p>
               </div>
 
-              <div className="text-center sm:text-left">
+              <div className="text-left">
                 <h3
                   className="
                     text-2xl
@@ -166,13 +228,12 @@ const Hero = () => {
                 >
                   25+
                 </h3>
-
-                <p className="text-black text-xs sm:text-sm">
+                <p className="text-black text-xs sm:text-sm whitespace-nowrap">
                   Services
                 </p>
               </div>
 
-              <div className="text-center sm:text-left">
+              <div className="text-left">
                 <h3
                   className="
                     text-2xl
@@ -183,15 +244,14 @@ const Hero = () => {
                 >
                   10+
                 </h3>
-
-                <p className="text-black text-xs sm:text-sm">
+                <p className="text-black text-xs sm:text-sm whitespace-nowrap">
                   Years Experience
                 </p>
               </div>
             </div>
 
-            {/* BUTTONS */}
 
+            {/* BUTTONS: SAME STARTING ALIGNMENT IN BOTH MOBILE & DESKTOP */}
             <div
               className="
                 flex
@@ -199,50 +259,83 @@ const Hero = () => {
                 gap-3
                 sm:gap-4
                 pt-2
-                justify-start
                 w-full
+                sm:w-auto
+                justify-start
+                items-center
               "
             >
               <button
-                onClick={scrollToContact}
+                onClick={scrollToHowItWorks}
                 className="
-                  flex
+                  group
+                  flex-1
+                  sm:flex-initial
+                  inline-flex
                   items-center
                   justify-center
                   gap-2
-                  bg-[#0B4EA2]
-                  hover:bg-blue-700
+                  bg-green-600
+                  hover:bg-green-700
+                  active:bg-green-800
                   text-white
-                  px-7
+                  px-5
                   sm:px-8
                   py-3
                   sm:py-3.5
-                  rounded-xl
-                  font-semibold
+                  rounded-full
+                  font-medium
                   text-sm
                   sm:text-base
-                  transition
+                  shadow-sm
+                  hover:shadow-md
+                  transition-all
+                  duration-200
+                  transform
+                  hover:-translate-y-0.5
+                  active:translate-y-0
+                  cursor-pointer
+                  text-center
+                  whitespace-nowrap
                 "
               >
-                Get Started
-                <ArrowRight size={18} />
+                <span>Get Started</span>
+                <ArrowRight
+                  size={17}
+                  className="transition-transform duration-200 group-hover:translate-x-1"
+                />
               </button>
 
               <button
-                onClick={scrollToContact}
+                onClick={scrollToFooter}
                 className="
-                  bg-green-600
-                  hover:bg-green-700
+                  flex-1
+                  sm:flex-initial
+                  inline-flex
+                  items-center
+                  justify-center
+                  bg-[#0B4EA2]
+                  hover:bg-blue-700
+                  active:bg-blue-800
                   text-white
-                  px-7
+                  px-5
                   sm:px-8
                   py-3
                   sm:py-3.5
-                  rounded-xl
-                  font-semibold
+                  rounded-full
+                  font-medium
                   text-sm
                   sm:text-base
-                  transition
+                  shadow-sm
+                  hover:shadow-md
+                  transition-all
+                  duration-200
+                  transform
+                  hover:-translate-y-0.5
+                  active:translate-y-0
+                  cursor-pointer
+                  text-center
+                  whitespace-nowrap
                 "
               >
                 Contact Us
@@ -251,601 +344,95 @@ const Hero = () => {
           </div>
 
           {/* =====================================================
-              RIGHT FLOATING UI
+              RIGHT 4 CARDS GRID
           ====================================================== */}
-
-          <div
-            className="
-              relative
-              w-full
-              flex
-              justify-center
-              items-center
-              mt-4
-              lg:mt-0
-              overflow-visible
-            "
-          >
-            {/* =================================================
-                RESPONSIVE FLOATING CONTAINER
-            ================================================== */}
-
-            <div
-              className="
-                relative
-                flex-shrink-0
-
-                w-[320px]
-                h-[320px]
-
-                sm:w-[390px]
-                sm:h-[420px]
-
-                md:w-[450px]
-                md:h-[440px]
-
-                lg:w-[500px]
-                lg:h-[450px]
-
-                xl:w-[560px]
-                xl:h-[480px]
-              "
-            >
-              {/* =================================================
-                  MAIN CENTER CARD
-              ================================================== */}
-
-              <div
-                className="
-                  absolute
-                  z-10
-                  left-1/2
-                  -translate-x-1/2
-
-                  top-[50px]
-                  sm:top-[70px]
-                  md:top-[75px]
-                  lg:top-[80px]
-                  xl:top-[85px]
-
-                  w-[260px]
-                  sm:w-[310px]
-                  md:w-[350px]
-                  lg:w-[380px]
-                  xl:w-[440px]
-                "
-              >
-                <div className="hero-float-main">
-                  <div
-                    className="
-                      bg-white
-                      rounded-2xl
-                      sm:rounded-[22px]
-                      border
-                      border-blue-100
-                      p-4
-                      sm:p-5
-                      md:p-6
-                      lg:p-7
-                      xl:p-8
-                    "
-                  >
-                    {/* MAIN CARD HEADER */}
-
-                    <div
-                      className="
-                        flex
-                        items-center
-                        gap-3
-                        sm:gap-4
-                      "
-                    >
-                      <div
-                        className="
-                          w-10
-                          h-10
-                          sm:w-12
-                          sm:h-12
-                          xl:w-14
-                          xl:h-14
-                          rounded-xl
-                          sm:rounded-2xl
-                          bg-blue-100
-                          flex
-                          items-center
-                          justify-center
-                          flex-shrink-0
-                        "
-                      >
-                        <BriefcaseBusiness
-                          size={23}
-                          className="
-                            text-[#0B4EA2]
-                            sm:w-7
-                            sm:h-7
-                          "
-                        />
-                      </div>
-
-                      <div>
-                        <h3
-                          className="
-                            text-base
-                            sm:text-lg
-                            xl:text-xl
-                            font-bold
-                          "
-                        >
-                          <span className="text-[#0B4EA2]">
-                            Mega
-                          </span>
-
-                          <span className="text-green-500">
-                            Click
-                          </span>
-                        </h3>
-
-                        <p
-                          className="
-                            text-[10px]
-                            sm:text-xs
-                            xl:text-sm
-                            text-gray-500
-                          "
-                        >
-                          Smart Business Solutions
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* MAIN CARD STATS */}
-
-                    <div
-                      className="
-                        mt-4
-                        sm:mt-6
-                        xl:mt-8
-                        grid
-                        grid-cols-3
-                        gap-2
-                        sm:gap-3
-                        xl:gap-4
-                      "
-                    >
-                      {/* CLIENTS */}
-
-                      <div
-                        className="
-                          bg-blue-50
-                          rounded-lg
-                          sm:rounded-xl
-                          p-2
-                          sm:p-3
-                          xl:p-4
-                          text-center
-                        "
-                      >
-                        <h4
-                          className="
-                            text-base
-                            sm:text-xl
-                            xl:text-2xl
-                            font-bold
-                            text-[#0B4EA2]
-                          "
-                        >
-                          15K+
-                        </h4>
-
-                        <p
-                          className="
-                            text-[9px]
-                            sm:text-[11px]
-                            xl:text-xs
-                            text-gray-500
-                          "
-                        >
-                          Clients
-                        </p>
-                      </div>
-
-                      {/* SERVICES */}
-
-                      <div
-                        className="
-                          bg-green-50
-                          rounded-lg
-                          sm:rounded-xl
-                          p-2
-                          sm:p-3
-                          xl:p-4
-                          text-center
-                        "
-                      >
-                        <h4
-                          className="
-                            text-base
-                            sm:text-xl
-                            xl:text-2xl
-                            font-bold
-                            text-green-600
-                          "
-                        >
-                          25+
-                        </h4>
-
-                        <p
-                          className="
-                            text-[9px]
-                            sm:text-[11px]
-                            xl:text-xs
-                            text-gray-500
-                          "
-                        >
-                          Services
-                        </p>
-                      </div>
-
-                      {/* YEARS */}
-
-                      <div
-                        className="
-                          bg-blue-50
-                          rounded-lg
-                          sm:rounded-xl
-                          p-2
-                          sm:p-3
-                          xl:p-4
-                          text-center
-                        "
-                      >
-                        <h4
-                          className="
-                            text-base
-                            sm:text-xl
-                            xl:text-2xl
-                            font-bold
-                            text-[#0B4EA2]
-                          "
-                        >
-                          10+
-                        </h4>
-
-                        <p
-                          className="
-                            text-[9px]
-                            sm:text-[11px]
-                            xl:text-xs
-                            text-gray-500
-                          "
-                        >
-                          Years
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* TRUSTED */}
-
-                    <div
-                      className="
-                        mt-3
-                        sm:mt-5
-                        xl:mt-6
-                        flex
-                        items-center
-                        justify-center
-                        sm:justify-start
-                        gap-2
-                        text-xs
-                        sm:text-sm
-                        font-semibold
-                        text-green-600
-                      "
-                    >
-                      <CheckCircle2
-                        size={16}
-                        className="
-                          sm:w-[18px]
-                          sm:h-[18px]
-                        "
+          <div className="w-full flex justify-center items-center">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-5 w-full max-w-[620px]">
+              {services.map((service) => (
+                <div
+                  key={service.id}
+                  className={`
+                    group
+                    relative
+                    bg-gradient-to-b ${service.gradient}
+                    border ${service.borderColor}
+                    rounded-2xl
+                    sm:rounded-3xl
+                    p-4.5
+                    sm:p-5
+                    md:p-5.5
+                    flex
+                    flex-col
+                    justify-between
+                    shadow-[0_2px_12px_-2px_rgba(0,0,0,0.04)]
+                    hover:shadow-[0_10px_28px_-4px_rgba(11,78,162,0.14)]
+                    hover:-translate-y-1.5
+                    transition-all
+                    duration-300
+                    overflow-hidden
+                    min-h-[210px]
+                    sm:min-h-[225px]
+                  `}
+                >
+                  {/* Card Image Container */}
+                  <div className="h-14 sm:h-16 w-full flex items-center justify-center mb-3">
+                    {service.image ? (
+                      <img
+                        src={service.image}
+                        alt={service.title}
+                        className={`${service.imgClass || "max-h-full max-w-[85%]"} object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-300`}
+                        onError={(e) => {
+                          e.currentTarget.style.display = "none";
+                          const fallback = e.currentTarget.parentElement?.querySelector(".fallback-box");
+                          if (fallback) fallback.classList.remove("hidden");
+                        }}
                       />
-
-                      Trusted Business Partner
+                    ) : null}
+                    <div className="fallback-box hidden items-center justify-center p-2.5 rounded-2xl bg-white/90 shadow-sm border border-slate-100">
+                      {service.fallbackIcon}
                     </div>
                   </div>
-                </div>
-              </div>
 
-              {/* =================================================
-                  LEFT SMALL CARD - 15000+
-              ================================================== */}
-
-              <div
-                className="
-                  absolute
-                  z-20
-                  left-[0px]
-                  top-[10px]
-
-                  sm:left-[5px]
-                  sm:top-[10px]
-
-                  md:left-[15px]
-                  md:top-[15px]
-
-                  lg:left-[30px]
-                  lg:top-[20px]
-
-                  xl:left-[35px]
-                  xl:top-[25px]
-
-                  w-[115px]
-                  sm:w-[135px]
-                  md:w-[150px]
-                  lg:w-[165px]
-                  xl:w-[180px]
-                "
-              >
-                <div className="hero-float-left">
-                  <div
-                    className="
-                      bg-white
-                      rounded-xl
-                      sm:rounded-2xl
-                      border
-                      border-blue-100
-                      p-2.5
-                      sm:p-3.5
-                      md:p-4
-                      xl:p-5
-                    "
-                  >
-                    <div
+                  {/* Card Text Content */}
+                  <div className="flex flex-col flex-grow text-left">
+                    <h3
+                      style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
                       className="
-                        flex
-                        items-center
-                        gap-2
-                        sm:gap-3
+                        text-[15px]
+                        sm:text-[16.5px]
+                        font-bold
+                        text-slate-900
+                        mb-1.5
+                        leading-snug
+                        text-left
                       "
                     >
-                      <div
-                        className="
-                          w-7
-                          h-7
-                          sm:w-9
-                          sm:h-9
-                          xl:w-10
-                          xl:h-10
-                          rounded-lg
-                          sm:rounded-xl
-                          bg-blue-100
-                          flex
-                          items-center
-                          justify-center
-                          flex-shrink-0
-                        "
-                      >
-                        <Users
-                          size={17}
-                          className="
-                            text-[#0B4EA2]
-                            sm:w-[21px]
-                            sm:h-[21px]
-                          "
-                        />
-                      </div>
-
-                      <div>
-                        <h4
-                          className="
-                            font-bold
-                            text-[11px]
-                            sm:text-sm
-                            xl:text-base
-                          "
-                        >
-                          15000+
-                        </h4>
-
-                        <p
-                          className="
-                            text-[8px]
-                            sm:text-[10px]
-                            xl:text-[11px]
-                            text-gray-500
-                          "
-                        >
-                          Happy Clients
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* =================================================
-                  BOTTOM SMALL CARD - SECURE
-              ================================================== */}
-
-              <div
-                className="
-                  absolute
-                  z-20
-
-                  right-[0px]
-                  bottom-[45px]
-
-                  sm:right-[0px]
-                  sm:bottom-[35px]
-
-                  md:right-[5px]
-                  md:bottom-[45px]
-
-                  lg:right-[5px]
-                  lg:bottom-[50px]
-
-                  xl:right-[0px]
-                  xl:bottom-[55px]
-
-                  w-[125px]
-                  sm:w-[145px]
-                  md:w-[160px]
-                  lg:w-[175px]
-                  xl:w-[200px]
-                "
-              >
-                <div className="hero-float-right">
-                  <div
-                    className="
-                      bg-white
-                      rounded-xl
-                      sm:rounded-2xl
-                      border
-                      border-blue-100
-                      p-2.5
-                      sm:p-3.5
-                      md:p-4
-                      xl:p-5
-                    "
-                  >
-                    <div
+                      {service.title}
+                    </h3>
+                    <p
+                      style={{ fontFamily: "'Inter', sans-serif" }}
                       className="
-                        flex
-                        items-center
-                        gap-2
-                        sm:gap-3
+                        text-[11.5px]
+                        sm:text-[12px]
+                        text-slate-600
+                        leading-[1.55]
+                        line-clamp-3
+                        text-left
                       "
                     >
-                      <div
-                        className="
-                          w-7
-                          h-7
-                          sm:w-9
-                          sm:h-9
-                          xl:w-10
-                          xl:h-10
-                          rounded-lg
-                          sm:rounded-xl
-                          bg-green-100
-                          flex
-                          items-center
-                          justify-center
-                          flex-shrink-0
-                        "
-                      >
-                        <ShieldCheck
-                          size={16}
-                          className="
-                            text-green-600
-                            sm:w-[19px]
-                            sm:h-[19px]
-                          "
-                        />
-                      </div>
-
-                      <div>
-                        <h4
-                          className="
-                            font-bold
-                            text-[11px]
-                            sm:text-sm
-                            xl:text-base
-                            text-gray-900
-                          "
-                        >
-                          Secure
-                        </h4>
-
-                        <p
-                          className="
-                            text-[8px]
-                            sm:text-[10px]
-                            xl:text-[11px]
-                            text-gray-500
-                          "
-                        >
-                          Compliance
-                        </p>
-                      </div>
-                    </div>
+                      {service.desc}
+                    </p>
                   </div>
                 </div>
-              </div>
-
-              {/* =================================================
-                  SERVICE ACTIVE BADGE
-              ================================================== */}
-
-              <div
-                className="
-                  absolute
-                  z-30
-
-                  right-[0px]
-                  top-[10px]
-
-                  sm:right-[15px]
-                  sm:top-[25px]
-
-                  md:right-[25px]
-                  md:top-[30px]
-
-                  lg:right-[35px]
-                  lg:top-[30px]
-
-                  xl:right-[45px]
-                  xl:top-[35px]
-                "
-              >
-                <div className="hero-float-status">
-                  <div
-                    className="
-                      flex
-                      items-center
-                      gap-1.5
-                      sm:gap-2
-                      bg-blue-50
-                      border
-                      border-blue-200
-                      rounded-full
-                      px-2.5
-                      sm:px-4
-                      xl:px-5
-                      py-1.5
-                      sm:py-2
-                      text-[8px]
-                      sm:text-xs
-                      xl:text-sm
-                      font-bold
-                      text-[#0B4EA2]
-                      whitespace-nowrap
-                    "
-                  >
-                    <span
-                      className="
-                        w-1.5
-                        h-1.5
-                        sm:w-2
-                        sm:h-2
-                        rounded-full
-                        bg-green-500
-                        shadow-[0_0_6px_rgba(34,197,94,0.8)]
-                      "
-                    />
-
-                    Services Active
-                  </div>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>
       </div>
 
       {/* =====================================================
-          BACKGROUND BLUR
+          BACKGROUND BLUR ACCENTS
       ====================================================== */}
-
       <div
         className="
           absolute
@@ -859,7 +446,6 @@ const Hero = () => {
           -z-10
         "
       />
-
       <div
         className="
           absolute
@@ -873,70 +459,6 @@ const Hero = () => {
           -z-10
         "
       />
-
-      {/* =====================================================
-          FLOATING ANIMATIONS
-      ====================================================== */}
-
-      <style>{`
-        @keyframes heroFloatA {
-          0%,
-          100% {
-            transform: translateY(0px);
-          }
-
-          50% {
-            transform: translateY(-8px);
-          }
-        }
-
-        @keyframes heroFloatB {
-          0%,
-          100% {
-            transform: translateY(0px);
-          }
-
-          50% {
-            transform: translateY(8px);
-          }
-        }
-
-        @keyframes heroStatusFloat {
-          0%,
-          100% {
-            transform: translateY(0px);
-          }
-
-          50% {
-            transform: translateY(-5px);
-          }
-        }
-
-        .hero-float-main {
-          animation: heroFloatA 6s ease-in-out infinite;
-        }
-
-        .hero-float-left {
-          animation: heroFloatB 5.2s ease-in-out 0.4s infinite;
-        }
-
-        .hero-float-right {
-          animation: heroFloatA 4.8s ease-in-out 0.8s infinite;
-        }
-
-        .hero-float-status {
-          animation: heroStatusFloat 5s ease-in-out 0.6s infinite;
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          .hero-float-main,
-          .hero-float-left,
-          .hero-float-right,
-          .hero-float-status {
-            animation: none;
-          }
-        }
-      `}</style>
     </section>
   );
 };
