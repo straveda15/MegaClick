@@ -1,14 +1,23 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { CalendarPlus, User, Check, Search, X, CalendarClock, AlertCircle, Bell, Briefcase } from "lucide-react";
+import { CalendarPlus, User, Check, Search, X, CalendarClock, AlertCircle, Bell, Briefcase, Circle, Loader2, ListChecks } from "lucide-react";
 import { toast } from "sonner";
 import { useTeam } from "@/hooks/useTeam";
 import { useUsers } from "@/hooks/useUsers";
 import { useAuth } from "@/context/AuthContext";
 import { useCreateManualTask, type TaskServiceRequest } from "@/hooks/useTasks";
 import { useClients, type Client, type ClientService } from "@/hooks/useClients";
+import { useServiceStepTemplate } from "@/hooks/useServiceSteps";
 import { TEMPERATURE_LABELS, TEMPERATURE_STYLES } from "@/data/leadTemperature";
 import type { AssignableStaff } from "@/components/tasks/roleFilter";
+
+/** A step as shown in the stepper — the template's text plus a done flag. */
+interface StepState {
+  title: string;
+  description?: string;
+  order: number;
+  done: boolean;
+}
 
 /** Format a Date as the local string a <input type="datetime-local"> expects. */
 const toLocalInput = (d: Date) => {
@@ -54,11 +63,41 @@ export function CreateTaskModal({ onClose }: { onClose: () => void }) {
   // in their "Follow Up" tab and can post follow-up notes, but can't act on it.
   const [followerIds, setFollowerIds] = useState<string[]>([]);
   const [followerSearch, setFollowerSearch] = useState("");
+  const [steps, setSteps] = useState<StepState[]>([]);
 
   const { data: team = [] }  = useTeam();
   const { user }             = useAuth();
   const createTask           = useCreateManualTask();
   const { data: clients = [] } = useClients();
+  const { data: template, isFetching: templateLoading } = useServiceStepTemplate(service?.slug);
+
+  useEffect(() => {
+    if (!service) {
+      setSteps([]);
+      return;
+    }
+    if (templateLoading) return;
+
+    setSteps(
+      (template?.steps ?? []).map((step, index) => ({
+        title: step.title,
+        description: step.description,
+        order: Number.isFinite(step.order) ? step.order : index,
+        done: false,
+      }))
+    );
+  }, [service?._id, template, templateLoading]);
+
+  const doneCount = steps.filter((s) => s.done).length;
+  const progress = steps.length ? Math.round((doneCount / steps.length) * 100) : 0;
+
+  const toggleStep = (index: number) => {
+    setSteps((current) => current.map((step, i) => (i === index ? { ...step, done: !step.done } : step)));
+  };
+
+  const markThrough = (index: number) => {
+    setSteps((current) => current.map((step, i) => ({ ...step, done: i <= index })));
+  };
 
   const matchingClients = useMemo(() => {
     const q = clientSearch.trim().toLowerCase();
@@ -215,6 +254,12 @@ export function CreateTaskModal({ onClose }: { onClose: () => void }) {
             clientAddress: client?.address,
             notes: description.trim() || undefined,
             stage: service?.stage ?? "documents_pending",
+            steps: steps.length > 0 ? steps.map((step, index) => ({
+              title: step.title,
+              description: step.description,
+              order: index,
+              done: step.done,
+            })) : undefined,
           }
         : undefined;
 
@@ -309,7 +354,7 @@ export function CreateTaskModal({ onClose }: { onClose: () => void }) {
 
           {/* Client — everything below is filled in from whoever is picked here */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+            <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
               <User className="w-3.5 h-3.5" /> Client
             </label>
 
@@ -343,7 +388,7 @@ export function CreateTaskModal({ onClose }: { onClose: () => void }) {
                   />
                 </div>
                 {matchingClients.length > 0 && (
-                  <div className="mt-1.5 border border-border rounded-lg divide-y divide-border max-h-[176px] overflow-y-auto">
+                  <div className="mt-1.5 border border-border rounded-lg divide-y divide-border max-h-[110px] overflow-y-auto">
                     {matchingClients.map((c) => (
                       <button
                         key={c._id}
@@ -367,7 +412,7 @@ export function CreateTaskModal({ onClose }: { onClose: () => void }) {
           {/* Service — the client's own services, filled in from their record */}
           {client && (
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+              <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
                 <Briefcase className="w-3.5 h-3.5" /> Service <span className="text-red-500">*</span>
               </label>
 
@@ -409,7 +454,7 @@ export function CreateTaskModal({ onClose }: { onClose: () => void }) {
 
           {/* Title — named after the service, still editable */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+            <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
               Task Title <span className="text-red-500">*</span>
             </label>
             <input
@@ -428,7 +473,7 @@ export function CreateTaskModal({ onClose }: { onClose: () => void }) {
 
           {/* Description */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+            <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
               Description <span className="text-muted-foreground font-normal normal-case">(optional)</span>
             </label>
             <textarea
@@ -441,7 +486,7 @@ export function CreateTaskModal({ onClose }: { onClose: () => void }) {
 
           {/* Deadline */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+            <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
               <CalendarClock className="w-3.5 h-3.5" /> Deadline <span className="text-red-500">*</span>
             </label>
             <input
@@ -604,6 +649,102 @@ export function CreateTaskModal({ onClose }: { onClose: () => void }) {
               )}
             </div>
           </div>
+
+          {/* ── The stepper ─────────────────────────────────────────────────── */}
+          {service && (
+          <div className="space-y-2 pt-2 border-t border-border">
+            <div className="flex items-center justify-between gap-2 mb-3">
+              <div className="flex items-center gap-1.5">
+                <ListChecks className="w-3.5 h-3.5 text-muted-foreground" />
+                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">Steps</label>
+              </div>
+              {steps.length > 0 && (
+                <span className="text-[11px] text-muted-foreground">
+                  {doneCount} of {steps.length} done · {progress}%
+                </span>
+              )}
+            </div>
+
+            {templateLoading ? (
+              <div className="py-8 text-center text-sm text-muted-foreground">
+                <Loader2 className="w-4 h-4 animate-spin inline mr-2" />
+                Loading steps…
+              </div>
+            ) : steps.length === 0 ? (
+              <div className="rounded-md border border-dashed border-border px-4 py-6 text-center">
+                <p className="text-sm text-muted-foreground">No steps set up for this service yet.</p>
+                <p className="text-[11px] text-muted-foreground mt-1">
+                  Add them on the Service Steps page and they'll preload here next time.
+                </p>
+              </div>
+            ) : (
+              <>
+                <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden mb-3">
+                  <div
+                    className="h-full bg-blue-600 rounded-full transition-all"
+                    style={{ width: `${progress}%` }}
+                  />
+                </div>
+
+                <p className="text-[11px] text-muted-foreground mb-2">
+                  Tick anything already done. Tap the number to mark everything up to that step.
+                </p>
+
+                <div className="space-y-1.5 max-h-[300px] overflow-y-auto pr-1 custom-scrollbar">
+                  {steps.map((step, index) => (
+                    <div
+                      key={`${step.title}-${index}`}
+                      className={`rounded-md border px-2.5 py-2 flex items-start gap-2.5 transition-colors ${
+                        step.done ? 'border-emerald-200 bg-emerald-50' : 'border-border bg-card'
+                      }`}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => markThrough(index)}
+                        title={`Mark steps 1–${index + 1} as done`}
+                        className={`shrink-0 w-6 h-6 rounded-full border flex items-center justify-center text-[10px] font-bold transition-colors ${
+                          step.done
+                            ? 'border-emerald-500 bg-emerald-500 text-white'
+                            : 'border-border bg-muted text-muted-foreground hover:border-blue-400'
+                        }`}
+                      >
+                        {step.done ? <Check className="w-3.5 h-3.5" /> : index + 1}
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => toggleStep(index)}
+                        className="flex-1 min-w-0 text-left"
+                      >
+                        <span className={`block text-[13px] font-medium leading-snug ${
+                          step.done ? 'text-emerald-900 line-through' : 'text-foreground'
+                        }`}>
+                          {step.title}
+                        </span>
+                        {step.description && (
+                          <span className="block text-[11px] text-muted-foreground mt-0.5">
+                            {step.description}
+                          </span>
+                        )}
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => toggleStep(index)}
+                        title={step.done ? 'Mark as not done' : 'Mark as done'}
+                        className="shrink-0 mt-0.5 text-muted-foreground hover:text-foreground"
+                      >
+                        {step.done
+                          ? <Check className="w-4 h-4 text-emerald-600" />
+                          : <Circle className="w-4 h-4" />}
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+          )}
 
           </div>
           {/* Actions */}

@@ -20,6 +20,8 @@ import DepartmentsPage from '@/pages/DepartmentsPage';
 import ReportsPage from '@/pages/ReportsPage';
 import NotificationsPage from '@/pages/NotificationsPage';
 import SettingsPage from '@/pages/SettingsPage';
+import FeesPage from '@/pages/FeesPage';
+import AccountsPage from '@/pages/AccountsPage'; // Added AccountsPage
 
 // ── People: employees, attendance, leave ─────────────────────────────────────
 import TeamManagementPage from '@/pages/TeamManagementPage';
@@ -106,6 +108,14 @@ const App = () => (
                       <Route
                         path="/settings"
                         element={<RoleGuard><SettingsPage /></RoleGuard>}
+                      />
+                      <Route
+                        path="/fees"
+                        element={<RoleGuard><FeesPage /></RoleGuard>}
+                      />
+                      <Route
+                        path="/accounts"
+                        element={<RoleGuard><AccountsPage /></RoleGuard>}
                       />
 
                       {/* ── Tasks ──────────────────────────────────────── */}

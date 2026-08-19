@@ -48,7 +48,6 @@ interface DraftService {
   title: string;
   category: string;
   categorySlug: string;
-  startAt: string;
   dueAt: string;
   quotation: string;
   temperature: string;
@@ -73,26 +72,18 @@ const EMPTY_FORM: ClientForm = {
 
 /* ── Dialog ─────────────────────────────────────────────────────────────────── */
 
-interface AddLeadDialogProps {
+interface AddClientDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-/**
- * Captures a client and everything they asked for.
- *
- * Each service carries its own start date, target date and status, because a
- * client rarely wants two filings on the same timeline — the marriage
- * registration may be urgent while the trademark can wait a quarter.
- */
-export function AddLeadDialog({ open, onOpenChange }: AddLeadDialogProps) {
+export function AddClientDialog({ open, onOpenChange }: AddClientDialogProps) {
   const defaultService = () => ({
     id: crypto.randomUUID(),
     slug: '',
     title: '',
     category: '',
     categorySlug: '',
-    startAt: todayDateInput(),
     dueAt: inDays(30),
     quotation: '',
     temperature: 'WARM',
@@ -182,7 +173,6 @@ export function AddLeadDialog({ open, onOpenChange }: AddLeadDialogProps) {
         slug: s.slug,
         category: s.category,
         categorySlug: s.categorySlug,
-        startAt: s.startAt || undefined,
         dueAt: s.dueAt || undefined,
         quotation: s.quotation ? Number(s.quotation) : undefined,
         temperature: s.temperature as LeadTemperature,
@@ -198,7 +188,7 @@ export function AddLeadDialog({ open, onOpenChange }: AddLeadDialogProps) {
         city: form.city.trim() || undefined,
         services: payload,
         serviceStage: 'documents_pending',
-        status: 'NEW',
+        status: 'CONVERTED',
         source: 'manual',
         followUpAt: form.followUpAt || undefined,
         followUpNote: form.followUpNote.trim() || undefined,
@@ -207,13 +197,9 @@ export function AddLeadDialog({ open, onOpenChange }: AddLeadDialogProps) {
         onSuccess: () => {
           onOpenChange(false);
           reset();
-          toast.success(
-            services.length > 0
-              ? `Lead added — ${client} wants ${services.length} service${services.length === 1 ? '' : 's'}.`
-              : `Lead added for ${client}.`
-          );
+          toast.success(`Client ${client} added successfully.`);
         },
-        onError: (err: Error) => toast.error(err?.message || 'Failed to add lead.'),
+        onError: (err: Error) => toast.error(err?.message || 'Failed to add client.'),
       }
     );
   };
@@ -224,15 +210,18 @@ export function AddLeadDialog({ open, onOpenChange }: AddLeadDialogProps) {
         open={open}
         onOpenChange={(next) => { onOpenChange(next); if (!next) reset(); }}
       >
-        <DialogContent className="max-w-4xl p-0 overflow-hidden">
+        <DialogContent className="max-w-4xl p-0 overflow-hidden" aria-describedby={undefined}>
           <DialogHeader className="px-5 pt-4 pb-2 border-b border-border">
-            <DialogTitle>Add Lead</DialogTitle>
+            <DialogTitle>Add Client</DialogTitle>
+            <DialogDescription className="sr-only">
+              Fill in the client's details and required services.
+            </DialogDescription>
           </DialogHeader>
-          <div className="px-5 py-3 space-y-2 max-h-[75vh] overflow-y-auto">
+          <div className="px-5 py-3 space-y-3 max-h-[75vh] overflow-y-auto">
             {/* ── Who they are ──────────────────────────────────────────────── */}
             <section className="space-y-2">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="space-y-1">
+                <div className="space-y-2">
                   <Label htmlFor="lead-client">Client name *</Label>
                   <Input
                     id="lead-client"
@@ -345,11 +334,10 @@ export function AddLeadDialog({ open, onOpenChange }: AddLeadDialogProps) {
                 <div className="min-w-[600px]">
                   <div
                     className="grid gap-2 mb-1"
-                    style={{ gridTemplateColumns: 'minmax(0, 4fr) minmax(0, 2fr) minmax(0, 3fr) minmax(0, 3fr) minmax(0, 2fr) 28px' }}
+                    style={{ gridTemplateColumns: 'minmax(0, 4fr) minmax(0, 2fr) minmax(0, 3fr) minmax(0, 2fr) 28px' }}
                   >
                     <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Select Service</div>
                     <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Quotation</div>
-                    <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">When to Start</div>
                     <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Target Date</div>
                     <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Status</div>
                     <div></div>
@@ -359,7 +347,7 @@ export function AddLeadDialog({ open, onOpenChange }: AddLeadDialogProps) {
                     <div
                       key={service.id}
                       className="grid gap-2 items-center mb-2"
-                      style={{ gridTemplateColumns: 'minmax(0, 4fr) minmax(0, 2fr) minmax(0, 3fr) minmax(0, 3fr) minmax(0, 2fr) 28px' }}
+                      style={{ gridTemplateColumns: 'minmax(0, 4fr) minmax(0, 2fr) minmax(0, 3fr) minmax(0, 2fr) 28px' }}
                     >
                       <Select value={service.slug} onValueChange={(val) => handleServiceSelect(service.id, val)}>
                         <SelectTrigger className="h-9 text-xs">
@@ -385,14 +373,6 @@ export function AddLeadDialog({ open, onOpenChange }: AddLeadDialogProps) {
 
                       <Input
                         type="date"
-                        value={service.startAt}
-                        onChange={(e) => updateService(service.id, 'startAt', e.target.value)}
-                        className="h-9 text-xs"
-                      />
-
-                      <Input
-                        type="date"
-                        min={service.startAt || undefined}
                         value={service.dueAt}
                         onChange={(e) => updateService(service.id, 'dueAt', e.target.value)}
                         className="h-9 text-xs"
@@ -469,16 +449,16 @@ export function AddLeadDialog({ open, onOpenChange }: AddLeadDialogProps) {
             <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
             <Button
               onClick={handleSubmit}
-              disabled={!form.client.trim() || !form.phone.trim() || createLead.isPending}
+              disabled={createLead.isPending || !form.client || !form.phone}
+              className="bg-blue-600 hover:bg-blue-700 text-white"
             >
-              {createLead.isPending ? 'Adding…' : 'Add Lead'}
+              {createLead.isPending ? 'Saving...' : 'Add Client'}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
     </>
   );
 }
 
-export default AddLeadDialog;
+export default AddClientDialog;

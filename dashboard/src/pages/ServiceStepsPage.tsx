@@ -44,15 +44,18 @@ const ServiceStepsPage = () => {
   const saveSteps = useSaveServiceSteps();
   const deleteSteps = useDeleteServiceSteps();
 
-  // Load the saved checklist whenever a different service is picked. Local
-  // edits win until they're saved or the selection changes.
+  // Clear draft when selection changes so we don't accidentally keep the previous
+  // service's dirty state when switching services.
   useEffect(() => {
+    setDirty(false);
     if (!selected) {
       setDraft([]);
-      setDirty(false);
-      return;
     }
-    if (templateLoading) return;
+  }, [selected?.slug]);
+
+  // Load the saved checklist. Local edits win until they're saved or the selection changes.
+  useEffect(() => {
+    if (!selected || templateLoading || dirty) return;
 
     setDraft(
       (template?.steps ?? []).map((step, index) => ({
@@ -61,8 +64,7 @@ const ServiceStepsPage = () => {
         description: step.description ?? '',
       }))
     );
-    setDirty(false);
-  }, [selected?.slug, template, templateLoading]);
+  }, [selected?.slug, template, templateLoading, dirty]);
 
   const configuredSlugs = useMemo(
     () => new Set(templates.map((t) => t.serviceSlug)),

@@ -623,6 +623,8 @@ export const buildLeadServices = (data) => {
             // The target date the client was promised. Assigning the service
             // carries it onto the task as its deadline.
             dueAt: parseDate(candidate?.dueAt ?? candidate?.targetDate ?? candidate?.deadline),
+            // Quotation set at lead creation time
+            quotation: candidate?.quotation != null ? Number(candidate.quotation) : undefined,
         });
     }
 
@@ -1099,6 +1101,27 @@ export const assignLeadService = async (leadId, serviceId, actorId, { assignedTo
  */
 export const assignLeadAsTask = async (leadId, actorId, payload) =>
     await assignLeadService(leadId, payload?.serviceId ?? null, actorId, payload);
+
+export const updateLeadServiceQuotation = async (leadId, serviceId, quotation, actorId) => {
+    const lead = await SalesLead.findById(leadId);
+    if (!lead) throw new Error("Lead not found");
+
+    const service = lead.services.id(serviceId);
+    if (!service) throw new Error("Service not found on this lead");
+
+    const oldQuotation = service.quotation;
+    service.quotation = quotation;
+    service.quotationConfirmed = true;
+
+    lead.statusHistory.push({
+        status: lead.status,
+        changedBy: actorId,
+        note: `Quotation for '${service.title}' updated from ${oldQuotation || 0} to ${quotation} (confirmed)`,
+    });
+
+    await lead.save();
+    return lead;
+};
 
 export const updateLeadCustomer = async (leadId, customerData) => {
     const lead = await SalesLead.findById(leadId).populate("customer");

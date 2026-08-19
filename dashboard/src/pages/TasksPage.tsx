@@ -942,71 +942,21 @@ function TaskDetailModal({
             </div>
           )}
 
-          {/* Assigned Team — show all members who share this task */}
-          {relatedTasks.length > 0 ? (
-            <div className="rounded-xl border border-border bg-muted/20 p-4 space-y-3">
-              <p className="text-[9px] uppercase tracking-wider font-bold text-muted-foreground flex items-center gap-1">
-                <User className="w-3 h-3" /> Assigned Team ({relatedTasks.length})
+          {/* Assigned To / By */}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="rounded-xl border border-border bg-muted/30 p-3.5">
+              <p className="text-[9px] uppercase tracking-wider font-bold text-muted-foreground mb-1.5 flex items-center gap-1">
+                <UserCheck className="w-3 h-3" /> Assigned By
               </p>
-              <div className="space-y-2">
-                {relatedTasks.map(rt => {
-                  const name = [rt.assignedTo?.name, rt.assignedTo?.lastName].filter(Boolean).join(" ") || "Unknown";
-                  const statusDot: Record<string, string> = {
-                    pending: "bg-amber-400", in_progress: "bg-blue-500", completed: "bg-green-500",
-                    overdue: "bg-red-500", cancelled: "bg-gray-400",
-                  };
-                  const dot = statusDot[rt.status] ?? "bg-gray-400";
-                  const openFlags = rt.flags?.filter(f => !f.resolvedAt) ?? [];
-                  const isCurrentTask = rt._id === task._id;
-                  return (
-                    <button
-                      key={rt._id}
-                      type="button"
-                      onClick={() => onSelectTask?.(rt)}
-                      className={`w-full text-left p-3 rounded-lg border transition-colors ${isCurrentTask
-                        ? "bg-primary/5 border-primary/30"
-                        : "bg-background border-border hover:bg-muted/40"
-                        }`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div className={`w-2 h-2 rounded-full ${dot} ${rt.status === 'in_progress' ? 'animate-pulse' : ''}`} />
-                          <span className="text-xs font-semibold">{name}</span>
-                          {isCurrentTask && <span className="text-[9px] text-muted-foreground">(selected)</span>}
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                          {openFlags.length > 0 && (
-                            <span className="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded bg-amber-100 text-amber-700 border border-amber-200">
-                              {openFlags.length} issue{openFlags.length !== 1 ? "s" : ""}
-                            </span>
-                          )}
-                          <span className={`text-[9px] font-bold uppercase px-1.5 py-0.5 rounded ${STATUS_COLORS[rt.status] ?? "bg-gray-100 text-gray-600"}`}>
-                            {rt.status.replace("_", " ")}
-                          </span>
-                        </div>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
+              <p className="text-sm font-semibold text-foreground">{assignedByName}</p>
             </div>
-          ) : (
-            /* Fallback: simple assigned to/by grid */
-            <div className="grid grid-cols-2 gap-3">
-              <div className="rounded-xl border border-border bg-muted/30 p-3.5">
-                <p className="text-[9px] uppercase tracking-wider font-bold text-muted-foreground mb-1.5 flex items-center gap-1">
-                  <UserCheck className="w-3 h-3" /> Assigned By
-                </p>
-                <p className="text-sm font-semibold text-foreground">{assignedByName}</p>
-              </div>
-              <div className="rounded-xl border border-border bg-muted/30 p-3.5">
-                <p className="text-[9px] uppercase tracking-wider font-bold text-muted-foreground mb-1.5 flex items-center gap-1">
-                  <User className="w-3 h-3" /> Assigned To
-                </p>
-                <p className="text-sm font-semibold text-foreground">{assignedToName}</p>
-              </div>
+            <div className="rounded-xl border border-border bg-muted/30 p-3.5">
+              <p className="text-[9px] uppercase tracking-wider font-bold text-muted-foreground mb-1.5 flex items-center gap-1">
+                <User className="w-3 h-3" /> Assigned To
+              </p>
+              <p className="text-sm font-semibold text-foreground">{assignedToName}</p>
             </div>
-          )}
+          </div>
 
           {/* Date info */}
           <div className="grid grid-cols-2 gap-3">

@@ -11,8 +11,9 @@ import {
 import { STAGE_LABELS, STAGE_STYLES, stageProgress } from '@/data/services';
 import { TEMPERATURE_LABELS, TEMPERATURE_STYLES } from '@/data/leadTemperature';
 import { sourceLabel } from '@/data/leadSource';
-import { downloadClientPdf, downloadServicePdf, type PdfService } from '@/lib/serviceRequestPdf';
+import { generateInvoicePdf, type InvoiceData } from '@/lib/invoicePdf';
 import { useLead, type LeadService, type SalesLead } from '@/hooks/useLeads';
+import { useServiceFees } from '@/hooks/useServiceFees';
 import FollowUpHistoryDialog from '@/components/followups/FollowUpHistoryDialog';
 import LogFollowUpDialog from '@/components/followups/LogFollowUpDialog';
 import type { FollowUpEntry } from '@/hooks/useFollowUps';
@@ -58,44 +59,7 @@ function InfoRow({ icon: Icon, label, value }: {
   );
 }
 
-/** Maps a lead's service into the shape the PDF layout expects. */
-const toPdfService = (service: LeadService): PdfService => {
-  const task = typeof service.taskId === 'object' ? service.taskId : null;
-  const steps = task?.serviceRequest?.steps ?? [];
-
-  return {
-    title: service.title,
-    category: service.category,
-    stage: service.stage,
-    temperature: service.temperature,
-    startAt: service.startAt,
-    dueAt: service.dueAt,
-    assignedTo: [service.assignedTo?.name, service.assignedTo?.lastName].filter(Boolean).join(' ') || null,
-    taskStatus: service.assignedTo?._id ? task?.status ?? 'pending' : 'unassigned',
-    progress: serviceProgress(service),
-    steps: [...steps].sort((a, b) => a.order - b.order).map((step) => ({
-      title: step.title,
-      description: step.description,
-      done: step.done,
-    })),
-    notes: service.notes,
-  };
-};
-
-const toPdfClient = (lead: SalesLead) => ({
-  reference: `LD-${lead._id.slice(-5).toUpperCase()}`,
-  name: lead.customer?.name?.trim() || lead.customer?.phone || 'Unnamed lead',
-  phone: lead.customer?.phone,
-  email: lead.customer?.email,
-  company: lead.customer?.company,
-  address: [lead.customer?.addressLine1, lead.customer?.addressLine2, lead.customer?.city, lead.customer?.state]
-    .filter(Boolean).join(', '),
-  city: lead.customer?.city,
-  state: lead.customer?.state,
-  source: lead.source,
-  followUpAt: lead.followUpAt,
-  followUpNote: lead.followUpNote,
-});
+// Removed PDF service mappers
 
 interface LeadDetailsDialogProps {
   leadId: string | null;
@@ -112,23 +76,67 @@ interface LeadDetailsDialogProps {
  */
 export function LeadDetailsDialog({ leadId, open, onOpenChange }: LeadDetailsDialogProps) {
   const { data: lead, isLoading, isError, error } = useLead(open ? leadId : undefined);
+  const { data: allFees } = useServiceFees();
   const [downloading, setDownloading] = useState<string | null>(null);
   const [historyOpen, setHistoryOpen] = useState(false);
   const [logOpen, setLogOpen] = useState(false);
 
   const customer = lead?.customer;
-  const clientName = customer?.name?.trim() || customer?.phone || 'Unnamed lead';
+  const clientName = customer?.name?.trim() || customer?.phone || 'Unnamed client';
   const services = lead?.services ?? [];
+
+  // Build invoice particulars for a service:
+  // Use fee items from the Fees page if configured, else fall back to the quotation amount.
+  const buildParticulars = (service: LeadService) => {
+    const feesForService = allFees?.find(f => f.serviceSlug === service.slug);
+    if (feesForService && feesForService.fees.length > 0) {
+      if (service.quotation != null) {
+        const feesTotal = feesForService.fees.reduce((s, f) => s + f.amount, 0);
+        const diff = service.quotation - feesTotal;
+        
+        const parts = feesForService.fees.map(f => ({ name: f.name, amount: f.amount }));
+        if (diff > 0) {
+          parts.push({ name: 'Additional Charges', amount: diff });
+        } else if (diff < 0) {
+          parts.push({ name: 'Discount', amount: diff });
+        }
+        return parts;
+      }
+      return feesForService.fees.map(f => ({ name: f.name, amount: f.amount }));
+    }
+    // Fallback: single line with service title and quotation
+    return [{ name: service.title, amount: service.quotation || 0 }];
+  };
 
   const handleDownload = async (service?: LeadService) => {
     if (!lead) return;
     setDownloading(service?._id ?? 'all');
     try {
-      const client = toPdfClient(lead);
-      if (service) await downloadServicePdf(client, toPdfService(service));
-      else await downloadClientPdf(client, services.map(toPdfService));
+      const address = [lead.customer?.addressLine1, lead.customer?.addressLine2, lead.customer?.city, lead.customer?.state]
+        .filter(Boolean).join(', ');
+
+      // For a single service: use its fee breakdown. For all services: combine all.
+      const particulars = service
+        ? buildParticulars(service)
+        : services.flatMap(s => buildParticulars(s));
+
+      const data: InvoiceData = {
+        invoiceNumber: `INV-LD-${lead._id.slice(-5).toUpperCase()}`,
+        invoiceDate: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: '2-digit' }).replace(/ /g, '-'),
+        consigneeName: clientName,
+        consigneeAddress: address || 'N/A',
+        consigneeState: lead.customer?.state || 'N/A',
+        consigneeCode: 'N/A',
+        buyerName: clientName,
+        buyerAddress: address || 'N/A',
+        buyerState: lead.customer?.state || 'N/A',
+        buyerCode: 'N/A',
+        particulars
+      };
+
+      await generateInvoicePdf(data);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Could not build the PDF.');
+      toast.error(err instanceof Error ? err.message : 'Could not build the invoice.');
     } finally {
       setDownloading(null);
     }
@@ -161,7 +169,7 @@ export function LeadDetailsDialog({ leadId, open, onOpenChange }: LeadDetailsDia
                 {downloading === 'all'
                   ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
                   : <FileDown className="w-3.5 h-3.5" />}
-                Download all as PDF
+                Download Invoice
               </Button>
             </div>
           )}
@@ -279,21 +287,13 @@ export function LeadDetailsDialog({ leadId, open, onOpenChange }: LeadDetailsDia
                               {service.category && (
                                 <p className="text-[11px] text-muted-foreground mt-0.5">{service.category}</p>
                               )}
+                              <p className="text-xs font-medium text-foreground mt-1">
+                                {service.quotation !== undefined && service.quotation !== null 
+                                  ? service.quotation.toLocaleString('en-IN', { style: 'currency', currency: 'INR' }) 
+                                  : 'Quotation not set'}
+                              </p>
                             </div>
 
-                            {/* This service request, as a PDF */}
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => handleDownload(service)}
-                              disabled={downloading !== null}
-                              title="Download this service request as a PDF"
-                            >
-                              {downloading === service._id
-                                ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                                : <FileDown className="w-3.5 h-3.5" />}
-                              PDF
-                            </Button>
                           </div>
 
                           <div className="flex items-center gap-2 flex-wrap mt-2.5">

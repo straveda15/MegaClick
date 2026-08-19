@@ -51,6 +51,8 @@ const projectService = (service, lead) => {
     category: service.category,
     stage: task?.serviceRequest?.stage || service.stage || "documents_pending",
     temperature: service.temperature || "WARM",
+    quotation: service.quotation ?? null,
+    quotationConfirmed: service.quotationConfirmed ?? false,
     startAt: service.startAt ?? null,
     dueAt: task?.dueAt ?? service.dueAt ?? null,
     taskId: task ? String(task._id) : null,
