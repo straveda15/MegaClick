@@ -47,6 +47,8 @@ export interface ClientService {
   stepsTotal: number;
   /** Percentage — 0 until assigned, then the checklist, else the stage. */
   progress: number;
+  quotation?: number;
+  quotationConfirmed?: boolean;
   notes?: string;
 }
 

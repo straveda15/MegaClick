@@ -81,6 +81,10 @@ export interface LeadService {
   stage?: ServiceStage;
   /** How warm this particular request is — tracked per service. */
   temperature?: LeadTemperature;
+  /** Custom quotation amount given to the client */
+  quotation?: number;
+  /** True only if the salesperson explicitly confirmed the quotation */
+  quotationConfirmed?: boolean;
   /** When work on this service should begin. */
   startAt?: string;
   /** The target date promised to the client; becomes the task's deadline. */
@@ -102,6 +106,7 @@ export interface LeadServiceInput {
   startAt?: string;
   dueAt?: string;
   temperature?: LeadTemperature;
+  quotation?: number;
 }
 
 export interface ServiceStepInput {
@@ -296,6 +301,26 @@ export function useSetLeadTemperature() {
     onSuccess: (lead) => {
       qc.invalidateQueries({ queryKey: ["leads"] });
       qc.invalidateQueries({ queryKey: ["lead", lead?._id] });
+    },
+  });
+}
+
+export function useUpdateServiceQuotation() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ leadId, serviceId, quotation }: { leadId: string; serviceId: string; quotation: number }) => {
+      const res = await fetch(`${BASE_URL}/leads/${leadId}/services/${serviceId}/quotation`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", ...authHeaders() },
+        body: JSON.stringify({ quotation }),
+      });
+      const data = await readJson(res, "Failed to update quotation");
+      return data.data as SalesLead;
+    },
+    onSuccess: (lead) => {
+      qc.invalidateQueries({ queryKey: ["leads"] });
+      qc.invalidateQueries({ queryKey: ["lead", lead?._id] });
+      qc.invalidateQueries({ queryKey: ["clients"] });
     },
   });
 }

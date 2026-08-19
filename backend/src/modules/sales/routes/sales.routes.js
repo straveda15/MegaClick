@@ -72,6 +72,7 @@ router.post("/leads/:id/services/:serviceId/assign", salesLeadController.assignL
 router.patch("/leads/:id/temperature", salesLeadController.setLeadTemperature);
 router.patch("/leads/:id/status", salesLeadController.updateLeadStatus);
 router.patch("/leads/:id/customer", salesLeadController.updateLeadCustomer);
+router.patch("/leads/:id/services/:serviceId/quotation", salesLeadController.updateServiceQuotation);
 router.patch("/leads/:id/convert", salesLeadController.convertLead);
 router.patch("/leads/:id/drop", salesLeadController.dropLead);
 

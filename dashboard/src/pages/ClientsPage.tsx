@@ -1,13 +1,16 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
-  CheckCircle2, ChevronDown, ChevronRight, ChevronUp, ChevronsUpDown, FileDown,
-  Info, Loader2, RefreshCcw, Search, UserPlus,
+  CheckCircle2, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, ChevronsUpDown, FileDown,
+  Info, Loader2, RefreshCcw, Search, UserPlus, Receipt,
 } from 'lucide-react';
+import { generateInvoicePdf } from '@/lib/invoicePdf';
+import { useServiceFees } from '@/hooks/useServiceFees';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import ExportMenu from '@/components/ExportMenu';
 import ClientDetailsDialog from '@/components/clients/ClientDetailsDialog';
 import AssignServiceDialog from '@/components/leads/AssignServiceDialog';
+import AddClientDialog from '@/components/leads/AddClientDialog';
 import { STAGE_LABELS, STAGE_STYLES } from '@/data/services';
 import { TEMPERATURE_LABELS, TEMPERATURE_STYLES } from '@/data/leadTemperature';
 import { TASK_STATUS_LABELS, TASK_STATUS_STYLES } from '@/data/clientStatus';
@@ -140,12 +143,14 @@ function ProgressBar({ value, className = '' }: { value: number; className?: str
   );
 }
 
-/** The per-service controls: assign/reassign, PDF, and the details popup. */
-function ServiceActions({ service, onAssign, onPdf, downloading, compact = false }: {
+/** The per-service controls: assign/reassign, PDF, invoice, and the details popup. */
+function ServiceActions({ service, onAssign, onPdf, onInvoice, downloading, invoicing, compact = false }: {
   service: ClientService;
   onAssign: () => void;
   onPdf: () => void;
+  onInvoice: () => void;
   downloading: boolean;
+  invoicing: boolean;
   compact?: boolean;
 }) {
   const assigned = Boolean(service.assignedTo);
@@ -166,11 +171,21 @@ function ServiceActions({ service, onAssign, onPdf, downloading, compact = false
         type="button"
         onClick={onPdf}
         disabled={downloading}
-        title={`Download "${service.title}" as a PDF`}
+        title={`Download "${service.title}" service request PDF`}
         aria-label={`Download ${service.title} as a PDF`}
         className="inline-flex items-center justify-center w-8 h-8 rounded-md border border-border bg-card text-muted-foreground hover:bg-muted transition-colors disabled:opacity-50"
       >
         {downloading ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileDown className="w-4 h-4" />}
+      </button>
+      <button
+        type="button"
+        onClick={onInvoice}
+        disabled={invoicing}
+        title={`Generate invoice for "${service.title}"`}
+        aria-label={`Generate invoice for ${service.title}`}
+        className="inline-flex items-center justify-center w-8 h-8 rounded-md border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-colors disabled:opacity-50"
+      >
+        {invoicing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Receipt className="w-4 h-4" />}
       </button>
     </div>
   );
@@ -188,12 +203,23 @@ const ClientsPage = () => {
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [detailsClient, setDetailsClient] = useState<Client | null>(null);
   const [downloading, setDownloading] = useState<string | null>(null);
+  const [invoicing, setInvoicing] = useState<string | null>(null);
+  const [addClientOpen, setAddClientOpen] = useState(false);
+  const [page, setPage] = useState(1);
+  const PAGE_SIZE = 15;
+
+  useEffect(() => {
+    const openModal = () => setAddClientOpen(true);
+    window.addEventListener('openAddClientModal', openModal);
+    return () => window.removeEventListener('openAddClientModal', openModal);
+  }, []);
 
   // Assigning needs the full lead record — the same record this row came from.
   const [assignTarget, setAssignTarget] = useState<{ leadId: string; service: LeadService } | null>(null);
   const { data: assignLead } = useLead(assignTarget?.leadId);
 
   const { data: clients = [], isLoading, isError, error, refetch } = useClients();
+  const { data: feesData = [] } = useServiceFees();
 
   const kpis = useMemo(() => {
     const services = clients.flatMap((c) => c.services);
@@ -234,6 +260,11 @@ const ClientsPage = () => {
     return list;
   }, [clients, query, sortKey, sortDir]);
 
+  const totalPages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
+  const pagedRows = rows.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+  useEffect(() => { setPage(1); }, [query, sortKey, sortDir]);
+
   const handleSort = (key: NonNullable<SortKey>) => {
     if (sortKey === key) setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
     else { setSortKey(key); setSortDir('asc'); }
@@ -259,6 +290,48 @@ const ClientsPage = () => {
       toast.error(err instanceof Error ? err.message : 'Could not build the PDF.');
     } finally {
       setDownloading(null);
+    }
+  };
+
+  const handleInvoice = async (client: Client, service: ClientService) => {
+    setInvoicing(service._id);
+    try {
+      // Look up configured fees for this service slug
+      const serviceFee = feesData.find((f) => f.serviceSlug === (service.slug ?? ''));
+      const particulars = serviceFee && serviceFee.fees.length > 0
+        ? serviceFee.fees.map((f) => ({ name: f.name, amount: f.amount }))
+        : [
+            { name: 'Stamp Duty', amount: 0 },
+            { name: 'Registration Fee', amount: 0 },
+            { name: 'Document Handling Charges', amount: 0 },
+            { name: 'Legal Fee (Including Tenant Police Verification)', amount: 0 },
+          ];
+
+      const now = new Date();
+      const pad = (n: number) => String(n).padStart(2, '0');
+      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      const invoiceDate = `${pad(now.getDate())}-${months[now.getMonth()]}-${String(now.getFullYear()).slice(2)}`;
+      const invoiceNumber = `MC/${now.getFullYear()}-${String(now.getFullYear() + 1).slice(2)}/${client.clientId}`;
+
+      const addr = [client.address, client.city].filter(Boolean).join(', ');
+
+      await generateInvoicePdf({
+        invoiceNumber,
+        invoiceDate,
+        consigneeName: client.company || client.name,
+        consigneeAddress: addr,
+        consigneeState: client.state || 'Maharashtra',
+        consigneeCode: '27',
+        buyerName: client.company || client.name,
+        buyerAddress: addr,
+        buyerState: client.state || 'Maharashtra',
+        buyerCode: '27',
+        particulars,
+      });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Could not generate invoice.');
+    } finally {
+      setInvoicing(null);
     }
   };
 
@@ -331,7 +404,6 @@ const ClientsPage = () => {
                 <th className={thSort} onClick={() => handleSort('name')}>
                   <span className="flex items-center">Client <SortIcon colKey="name" /></span>
                 </th>
-                <th className={thBase}>Contact</th>
                 <th className={thBase} style={{ minWidth: 190 }}>Service</th>
                 <th className={thBase} style={{ minWidth: 150 }}>Progress</th>
                 <th className={thBase}>Assigned To</th>
@@ -341,11 +413,11 @@ const ClientsPage = () => {
 
             <tbody className="divide-y divide-border">
               {isLoading ? (
-                <tr><td colSpan={8} className="text-center py-16 text-muted-foreground text-sm">
+                <tr><td colSpan={7} className="text-center py-16 text-muted-foreground text-sm">
                   <Loader2 className="w-4 h-4 animate-spin inline mr-2" />Loading clients…
                 </td></tr>
               ) : isError ? (
-                <tr><td colSpan={8} className="text-center py-16">
+                <tr><td colSpan={7} className="text-center py-16">
                   <p className="text-sm text-destructive mb-3">
                     {error instanceof Error ? error.message : 'Failed to load clients.'}
                   </p>
@@ -354,13 +426,13 @@ const ClientsPage = () => {
                   </Button>
                 </td></tr>
               ) : rows.length === 0 ? (
-                <tr><td colSpan={8} className="text-center py-16 text-muted-foreground text-sm">
+                <tr><td colSpan={7} className="text-center py-16 text-muted-foreground text-sm">
                   {clients.length === 0
                     ? 'No clients yet. Capture a lead and it will appear here, ready to assign.'
                     : `No clients found matching "${query}".`}
                 </td></tr>
               ) : (
-                rows.map((client) => {
+                pagedRows.map((client) => {
                   const multi = client.services.length > 1;
                   const isOpen = expanded.has(client._id);
                   // With one service everything fits on the row; with several,
@@ -402,13 +474,6 @@ const ClientsPage = () => {
                         </div>
                       </td>
 
-                      <td className="px-4 py-3 whitespace-nowrap">
-                        <div className="text-foreground text-xs leading-tight">{client.phone || '—'}</div>
-                        {client.email && (
-                          <div className="text-muted-foreground text-[11px]">{client.email}</div>
-                        )}
-                      </td>
-
                       {single ? (
                         <>
                           <td className="px-4 py-3" style={{ minWidth: 190, maxWidth: 220 }}>
@@ -434,7 +499,9 @@ const ClientsPage = () => {
                                 service={single}
                                 onAssign={() => openAssign(client, single)}
                                 onPdf={() => handlePdf(client, single)}
+                                onInvoice={() => handleInvoice(client, single)}
                                 downloading={downloading === single._id}
+                                invoicing={invoicing === single._id}
                               />
                               <button
                                 onClick={() => setDetailsClient(client)}
@@ -506,7 +573,7 @@ const ClientsPage = () => {
                     multi && isOpen ? (
                       <tr key={`${client._id}-services`} className="bg-muted/20">
                         <td />
-                        <td colSpan={7} className="px-4 py-3">
+                        <td colSpan={6} className="px-4 py-3">
                           <div className="space-y-2">
                             {client.services.map((service) => {
                               const stageStyle = STAGE_STYLES[service.stage] ?? STAGE_STYLES.documents_pending;
@@ -558,7 +625,9 @@ const ClientsPage = () => {
                                     service={service}
                                     onAssign={() => openAssign(client, service)}
                                     onPdf={() => handlePdf(client, service)}
+                                    onInvoice={() => handleInvoice(client, service)}
                                     downloading={downloading === service._id}
+                                    invoicing={invoicing === service._id}
                                     compact
                                   />
                                 </div>
@@ -575,13 +644,28 @@ const ClientsPage = () => {
           </table>
         </div>
 
-        {rows.length > 0 && (
-          <div className="px-4 py-3 border-t border-border bg-muted/20 flex items-center justify-between">
-            <span className="text-xs text-muted-foreground">
-              Showing {rows.length} of {clients.length} clients
-            </span>
+        <div className="px-4 py-3 border-t border-border bg-muted/20 flex items-center justify-between">
+          <span className="text-xs text-muted-foreground">
+            Showing {rows.length === 0 ? 0 : (page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, rows.length)} of {rows.length} clients
+          </span>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={page === 1}
+              className="h-7 w-7 flex items-center justify-center rounded border border-border bg-card hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            >
+              <ChevronLeft className="w-3.5 h-3.5" />
+            </button>
+            <span className="text-xs text-muted-foreground px-2">{page} / {totalPages}</span>
+            <button
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              disabled={page === totalPages}
+              className="h-7 w-7 flex items-center justify-center rounded border border-border bg-card hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            >
+              <ChevronRight className="w-3.5 h-3.5" />
+            </button>
           </div>
-        )}
+        </div>
       </div>
 
       {/* ── In-depth details ("i") ─────────────────────────────────────────── */}
@@ -590,6 +674,8 @@ const ClientsPage = () => {
         open={Boolean(detailsClient)}
         onOpenChange={(open) => !open && setDetailsClient(null)}
       />
+
+      <AddClientDialog open={addClientOpen} onOpenChange={setAddClientOpen} />
 
       {/* ── Assign a service to an employee ────────────────────────────────── */}
       <AssignServiceDialog

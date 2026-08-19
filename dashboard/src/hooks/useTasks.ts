@@ -35,7 +35,7 @@ export type ServiceStage = (typeof SERVICE_STAGES)[number];
  * their task board without looking anything up elsewhere.
  */
 export interface TaskServiceStep {
-  _id: string;
+  _id?: string;
   title: string;
   description?: string;
   order: number;

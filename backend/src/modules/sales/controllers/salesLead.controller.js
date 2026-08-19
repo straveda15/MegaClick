@@ -60,6 +60,27 @@ export const updateLeadStatus = async (req, res, next) => {
     }
 };
 
+export const updateServiceQuotation = async (req, res, next) => {
+    try {
+        const leadId = req.params.id;
+        const serviceId = req.params.serviceId;
+        const { quotation } = req.body;
+        const actorId = req.user._id;
+
+        if (quotation === undefined) throw new Error("Quotation is required");
+
+        const lead = await salesLeadService.updateLeadServiceQuotation(leadId, serviceId, Number(quotation), actorId);
+
+        res.status(200).json({
+            success: true,
+            message: "Quotation updated successfully",
+            data: lead
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 export const convertLead = async (req, res, next) => {
     try {
         const leadId = req.params.id;

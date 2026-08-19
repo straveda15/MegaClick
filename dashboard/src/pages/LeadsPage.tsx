@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
-  Search, ChevronUp, ChevronDown, ChevronsUpDown, Info, Loader2, RefreshCcw, Upload,
+  Search, ChevronUp, ChevronDown, ChevronsUpDown, ChevronLeft, ChevronRight, Info, Loader2, RefreshCcw, Upload, CheckCircle2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -15,6 +15,7 @@ import ExportMenu from '@/components/ExportMenu';
 import ImportSheetDialog from '@/components/ImportSheetDialog';
 import AddLeadDialog from '@/components/leads/AddLeadDialog';
 import LeadDetailsDialog from '@/components/leads/LeadDetailsDialog';
+import QuotationDialog from '@/components/leads/QuotationDialog';
 import type { SheetColumn } from '@/lib/sheet';
 import { STAGE_LABELS, SERVICE_STAGES, type ServiceStage } from '@/data/services';
 import { TEMPERATURE_LABELS } from '@/data/leadTemperature';
@@ -240,14 +241,18 @@ const LeadsPage = () => {
   const [assignedFilter, setAssignedFilter] = useState('');
   const [sortKey, setSortKey] = useState<SortKey>(null);
   const [sortDir, setSortDir] = useState<SortDir>('asc');
+  const [page, setPage] = useState(1);
+  const PAGE_SIZE = 15;
 
   const [addOpen, setAddOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
   const [importFallbackAssignee, setImportFallbackAssignee] = useState('');
 
   const [detailsLeadId, setDetailsLeadId] = useState<string | null>(null);
+  const [quotationLeadId, setQuotationLeadId] = useState<string | null>(null);
 
   const { data: leads = [], isLoading, isError, error, refetch } = useLeads();
+  const quotationLead = useMemo(() => leads.find((l) => l._id === quotationLeadId) ?? null, [leads, quotationLeadId]);
   const { data: team = [], isLoading: teamLoading } = useTeam();
   const importLeads = useImportLeads();
 
@@ -318,6 +323,12 @@ const LeadsPage = () => {
     }
     return list;
   }, [allRows, query, temperatureFilter, assignedFilter, sortKey, sortDir]);
+
+  const totalPages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
+  const pagedRows = rows.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+  // Reset to page 1 whenever filters change
+  useEffect(() => { setPage(1); }, [query, temperatureFilter, assignedFilter, sortKey, sortDir]);
 
   const handleSort = (key: keyof LeadRow) => {
     if (sortKey === key) setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
@@ -434,13 +445,14 @@ const LeadsPage = () => {
                 <th className={thSort} onClick={() => handleSort('source')}>
                   <span className="flex items-center">Source <SortIcon col="source" sortKey={sortKey} sortDir={sortDir} /></span>
                 </th>
-                <th className={`${thBase} text-right`}>Details</th>
+                <th className={thBase}>Quotation</th>
+                <th className="px-4 py-3 text-right">Details</th>
               </tr>
             </thead>
 
             <tbody className="divide-y divide-border">
               {isLoading ? (
-                <tr><td colSpan={6} className="text-center py-16 text-muted-foreground text-sm">
+                <tr><td colSpan={7} className="text-center py-16 text-muted-foreground text-sm">
                   <Loader2 className="w-4 h-4 animate-spin inline mr-2" />Loading leads…
                 </td></tr>
               ) : isError ? (
@@ -459,9 +471,10 @@ const LeadsPage = () => {
                     : 'No leads match your filters.'}
                 </td></tr>
               ) : (
-                rows.map((row) => {
+                pagedRows.map((row) => {
                   const source = sourceLabel(row.source);
                   const sourceStyle = SOURCE_STYLES[source];
+                  const isConfirmed = row.services.length > 0 && row.services.every(s => s.quotationConfirmed === true);
 
                   return (
                     <tr key={row.id} className="hover:bg-muted/30 transition-colors">
@@ -515,6 +528,29 @@ const LeadsPage = () => {
                         </span>
                       </td>
 
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        {isConfirmed ? (
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => setQuotationLeadId(row.id)}
+                            className="h-7 text-xs font-medium border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 hover:text-emerald-800"
+                          >
+                            <CheckCircle2 className="w-3.5 h-3.5 mr-1" />
+                            Confirmed
+                          </Button>
+                        ) : (
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => setQuotationLeadId(row.id)}
+                            className="h-7 text-xs font-medium"
+                          >
+                            Quotation
+                          </Button>
+                        )}
+                      </td>
+
                       {/* In-depth details, and per-service assignment inside */}
                       <td className="px-4 py-3 whitespace-nowrap text-right">
                         <button
@@ -534,13 +570,28 @@ const LeadsPage = () => {
           </table>
         </div>
 
-        {rows.length > 0 && (
-          <div className="px-4 py-3 border-t border-border bg-muted/20">
-            <span className="text-xs text-muted-foreground">
-              Showing {rows.length} of {allRows.length} leads
-            </span>
+        <div className="px-4 py-3 border-t border-border bg-muted/20 flex items-center justify-between">
+          <span className="text-xs text-muted-foreground">
+            Showing {rows.length === 0 ? 0 : (page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, rows.length)} of {rows.length} leads
+          </span>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={page === 1}
+              className="h-7 w-7 flex items-center justify-center rounded border border-border bg-card hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            >
+              <ChevronLeft className="w-3.5 h-3.5" />
+            </button>
+            <span className="text-xs text-muted-foreground px-2">{page} / {totalPages}</span>
+            <button
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              disabled={page === totalPages}
+              className="h-7 w-7 flex items-center justify-center rounded border border-border bg-card hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            >
+              <ChevronRight className="w-3.5 h-3.5" />
+            </button>
           </div>
-        )}
+        </div>
       </div>
 
       {/* ── Lead details ("i") — read-only; assigning happens on Clients ───── */}
@@ -548,6 +599,13 @@ const LeadsPage = () => {
         leadId={detailsLeadId}
         open={Boolean(detailsLeadId)}
         onOpenChange={(open) => !open && setDetailsLeadId(null)}
+      />
+
+      {/* ── Quotation Dialog ────────────────────────────────────────────────── */}
+      <QuotationDialog
+        lead={quotationLead}
+        open={Boolean(quotationLead)}
+        onOpenChange={(open) => !open && setQuotationLeadId(null)}
       />
 
       {/* ── Import ──────────────────────────────────────────────────────────── */}

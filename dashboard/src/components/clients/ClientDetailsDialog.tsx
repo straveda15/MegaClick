@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import {
-  Building2, CalendarClock, CalendarDays, Check, Circle, History, Mail, MapPin, Phone, User,
+  Building2, CalendarClock, CalendarDays, Check, Circle, FileDown, History, Loader2, Mail, MapPin, Phone, User,
 } from 'lucide-react';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import {
   Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle,
@@ -12,6 +13,8 @@ import { TEMPERATURE_LABELS, TEMPERATURE_STYLES } from '@/data/leadTemperature';
 import FollowUpHistoryDialog from '@/components/followups/FollowUpHistoryDialog';
 import LogFollowUpDialog from '@/components/followups/LogFollowUpDialog';
 import type { Client, ClientService } from '@/hooks/useClients';
+import { useServiceFees } from '@/hooks/useServiceFees';
+import { generateInvoicePdf, type InvoiceData } from '@/lib/invoicePdf';
 
 /* ── Display constants ──────────────────────────────────────────────────────── */
 
@@ -52,6 +55,11 @@ function ServiceCard({ service }: { service: ClientService }) {
           {service.category && (
             <p className="text-[11px] text-muted-foreground mt-0.5">{service.category}</p>
           )}
+          <p className="text-xs font-medium text-foreground mt-1">
+            {service.quotation !== undefined && service.quotation !== null
+              ? service.quotation.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
+              : 'Quotation not set'}
+          </p>
         </div>
         <div className="flex items-center gap-1.5 shrink-0">
           <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium ${
@@ -133,6 +141,54 @@ interface ClientDetailsDialogProps {
 export function ClientDetailsDialog({ client, open, onOpenChange }: ClientDetailsDialogProps) {
   const [historyOpen, setHistoryOpen] = useState(false);
   const [logOpen, setLogOpen] = useState(false);
+  const [downloading, setDownloading] = useState(false);
+  const { data: allFees } = useServiceFees();
+
+  const buildParticulars = (service: ClientService) => {
+    const feesForService = allFees?.find(f => f.serviceSlug === service.slug);
+    if (feesForService && feesForService.fees.length > 0) {
+      if (service.quotation != null) {
+        const feesTotal = feesForService.fees.reduce((s, f) => s + f.amount, 0);
+        const diff = service.quotation - feesTotal;
+        
+        const parts = feesForService.fees.map(f => ({ name: f.name, amount: f.amount }));
+        if (diff > 0) {
+          parts.push({ name: 'Additional Charges', amount: diff });
+        } else if (diff < 0) {
+          parts.push({ name: 'Discount', amount: diff });
+        }
+        return parts;
+      }
+      return feesForService.fees.map(f => ({ name: f.name, amount: f.amount }));
+    }
+    return [{ name: service.title, amount: service.quotation || 0 }];
+  };
+
+  const handleDownloadInvoice = async () => {
+    if (!client) return;
+    setDownloading(true);
+    try {
+      const particulars = client.services.flatMap(s => buildParticulars(s));
+      const data: InvoiceData = {
+        invoiceNumber: `INV-${client.clientId}`,
+        invoiceDate: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: '2-digit' }).replace(/ /g, '-'),
+        consigneeName: client.name,
+        consigneeAddress: client.address || 'N/A',
+        consigneeState: client.state || 'N/A',
+        consigneeCode: 'N/A',
+        buyerName: client.name,
+        buyerAddress: client.address || 'N/A',
+        buyerState: client.state || 'N/A',
+        buyerCode: 'N/A',
+        particulars
+      };
+      await generateInvoicePdf(data);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Could not build the invoice.');
+    } finally {
+      setDownloading(false);
+    }
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -149,6 +205,14 @@ export function ClientDetailsDialog({ client, open, onOpenChange }: ClientDetail
               ? `${client.totalServices} service${client.totalServices === 1 ? '' : 's'} · ${client.completedServices} completed · ${client.progress}% overall`
               : 'Client details'}
           </DialogDescription>
+          {client && client.services.length > 0 && (
+            <div className="pt-2">
+              <Button variant="outline" size="sm" onClick={handleDownloadInvoice} disabled={downloading}>
+                {downloading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <FileDown className="w-3.5 h-3.5" />}
+                Download Invoice
+              </Button>
+            </div>
+          )}
         </DialogHeader>
 
         <div className="max-h-[65vh] overflow-y-auto">

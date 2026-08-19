@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import {
   LayoutDashboard, Target, Users, ListTodo, ClipboardList, ListChecks, PhoneCall,
-  UsersRound, CalendarCheck, MapPin, Building2, BarChart3, Bell, Settings,
+  UsersRound, CalendarCheck, MapPin, Building2, BarChart3, Bell, Settings, CircleDollarSign, Wallet,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -43,6 +43,8 @@ export const ALL_SECTIONS: NavSection[] = [
       { title: 'Reports',         path: '/reports',                icon: BarChart3 },
       { title: 'Notifications',   path: '/notifications',          icon: Bell },
       { title: 'Settings',        path: '/settings',               icon: Settings },
+      { title: 'Fees',            path: '/fees',                   icon: CircleDollarSign },
+      { title: 'Accounts',        path: '/accounts',               icon: Wallet },
     ],
   },
   {
@@ -75,6 +77,8 @@ export const DASHBOARD_PAGES: PagePermission[] = [
   { section: 'Business Ops', label: 'Reports',          path: '/reports' },
   { section: 'Business Ops', label: 'Notifications',    path: '/notifications' },
   { section: 'Business Ops', label: 'Settings',         path: '/settings' },
+  { section: 'Business Ops', label: 'Fees',             path: '/fees' },
+  { section: 'Business Ops', label: 'Accounts',         path: '/accounts' },
   { section: 'Tasks',        label: 'Tasks',            path: '/tasks' },
   { section: 'Tasks',        label: 'Team Logs',        path: '/tasks/team-logs' },
   { section: 'People',       label: 'Employees',        path: '/employees' },
@@ -139,7 +143,7 @@ export const ROLE_ALLOWED_PATHS: Record<string, string[]> = {
   ],
 
   // ── Roles with self-service + task board only ───────────────────────────────
-  accountant:       ['/', '/dashboard', '/self/attendance', '/self/leaves', '/tasks'],
+  accountant:       ['/', '/dashboard', '/self/attendance', '/self/leaves', '/tasks', '/accounts'],
   business_analyst: ['/', '/dashboard', '/self/attendance', '/self/leaves', '/tasks'],
   ops_staff:        ['/', '/dashboard', '/self/attendance', '/self/leaves', '/tasks'],
   production:       ['/', '/dashboard', '/self/attendance', '/self/leaves', '/tasks'],

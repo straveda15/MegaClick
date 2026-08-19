@@ -45,6 +45,12 @@ const leadServiceSchema = new mongoose.Schema(
     assignedAt: { type: Date },
     dueAt: { type: Date },
     notes: { type: String, trim: true },
+    quotation: { type: Number, min: 0 },
+    // True only after the salesperson explicitly clicks "Confirm" in the
+    // Quotation dialog. Having a quotation amount does NOT mean it is confirmed
+    // — the amount comes from the Fees page defaults but confirmation is a
+    // deliberate act.
+    quotationConfirmed: { type: Boolean, default: false },
   },
   { _id: true, timestamps: false }
 );

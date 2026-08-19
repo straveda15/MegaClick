@@ -1,4 +1,4 @@
-import { Search, Bell, Menu, LogOut, ChevronDown, AlertCircle, CheckCircle2, Plus, FileText, FileSpreadsheet } from "lucide-react";
+import { Bell, Menu, LogOut, ChevronDown, AlertCircle, CheckCircle2, Plus, FileText, FileSpreadsheet } from "lucide-react";
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
@@ -15,7 +15,6 @@ const Topbar = () => {
   const [roleMenuOpen, setRoleMenuOpen] = useState(false);
   const [switchingRole, setSwitchingRole] = useState<string | null>(null);
   const [roleError, setRoleError] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
   const hasUnreadNotifications = MOCK_NOTIFICATIONS.some((n) => !n.read);
 
   const initials = user
@@ -81,48 +80,20 @@ const Topbar = () => {
         <h1 className="text-xl font-bold text-foreground hidden sm:block shrink-0">{getPageTitle()}</h1>
       </div>
 
-      {/* Search — UI-only stub; no unified search API exists yet */}
-      <div className="flex-1 max-w-xl hidden sm:block ml-4">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search leads, clients, tasks, employees..."
-            className="w-full h-9 pl-9 pr-4 rounded-md border border-border bg-muted/50 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
-          />
-        </div>
-      </div>
-
-      {/* Mobile Search — stub, matches desktop */}
-      <button
-        onClick={() => toast.info("Search is coming soon.")}
-        className="sm:hidden p-2 rounded-md hover:bg-muted transition-colors ml-auto"
-      >
-        <Search className="w-5 h-5 text-muted-foreground" />
-      </button>
 
       {/* Context-aware CTA button */}
       <div className="hidden sm:flex items-center gap-2">
-        {location.pathname === '/leads' && (
+
+        {location.pathname === '/fees' && (
           <button
-            onClick={() => window.dispatchEvent(new CustomEvent('openAddLeadModal'))}
+            onClick={() => window.dispatchEvent(new CustomEvent('openSetFeeModal'))}
             className="flex items-center gap-1.5 h-9 px-4 rounded-full bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors shadow-sm"
           >
             <Plus className="w-4 h-4" />
-            Add Lead
+            Set Service Fee
           </button>
         )}
-        {location.pathname === '/clients' && (
-          <button
-            onClick={() => toast.info('Add Client is coming soon.')}
-            className="flex items-center gap-1.5 h-9 px-4 rounded-full bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors shadow-sm"
-          >
-            <Plus className="w-4 h-4" />
-            New Client
-          </button>
-        )}
+
         {location.pathname === '/employees' && (
           <button
             onClick={() => window.dispatchEvent(new CustomEvent('openAddEmployeeModal'))}
@@ -234,6 +205,27 @@ const Topbar = () => {
               </>
             )}
           </div>
+        )}
+
+        {/* Add Lead / Client — shown on respective pages, right next to the bell */}
+        {location.pathname === '/leads' && (
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent('openAddLeadModal'))}
+            className="flex items-center gap-1.5 h-9 px-4 rounded-full bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors shadow-sm"
+          >
+            <Plus className="w-4 h-4" />
+            Add Lead
+          </button>
+        )}
+
+        {location.pathname === '/clients' && (
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent('openAddClientModal'))}
+            className="flex items-center gap-1.5 h-9 px-4 rounded-full bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors shadow-sm"
+          >
+            <Plus className="w-4 h-4" />
+            Add Client
+          </button>
         )}
 
         {/* Notifications */}
