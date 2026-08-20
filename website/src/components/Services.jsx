@@ -1,148 +1,152 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import {
   ArrowRight,
-  BriefcaseBusiness,
-  ShieldCheck,
-  TrendingUp,
+  Scale,
+  BarChart3,
+  ClipboardList,
 } from "lucide-react";
 
-import legalImg from "../assets/legal.jpg";
-import otherImg from "../assets/registration.jpg";
-import businessImg from "../assets/Business.jpg";
-
+// Sequence: 1. Legal  2. Business & Financial  3. Other
 const services = [
   {
     title: "Legal Services",
     slug: "legal-services",
-    image: legalImg,
-    icon: ShieldCheck,
+    icon: Scale,
     short:
-      "Professional legal documentation, registrations and compliance support for your business.",
-  },
-  {
-    title: "Other Services",
-    slug: "other-services",
-    image: otherImg,
-    icon: BriefcaseBusiness,
-    short:
-      "Complete assistance for licenses, registrations and essential business requirements.",
+      "Expert legal documentation, company registrations and compliance management tailored to protect and grow your business with full regulatory confidence.",
+    gradient: "from-white via-blue-50 to-blue-200",
+    iconBg: "bg-blue-100",
+    iconColor: "text-[#0B4EA2]",
+    btnBorder:
+      "border-[#0B4EA2] text-[#0B4EA2] hover:bg-[#0B4EA2] hover:text-white",
   },
   {
     title: "Business & Financial Services",
     slug: "business-financial-services",
-    image: businessImg,
-    icon: TrendingUp,
+    icon: BarChart3,
     short:
-      "Reliable taxation, accounting and financial solutions for business growth.",
+      "End-to-end taxation, accounting and financial planning solutions designed to streamline your operations and drive sustainable long-term business growth.",
+    gradient: "from-white via-purple-50 to-purple-200",
+    iconBg: "bg-purple-100",
+    iconColor: "text-purple-600",
+    btnBorder:
+      "border-purple-500 text-purple-600 hover:bg-purple-500 hover:text-white",
+  },
+  {
+    title: "Other Services",
+    slug: "other-services",
+    icon: ClipboardList,
+    short:
+      "Comprehensive support for licenses, MSME registrations and all essential business requirements handled with speed, accuracy and complete transparency.",
+    gradient: "from-white via-emerald-50 to-emerald-200",
+    iconBg: "bg-emerald-100",
+    iconColor: "text-emerald-600",
+    btnBorder:
+      "border-emerald-500 text-emerald-600 hover:bg-emerald-500 hover:text-white",
   },
 ];
 
 const Services = () => {
   const navigate = useNavigate();
-  const [activeCard, setActiveCard] = useState(null);
-
-  const handleCardClick = (index) => {
-    setActiveCard(index);
-    setTimeout(() => {
-      setActiveCard(null);
-    }, 500);
-  };
 
   return (
     <section className="w-full py-10 sm:py-12 lg:py-16 bg-white">
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-8 lg:px-16 xl:px-20">
-        
+      <div className="max-w-[1450px] mx-auto px-4 sm:px-8 lg:px-16 xl:px-20">
+
         {/* ================= HEADING AREA ================= */}
         <div className="mb-8 sm:mb-10 lg:mb-12 w-full">
-          
-          {/* HEADING (Hedvig Letters Serif - Without 'Under One Roof') */}
+
+          {/* ====================== TOP TAGLINE ====================== */}
+          <p className="text-xs font-semibold tracking-[0.25em] uppercase text-[#0B4EA2] mb-3.5 sm:mb-4 text-left">
+            WHAT WE OFFER
+          </p>
+
+          {/* MAIN HEADING */}
           <h2
             className="text-2xl sm:text-3xl lg:text-[40px] font-normal text-[#0f172a] leading-tight"
-            style={{ fontFamily: '"Hedvig Letters Serif", Georgia, serif', fontWeight: 400 }}
+            style={{
+              fontFamily: '"Hedvig Letters Serif", Georgia, serif',
+              fontWeight: 400,
+            }}
           >
             Complete Business <span className="text-[#0B4EA2]">Solutions</span>
           </h2>
 
-          {/* SPREAD PARAGRAPH (Inter Font) */}
-          <p className="mt-3.5 sm:mt-4 text-slate-600 font-normal text-sm sm:text-base md:text-lg leading-relaxed w-full">
-            We provide reliable legal, business and financial solutions with
-            expert guidance to simplify your business journey. MegaClick
-            provides professional assistance for registrations, agreements,
-            documentation and compliance requirements with simple and
-            transparent processes.
+          {/* SUB PARAGRAPH — full width spread, justified */}
+          <p className="mt-3.5 sm:mt-4 text-slate-600 font-normal text-sm sm:text-base leading-relaxed text-justify w-full">
+            From legal registrations and financial compliance to essential business
+            licenses, MegaClick delivers expert-led services with transparent
+            processes and end-to-end professional support for every business need.
           </p>
         </div>
 
         {/* ================= SERVICE CARDS ================= */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7 lg:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7 lg:gap-8 items-start">
           {services.map((service, index) => {
             const Icon = service.icon;
 
             return (
               <div
                 key={index}
-                onClick={() => handleCardClick(index)}
                 className={`
-                  group
-                  w-full
-                  bg-white
-                  border
-                  border-blue-100
-                  rounded-2xl
-                  overflow-hidden
-                  shadow-xs
-                  hover:shadow-lg
-                  transition-all
-                  duration-300
+                  group flex flex-col
+                  rounded-3xl overflow-hidden
+                  border border-slate-100
+                  shadow-sm hover:shadow-xl
+                  transition-all duration-300
+                  hover:-translate-y-2
                   cursor-pointer
-                  lg:hover:-translate-y-1.5
-                  ${activeCard === index ? "-translate-y-1.5 shadow-lg" : ""}
+                  bg-gradient-to-b ${service.gradient}
                 `}
               >
-                {/* IMAGE */}
-                <div className="relative w-full h-48 sm:h-52 md:h-56 lg:h-52 xl:h-56 overflow-hidden bg-slate-100">
-                  <img
-                    src={service.image}
-                    alt={service.title}
-                    loading="lazy"
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-black/5 group-hover:bg-black/10 transition-colors duration-300" />
-                </div>
+                {/* ── TOP: Text Content ── */}
+                <div className="flex flex-col items-center text-center px-7 pt-9 pb-5">
 
-                {/* CONTENT (Inter Font) */}
-                <div className="p-5 sm:p-6">
-                  {/* ICON + TITLE */}
-                  <div className="flex items-center gap-3.5 mb-3.5">
-                    <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center flex-shrink-0 text-[#0B4EA2]">
-                      <Icon size={22} className="text-[#0B4EA2]" />
-                    </div>
-
-                    <h3 className="text-base sm:text-lg lg:text-xl font-bold text-[#0f172a] leading-snug">
-                      {service.title}
-                    </h3>
-                  </div>
+                  {/* TITLE */}
+                  <h3 className="text-xl sm:text-2xl font-bold text-[#0f172a] leading-snug mb-3 min-h-[60px] flex items-center justify-center">
+                    {service.title}
+                  </h3>
 
                   {/* DESCRIPTION */}
-                  <p className="text-sm text-slate-600 font-normal leading-relaxed">
+                  <p className="text-sm sm:text-[15px] text-slate-500 leading-relaxed text-justify min-h-[96px]">
                     {service.short}
                   </p>
+
+                  {/* READ MORE BUTTON */}
+                  <button
+                    onClick={() => navigate("/services")}
+                    className={`
+                      mt-5 inline-flex items-center gap-2
+                      border rounded-full
+                      px-5 py-2
+                      text-sm font-semibold
+                      transition-all duration-200
+                      ${service.btnBorder}
+                    `}
+                  >
+                    Read More <ArrowRight size={15} />
+                  </button>
+                </div>
+
+                {/* ── BOTTOM: Large Icon on Gradient ── */}
+                <div className="flex items-center justify-center py-8">
+                  <div
+                    className={`
+                      w-20 h-20 rounded-2xl
+                      ${service.iconBg}
+                      flex items-center justify-center
+                      shadow-sm
+                      group-hover:scale-110
+                      transition-transform duration-300
+                    `}
+                  >
+                    <Icon size={40} className={service.iconColor} strokeWidth={1.5} />
+                  </div>
                 </div>
               </div>
             );
           })}
-        </div>
-
-        {/* ================= VIEW ALL BUTTON ================= */}
-        <div className="flex justify-center mt-9 sm:mt-11">
-          <button
-            onClick={() => navigate("/services")}
-            className="inline-flex items-center justify-center gap-2.5 bg-[#0B4EA2] hover:bg-blue-700 text-white px-7 sm:px-8 py-3.5 rounded-full text-sm sm:text-base font-semibold transition-all duration-300 hover:scale-[1.02] shadow-md hover:shadow-lg cursor-pointer"
-          >
-            <span>View All Services</span>
-            <ArrowRight size={18} />
-          </button>
         </div>
 
       </div>
