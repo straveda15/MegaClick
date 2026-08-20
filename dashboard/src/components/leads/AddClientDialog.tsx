@@ -48,6 +48,7 @@ interface DraftService {
   title: string;
   category: string;
   categorySlug: string;
+  startAt: string;
   dueAt: string;
   quotation: string;
   temperature: string;
@@ -84,6 +85,7 @@ export function AddClientDialog({ open, onOpenChange }: AddClientDialogProps) {
     title: '',
     category: '',
     categorySlug: '',
+    startAt: todayDateInput(),
     dueAt: inDays(30),
     quotation: '',
     temperature: 'WARM',
@@ -173,6 +175,7 @@ export function AddClientDialog({ open, onOpenChange }: AddClientDialogProps) {
         slug: s.slug,
         category: s.category,
         categorySlug: s.categorySlug,
+        startAt: s.startAt || undefined,
         dueAt: s.dueAt || undefined,
         quotation: s.quotation ? Number(s.quotation) : undefined,
         temperature: s.temperature as LeadTemperature,
