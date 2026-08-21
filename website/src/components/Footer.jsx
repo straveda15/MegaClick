@@ -28,7 +28,7 @@ const FOOTER_LINKS = {
 
 /* =========================================================
    SOCIAL LINKS
-   ========================================================= */
+========================================================= */
 
 const SOCIAL_LINKS = [
   {
@@ -70,14 +70,14 @@ const SOCIAL_LINKS = [
 
 /* =========================================================
    FOOTER
-   ========================================================= */
+========================================================= */
 
 const Footer = () => {
   const navigate = useNavigate();
 
   /* =========================================================
      GMAIL
-     ========================================================= */
+  ========================================================= */
 
   const openGmailCompose = () => {
     const email = "megaclickofficial@gmail.com";
@@ -99,7 +99,7 @@ const Footer = () => {
 
   /* =========================================================
      BACK TO TOP
-     ========================================================= */
+  ========================================================= */
 
   const scrollToTop = () => {
     if (window.location.pathname !== "/") {
@@ -121,7 +121,7 @@ const Footer = () => {
 
   /* =========================================================
      NAVIGATION
-     ========================================================= */
+  ========================================================= */
 
   const handleNavigation = (path) => {
     navigate(path);
@@ -147,17 +147,14 @@ const Footer = () => {
 
       {/* =========================================================
           MEGACLICK WATERMARK
-          ⚠️ UNCHANGED
       ========================================================= */}
 
       <div
         className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none select-none overflow-hidden"
         aria-hidden="true"
       >
-        {/* Soft Ambient Glow */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-1/2 bg-blue-400/10 blur-[120px] rounded-full pointer-events-none" />
 
-        {/* Edge-to-Edge Watermark Typography */}
         <span
           className="text-[18vw] font-black uppercase tracking-tight whitespace-nowrap text-center text-white/[0.045] leading-none select-none"
           style={{
@@ -180,11 +177,14 @@ const Footer = () => {
             MOBILE VIEW
         ======================================================= */}
 
-        <div className="flex flex-col items-center text-center md:hidden pb-1">
+        <div className="md:hidden w-full flex flex-col items-start text-left px-2 pb-1">
 
-          {/* LOGO + NAME */}
+          {/* =====================================================
+              LOGO + NAME
+          ===================================================== */}
 
-          <div className="flex items-center gap-3 mb-2">
+          <div className="flex items-center justify-start gap-3 mb-2">
+
             <img
               src={logo}
               alt="MegaClick"
@@ -195,24 +195,41 @@ const Footer = () => {
               <span className="text-white">Mega</span>
               <span className="text-green-400">Click</span>
             </h2>
+
           </div>
 
-          {/* TAGLINE */}
+          {/* =====================================================
+              TAGLINE
+          ===================================================== */}
 
-          <p className="text-[13px] text-blue-100/90 font-medium mb-4">
+          <p className="text-[13px] text-blue-100/90 font-medium mb-5 text-left">
             Exceptional value. Cost effective solutions.
           </p>
 
-          {/* NAV LINKS */}
+          {/* =====================================================
+              MOBILE LINKS
+          ===================================================== */}
 
-          <div className="grid grid-cols-2 gap-x-10 gap-y-3.5 mb-5 w-full max-w-xs">
+          <div className="w-full flex flex-col items-start text-left gap-3 mb-6">
 
             {FOOTER_LINKS.EXPLORE.map((link) => (
               <button
                 key={link.label}
                 type="button"
                 onClick={() => handleNavigation(link.path)}
-                className="text-[13px] font-semibold text-blue-100 hover:text-white transition-colors text-center"
+                className="
+                  text-[13px]
+                  font-semibold
+                  text-blue-100
+                  hover:text-white
+                  transition-colors
+                  text-left
+                  cursor-pointer
+                  p-0
+                  m-0
+                  bg-transparent
+                  border-none
+                "
               >
                 {link.label}
               </button>
@@ -223,7 +240,19 @@ const Footer = () => {
                 key={link.label}
                 type="button"
                 onClick={() => handleNavigation(link.path)}
-                className="text-[13px] font-semibold text-blue-100 hover:text-white transition-colors text-center"
+                className="
+                  text-[13px]
+                  font-semibold
+                  text-blue-100
+                  hover:text-white
+                  transition-colors
+                  text-left
+                  cursor-pointer
+                  p-0
+                  m-0
+                  bg-transparent
+                  border-none
+                "
               >
                 {link.label}
               </button>
@@ -235,7 +264,7 @@ const Footer = () => {
               SOCIAL ICONS
           ===================================================== */}
 
-          <div className="flex gap-3.5 mb-5">
+          <div className="flex justify-start items-center gap-3.5 mb-6">
 
             {SOCIAL_LINKS.map((social, index) => {
               const Icon = social.icon;
@@ -266,23 +295,63 @@ const Footer = () => {
 
           </div>
 
-          {/* MOBILE BOTTOM BAR */}
+          {/* =====================================================
+              MOBILE BOTTOM BAR
+          ===================================================== */}
 
-          <div className="border-t-2 border-white/10 pt-3.5 w-full flex flex-col items-center gap-2 text-[11px] font-black text-white/40 uppercase tracking-[0.2em]">
+          <div
+            className="
+              border-t-2
+              border-white/10
+              pt-4
+              w-full
+              flex
+              flex-col
+              items-start
+              text-left
+              gap-2
+            "
+          >
 
-            <p>© 2026 MegaClick. All rights reserved.</p>
+            {/* STRAVEDA TECH
+                SAME FONT/SIZE AS MOBILE HOME/ABOUT LINKS
+            */}
 
-            <div className="flex gap-6">
+            <p
+              className="
+                text-[13px]
+                font-semibold
+                text-blue-100
+                text-left
+                tracking-normal
+                normal-case
+              "
+            >
+              Straveda Tech.
+            </p>
 
-              <button
-                type="button"
-                onClick={scrollToTop}
-                className="hover:text-green-400 uppercase cursor-pointer"
-              >
-                Back to Top ↑
-              </button>
+            {/* BACK TO TOP */}
 
-            </div>
+            <button
+              type="button"
+              onClick={scrollToTop}
+              className="
+                text-[13px]
+                font-semibold
+                text-blue-100
+                hover:text-green-400
+                transition-colors
+                cursor-pointer
+                text-left
+                tracking-normal
+                normal-case
+                p-0
+                bg-transparent
+                border-none
+              "
+            >
+              Back to Top ↑
+            </button>
 
           </div>
 
@@ -327,9 +396,7 @@ const Footer = () => {
 
               </div>
 
-              {/* =================================================
-                  SOCIAL ICONS
-              ================================================= */}
+              {/* SOCIAL ICONS */}
 
               <div className="flex gap-3 pt-1">
 
@@ -436,9 +503,7 @@ const Footer = () => {
 
               <div className="space-y-2.5 text-[13px] font-semibold text-blue-100/90">
 
-                {/* EMAIL
-                    ✅ NO UNDERLINE
-                */}
+                {/* EMAIL */}
 
                 <button
                   type="button"
@@ -469,9 +534,7 @@ const Footer = () => {
                   </span>
                 </button>
 
-                {/* PHONE
-                    ✅ NO UNDERLINE
-                */}
+                {/* PHONE */}
 
                 <a
                   href="tel:+919921611911"
@@ -527,16 +590,30 @@ const Footer = () => {
               DESKTOP BOTTOM BAR
           ===================================================== */}
 
-          <div className="pt-3.5 border-t-2 border-white/10 flex flex-col md:flex-row justify-between items-center gap-3 text-[11px] font-black text-white/40 uppercase tracking-[0.2em]">
+          <div className="pt-3.5 border-t-2 border-white/10 flex flex-col md:flex-row justify-between items-center gap-3">
 
-            <p>Straveda Tech.</p>
+            {/* STRAVEDA TECH */}
+
+            <p className="text-[13px] font-semibold text-blue-100/90 normal-case tracking-normal">
+              Straveda Tech.
+            </p>
+
+            {/* BACK TO TOP */}
 
             <div className="flex gap-6">
 
               <button
                 type="button"
                 onClick={scrollToTop}
-                className="hover:text-green-400 uppercase cursor-pointer"
+                className="
+                  text-[11px]
+                  font-black
+                  text-white/40
+                  uppercase
+                  tracking-[0.2em]
+                  hover:text-green-400
+                  cursor-pointer
+                "
               >
                 Back to Top ↑
               </button>
