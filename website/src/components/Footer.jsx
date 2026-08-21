@@ -153,11 +153,7 @@ const Footer = () => {
         className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none select-none overflow-hidden"
         aria-hidden="true"
       >
-        {/* Soft Ambient Glow */}
-
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-1/2 bg-blue-400/10 blur-[120px] rounded-full pointer-events-none" />
-
-        {/* Edge-to-Edge Watermark Typography */}
 
         <span
           className="text-[18vw] font-black uppercase tracking-tight whitespace-nowrap text-center text-white/[0.045] leading-none select-none"
@@ -181,13 +177,13 @@ const Footer = () => {
             MOBILE VIEW
         ======================================================= */}
 
-        <div className="flex flex-col items-start text-left md:hidden px-1 pb-1">
+        <div className="md:hidden w-full flex flex-col items-start text-left px-2 pb-1">
 
           {/* =====================================================
               LOGO + NAME
           ===================================================== */}
 
-          <div className="flex items-center gap-3 mb-2">
+          <div className="flex items-center justify-start gap-3 mb-2">
 
             <img
               src={logo}
@@ -206,15 +202,15 @@ const Footer = () => {
               TAGLINE
           ===================================================== */}
 
-          <p className="text-[13px] text-blue-100/90 font-medium mb-5">
+          <p className="text-[13px] text-blue-100/90 font-medium mb-5 text-left">
             Exceptional value. Cost effective solutions.
           </p>
 
           {/* =====================================================
-              ALL LINKS - SINGLE COLUMN
+              MOBILE LINKS
           ===================================================== */}
 
-          <div className="flex flex-col items-start gap-3 mb-6 w-full">
+          <div className="w-full flex flex-col items-start text-left gap-3 mb-6">
 
             {FOOTER_LINKS.EXPLORE.map((link) => (
               <button
@@ -229,6 +225,10 @@ const Footer = () => {
                   transition-colors
                   text-left
                   cursor-pointer
+                  p-0
+                  m-0
+                  bg-transparent
+                  border-none
                 "
               >
                 {link.label}
@@ -248,6 +248,10 @@ const Footer = () => {
                   transition-colors
                   text-left
                   cursor-pointer
+                  p-0
+                  m-0
+                  bg-transparent
+                  border-none
                 "
               >
                 {link.label}
@@ -260,7 +264,7 @@ const Footer = () => {
               SOCIAL ICONS
           ===================================================== */}
 
-          <div className="flex gap-3.5 mb-6">
+          <div className="flex justify-start items-center gap-3.5 mb-6">
 
             {SOCIAL_LINKS.map((social, index) => {
               const Icon = social.icon;
@@ -304,27 +308,46 @@ const Footer = () => {
               flex
               flex-col
               items-start
+              text-left
               gap-2
-              text-[11px]
-              font-black
-              text-white/40
-              uppercase
-              tracking-[0.2em]
             "
           >
 
-            <p>
-              © 2026 MegaClick. All rights reserved.
+            {/* STRAVEDA TECH
+                SAME FONT/SIZE AS MOBILE HOME/ABOUT LINKS
+            */}
+
+            <p
+              className="
+                text-[13px]
+                font-semibold
+                text-blue-100
+                text-left
+                tracking-normal
+                normal-case
+              "
+            >
+              Straveda Tech.
             </p>
+
+            {/* BACK TO TOP */}
 
             <button
               type="button"
               onClick={scrollToTop}
               className="
+                text-[13px]
+                font-semibold
+                text-blue-100
                 hover:text-green-400
-                uppercase
+                transition-colors
                 cursor-pointer
                 text-left
+                tracking-normal
+                normal-case
+                p-0
+                bg-transparent
+                border-none
               "
             >
               Back to Top ↑
@@ -373,9 +396,7 @@ const Footer = () => {
 
               </div>
 
-              {/* =================================================
-                  SOCIAL ICONS
-              ================================================= */}
+              {/* SOCIAL ICONS */}
 
               <div className="flex gap-3 pt-1">
 
@@ -584,7 +605,15 @@ const Footer = () => {
               <button
                 type="button"
                 onClick={scrollToTop}
-                className="text-[11px] font-black text-white/40 uppercase tracking-[0.2em] hover:text-green-400 cursor-pointer"
+                className="
+                  text-[11px]
+                  font-black
+                  text-white/40
+                  uppercase
+                  tracking-[0.2em]
+                  hover:text-green-400
+                  cursor-pointer
+                "
               >
                 Back to Top ↑
               </button>
