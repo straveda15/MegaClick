@@ -47,13 +47,26 @@ const FAQ = () => {
           {/* LEFT: HEADING SHIFTED HIGHER FLUSH AT TOP */}
           <div className="lg:sticky lg:top-4 lg:self-start mt-0 pt-0">
             {/* HEADING (Hedvig Letters Serif) */}
+             {/* MAIN HEADING */}
             <h2
-              className="text-2xl sm:text-3xl lg:text-[40px] font-normal text-[#0f172a] leading-tight"
-              style={{ fontFamily: '"Hedvig Letters Serif", Georgia, serif', fontWeight: 400 }}
+              style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+              className="
+                text-3xl
+                sm:text-3xl
+                md:text-3xl
+                lg:text-3xl
+                xl:text-4xl
+                font-bold
+                leading-[1.18]
+                text-black
+                text-left
+              "
             >
-              Frequently{" "}
+             Frequently asked 
+             <br/>
+            
               <span className="text-[#0B4EA2]">
-                asked questions
+               questions
               </span>
             </h2>
 

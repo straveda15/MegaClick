@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 import HeroSection from "../components/Services/HeroSection";
 import SearchServices from "../components/Services/SearchServices";
@@ -9,15 +10,59 @@ import PopularServices from "../components/Services/PopularServices";
 import serviceCategories from "../data/servicesData";
 
 const Services = () => {
+  const [searchParams] = useSearchParams();
+
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All Services");
+  const [selectedCategory, setSelectedCategory] =
+    useState("All Services");
   const [selectedService, setSelectedService] = useState(null);
+
+  // =================================================
+  // HANDLE CATEGORY FROM HOME PAGE
+  // =================================================
+  useEffect(() => {
+    const categorySlug = searchParams.get("category");
+
+    if (!categorySlug) {
+      setSelectedCategory("All Services");
+      setSelectedService(null);
+      return;
+    }
+
+    // Find category using slug
+    const foundCategory = serviceCategories.find(
+      (category) => category.slug === categorySlug
+    );
+
+    if (foundCategory) {
+      // Select the category
+      setSelectedCategory(foundCategory.title);
+
+      // Make sure no individual service is selected
+      setSelectedService(null);
+
+      // Clear search
+      setSearchTerm("");
+
+      // Scroll to services section
+      setTimeout(() => {
+        const section = document.getElementById("services-section");
+
+        if (section) {
+          section.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        }
+      }, 300);
+    }
+  }, [searchParams]);
 
   // =================================================
   // HANDLE POPULAR SERVICE CLICK
   // =================================================
   const handlePopularServiceSelect = (serviceTitle) => {
-    // 1. Auto-detect category of the clicked service
+    // Auto-detect category of clicked service
     const foundCategory = serviceCategories.find((category) =>
       category.services.some((s) => s.title === serviceTitle)
     );
@@ -28,9 +73,23 @@ const Services = () => {
       setSelectedCategory("All Services");
     }
 
-    // 2. Set active service & clear search term
+    // Set active service
     setSelectedService(serviceTitle);
+
+    // Clear search
     setSearchTerm("");
+
+    // Scroll to services section
+    setTimeout(() => {
+      const section = document.getElementById("services-section");
+
+      if (section) {
+        section.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+    }, 100);
   };
 
   // =================================================
@@ -56,12 +115,14 @@ const Services = () => {
         (service) => service.title === selectedService
       );
     }
+
     // Specific Category Services
     else if (selectedCategory !== "All Services") {
       result = allServices.filter(
         (service) => service.category === selectedCategory
       );
     }
+
     // All Services
     else {
       result = allServices;
@@ -81,19 +142,21 @@ const Services = () => {
 
   return (
     <>
-      {/* Hero */}
+      {/* ================= HERO ================= */}
       <HeroSection />
 
-      {/* Search */}
+      {/* ================= SEARCH ================= */}
       <SearchServices
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
       />
 
-      {/* Popular Services */}
-      <PopularServices onSelectService={handlePopularServiceSelect} />
+      {/* ================= POPULAR SERVICES ================= */}
+      <PopularServices
+        onSelectService={handlePopularServiceSelect}
+      />
 
-      {/* Services Section */}
+      {/* ================= SERVICES SECTION ================= */}
       <section
         id="services-section"
         className="
@@ -118,7 +181,7 @@ const Services = () => {
               gap-8
             "
           >
-            {/* LEFT SIDEBAR */}
+            {/* ================= LEFT SIDEBAR ================= */}
             <div
               className="
                 lg:col-span-1
@@ -135,7 +198,7 @@ const Services = () => {
               />
             </div>
 
-            {/* RIGHT SERVICES GRID */}
+            {/* ================= RIGHT SERVICES GRID ================= */}
             <div
               className="
                 lg:col-span-3

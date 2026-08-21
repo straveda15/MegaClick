@@ -29,12 +29,24 @@ const Partners = () => {
 
         {/* ================= HEADING (Hedvig Letters Serif — Black, Centered) ================= */}
         <div className="text-center mb-6 sm:mb-8">
-          <h1
-            className="text-2xl sm:text-3xl lg:text-[40px] font-medium text-[#0f172a] tracking-tight"
-            style={{ fontFamily: '"Hedvig Letters Serif", Georgia, serif', fontWeight: 500 }}
-          >
+            {/* MAIN HEADING */}
+            <h2
+              style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+              className="
+                text-3xl
+                sm:text-3xl
+                md:text-3xl
+                lg:text-3xl
+                xl:text-4xl
+                font-bold
+                leading-[1.18]
+                text-black
+                text-center
+              "
+            >
             Trusted by Partners like
-          </h1>
+             
+            </h2>
         </div>
 
         {/* ================= CLEAN LOGO SLIDER (No Border / No Card / No Shadow) ================= */}

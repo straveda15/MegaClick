@@ -49,7 +49,7 @@ const Team = () => {
         {/* ---------- WRAPPER CONTAINER ---------- */}
         <div
           className="
-            max-w-[1500px]
+            max-w-[1490px]
             mx-auto
             px-5
             sm:px-8
@@ -57,24 +57,36 @@ const Team = () => {
             xl:px-24
           "
         >
-          {/* ----- TAGLINE (left-aligned) ----- */}
-          <p className="text-xs font-semibold tracking-[0.25em] uppercase text-[#0B4EA2] mb-1.5 text-left">
+          {/* ----- TAGLINE (left-aligned with proper gap) ----- */}
+          <p className="text-xs font-semibold tracking-[0.25em] uppercase text-[#0B4EA2] mb-3 sm:mb-4 text-left">
             The People Behind It
           </p>
 
-          {/* ----- HEADING (Hedvig Letters Serif, left) ----- */}
+          {/* ----- HEADING (Hedvig Letters Serif, left with proper gap) ----- */}
           <h2
-            className="text-2xl sm:text-3xl lg:text-[40px] font-normal text-[#0f172a] leading-tight mb-3 text-left"
-            style={{
-              fontFamily: '"Hedvig Letters Serif", Georgia, serif',
-              fontWeight: 400,
-            }}
+            style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+            className="
+              text-3xl
+              sm:text-3xl
+              md:text-3xl
+              lg:text-3xl
+              xl:text-4xl
+              font-bold
+              leading-[1.18]
+              text-black
+              text-left
+              mb-3
+              sm:mb-4
+            "
           >
-            Meet the <span className="text-[#0B4EA2]">Experts</span>
+            Meet The{" "}
+            <span className="text-[#0B4EA2]">
+              Experts
+            </span>
           </h2>
 
-          {/* ----- SUB-HEADING (Inter, left & spread full width) ----- */}
-          <p className="text-slate-600 font-normal text-sm sm:text-base leading-relaxed w-full mb-8 sm:mb-10 text-left">
+          {/* ----- SUB-HEADING (Inter, left & spread full width with proper gap to grid) ----- */}
+          <p className="text-slate-600 font-normal text-sm sm:text-base leading-relaxed w-full mb-10 sm:mb-14 lg:mb-16 text-left">
             Our experienced professionals are dedicated to providing reliable
             business solutions and expert guidance.
           </p>

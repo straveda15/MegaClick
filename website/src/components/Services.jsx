@@ -57,32 +57,44 @@ const Services = () => {
         {/* ================= HEADING AREA ================= */}
         <div className="mb-8 sm:mb-10 lg:mb-12 w-full">
 
-          {/* ====================== TOP TAGLINE ====================== */}
+          {/* TOP TAGLINE */}
           <p className="text-xs font-semibold tracking-[0.25em] uppercase text-[#0B4EA2] mb-3.5 sm:mb-4 text-left">
             WHAT WE OFFER
           </p>
 
           {/* MAIN HEADING */}
           <h2
-            className="text-2xl sm:text-3xl lg:text-[40px] font-normal text-[#0f172a] leading-tight"
-            style={{
-              fontFamily: '"Hedvig Letters Serif", Georgia, serif',
-              fontWeight: 400,
-            }}
+            style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+            className="
+              text-3xl
+              sm:text-3xl
+              md:text-3xl
+              lg:text-3xl
+              xl:text-4xl
+              font-bold
+              leading-[1.18]
+              text-black
+              text-left
+            "
           >
-            Complete Business <span className="text-[#0B4EA2]">Solutions</span>
+            Complete Business{" "}
+            <span className="text-[#0B4EA2]">
+              Solutions
+            </span>
           </h2>
 
-          {/* SUB PARAGRAPH — full width spread, justified */}
+          {/* SUB PARAGRAPH */}
           <p className="mt-3.5 sm:mt-4 text-slate-600 font-normal text-sm sm:text-base leading-relaxed text-justify w-full">
-            From legal registrations and financial compliance to essential business
-            licenses, MegaClick delivers expert-led services with transparent
-            processes and end-to-end professional support for every business need.
+            From legal registrations and financial compliance to essential
+            business licenses, MegaClick delivers expert-led services with
+            transparent processes and end-to-end professional support for
+            every business need.
           </p>
         </div>
 
         {/* ================= SERVICE CARDS ================= */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7 lg:gap-8 items-start">
+
           {services.map((service, index) => {
             const Icon = service.icon;
 
@@ -100,11 +112,27 @@ const Services = () => {
                   bg-gradient-to-b ${service.gradient}
                 `}
               >
-                {/* ── TOP: Text Content ── */}
+                {/* ================= TOP CONTENT ================= */}
                 <div className="flex flex-col items-center text-center px-7 pt-9 pb-5">
 
                   {/* TITLE */}
-                  <h3 className="text-xl sm:text-2xl font-bold text-[#0f172a] leading-snug mb-3 min-h-[60px] flex items-center justify-center">
+                  <h3
+                    style={{
+                      fontFamily: "'Hedvig Letters Serif', serif",
+                    }}
+                    className="
+                      text-xl
+                      sm:text-2xl
+                      font-bold
+                      text-[#0f172a]
+                      leading-snug
+                      mb-3
+                      min-h-[60px]
+                      flex
+                      items-center
+                      justify-center
+                    "
+                  >
                     {service.title}
                   </h3>
 
@@ -113,42 +141,61 @@ const Services = () => {
                     {service.short}
                   </p>
 
-                  {/* READ MORE BUTTON */}
+                  {/* READ MORE */}
                   <button
-                    onClick={() => navigate("/services")}
+                    onClick={() =>
+                      navigate(`/services?category=${service.slug}`)
+                    }
                     className={`
-                      mt-5 inline-flex items-center gap-2
-                      border rounded-full
-                      px-5 py-2
-                      text-sm font-semibold
-                      transition-all duration-200
+                      mt-5
+                      inline-flex
+                      items-center
+                      gap-2
+                      border
+                      rounded-full
+                      px-5
+                      py-2
+                      text-sm
+                      font-semibold
+                      transition-all
+                      duration-200
                       ${service.btnBorder}
                     `}
                   >
-                    Read More <ArrowRight size={15} />
+                    Read More
+                    <ArrowRight size={15} />
                   </button>
                 </div>
 
-                {/* ── BOTTOM: Large Icon on Gradient ── */}
+                {/* ================= BOTTOM ICON ================= */}
                 <div className="flex items-center justify-center py-8">
                   <div
                     className={`
-                      w-20 h-20 rounded-2xl
+                      w-20
+                      h-20
+                      rounded-2xl
                       ${service.iconBg}
-                      flex items-center justify-center
+                      flex
+                      items-center
+                      justify-center
                       shadow-sm
                       group-hover:scale-110
-                      transition-transform duration-300
+                      transition-transform
+                      duration-300
                     `}
                   >
-                    <Icon size={40} className={service.iconColor} strokeWidth={1.5} />
+                    <Icon
+                      size={40}
+                      className={service.iconColor}
+                      strokeWidth={1.5}
+                    />
                   </div>
                 </div>
               </div>
             );
           })}
-        </div>
 
+        </div>
       </div>
     </section>
   );
