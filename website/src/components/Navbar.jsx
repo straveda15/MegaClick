@@ -191,7 +191,7 @@ scrolled
 <div
 
 className="
-max-w-[1550px]
+max-w-[1500px]
 
 mx-auto
 

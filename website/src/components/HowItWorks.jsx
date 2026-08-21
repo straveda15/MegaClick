@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   PhoneCall,
   FileText,
@@ -16,7 +17,7 @@ const ModernCardIcon = ({ type }) => {
       return (
         <svg
           viewBox="0 0 48 48"
-          className="w-12 h-12 sm:w-13 sm:h-13 lg:w-14 lg:h-14"
+          className="w-11 h-11 sm:w-12 sm:h-12 lg:w-13 lg:h-13"
           fill="none"
         >
           <rect
@@ -58,7 +59,7 @@ const ModernCardIcon = ({ type }) => {
       return (
         <svg
           viewBox="0 0 48 48"
-          className="w-12 h-12 sm:w-13 sm:h-13 lg:w-14 lg:h-14"
+          className="w-11 h-11 sm:w-12 sm:h-12 lg:w-13 lg:h-13"
           fill="none"
         >
           <rect
@@ -91,7 +92,7 @@ const ModernCardIcon = ({ type }) => {
       return (
         <svg
           viewBox="0 0 48 48"
-          className="w-12 h-12 sm:w-13 sm:h-13 lg:w-14 lg:h-14"
+          className="w-11 h-11 sm:w-12 sm:h-12 lg:w-13 lg:h-13"
           fill="none"
         >
           <path
@@ -122,7 +123,7 @@ const ModernCardIcon = ({ type }) => {
       return (
         <svg
           viewBox="0 0 48 48"
-          className="w-12 h-12 sm:w-13 sm:h-13 lg:w-14 lg:h-14"
+          className="w-11 h-11 sm:w-12 sm:h-12 lg:w-13 lg:h-13"
           fill="none"
         >
           <rect
@@ -161,7 +162,7 @@ const ModernCardIcon = ({ type }) => {
       return (
         <svg
           viewBox="0 0 48 48"
-          className="w-12 h-12 sm:w-13 sm:h-13 lg:w-14 lg:h-14"
+          className="w-11 h-11 sm:w-12 sm:h-12 lg:w-13 lg:h-13"
           fill="none"
         >
           <rect
@@ -201,7 +202,7 @@ const ModernCardIcon = ({ type }) => {
       return (
         <svg
           viewBox="0 0 48 48"
-          className="w-12 h-12 sm:w-13 sm:h-13 lg:w-14 lg:h-14"
+          className="w-11 h-11 sm:w-12 sm:h-12 lg:w-13 lg:h-13"
           fill="none"
         >
           <circle
@@ -249,88 +250,98 @@ const solutionCards = [
   {
     id: 1,
     title: "Needs Assessment",
-    desc: "Personalized business consultation & comprehensive legal roadmap planning.",
+    desc: "Expert legal consultation and custom business planning for your fast growth.",
     iconType: "consultation",
   },
   {
     id: 2,
     title: "100% Digital Upload",
-    desc: "Secure end-to-end document submission with zero physical office visits.",
+    desc: "Secure online document upload with zero office visits and zero paperwork.",
     iconType: "digital",
   },
   {
     id: 3,
     title: "Flawless Verification",
-    desc: "Expert document audit guaranteeing zero rejection rates on portals.",
+    desc: "Thorough document audit by legal experts ensuring zero portal rejections.",
     iconType: "verification",
   },
   {
     id: 4,
     title: "Priority Portal Filing",
-    desc: "Fast-track application filing directly through government portals.",
+    desc: "Fast application filing directly through official government portals safely.",
     iconType: "filing",
   },
   {
     id: 5,
     title: "Live Status Tracking",
-    desc: "Real-time milestone notifications and complete process transparency.",
+    desc: "Real-time milestone alerts and transparent status tracking at every step.",
     iconType: "tracking",
   },
   {
     id: 6,
     title: "Certificate Delivery",
-    desc: "Instant digital certificate issuance with continuous compliance support.",
+    desc: "Instant digital certificate issuance with complete ongoing legal support.",
     iconType: "delivery",
   },
 ];
 
 // ─────────────────────────────────────────────
-// Solution Card
+// Solution Card Item
 // ─────────────────────────────────────────────
 const SolutionCardItem = ({ item }) => (
-  <div className="group relative rounded-2xl hover:-translate-y-1.5 transition-all duration-300 w-full aspect-square">
+  <div className="group relative rounded-2xl hover:-translate-y-1.5 transition-all duration-300 w-full aspect-square flex">
     <div
       className="
         w-full h-full
         bg-white
         border border-slate-200/90
         rounded-2xl
-        p-4.5 sm:p-5 lg:p-6
+        p-4 sm:p-5 lg:p-6
         flex flex-col
         items-center
         justify-center
-        text-center
         shadow-[0_2px_10px_-2px_rgba(0,0,0,0.04)]
         group-hover:shadow-[0_14px_28px_-6px_rgba(11,78,162,0.14)]
         transition-all duration-300
       "
       style={{
         clipPath:
-          "polygon(0 0, calc(100% - 44px) 0, 100% 44px, 100% 100%, 0 100%)",
+          "polygon(0 0, calc(100% - 38px) 0, 100% 38px, 100% 100%, 0 100%)",
       }}
     >
-      <div className="mb-2 sm:mb-3 group-hover:scale-105 transition-transform duration-300">
+      {/* ICON */}
+      <div className="mb-2.5 sm:mb-3.5 flex justify-center w-full group-hover:scale-105 transition-transform duration-300">
         <ModernCardIcon type={item.iconType} />
       </div>
 
-      <h3
-        style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
-        className="
-          text-[15px]
-          sm:text-[16px]
-          lg:text-[17px]
-          font-bold
-          text-slate-900
-          mb-1.5
-          leading-snug
-        "
-      >
-        {item.title}
-      </h3>
+      {/* TEXT BLOCK */}
+      <div className="w-full flex flex-col items-center">
 
-      <p className="text-[12px] sm:text-[12.5px] lg:text-[13px] text-slate-600 leading-relaxed max-w-[230px]">
-        {item.desc}
-      </p>
+        {/* TITLE */}
+        <h3
+          style={{
+            fontFamily: "'Hedvig Letters Serif', serif",
+          }}
+          className="
+            text-[14px]
+            sm:text-[15.5px]
+            lg:text-[17px]
+            font-bold
+            text-slate-900
+            mb-1.5
+            leading-snug
+            w-full
+            text-center
+          "
+        >
+          {item.title}
+        </h3>
+
+        {/* DESCRIPTION */}
+        <p className="w-full text-[11px] sm:text-[12px] lg:text-[12.5px] text-slate-600 leading-snug sm:leading-relaxed text-justify [text-align-last:left] [text-wrap:pretty]">
+          {item.desc}
+        </p>
+      </div>
     </div>
 
     <div className="deep-peel-fold" />
@@ -338,32 +349,32 @@ const SolutionCardItem = ({ item }) => (
 );
 
 // ─────────────────────────────────────────────
-// Steps
+// Stepper Steps
 // ─────────────────────────────────────────────
 const steps = [
   {
     number: "01",
     icon: PhoneCall,
     title: "Free Consultation",
-    text: "Discuss your business requirements with our experts.",
+    text: "Connect with our legal specialists to discuss your business requirements.",
   },
   {
     number: "02",
     icon: FileText,
     title: "Submit Documents",
-    text: "Share required documents securely for fast verification.",
+    text: "Upload your required documents through our secure portal for fast audit.",
   },
   {
     number: "03",
     icon: Settings,
     title: "Expert Processing",
-    text: "Our professionals handle your filing with complete accuracy.",
+    text: "Our legal team prepares and submits your application with full accuracy.",
   },
   {
     number: "04",
     icon: CheckCircle2,
     title: "Get Your Solution",
-    text: "Receive completed certificates with continuous support.",
+    text: "Receive official government certificates with continuous compliance support.",
   },
 ];
 
@@ -373,7 +384,10 @@ const steps = [
 const HowItWorks = () => {
   const [activeStep, setActiveStep] = useState(0);
 
-  // Load fonts
+  // React Router navigation
+  const navigate = useNavigate();
+
+  // Load fonts + animation
   useEffect(() => {
     const fontId = "google-fonts-hedvig-inter";
 
@@ -388,7 +402,6 @@ const HowItWorks = () => {
       document.head.appendChild(link);
     }
 
-    // Auto change active step
     const interval = setInterval(() => {
       setActiveStep((prev) => (prev + 1) % steps.length);
     }, 2200);
@@ -396,19 +409,11 @@ const HowItWorks = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Scroll to services
-  const handleScrollToServices = (e) => {
-    e.preventDefault();
-
-    const servicesSection = document.getElementById("services");
-
-    if (servicesSection) {
-      servicesSection.scrollIntoView({
-        behavior: "smooth",
-      });
-    } else {
-      window.location.hash = "services";
-    }
+  // ─────────────────────────────────────────────
+  // VIEW ALL → SERVICES PAGE
+  // ─────────────────────────────────────────────
+  const handleViewAll = () => {
+    navigate("/services");
   };
 
   return (
@@ -424,7 +429,6 @@ const HowItWorks = () => {
         font-['Inter',sans-serif]
       "
     >
-      {/* SAME CONTAINER / SAME ALIGNMENT */}
       <div
         className="
           w-full
@@ -436,24 +440,25 @@ const HowItWorks = () => {
           xl:px-24
         "
       >
+
         {/* ─────────────────────────────────────
             TOP TAGLINE
         ───────────────────────────────────── */}
-       <p
-  className="
-    text-xs
-    font-semibold
-    tracking-[0.18em]
-    uppercase
-    text-[#0B4EA2]
-    mb-3.5
-    sm:mb-6
-    text-left
-    w-full
-  "
->
-  HOW IT WORKS
-</p>
+        <p
+          className="
+            text-xs
+            font-semibold
+            tracking-[0.18em]
+            uppercase
+            text-[#0B4EA2]
+            mb-3.5
+            sm:mb-6
+            text-left
+            w-full
+          "
+        >
+          HOW IT WORKS
+        </p>
 
         {/* ─────────────────────────────────────
             SOLUTION GRID
@@ -461,20 +466,20 @@ const HowItWorks = () => {
         <div
           className="
             grid
-            grid-cols-1
-            sm:grid-cols-2
+            grid-cols-2
             lg:grid-cols-4
-            gap-4
+            gap-3
             sm:gap-4.5
             lg:gap-5
             w-full
             items-stretch
           "
         >
-          {/* FEATURED BLUE CARD */}
+
+          {/* ================= FEATURED BLUE CARD ================= */}
           <div
             className="
-              sm:col-span-2
+              col-span-2
               w-full
               h-full
               aspect-auto
@@ -495,8 +500,10 @@ const HowItWorks = () => {
               shadow-blue-900/20
               relative
               overflow-hidden
+              text-left
             "
           >
+
             {/* Background glows */}
             <div className="absolute -right-8 -bottom-8 w-44 h-44 rounded-full bg-blue-400/20 blur-2xl pointer-events-none" />
 
@@ -504,26 +511,31 @@ const HowItWorks = () => {
 
             {/* Content */}
             <div className="relative z-10 text-left">
+
+              {/* HEADING */}
               <h2
                 style={{
                   fontFamily: "'Hedvig Letters Serif', serif",
                 }}
                 className="
                   text-3xl
-                  sm:text-4xl
-                  lg:text-[42px]
-                  font-normal
-                  tracking-tight
+                  sm:text-3xl
+                  md:text-4xl
+                  lg:text-4xl
+                  xl:text-5xl
+                  font-bold
+                  leading-[1.18]
                   text-white
-                  leading-snug
+                  text-left
                 "
               >
-                Get your{" "}
-                <span className="text-[#a3e635]">
-                  Solution
+                Get Your{" "}
+                <span className="text-green-600">
+                  Solutions
                 </span>
               </h2>
 
+              {/* DESCRIPTION */}
               <p
                 className="
                   mt-2
@@ -532,19 +544,31 @@ const HowItWorks = () => {
                   text-blue-100/90
                   leading-relaxed
                   max-w-lg
+                  text-justify
+                  [text-align-last:left]
+                  [text-wrap:pretty]
                 "
               >
-                We follow a simple and transparent process to help
-                businesses complete registrations with zero hassle.
+                We provide a fast, transparent process to help businesses
+                complete registrations, tax compliance, and legal filings
+                with zero hassle.
               </p>
             </div>
 
-            {/* VIEW ALL */}
-            <div className="relative z-10 mt-5 sm:mt-6">
-              <a
-                href="#services"
-                onClick={handleScrollToServices}
-                className="inline-block group/link cursor-pointer"
+            {/* ================= VIEW ALL ================= */}
+            <div className="relative z-10 mt-5 sm:mt-6 text-left">
+
+              <button
+                type="button"
+                onClick={handleViewAll}
+                className="
+                  inline-block
+                  group/link
+                  cursor-pointer
+                  bg-transparent
+                  border-none
+                  p-0
+                "
               >
                 <span
                   className="
@@ -573,11 +597,12 @@ const HowItWorks = () => {
                     duration-200
                   "
                 />
-              </a>
+              </button>
+
             </div>
           </div>
 
-          {/* TOP ROW CARDS */}
+          {/* ================= TOP ROW CARDS ================= */}
           {solutionCards.slice(0, 2).map((item) => (
             <SolutionCardItem
               key={item.id}
@@ -585,7 +610,7 @@ const HowItWorks = () => {
             />
           ))}
 
-          {/* BOTTOM ROW CARDS */}
+          {/* ================= BOTTOM ROW CARDS ================= */}
           {solutionCards.slice(2).map((item) => (
             <SolutionCardItem
               key={item.id}
@@ -596,32 +621,44 @@ const HowItWorks = () => {
 
         {/* ─────────────────────────────────────
             HOW IT WORKS STEPPER
-            FIXED ALIGNMENT
         ───────────────────────────────────── */}
-        <div
-          className="
-            mt-10
-            sm:mt-12
-            lg:mt-14
-            w-full
-            relative
-          "
-        >
+        <div className="mt-10 sm:mt-12 lg:mt-14 w-full relative">
+
           {/* DESKTOP CONNECTING LINE */}
           <div
             className="
               hidden
               lg:block
               absolute
-              top-[35px]
+              top-[36px]
               left-[12.5%]
               right-[12.5%]
               h-[2px]
               bg-gradient-to-r
-              from-blue-400
-              via-blue-300
-              to-green-400
+              from-blue-300/40
+              via-blue-200/50
+              to-green-300/40
               z-0
+            "
+          />
+
+          {/* MOBILE CONNECTING LINE */}
+          <div
+            className="
+              block
+              lg:hidden
+              absolute
+              top-[36px]
+              bottom-[36px]
+              left-1/2
+              -translate-x-1/2
+              w-[2px]
+              bg-gradient-to-b
+              from-blue-300/35
+              via-blue-200/45
+              to-green-300/35
+              z-0
+              pointer-events-none
             "
           />
 
@@ -630,10 +667,8 @@ const HowItWorks = () => {
             className="
               grid
               grid-cols-1
-              sm:grid-cols-2
               lg:grid-cols-4
               gap-8
-              sm:gap-8
               lg:gap-4
               w-full
               relative
@@ -653,19 +688,20 @@ const HowItWorks = () => {
                     flex
                     flex-col
                     items-center
-                    text-center
                     group
                     relative
+                    z-10
                   "
                 >
+
                   {/* ICON CIRCLE */}
                   <div
                     className={`
                       relative
-                      w-[62px]
-                      h-[62px]
-                      sm:w-[70px]
-                      sm:h-[70px]
+                      w-[64px]
+                      h-[64px]
+                      sm:w-[72px]
+                      sm:h-[72px]
                       rounded-full
                       bg-white
                       border-4
@@ -679,7 +715,6 @@ const HowItWorks = () => {
                       group-hover:-translate-y-1.5
                       group-hover:border-[#0B4EA2]
                       z-20
-
                       ${
                         isMobileActive
                           ? "max-lg:-translate-y-1.5 max-lg:scale-105 max-lg:border-[#0B4EA2]"
@@ -687,7 +722,6 @@ const HowItWorks = () => {
                       }
                     `}
                   >
-                    {/* Active green background */}
                     <div
                       className={`
                         absolute
@@ -698,7 +732,6 @@ const HowItWorks = () => {
                         group-hover:opacity-100
                         transition-opacity
                         duration-300
-
                         ${
                           isMobileActive
                             ? "max-lg:opacity-100"
@@ -707,9 +740,8 @@ const HowItWorks = () => {
                       `}
                     />
 
-                    {/* Icon */}
                     <Icon
-                      size={25}
+                      size={20}
                       className={`
                         relative
                         z-10
@@ -717,7 +749,6 @@ const HowItWorks = () => {
                         group-hover:text-white
                         transition-colors
                         duration-300
-
                         ${
                           isMobileActive
                             ? "max-lg:text-white"
@@ -736,7 +767,6 @@ const HowItWorks = () => {
                       font-bold
                       transition-colors
                       duration-300
-
                       ${
                         isMobileActive
                           ? "max-lg:text-green-600"
@@ -747,44 +777,56 @@ const HowItWorks = () => {
                     STEP {item.number}
                   </div>
 
-                  {/* TITLE */}
-                  <h4
-                    style={{
-                      fontFamily:
-                        "'Hedvig Letters Serif', serif",
-                    }}
+                  {/* TITLE & DESCRIPTION */}
+                  <div
                     className="
+                      w-full
+                      max-w-[240px]
+                      lg:max-w-[220px]
+                      flex
+                      flex-col
+                      items-center
                       mt-1
                       sm:mt-1.5
-                      text-base
-                      sm:text-lg
-                      font-bold
-                      text-gray-900
-                      leading-snug
-                      px-2
                     "
                   >
-                    {item.title}
-                  </h4>
 
-                  {/* DESCRIPTION */}
-                  <p
-                    className="
-                      mt-1.5
-                      text-xs
-                      sm:text-[13px]
-                      leading-5
-                      text-gray-600
-                      w-full
-                      max-w-[230px]
-                      lg:max-w-[220px]
-                      px-2
-                      text-center
-                      break-words
-                    "
-                  >
-                    {item.text}
-                  </p>
+                    {/* TITLE */}
+                    <h4
+                      style={{
+                        fontFamily: "'Hedvig Letters Serif', serif",
+                      }}
+                      className="
+                        text-base
+                        sm:text-lg
+                        font-bold
+                        text-gray-900
+                        leading-snug
+                        w-full
+                        text-center
+                      "
+                    >
+                      {item.title}
+                    </h4>
+
+                    {/* DESCRIPTION */}
+                    <p
+                      className="
+                        mt-1.5
+                        w-full
+                        text-xs
+                        sm:text-[13px]
+                        leading-relaxed
+                        text-gray-600
+                        text-justify
+                        [text-align-last:left]
+                        [text-wrap:pretty]
+                        px-1
+                      "
+                    >
+                      {item.text}
+                    </p>
+                  </div>
 
                   {/* BADGE */}
                   <div
@@ -794,21 +836,19 @@ const HowItWorks = () => {
                       px-2.5
                       py-0.5
                       rounded-full
-                      bg-blue-50
+                      bg-white/80
                       border
                       border-blue-100
                       flex
                       items-center
+                      justify-center
                       gap-1
-                      max-w-full
+                      shadow-xs
                     "
                   >
                     <Check
                       size={12}
-                      className="
-                        text-green-600
-                        shrink-0
-                      "
+                      className="text-green-600 shrink-0"
                     />
 
                     <span
@@ -838,13 +878,11 @@ const HowItWorks = () => {
           position: absolute;
           top: 0;
           right: 0;
-          width: 44px;
-          height: 44px;
+          width: 38px;
+          height: 38px;
           pointer-events: none;
           z-index: 20;
-          filter: drop-shadow(
-            -2px 2px 4px rgba(0, 0, 0, 0.14)
-          );
+          filter: drop-shadow(-2px 2px 4px rgba(0, 0, 0, 0.14));
         }
 
         .deep-peel-fold::after {
@@ -852,8 +890,8 @@ const HowItWorks = () => {
           position: absolute;
           top: 0;
           right: 0;
-          width: 44px;
-          height: 44px;
+          width: 38px;
+          height: 38px;
           background: linear-gradient(
             225deg,
             #cbd5e1 0%,
@@ -861,20 +899,15 @@ const HowItWorks = () => {
             #ffffff 50%,
             #e2e8f0 100%
           );
-          clip-path: polygon(
-            0 0,
-            0 100%,
-            100% 100%
-          );
-          border-bottom-left-radius: 18px;
-          transition: all 0.3s
-            cubic-bezier(0.4, 0, 0.2, 1);
+          clip-path: polygon(0 0, 0 100%, 100% 100%);
+          border-bottom-left-radius: 14px;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .group:hover .deep-peel-fold::after {
-          width: 48px;
-          height: 48px;
-          border-bottom-left-radius: 22px;
+          width: 42px;
+          height: 42px;
+          border-bottom-left-radius: 16px;
           background: linear-gradient(
             225deg,
             #94a3b8 0%,

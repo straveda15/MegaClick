@@ -1,6 +1,5 @@
-
-
 import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   ArrowRight,
   CheckCircle2,
@@ -59,6 +58,13 @@ const services = [
 ];
 
 const Hero = () => {
+  let navigate;
+  try {
+    navigate = useNavigate();
+  } catch (e) {
+    navigate = null;
+  }
+
   useEffect(() => {
     const fontId = "google-fonts-hedvig-inter";
     if (!document.getElementById(fontId)) {
@@ -76,15 +82,22 @@ const Hero = () => {
       document.getElementById("how-it-works") ||
       document.getElementById("services") ||
       document.getElementById("contact");
-    target?.scrollIntoView({ behavior: "smooth" });
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth" });
+    } else if (navigate) {
+      navigate("/services");
+      window.scrollTo(0, 0);
+    }
   };
 
-  const scrollToFooter = () => {
-    const footerTarget =
-      document.getElementById("footer") ||
-      document.querySelector("footer") ||
-      document.getElementById("contact");
-    footerTarget?.scrollIntoView({ behavior: "smooth" });
+  // Contact Us Button Handler - Now strictly redirects to the /contact page
+  const handleContactRedirect = () => {
+    if (navigate) {
+      navigate("/contact");
+      window.scrollTo(0, 0); // Ensures the new page starts at the very top
+    } else {
+      window.location.href = "/contact";
+    }
   };
 
   return (
@@ -172,24 +185,27 @@ const Hero = () => {
               </span>
             </h1>
 
-            {/* DESCRIPTION (CLEAN PROPER ALIGNMENT ON MOBILE & DESKTOP) */}
+            {/* DESCRIPTION */}
             <p
               className="
                 text-sm
                 sm:text-base
                 md:text-lg
                 text-slate-700
-                leading-6
+                leading-relaxed
                 sm:leading-7
-                md:leading-relaxed
                 max-w-xl
-                text-left
+                text-justify
+                sm:text-left
+                [text-align-last:left]
+                [text-wrap:pretty]
               "
             >
-              Complete business solutions to simplify registrations,
-              compliance, finance and growth with trusted expert guidance.
+              Complete business solutions to simplify your registrations, tax
+              compliance, and financial growth with trusted expert guidance.
             </p>
- {/* STATS */}
+
+            {/* STATS */}
             <div
               className="
                 flex
@@ -250,8 +266,7 @@ const Hero = () => {
               </div>
             </div>
 
-
-            {/* BUTTONS: SAME STARTING ALIGNMENT IN BOTH MOBILE & DESKTOP */}
+            {/* BUTTONS */}
             <div
               className="
                 flex
@@ -307,7 +322,7 @@ const Hero = () => {
               </button>
 
               <button
-                onClick={scrollToFooter}
+                onClick={handleContactRedirect}
                 className="
                   flex-1
                   sm:flex-initial
@@ -418,6 +433,7 @@ const Hero = () => {
                         leading-[1.55]
                         line-clamp-3
                         text-left
+                        [text-wrap:pretty]
                       "
                     >
                       {service.desc}

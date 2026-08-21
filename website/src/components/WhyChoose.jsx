@@ -103,15 +103,48 @@ const WhyChoose = () => {
             <div className="flex justify-start w-full mb-3">
              
             </div>
+              {/* ─────────────────────────────────────
+            TOP TAGLINE
+        ───────────────────────────────────── */}
+        <p
+          className="
+            text-xs
+            font-semibold
+            tracking-[0.18em]
+            uppercase
+            text-[#0B4EA2]
+            mb-3.5
+            sm:mb-6
+            text-left
+            w-full
+          "
+        >
+          why choose us 
+        </p>
 
-            {/* ================= HEADING (Hedvig Letters Serif) ================= */}
-            <h2
-              className="text-3xl sm:text-4xl lg:text-[44px] font-normal text-slate-900 leading-tight"
-              style={{ fontFamily: '"Hedvig Letters Serif", Georgia, serif', fontWeight: 400 }}
-            >
-              Your Trusted <br />
-              <span className="text-[#0B4EA2]">Partner</span>
-            </h2>
+            
+           {/* ----- HEADING (Hedvig Letters Serif, left with proper gap) ----- */}
+          <h2
+            style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+            className="
+              text-3xl
+              sm:text-3xl
+              md:text-3xl
+              lg:text-3xl
+              xl:text-4xl
+              font-bold
+              leading-[1.18]
+              text-black
+              text-left
+              mb-3
+              sm:mb-4
+            "
+          >
+           Your Trusted{" "}
+            <span className="text-[#0B4EA2]">
+Partner
+            </span>
+          </h2>
 
             {/* ================= DESCRIPTION (Inter) ================= */}
             <p className="mt-3.5 sm:mt-4 text-slate-600 font-normal text-sm sm:text-base leading-relaxed max-w-xl text-left">
