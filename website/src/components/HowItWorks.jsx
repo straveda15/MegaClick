@@ -316,8 +316,6 @@ const SolutionCardItem = ({ item }) => (
 
       {/* TEXT BLOCK */}
       <div className="w-full flex flex-col items-center">
-
-        {/* TITLE */}
         <h3
           style={{
             fontFamily: "'Hedvig Letters Serif', serif",
@@ -337,7 +335,6 @@ const SolutionCardItem = ({ item }) => (
           {item.title}
         </h3>
 
-        {/* DESCRIPTION */}
         <p className="w-full text-[11px] sm:text-[12px] lg:text-[12.5px] text-slate-600 leading-snug sm:leading-relaxed text-justify [text-align-last:left] [text-wrap:pretty]">
           {item.desc}
         </p>
@@ -356,25 +353,25 @@ const steps = [
     number: "01",
     icon: PhoneCall,
     title: "Free Consultation",
-    text: "Connect with our legal specialists to discuss your business requirements.",
+    text: "Connect with our legal experts to discuss your business needs.",
   },
   {
     number: "02",
     icon: FileText,
     title: "Submit Documents",
-    text: "Upload your required documents through our secure portal for fast audit.",
+    text: "Upload your required documents securely for a quick review.",
   },
   {
     number: "03",
     icon: Settings,
     title: "Expert Processing",
-    text: "Our legal team prepares and submits your application with full accuracy.",
+    text: "Our legal team prepares, submits your application accurately.",
   },
   {
     number: "04",
     icon: CheckCircle2,
     title: "Get Your Solution",
-    text: "Receive official government certificates with continuous compliance support.",
+    text: "Receive your certificate with ongoing compliance support.",
   },
 ];
 
@@ -384,7 +381,6 @@ const steps = [
 const HowItWorks = () => {
   const [activeStep, setActiveStep] = useState(0);
 
-  // React Router navigation
   const navigate = useNavigate();
 
   // Load fonts + animation
@@ -440,10 +436,8 @@ const HowItWorks = () => {
           xl:px-24
         "
       >
+        {/* TOP TAGLINE */}
 
-        {/* ─────────────────────────────────────
-            TOP TAGLINE
-        ───────────────────────────────────── */}
         <p
           className="
             text-xs
@@ -460,9 +454,8 @@ const HowItWorks = () => {
           HOW IT WORKS
         </p>
 
-        {/* ─────────────────────────────────────
-            SOLUTION GRID
-        ───────────────────────────────────── */}
+        {/* SOLUTION GRID */}
+
         <div
           className="
             grid
@@ -475,8 +468,8 @@ const HowItWorks = () => {
             items-stretch
           "
         >
+          {/* FEATURED BLUE CARD */}
 
-          {/* ================= FEATURED BLUE CARD ================= */}
           <div
             className="
               col-span-2
@@ -503,16 +496,11 @@ const HowItWorks = () => {
               text-left
             "
           >
-
-            {/* Background glows */}
             <div className="absolute -right-8 -bottom-8 w-44 h-44 rounded-full bg-blue-400/20 blur-2xl pointer-events-none" />
 
             <div className="absolute top-0 right-1/4 w-32 h-32 rounded-full bg-cyan-400/10 blur-xl pointer-events-none" />
 
-            {/* Content */}
             <div className="relative z-10 text-left">
-
-              {/* HEADING */}
               <h2
                 style={{
                   fontFamily: "'Hedvig Letters Serif', serif",
@@ -535,7 +523,6 @@ const HowItWorks = () => {
                 </span>
               </h2>
 
-              {/* DESCRIPTION */}
               <p
                 className="
                   mt-2
@@ -555,9 +542,9 @@ const HowItWorks = () => {
               </p>
             </div>
 
-            {/* ================= VIEW ALL ================= */}
-            <div className="relative z-10 mt-5 sm:mt-6 text-left">
+            {/* VIEW ALL */}
 
+            <div className="relative z-10 mt-5 sm:mt-6 text-left">
               <button
                 type="button"
                 onClick={handleViewAll}
@@ -598,11 +585,11 @@ const HowItWorks = () => {
                   "
                 />
               </button>
-
             </div>
           </div>
 
-          {/* ================= TOP ROW CARDS ================= */}
+          {/* TOP ROW CARDS */}
+
           {solutionCards.slice(0, 2).map((item) => (
             <SolutionCardItem
               key={item.id}
@@ -610,7 +597,8 @@ const HowItWorks = () => {
             />
           ))}
 
-          {/* ================= BOTTOM ROW CARDS ================= */}
+          {/* BOTTOM ROW CARDS */}
+
           {solutionCards.slice(2).map((item) => (
             <SolutionCardItem
               key={item.id}
@@ -619,12 +607,12 @@ const HowItWorks = () => {
           ))}
         </div>
 
-        {/* ─────────────────────────────────────
-            HOW IT WORKS STEPPER
-        ───────────────────────────────────── */}
+        {/* HOW IT WORKS STEPPER */}
+
         <div className="mt-10 sm:mt-12 lg:mt-14 w-full relative">
 
           {/* DESKTOP CONNECTING LINE */}
+
           <div
             className="
               hidden
@@ -643,6 +631,7 @@ const HowItWorks = () => {
           />
 
           {/* MOBILE CONNECTING LINE */}
+
           <div
             className="
               block
@@ -663,6 +652,7 @@ const HowItWorks = () => {
           />
 
           {/* STEPS GRID */}
+
           <div
             className="
               grid
@@ -693,8 +683,8 @@ const HowItWorks = () => {
                     z-10
                   "
                 >
-
                   {/* ICON CIRCLE */}
+
                   <div
                     className={`
                       relative
@@ -759,6 +749,7 @@ const HowItWorks = () => {
                   </div>
 
                   {/* STEP NUMBER */}
+
                   <div
                     className={`
                       mt-2.5
@@ -778,6 +769,7 @@ const HowItWorks = () => {
                   </div>
 
                   {/* TITLE & DESCRIPTION */}
+
                   <div
                     className="
                       w-full
@@ -790,8 +782,8 @@ const HowItWorks = () => {
                       sm:mt-1.5
                     "
                   >
-
                     {/* TITLE */}
+
                     <h4
                       style={{
                         fontFamily: "'Hedvig Letters Serif', serif",
@@ -810,17 +802,16 @@ const HowItWorks = () => {
                     </h4>
 
                     {/* DESCRIPTION */}
+
                     <p
                       className="
                         mt-1.5
                         w-full
                         text-xs
                         sm:text-[13px]
-                        leading-relaxed
+                        leading-[1.45]
                         text-gray-600
-                        text-justify
-                        [text-align-last:left]
-                        [text-wrap:pretty]
+                        text-center
                         px-1
                       "
                     >
@@ -829,6 +820,7 @@ const HowItWorks = () => {
                   </div>
 
                   {/* BADGE */}
+
                   <div
                     className="
                       mt-2.5
@@ -870,9 +862,8 @@ const HowItWorks = () => {
         </div>
       </div>
 
-      {/* ─────────────────────────────────────
-          DEEP PAPER FOLD STYLES
-      ───────────────────────────────────── */}
+      {/* DEEP PAPER FOLD STYLES */}
+
       <style>{`
         .deep-peel-fold {
           position: absolute;
