@@ -23,10 +23,6 @@ import type { FollowUpEntry } from '@/hooks/useFollowUps';
 const rupees = (value: number) =>
   value.toLocaleString('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 2 });
 
-/** What has actually been received against one service, per its own ledger. */
-const servicePaid = (service: LeadService) =>
-  (service.ledger ?? []).reduce((sum, entry) => sum + (entry.amount ?? 0), 0);
-
 const formatDate = (iso?: string | null) => {
   if (!iso) return '—';
   const d = new Date(iso);
@@ -264,21 +260,12 @@ export function LeadDetailsDialog({ leadId, open, onOpenChange }: LeadDetailsDia
                               {service.category && (
                                 <p className="text-[11px] text-muted-foreground mt-0.5">{service.category}</p>
                               )}
-                              {/* What it costs, what has come in, and what is
-                                  still owed against this service. */}
-                              {service.quotation != null ? (
-                                <p className="text-xs text-foreground mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5">
-                                  <span className="font-medium">{rupees(service.quotation)}</span>
-                                  <span className="text-muted-foreground">·</span>
-                                  <span className="text-emerald-700">Paid {rupees(servicePaid(service))}</span>
-                                  <span className="text-muted-foreground">·</span>
-                                  <span className={service.quotation - servicePaid(service) > 0 ? 'text-orange-600' : 'text-emerald-700'}>
-                                    Due {rupees(Math.max(0, service.quotation - servicePaid(service)))}
-                                  </span>
-                                </p>
-                              ) : (
-                                <p className="text-xs font-medium text-muted-foreground mt-1">Quotation not set</p>
-                              )}
+                              {/* What this service costs. Payments are made
+                                  against the account as a whole, so they are
+                                  shown on the client's ledger, not here. */}
+                              <p className="text-xs font-medium text-foreground mt-1">
+                                {service.quotation != null ? rupees(service.quotation) : 'Quotation not set'}
+                              </p>
                             </div>
 
                           </div>

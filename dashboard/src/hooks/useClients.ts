@@ -54,14 +54,6 @@ export interface ClientService {
   quotationConfirmed?: boolean;
   /** The agreed line items — also the invoice's Particulars. */
   quotationItems: QuotationItem[];
-  /** Payments received against this service, oldest first. */
-  ledger: LedgerEntry[];
-  /** Sum of the ledger — what has actually been received for this service. */
-  paid: number;
-  /** The part of that which is new money, excluding applied customer credit. */
-  directPaid: number;
-  /** Quotation minus what has been received. */
-  balance: number;
   notes?: string;
 }
 
@@ -92,6 +84,16 @@ export interface Client {
   createdAt?: string;
   /** One advance covering the whole engagement, taken at confirmation. */
   advancePayment: AdvancePayment | null;
+  /** Every receipt on the account — advance included — newest first. */
+  payments: LedgerEntry[];
+  /** Everything the client has been quoted, across all their services. */
+  quoted: number;
+  /** Everything received against that. */
+  received: number;
+  /** What is still owed. */
+  due: number;
+  /** Paid past the total quoted — money held for whatever they ask for next. */
+  credit: number;
   services: ClientService[];
   totalServices: number;
   assignedServices: number;

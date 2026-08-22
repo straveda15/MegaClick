@@ -84,6 +84,7 @@ interface LeadRow {
   email: string;
   company: string;
   city: string;
+  state: string;
   services: LeadService[];
   serviceNames: string;
   assignedCount: number;
@@ -132,6 +133,7 @@ const toRow = (lead: SalesLead): LeadRow => {
     email: lead.customer?.email ?? '',
     company: lead.customer?.company ?? '',
     city: lead.customer?.city ?? '',
+    state: lead.customer?.state ?? '',
     services,
     serviceNames: services.map((s) => s.title).join(', '),
     assignedCount: services.filter((s) => s.assignedTo?._id).length,
@@ -153,10 +155,14 @@ const toRow = (lead: SalesLead): LeadRow => {
 const LEAD_COLUMNS = [
   { key: 'name',            header: 'Client',            required: true, aliases: ['client name', 'lead name', 'customer', 'customer name', 'name'], value: (r: LeadRow) => r.client },
   { key: 'phone',           header: 'Phone',             required: true, aliases: ['mobile', 'mobile no', 'contact', 'phone no'],                     value: (r: LeadRow) => r.phone },
-  { key: 'productInterest', header: 'Services',          aliases: ['service', 'interested service', 'service name', 'interest', 'requirement'],       value: (r: LeadRow) => r.serviceNames },
   { key: 'email',           header: 'Email',             aliases: ['e-mail', 'email address'],                                                        value: (r: LeadRow) => r.email },
   { key: 'company',         header: 'Company',           aliases: ['organisation', 'organization', 'firm'],                                           value: (r: LeadRow) => r.company },
+  { key: 'state',           header: 'State',             aliases: ['state name', 'province'],                                                         value: (r: LeadRow) => r.state },
   { key: 'city',            header: 'City',              aliases: ['location'],                                                                       value: (r: LeadRow) => r.city },
+  { key: 'productInterest', header: 'Services',          aliases: ['service', 'interested service', 'service name', 'interest', 'requirement'],       value: (r: LeadRow) => r.serviceNames },
+  { key: 'quotation',       header: 'Quotation',         aliases: ['quote', 'amount', 'price', 'quoted amount'],                                       value: (r: LeadRow) => r.services[0]?.quotation ?? '' },
+  { key: 'startAt',         header: 'Start Date',        aliases: ['when to start', 'start date', 'commencement date'],                                value: (r: LeadRow) => formatDate(r.services[0]?.startAt) },
+  { key: 'targetDate',      header: 'Target Date',       aliases: ['due date', 'target date', 'deadline'],                                             value: (r: LeadRow) => r.deadline },
   { key: 'serviceCategory', header: 'Category',          aliases: ['service category'],                                                               value: (r: LeadRow) => r.services[0]?.category ?? '' },
   { key: 'serviceStage',    header: 'Stage',             aliases: ['current stage'],                                                                  value: (r: LeadRow) => r.stage },
   { key: 'temperature',     header: 'Status',            aliases: ['lead status', 'temperature', 'hot warm cold'],                                     value: (r: LeadRow) => TEMPERATURE_LABELS[r.temperature] },
@@ -164,14 +170,28 @@ const LEAD_COLUMNS = [
   { key: 'status',          header: 'Pipeline',          aliases: ['pipeline status'],                                                                value: (r: LeadRow) => STATUS_LABELS[r.status] },
   { key: 'followUpAt',      header: 'Follow Up',         aliases: ['follow up', 'followup', 'follow up date', 'next follow up'],                       value: (r: LeadRow) => r.followUp },
   { key: 'followUpNote',    header: 'Follow Up Note',    aliases: ['follow up note', 'followup note', 'remark', 'remarks'],                            value: (r: LeadRow) => r.followUpNote },
-  // Export-only: the soonest service target date, which the board no longer
-  // shows as its own column.
-  { key: 'targetDate',      header: 'Deadline',          aliases: ['due date', 'target date'],                                                        value: (r: LeadRow) => r.deadline },
   { key: 'assignedToName',  header: 'Assigned To',       aliases: ['assignee', 'employee', 'owner'],                                                  value: (r: LeadRow) => r.services.map((s) => s.assignedTo?.name).filter(Boolean).join(', ') },
   { key: 'source',          header: 'Source',            aliases: ['lead source'],                                                                    value: (r: LeadRow) => sourceLabel(r.source) },
 ] as const satisfies ReadonlyArray<SheetColumn<LeadRow> & { key: string }>;
 
 type LeadColumnKey = (typeof LEAD_COLUMNS)[number]['key'];
+
+/**
+ * Columns worth flagging when blank on an imported row — not hard-required
+ * (only phone is, since it's the customer's identity key), but useful enough
+ * that the user should be nudged to fill them in. City is deliberately left
+ * out: it genuinely doesn't matter if it's missing.
+ */
+const RECOMMENDED_IMPORT_FIELDS: Array<{ key: LeadColumnKey; label: string }> = [
+  { key: 'name', label: 'client name' },
+  { key: 'email', label: 'email' },
+  { key: 'company', label: 'company' },
+  { key: 'state', label: 'state' },
+  { key: 'productInterest', label: 'services' },
+  { key: 'quotation', label: 'quotation' },
+  { key: 'startAt', label: 'start date' },
+  { key: 'targetDate', label: 'target date' },
+];
 
 /** Accepts either the stored key or the label a client sees in the table. */
 const parseStage = (value: string): ServiceStage | undefined => {
@@ -198,13 +218,30 @@ const parseTemperature = (value: string): LeadTemperature | undefined => {
     : undefined;
 };
 
-/** A sheet cell can list several services — split it back into an array. */
-const parseServices = (value?: string) =>
+/** Tolerates stray currency symbols/commas ("₹45,000") without throwing. */
+const parseQuotation = (value?: string): number | undefined => {
+  const cleaned = String(value ?? '').replace(/[^0-9.]/g, '');
+  if (!cleaned) return undefined;
+  const parsed = Number(cleaned);
+  return Number.isFinite(parsed) ? parsed : undefined;
+};
+
+/**
+ * A sheet cell can list several services — split it back into an array. The
+ * quotation/start/target date columns apply to the lead as a whole, so every
+ * parsed service carries the same values.
+ */
+const parseServices = (value?: string, extra?: { quotation?: number; startAt?: string; dueAt?: string }) =>
   String(value ?? '')
     .split(/[,;|]/)
     .map((title) => title.trim())
     .filter(Boolean)
-    .map((title) => ({ title }));
+    .map((title) => ({
+      title,
+      ...(extra?.quotation !== undefined ? { quotation: extra.quotation } : {}),
+      ...(extra?.startAt ? { startAt: extra.startAt } : {}),
+      ...(extra?.dueAt ? { dueAt: extra.dueAt } : {}),
+    }));
 
 /* ── Small controls ─────────────────────────────────────────────────────────── */
 
@@ -351,8 +388,14 @@ const LeadsPage = () => {
       email: row.email,
       company: row.company,
       city: row.city,
-      // One cell can list several services — they come in as separate entries.
-      services: parseServices(row.productInterest),
+      state: row.state,
+      // One cell can list several services — they come in as separate entries,
+      // each carrying the same quotation/start/target date from the row.
+      services: parseServices(row.productInterest, {
+        quotation: parseQuotation(row.quotation),
+        startAt: row.startAt || undefined,
+        dueAt: row.targetDate || undefined,
+      }),
       productInterest: row.productInterest,
       serviceCategory: row.serviceCategory,
       serviceStage: row.serviceStage ? parseStage(row.serviceStage) : undefined,
@@ -365,10 +408,27 @@ const LeadsPage = () => {
       followUpNote: row.followUpNote,
     }));
 
-    return importLeads.mutateAsync({
+    const result = await importLeads.mutateAsync({
       rows: payload,
       fallbackAssignedTo: importFallbackAssignee || undefined,
     });
+
+    // Nothing here blocks the import — only a missing phone does that, and
+    // those rows already come back in `skipped`. This just tells the user
+    // which of the leads that DID come in are worth a follow-up to complete.
+    const skippedRows = new Set(result.skipped?.map((s) => s.row) ?? []);
+    const incomplete = importRows
+      .map((row, i) => {
+        const rowNumber = i + 2; // header is row 1
+        if (skippedRows.has(rowNumber)) return null;
+        const missing = RECOMMENDED_IMPORT_FIELDS
+          .filter(({ key }) => !String(row[key] ?? '').trim())
+          .map(({ label }) => label);
+        return missing.length > 0 ? { row: rowNumber, missing } : null;
+      })
+      .filter((entry): entry is { row: number; missing: string[] } => entry !== null);
+
+    return { ...result, incomplete };
   };
 
   const thBase = 'px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground whitespace-nowrap select-none';
@@ -627,7 +687,7 @@ const LeadsPage = () => {
         open={importOpen}
         onOpenChange={setImportOpen}
         title="Import Leads"
-        description="Upload a CSV or Excel file of leads. The phone number identifies the client — rows sharing a number update the same contact. List several services in one cell, separated by commas."
+        description="Upload a CSV or Excel file of leads. Only the phone number is required — it identifies the client, and rows sharing a number update the same contact. Every other column can be left blank; anything missing can be filled in later. List several services in one cell, separated by commas."
         columns={[...LEAD_COLUMNS]}
         templateBaseName="leads"
         onImport={handleImport}

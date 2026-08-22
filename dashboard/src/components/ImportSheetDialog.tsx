@@ -15,6 +15,8 @@ import { downloadTemplate, parseSheetFile, type SheetColumn } from '@/lib/sheet'
 export interface ImportResult {
   imported: number;
   skipped?: Array<{ row: number; reason: string }>;
+  /** Rows that DID import but were missing recommended (non-blocking) fields. */
+  incomplete?: Array<{ row: number; missing: string[] }>;
 }
 
 interface ImportSheetDialogProps<K extends string> {
@@ -86,6 +88,7 @@ export function ImportSheetDialog<K extends string>({
     try {
       const result = await onImport(rows);
       const skipped = result.skipped ?? [];
+      const incomplete = result.incomplete ?? [];
 
       if (skipped.length > 0) {
         toast.warning(
@@ -94,6 +97,18 @@ export function ImportSheetDialog<K extends string>({
         );
       } else {
         toast.success(`Imported ${result.imported} row${result.imported === 1 ? '' : 's'}.`);
+      }
+
+      if (incomplete.length > 0) {
+        toast.warning(
+          `${incomplete.length} imported row${incomplete.length === 1 ? '' : 's'} ${incomplete.length === 1 ? 'is' : 'are'} missing details — fill them in when you can.`,
+          {
+            description: incomplete
+              .slice(0, 3)
+              .map((r) => `Row ${r.row}: missing ${r.missing.join(', ')}`)
+              .join(' · '),
+          }
+        );
       }
 
       onImported?.();

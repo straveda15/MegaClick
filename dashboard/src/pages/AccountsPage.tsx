@@ -38,18 +38,15 @@ export default function AccountsPage() {
 
         return matchQ && isWithinRange(client.createdAt, dateRange);
       })
-      .map((client) => {
-        const quoted = client.services.reduce((sum, s) => sum + (s.quotation ?? 0), 0);
-        // The advance covers the engagement as a whole, so it belongs to the
-        // account rather than to any single service's ledger. Only NEW money is
-        // added to it — a service ledger entry funded by the advance itself
-        // would otherwise bank the same rupee twice.
-        const advance = client.advancePayment?.amount ?? 0;
-        const received = client.services.reduce((sum, s) => sum + s.directPaid, 0) + advance;
-        const credit = client.advancePayment?.unallocated ?? 0;
-
-        return { client, quoted, advance, credit, due: Math.max(0, quoted - received) };
-      });
+      // Quoted, received and due are account-wide — payments are made against
+      // the client, not against one of their services.
+      .map((client) => ({
+        client,
+        quoted: client.quoted,
+        advance: client.advancePayment?.amount ?? 0,
+        credit: client.credit,
+        due: client.due,
+      }));
   }, [clients, query, dateRange]);
 
   const totalPages = Math.max(1, Math.ceil(accounts.length / PAGE_SIZE));
@@ -72,17 +69,12 @@ export default function AccountsPage() {
         title: service.title,
         quotation: service.quotation ?? 0,
         quotationItems: service.quotationItems ?? [],
-        ledger: service.ledger ?? [],
-        paid: service.paid,
       })),
-      advance: client.advancePayment
-        ? {
-            amount: client.advancePayment.amount,
-            unallocated: client.advancePayment.unallocated ?? client.advancePayment.amount,
-            mode: client.advancePayment.mode,
-            recordedAt: client.advancePayment.recordedAt ?? null,
-          }
-        : null,
+      payments: client.payments,
+      quoted: client.quoted,
+      received: client.received,
+      due: client.due,
+      credit: client.credit,
     };
   }, [clients, ledgerClientId]);
 
@@ -176,8 +168,8 @@ export default function AccountsPage() {
                             <span className="font-medium text-blue-700">{rupees(advance)}</span>
                           </div>
                         )}
-                        {/* Advance still held on the account, not yet put
-                            against any one service. */}
+                        {/* Paid past the total quoted — held for whatever they
+                            ask for next. */}
                         {credit > 0 && (
                           <div className="flex justify-between gap-4">
                             <span className="text-muted-foreground">Customer Credit</span>
