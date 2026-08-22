@@ -21,6 +21,9 @@ const formatDateInput = (date: Date) => {
 
 const todayDateInput = () => formatDateInput(new Date());
 
+/** How long the note to the assignee may run — an instruction, not a brief. */
+const NOTES_MAX = 150;
+
 const defaultDeadline = () => {
   const d = new Date();
   d.setDate(d.getDate() + 7);
@@ -82,10 +85,12 @@ export function AssignServiceDialog({ lead, service, open, onOpenChange }: Assig
 
     setAssignedToId('');
     setPriority((lead?.priority ?? 'MEDIUM').toLowerCase());
-    setNotes(service.notes ?? '');
+    setNotes((service.notes ?? '').slice(0, NOTES_MAX));
 
-    const existing = toDateInput(service.dueAt);
-    setDeadline(existing && existing >= todayDateInput() ? existing : defaultDeadline());
+    // The deadline IS the target date the client was promised for this
+    // service. It carries over as-is — including one already in the past, which
+    // is a fact about the engagement rather than something to quietly reset.
+    setDeadline(toDateInput(service.dueAt) || defaultDeadline());
   }, [open, service?._id]);
 
   // Steps come from the work already assigned if there is any (so a reassign
@@ -131,6 +136,10 @@ export function AssignServiceDialog({ lead, service, open, onOpenChange }: Assig
     setSteps((current) => current.map((step, i) => ({ ...step, done: i <= index })));
   };
 
+  /** The target date promised for this service, as a date-input string. */
+  const serviceTarget = toDateInput(service?.dueAt);
+  const targetIsPast = Boolean(serviceTarget) && serviceTarget < todayDateInput();
+
   const handleSubmit = () => {
     if (!lead || !service) return;
 
@@ -138,8 +147,14 @@ export function AssignServiceDialog({ lead, service, open, onOpenChange }: Assig
       toast.error('Select an employee to assign this to.');
       return;
     }
-    if (!deadline || deadline < todayDateInput()) {
+    // A past deadline is only allowed when it is the service's own target date;
+    // anything else typed in by hand still has to be today or later.
+    if (!deadline || (deadline < todayDateInput() && deadline !== serviceTarget)) {
       toast.error('Deadline cannot be in the past.');
+      return;
+    }
+    if (notes.trim().length > NOTES_MAX) {
+      toast.error(`Keep the note to the assignee under ${NOTES_MAX} characters.`);
       return;
     }
 
@@ -227,10 +242,17 @@ export function AssignServiceDialog({ lead, service, open, onOpenChange }: Assig
                 <Input
                   id="assign-deadline"
                   type="date"
-                  min={todayDateInput()}
+                  min={targetIsPast ? serviceTarget : todayDateInput()}
                   value={deadline}
                   onChange={(e) => setDeadline(e.target.value)}
                 />
+                {serviceTarget && deadline === serviceTarget && (
+                  <p className={`text-[11px] ${targetIsPast ? 'text-amber-600' : 'text-muted-foreground'}`}>
+                    {targetIsPast
+                      ? "The service's target date has already passed."
+                      : "Taken from the service's target date."}
+                  </p>
+                )}
               </div>
               <div className="space-y-2">
                 <Label>Priority</Label>
@@ -247,11 +269,17 @@ export function AssignServiceDialog({ lead, service, open, onOpenChange }: Assig
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="assign-notes">Notes for the assignee</Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="assign-notes">Notes for the assignee</Label>
+                <span className={`text-[10px] ${notes.length >= NOTES_MAX ? 'text-amber-600' : 'text-muted-foreground'}`}>
+                  {notes.length}/{NOTES_MAX}
+                </span>
+              </div>
               <textarea
                 id="assign-notes"
+                maxLength={NOTES_MAX}
                 value={notes}
-                onChange={(e) => setNotes(e.target.value)}
+                onChange={(e) => setNotes(e.target.value.slice(0, NOTES_MAX))}
                 placeholder="Documents collected, special instructions…"
                 className="w-full min-h-[72px] rounded-md border border-border bg-card px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
               />

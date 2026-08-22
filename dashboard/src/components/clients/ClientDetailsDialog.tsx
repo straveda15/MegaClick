@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
-  Building2, CalendarClock, CalendarDays, Check, Circle, FileDown, History, Loader2, Mail, MapPin, Phone, User,
+  Building2, CalendarClock, CalendarDays, Check, Circle, FileDown, History, Loader2, Mail, Phone, User,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -13,10 +13,13 @@ import { TEMPERATURE_LABELS, TEMPERATURE_STYLES } from '@/data/leadTemperature';
 import FollowUpHistoryDialog from '@/components/followups/FollowUpHistoryDialog';
 import LogFollowUpDialog from '@/components/followups/LogFollowUpDialog';
 import type { Client, ClientService } from '@/hooks/useClients';
-import { useServiceFees } from '@/hooks/useServiceFees';
-import { generateInvoicePdf, type InvoiceData } from '@/lib/invoicePdf';
+import { buildParticulars } from '@/lib/invoiceParticulars';
+import { generateInvoicePdf, invoiceNumber, type InvoiceData } from '@/lib/invoicePdf';
 
 /* ── Display constants ──────────────────────────────────────────────────────── */
+
+const rupees = (value: number) =>
+  value.toLocaleString('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 2 });
 
 const formatDate = (iso?: string | null) => {
   if (!iso) return '—';
@@ -55,11 +58,20 @@ function ServiceCard({ service }: { service: ClientService }) {
           {service.category && (
             <p className="text-[11px] text-muted-foreground mt-0.5">{service.category}</p>
           )}
-          <p className="text-xs font-medium text-foreground mt-1">
-            {service.quotation !== undefined && service.quotation !== null
-              ? service.quotation.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
-              : 'Quotation not set'}
-          </p>
+          {/* What it costs, what has come in, and what is still owed. */}
+          {service.quotation != null ? (
+            <p className="text-xs text-foreground mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5">
+              <span className="font-medium">{rupees(service.quotation)}</span>
+              <span className="text-muted-foreground">·</span>
+              <span className="text-emerald-700">Paid {rupees(service.paid)}</span>
+              <span className="text-muted-foreground">·</span>
+              <span className={service.balance > 0 ? 'text-orange-600' : 'text-emerald-700'}>
+                Due {rupees(Math.max(0, service.balance))}
+              </span>
+            </p>
+          ) : (
+            <p className="text-xs font-medium text-muted-foreground mt-1">Quotation not set</p>
+          )}
         </div>
         <div className="flex items-center gap-1.5 shrink-0">
           <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium ${
@@ -142,27 +154,15 @@ export function ClientDetailsDialog({ client, open, onOpenChange }: ClientDetail
   const [historyOpen, setHistoryOpen] = useState(false);
   const [logOpen, setLogOpen] = useState(false);
   const [downloading, setDownloading] = useState(false);
-  const { data: allFees } = useServiceFees();
 
-  const buildParticulars = (service: ClientService) => {
-    const feesForService = allFees?.find(f => f.serviceSlug === service.slug);
-    if (feesForService && feesForService.fees.length > 0) {
-      if (service.quotation != null) {
-        const feesTotal = feesForService.fees.reduce((s, f) => s + f.amount, 0);
-        const diff = service.quotation - feesTotal;
-        
-        const parts = feesForService.fees.map(f => ({ name: f.name, amount: f.amount }));
-        if (diff > 0) {
-          parts.push({ name: 'Additional Charges', amount: diff });
-        } else if (diff < 0) {
-          parts.push({ name: 'Discount', amount: diff });
-        }
-        return parts;
-      }
-      return feesForService.fees.map(f => ({ name: f.name, amount: f.amount }));
-    }
-    return [{ name: service.title, amount: service.quotation || 0 }];
-  };
+  // The whole engagement in money terms: what was quoted, what has come in
+  // (ledgers plus the shared advance), and what is still owed.
+  const totals = useMemo(() => {
+    const quoted = (client?.services ?? []).reduce((sum, s) => sum + (s.quotation ?? 0), 0);
+    const paid = (client?.services ?? []).reduce((sum, s) => sum + s.paid, 0)
+      + (client?.advancePayment?.amount ?? 0);
+    return { quoted, paid, due: Math.max(0, quoted - paid) };
+  }, [client]);
 
   const handleDownloadInvoice = async () => {
     if (!client) return;
@@ -170,7 +170,7 @@ export function ClientDetailsDialog({ client, open, onOpenChange }: ClientDetail
     try {
       const particulars = client.services.flatMap(s => buildParticulars(s));
       const data: InvoiceData = {
-        invoiceNumber: `INV-${client.clientId}`,
+        invoiceNumber: invoiceNumber(client.clientId),
         invoiceDate: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: '2-digit' }).replace(/ /g, '-'),
         consigneeName: client.name,
         consigneeAddress: client.address || 'N/A',
@@ -206,6 +206,23 @@ export function ClientDetailsDialog({ client, open, onOpenChange }: ClientDetail
               : 'Client details'}
           </DialogDescription>
           {client && client.services.length > 0 && (
+            <p className="text-xs text-foreground pt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5">
+              <span>Quoted <span className="font-semibold">{rupees(totals.quoted)}</span></span>
+              <span className="text-muted-foreground">·</span>
+              <span className="text-emerald-700">Paid <span className="font-semibold">{rupees(totals.paid)}</span></span>
+              <span className="text-muted-foreground">·</span>
+              <span className={totals.due > 0 ? 'text-orange-600' : 'text-emerald-700'}>
+                Due <span className="font-semibold">{rupees(totals.due)}</span>
+              </span>
+              {client.advancePayment && client.advancePayment.amount > 0 && (
+                <>
+                  <span className="text-muted-foreground">·</span>
+                  <span className="text-blue-700">Advance {rupees(client.advancePayment.amount)}</span>
+                </>
+              )}
+            </p>
+          )}
+          {client && client.services.length > 0 && (
             <div className="pt-2">
               <Button variant="outline" size="sm" onClick={handleDownloadInvoice} disabled={downloading}>
                 {downloading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <FileDown className="w-3.5 h-3.5" />}
@@ -228,18 +245,19 @@ export function ClientDetailsDialog({ client, open, onOpenChange }: ClientDetail
                   <InfoRow icon={Phone} label="Phone" value={client.phone} />
                   <InfoRow icon={Mail} label="Email" value={client.email} />
                   <InfoRow icon={Building2} label="Business" value={client.company} />
-                  <InfoRow icon={MapPin} label="Address" value={client.address} />
                   <InfoRow icon={CalendarDays} label="Next deadline" value={formatDate(client.nextDeadline)} />
                 </div>
 
                 {/* Follow-ups live on the same record — reach them from here */}
-                <div className="mt-3 rounded-lg border border-amber-200 bg-amber-50/60 px-4 py-3">
+                <div className="mt-3 rounded-lg border border-amber-200 bg-amber-50/60 px-4 py-3 min-w-0">
                   <p className="text-[10px] uppercase tracking-wider font-semibold text-amber-800 flex items-center gap-1.5">
-                    <CalendarClock className="w-3 h-3" />
+                    <CalendarClock className="w-3 h-3 shrink-0" />
                     Next follow-up — {formatDate(client.followUpAt)}
                   </p>
                   {client.followUpNote && (
-                    <p className="text-[13px] text-foreground mt-1.5 whitespace-pre-line">{client.followUpNote}</p>
+                    <p className="text-[13px] text-foreground mt-1.5 whitespace-pre-line break-words [overflow-wrap:anywhere]">
+                      {client.followUpNote}
+                    </p>
                   )}
                   <div className="flex items-center gap-2 mt-2.5">
                     <Button variant="outline" size="sm" onClick={() => setLogOpen(true)}>

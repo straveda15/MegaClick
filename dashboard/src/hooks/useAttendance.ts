@@ -28,7 +28,7 @@ export interface AttendanceRecord {
   source?: string;
   isHalfDay: boolean;
   halfDayReason?: string;
-  workMode?: "office" | "site";
+  workMode?: "office" | "site" | "home";
   site?: { name?: string; lat?: number; lng?: number };
   halfDayStatus?: "none" | "pending" | "approved" | "rejected";
   halfDayApprovedBy?: any;
@@ -51,8 +51,11 @@ export interface SelfPunchInInput {
   source?: string;
   isHalfDay?: boolean;
   halfDayReason?: string;
-  /** "office" is gated on the assigned geofence; "site" is declared instead. */
-  workMode?: "office" | "site";
+  /**
+   * "office" is gated on the assigned geofence; "site" is declared instead;
+   * "home" is remote work, which has no location to check at all.
+   */
+  workMode?: "office" | "site" | "home";
   site?: { name: string; lat: number; lng: number };
 }
 

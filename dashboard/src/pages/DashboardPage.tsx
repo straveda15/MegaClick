@@ -1,18 +1,15 @@
 import { useNavigate } from 'react-router-dom';
-import StatCard from '@/components/dashboard/StatCard';
-import StatCardGrid from '@/components/dashboard/StatCardGrid';
+import KpiStrip from '@/components/dashboard/KpiStrip';
 import AreaTrendChart from '@/components/dashboard/AreaTrendChart';
-import DonutStatusChart from '@/components/dashboard/DonutStatusChart';
 import SegmentedBarChart from '@/components/dashboard/SegmentedBarChart';
 import GroupedBarChart from '@/components/dashboard/GroupedBarChart';
 import ListCard from '@/components/dashboard/ListCard';
 import ActivityFeedItem from '@/components/dashboard/ActivityFeedItem';
 import RecentClientCard from '@/components/dashboard/RecentClientCard';
+import RevenueCard from '@/components/dashboard/RevenueCard';
 import StatusPill from '@/components/dashboard/StatusPill';
 import {
-  MOCK_KPI_STATS,
   MOCK_LEADS_VS_CONVERSIONS,
-  MOCK_SERVICE_STATUS_DONUT,
   MOCK_EMPLOYEE_PRODUCTIVITY,
   MOCK_TASK_COMPLETION_WEEK,
   MOCK_TODAYS_TASKS,
@@ -26,11 +23,8 @@ const DashboardPage = () => {
 
   return (
     <div className="space-y-6">
-      <StatCardGrid>
-        {MOCK_KPI_STATS.map((stat) => (
-          <StatCard key={stat.label} {...stat} />
-        ))}
-      </StatCardGrid>
+      {/* Live counts, read off the same endpoints the boards use. */}
+      <KpiStrip />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="kpi-card lg:col-span-2">
@@ -46,10 +40,8 @@ const DashboardPage = () => {
             ]}
           />
         </div>
-        <div className="kpi-card">
-          <h3 className="text-sm font-semibold text-foreground mb-2">Service Status</h3>
-          <DonutStatusChart data={MOCK_SERVICE_STATUS_DONUT} />
-        </div>
+        {/* Money actually received, straight off the customer ledgers. */}
+        <RevenueCard />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -103,7 +95,6 @@ const DashboardPage = () => {
         />
         <ListCard
           title="Recent Activity"
-          footerAction={{ label: 'All', onClick: () => navigate('/notifications') }}
           items={MOCK_RECENT_ACTIVITY.map((activity) => (
             <ActivityFeedItem key={activity.id} {...activity} />
           ))}

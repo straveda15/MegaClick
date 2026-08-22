@@ -11,14 +11,21 @@ import {
 import { STAGE_LABELS, STAGE_STYLES, stageProgress } from '@/data/services';
 import { TEMPERATURE_LABELS, TEMPERATURE_STYLES } from '@/data/leadTemperature';
 import { sourceLabel } from '@/data/leadSource';
-import { generateInvoicePdf, type InvoiceData } from '@/lib/invoicePdf';
+import { generateInvoicePdf, invoiceNumber, type InvoiceData } from '@/lib/invoicePdf';
 import { useLead, type LeadService, type SalesLead } from '@/hooks/useLeads';
-import { useServiceFees } from '@/hooks/useServiceFees';
+import { buildParticulars } from '@/lib/invoiceParticulars';
 import FollowUpHistoryDialog from '@/components/followups/FollowUpHistoryDialog';
 import LogFollowUpDialog from '@/components/followups/LogFollowUpDialog';
 import type { FollowUpEntry } from '@/hooks/useFollowUps';
 
 /* ── Display constants ──────────────────────────────────────────────────────── */
+
+const rupees = (value: number) =>
+  value.toLocaleString('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 2 });
+
+/** What has actually been received against one service, per its own ledger. */
+const servicePaid = (service: LeadService) =>
+  (service.ledger ?? []).reduce((sum, entry) => sum + (entry.amount ?? 0), 0);
 
 const formatDate = (iso?: string | null) => {
   if (!iso) return '—';
@@ -76,7 +83,6 @@ interface LeadDetailsDialogProps {
  */
 export function LeadDetailsDialog({ leadId, open, onOpenChange }: LeadDetailsDialogProps) {
   const { data: lead, isLoading, isError, error } = useLead(open ? leadId : undefined);
-  const { data: allFees } = useServiceFees();
   const [downloading, setDownloading] = useState<string | null>(null);
   const [historyOpen, setHistoryOpen] = useState(false);
   const [logOpen, setLogOpen] = useState(false);
@@ -85,29 +91,6 @@ export function LeadDetailsDialog({ leadId, open, onOpenChange }: LeadDetailsDia
   const clientName = customer?.name?.trim() || customer?.phone || 'Unnamed client';
   const services = lead?.services ?? [];
 
-  // Build invoice particulars for a service:
-  // Use fee items from the Fees page if configured, else fall back to the quotation amount.
-  const buildParticulars = (service: LeadService) => {
-    const feesForService = allFees?.find(f => f.serviceSlug === service.slug);
-    if (feesForService && feesForService.fees.length > 0) {
-      if (service.quotation != null) {
-        const feesTotal = feesForService.fees.reduce((s, f) => s + f.amount, 0);
-        const diff = service.quotation - feesTotal;
-        
-        const parts = feesForService.fees.map(f => ({ name: f.name, amount: f.amount }));
-        if (diff > 0) {
-          parts.push({ name: 'Additional Charges', amount: diff });
-        } else if (diff < 0) {
-          parts.push({ name: 'Discount', amount: diff });
-        }
-        return parts;
-      }
-      return feesForService.fees.map(f => ({ name: f.name, amount: f.amount }));
-    }
-    // Fallback: single line with service title and quotation
-    return [{ name: service.title, amount: service.quotation || 0 }];
-  };
-
   const handleDownload = async (service?: LeadService) => {
     if (!lead) return;
     setDownloading(service?._id ?? 'all');
@@ -115,13 +98,13 @@ export function LeadDetailsDialog({ leadId, open, onOpenChange }: LeadDetailsDia
       const address = [lead.customer?.addressLine1, lead.customer?.addressLine2, lead.customer?.city, lead.customer?.state]
         .filter(Boolean).join(', ');
 
-      // For a single service: use its fee breakdown. For all services: combine all.
+      // The Particulars are the fields agreed when the lead was confirmed.
       const particulars = service
         ? buildParticulars(service)
         : services.flatMap(s => buildParticulars(s));
 
       const data: InvoiceData = {
-        invoiceNumber: `INV-LD-${lead._id.slice(-5).toUpperCase()}`,
+        invoiceNumber: invoiceNumber(lead._id.slice(-5)),
         invoiceDate: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: '2-digit' }).replace(/ /g, '-'),
         consigneeName: clientName,
         consigneeAddress: address || 'N/A',
@@ -199,12 +182,6 @@ export function LeadDetailsDialog({ leadId, open, onOpenChange }: LeadDetailsDia
                   <InfoRow icon={Building2} label="Company" value={customer?.company} />
                   <InfoRow
                     icon={MapPin}
-                    label="Address"
-                    value={[customer?.addressLine1, customer?.addressLine2, customer?.landmark]
-                      .filter(Boolean).join(', ')}
-                  />
-                  <InfoRow
-                    icon={MapPin}
                     label="City / State"
                     value={[customer?.city, customer?.state, customer?.postalCode].filter(Boolean).join(', ')}
                   />
@@ -214,13 +191,13 @@ export function LeadDetailsDialog({ leadId, open, onOpenChange }: LeadDetailsDia
 
                 {/* The one follow-up that covers the whole lead */}
                 {(lead.followUpAt || lead.followUpNote) && (
-                  <div className="mt-3 rounded-lg border border-amber-200 bg-amber-50/60 p-4">
+                  <div className="mt-3 rounded-lg border border-amber-200 bg-amber-50/60 p-4 min-w-0">
                     <p className="text-[10px] uppercase tracking-wider font-semibold text-amber-800 flex items-center gap-1.5">
-                      <CalendarDays className="w-3 h-3" />
+                      <CalendarDays className="w-3 h-3 shrink-0" />
                       Follow up{lead.followUpAt ? ` — ${formatDate(lead.followUpAt)}` : ''}
                     </p>
                     {lead.followUpNote && (
-                      <p className="text-[13px] text-foreground whitespace-pre-line leading-relaxed mt-1.5">
+                      <p className="text-[13px] text-foreground whitespace-pre-line leading-relaxed mt-1.5 break-words [overflow-wrap:anywhere]">
                         {lead.followUpNote}
                       </p>
                     )}
@@ -287,11 +264,21 @@ export function LeadDetailsDialog({ leadId, open, onOpenChange }: LeadDetailsDia
                               {service.category && (
                                 <p className="text-[11px] text-muted-foreground mt-0.5">{service.category}</p>
                               )}
-                              <p className="text-xs font-medium text-foreground mt-1">
-                                {service.quotation !== undefined && service.quotation !== null 
-                                  ? service.quotation.toLocaleString('en-IN', { style: 'currency', currency: 'INR' }) 
-                                  : 'Quotation not set'}
-                              </p>
+                              {/* What it costs, what has come in, and what is
+                                  still owed against this service. */}
+                              {service.quotation != null ? (
+                                <p className="text-xs text-foreground mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5">
+                                  <span className="font-medium">{rupees(service.quotation)}</span>
+                                  <span className="text-muted-foreground">·</span>
+                                  <span className="text-emerald-700">Paid {rupees(servicePaid(service))}</span>
+                                  <span className="text-muted-foreground">·</span>
+                                  <span className={service.quotation - servicePaid(service) > 0 ? 'text-orange-600' : 'text-emerald-700'}>
+                                    Due {rupees(Math.max(0, service.quotation - servicePaid(service)))}
+                                  </span>
+                                </p>
+                              ) : (
+                                <p className="text-xs font-medium text-muted-foreground mt-1">Quotation not set</p>
+                              )}
                             </div>
 
                           </div>

@@ -13,9 +13,10 @@ import {
 } from '@/components/ui/select';
 import ExportMenu from '@/components/ExportMenu';
 import ImportSheetDialog from '@/components/ImportSheetDialog';
+import DateRangeFilter, { isWithinRange, type DateRange } from '@/components/DateRangeFilter';
 import AddLeadDialog from '@/components/leads/AddLeadDialog';
 import LeadDetailsDialog from '@/components/leads/LeadDetailsDialog';
-import QuotationDialog from '@/components/leads/QuotationDialog';
+import ConfirmQuotationDialog from '@/components/leads/ConfirmQuotationDialog';
 import type { SheetColumn } from '@/lib/sheet';
 import { STAGE_LABELS, SERVICE_STAGES, type ServiceStage } from '@/data/services';
 import { TEMPERATURE_LABELS } from '@/data/leadTemperature';
@@ -96,6 +97,8 @@ interface LeadRow {
   status: LeadStatus;
   /** The raw channel; the board shows `sourceLabel(source)`. */
   source: string;
+  /** When the lead was captured — what the calendar filter narrows on. */
+  createdAt: string;
   /** Kept for the spreadsheet export, which still ships one stage per lead. */
   stage: ServiceStage;
 }
@@ -140,6 +143,7 @@ const toRow = (lead: SalesLead): LeadRow => {
     priority: lead.priority ?? 'MEDIUM',
     status: lead.status,
     source: lead.source ?? '',
+    createdAt: lead.createdAt,
     stage: lead.serviceStage ?? 'documents_pending',
   };
 };
@@ -239,6 +243,7 @@ const LeadsPage = () => {
   const [query, setQuery] = useState('');
   const [temperatureFilter, setTemperatureFilter] = useState('');
   const [assignedFilter, setAssignedFilter] = useState('');
+  const [dateRange, setDateRange] = useState<DateRange | undefined>();
   const [sortKey, setSortKey] = useState<SortKey>(null);
   const [sortDir, setSortDir] = useState<SortDir>('asc');
   const [page, setPage] = useState(1);
@@ -249,10 +254,10 @@ const LeadsPage = () => {
   const [importFallbackAssignee, setImportFallbackAssignee] = useState('');
 
   const [detailsLeadId, setDetailsLeadId] = useState<string | null>(null);
-  const [quotationLeadId, setQuotationLeadId] = useState<string | null>(null);
+  const [confirmLeadId, setConfirmLeadId] = useState<string | null>(null);
 
   const { data: leads = [], isLoading, isError, error, refetch } = useLeads();
-  const quotationLead = useMemo(() => leads.find((l) => l._id === quotationLeadId) ?? null, [leads, quotationLeadId]);
+  const confirmLead = useMemo(() => leads.find((l) => l._id === confirmLeadId) ?? null, [leads, confirmLeadId]);
   const { data: team = [], isLoading: teamLoading } = useTeam();
   const importLeads = useImportLeads();
 
@@ -312,7 +317,10 @@ const LeadsPage = () => {
         !temperatureFilter
         || r.services.some((s) => (s.temperature ?? 'WARM') === temperatureFilter);
 
-      return matchQ && matchAssigned && matchTemperature;
+      // Captured inside the dates picked on the calendar.
+      const matchDate = isWithinRange(r.createdAt, dateRange);
+
+      return matchQ && matchAssigned && matchTemperature && matchDate;
     });
 
     if (sortKey) {
@@ -322,13 +330,13 @@ const LeadsPage = () => {
       });
     }
     return list;
-  }, [allRows, query, temperatureFilter, assignedFilter, sortKey, sortDir]);
+  }, [allRows, query, temperatureFilter, assignedFilter, dateRange, sortKey, sortDir]);
 
   const totalPages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
   const pagedRows = rows.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   // Reset to page 1 whenever filters change
-  useEffect(() => { setPage(1); }, [query, temperatureFilter, assignedFilter, sortKey, sortDir]);
+  useEffect(() => { setPage(1); }, [query, temperatureFilter, assignedFilter, dateRange, sortKey, sortDir]);
 
   const handleSort = (key: keyof LeadRow) => {
     if (sortKey === key) setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
@@ -411,6 +419,8 @@ const LeadsPage = () => {
             { value: 'assigned', label: 'Fully assigned' },
           ]}
         />
+        {/* Narrows the board to the leads captured between two dates. */}
+        <DateRangeFilter value={dateRange} onChange={setDateRange} label="Filter by capture date" />
 
         <div className="ml-auto flex items-center gap-2.5">
           <button
@@ -530,23 +540,27 @@ const LeadsPage = () => {
 
                       <td className="px-4 py-3 whitespace-nowrap">
                         {isConfirmed ? (
-                          <Button 
-                            variant="outline" 
+                          <Button
+                            variant="outline"
                             size="sm"
-                            onClick={() => setQuotationLeadId(row.id)}
+                            onClick={() => setConfirmLeadId(row.id)}
+                            title="Review or edit the confirmed quotation"
                             className="h-7 text-xs font-medium border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 hover:text-emerald-800"
                           >
                             <CheckCircle2 className="w-3.5 h-3.5 mr-1" />
                             Confirmed
                           </Button>
                         ) : (
-                          <Button 
-                            variant="outline" 
+                          <Button
                             size="sm"
-                            onClick={() => setQuotationLeadId(row.id)}
+                            onClick={() => setConfirmLeadId(row.id)}
+                            disabled={row.services.length === 0}
+                            title={row.services.length === 0
+                              ? 'Add a service to this lead before confirming'
+                              : 'Confirm the quotation for each service'}
                             className="h-7 text-xs font-medium"
                           >
-                            Quotation
+                            Confirm
                           </Button>
                         )}
                       </td>
@@ -601,11 +615,11 @@ const LeadsPage = () => {
         onOpenChange={(open) => !open && setDetailsLeadId(null)}
       />
 
-      {/* ── Quotation Dialog ────────────────────────────────────────────────── */}
-      <QuotationDialog
-        lead={quotationLead}
-        open={Boolean(quotationLead)}
-        onOpenChange={(open) => !open && setQuotationLeadId(null)}
+      {/* ── Confirm: per-service fields, prices and the shared advance ─────── */}
+      <ConfirmQuotationDialog
+        lead={confirmLead}
+        open={Boolean(confirmLead)}
+        onOpenChange={(open) => !open && setConfirmLeadId(null)}
       />
 
       {/* ── Import ──────────────────────────────────────────────────────────── */}

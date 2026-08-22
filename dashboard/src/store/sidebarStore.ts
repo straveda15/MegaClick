@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import {
   LayoutDashboard, Target, Users, ListTodo, ClipboardList, ListChecks, PhoneCall,
-  UsersRound, CalendarCheck, MapPin, Building2, BarChart3, Bell, Settings, CircleDollarSign, Wallet,
+  UsersRound, CalendarCheck, MapPin, Wallet,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -39,11 +39,6 @@ export const ALL_SECTIONS: NavSection[] = [
       { title: 'HR & Leave',      path: '/people/hr',              icon: UsersRound },
       { title: 'Attendance',      path: '/people/attendance',      icon: CalendarCheck },
       { title: 'Work Locations',  path: '/people/work-locations',  icon: MapPin },
-      { title: 'Departments',     path: '/departments',            icon: Building2 },
-      { title: 'Reports',         path: '/reports',                icon: BarChart3 },
-      { title: 'Notifications',   path: '/notifications',          icon: Bell },
-      { title: 'Settings',        path: '/settings',               icon: Settings },
-      { title: 'Fees',            path: '/fees',                   icon: CircleDollarSign },
       { title: 'Accounts',        path: '/accounts',               icon: Wallet },
     ],
   },
@@ -73,11 +68,6 @@ export const DASHBOARD_PAGES: PagePermission[] = [
   { section: 'Business Ops', label: 'Clients',          path: '/clients' },
   { section: 'Business Ops', label: 'Follow Ups',       path: '/follow-ups' },
   { section: 'Business Ops', label: 'Service Steps',    path: '/service-steps' },
-  { section: 'Business Ops', label: 'Departments',      path: '/departments' },
-  { section: 'Business Ops', label: 'Reports',          path: '/reports' },
-  { section: 'Business Ops', label: 'Notifications',    path: '/notifications' },
-  { section: 'Business Ops', label: 'Settings',         path: '/settings' },
-  { section: 'Business Ops', label: 'Fees',             path: '/fees' },
   { section: 'Business Ops', label: 'Accounts',         path: '/accounts' },
   { section: 'Tasks',        label: 'Tasks',            path: '/tasks' },
   { section: 'Tasks',        label: 'Team Logs',        path: '/tasks/team-logs' },

@@ -12,6 +12,7 @@ export interface InvoiceParticularItem {
 }
 
 export interface InvoiceData {
+  /** Financial-year form, e.g. "26-27/025". Build it with `invoiceNumber()`. */
   invoiceNumber: string;
   invoiceDate: string;       // e.g. "22-Jul-26"
   consigneeName: string;
@@ -92,7 +93,7 @@ function buildHtml(d: InvoiceData): string {
    * the Total row. Keep that visual weight while still allowing the number
    * of line items to vary. Use 66mm to comfortably fit within A4 limits.
    */
-  const spacerHeight = Math.max(5, 55 - d.particulars.length * 5.2);
+  const spacerHeight = Math.max(4, 52 - d.particulars.length * 5.2);
 
   return `<!DOCTYPE html>
 <html>
@@ -122,8 +123,14 @@ function buildHtml(d: InvoiceData): string {
 
   .page {
     width: 210mm;
-    height: 297mm;
-    max-height: 297mm;
+    /*
+     * A hair under A4. html2canvas rounds mm to device pixels, and an element
+     * measuring even a fraction over the page height renders a second, blank
+     * sheet — the slack costs nothing visually and removes that whole class of
+     * bug. The generator also drops any surplus page as a backstop.
+     */
+    height: 295mm;
+    max-height: 295mm;
     overflow: hidden;
     padding: 3mm 10mm;
     background: #fff;
@@ -605,6 +612,57 @@ function buildHtml(d: InvoiceData): string {
 </html>`;
 }
 
+// ─── Numbering ───────────────────────────────────────────────────────────────
+
+/**
+ * The invoice reference, in the form the office already uses: "26-27/025" —
+ * the Indian financial year (April to March) followed by a zero-padded serial.
+ *
+ * `serial` is whatever makes the number unique for the record being billed; the
+ * digits of a client reference work as well as a running counter, since the
+ * pair (year, serial) is what has to be distinct.
+ */
+export function invoiceNumber(serial: string | number, date = new Date()): string {
+  // April starts a new financial year, so Jan–Mar still belongs to the previous.
+  const startYear = date.getMonth() >= 3 ? date.getFullYear() : date.getFullYear() - 1;
+  const fy = `${String(startYear).slice(2)}-${String(startYear + 1).slice(2)}`;
+
+  const digits = String(serial).replace(/\D/g, '');
+  // Falls back to the raw text when a reference carries no digits at all.
+  const padded = digits ? digits.slice(-3).padStart(3, '0') : String(serial).slice(-3).toUpperCase();
+
+  return `${fy}/${padded}`;
+}
+
+/** "Invoice 26-27-025 Sneha Verma.pdf" — the number, then who it is for. */
+function invoiceFileName(data: InvoiceData): string {
+  const ref = data.invoiceNumber.replace(/\//g, '-');
+  const who = (data.buyerName || data.consigneeName || 'Customer')
+    .replace(/[\\/:*?"<>|]/g, '')
+    .trim();
+
+  return `Invoice ${ref} ${who}.pdf`;
+}
+
+/**
+ * The slice of html2pdf's chained worker this module drives. Its own types stop
+ * at `save()`, but the chain has to be opened up to reach the jsPDF instance and
+ * drop any page past the first.
+ */
+interface Html2PdfWorker {
+  set(options: unknown): Html2PdfWorker;
+  from(element: HTMLElement): Html2PdfWorker;
+  toPdf(): Html2PdfWorker;
+  get(key: 'pdf'): Html2PdfWorker;
+  then(onFulfilled: (pdf: JsPdfHandle) => void): Html2PdfWorker;
+  save(): Promise<void>;
+}
+
+interface JsPdfHandle {
+  internal: { getNumberOfPages: () => number };
+  deletePage: (pageNumber: number) => void;
+}
+
 // ─── Public API ──────────────────────────────────────────────────────────────
 
 export async function generateInvoicePdf(data: InvoiceData): Promise<void> {
@@ -618,7 +676,7 @@ export async function generateInvoicePdf(data: InvoiceData): Promise<void> {
 
   const opt = {
     margin: 0,
-    filename: `Invoice-${data.invoiceNumber.replace(/\//g, '-')}.pdf`,
+    filename: invoiceFileName(data),
     image: {
       type: 'jpeg' as const,
       quality: 0.98,
@@ -633,11 +691,28 @@ export async function generateInvoicePdf(data: InvoiceData): Promise<void> {
       format: 'a4' as const,
       orientation: 'portrait' as const,
     },
+    // Never break mid-content: the invoice is one fixed-height sheet by design.
+    pagebreak: { mode: [] as string[] },
   };
 
   try {
     const target = el.querySelector('.page') as HTMLElement;
-    await html2pdf().set(opt).from(target).save();
+
+    // An invoice is always a single sheet. The page box is fixed-height with
+    // overflow hidden, so anything html2canvas pushes past page 1 is empty
+    // padding — drop it rather than shipping a blank second page.
+    const worker = html2pdf() as unknown as Html2PdfWorker;
+    await worker
+      .set(opt)
+      .from(target)
+      .toPdf()
+      .get('pdf')
+      .then((pdf) => {
+        for (let page = pdf.internal.getNumberOfPages(); page > 1; page -= 1) {
+          pdf.deletePage(page);
+        }
+      })
+      .save();
   } finally {
     document.body.removeChild(el);
   }

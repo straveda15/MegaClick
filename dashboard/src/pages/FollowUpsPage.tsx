@@ -1,106 +1,102 @@
 import { useMemo, useState } from 'react';
-import {
-  CalendarClock, ChevronDown, ChevronRight, History, Loader2, Phone, RefreshCcw, Search,
-} from 'lucide-react';
+import { CalendarClock, Info, Loader2, Phone, RefreshCcw, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import ExportMenu from '@/components/ExportMenu';
-import FollowUpTimeline from '@/components/followups/FollowUpTimeline';
+import DateRangeFilter, { isWithinRange, type DateRange } from '@/components/DateRangeFilter';
+import FollowUpDetailsDialog from '@/components/followups/FollowUpDetailsDialog';
 import LogFollowUpDialog from '@/components/followups/LogFollowUpDialog';
-import {
-  BUCKET_LABELS, BUCKET_STYLES, OUTCOME_LABELS, formatDateTime,
-} from '@/data/followUp';
-import { TEMPERATURE_LABELS, TEMPERATURE_STYLES } from '@/data/leadTemperature';
-import { useFollowUps, type FollowUpBucket, type FollowUpRow } from '@/hooks/useFollowUps';
-import type { LeadTemperature } from '@/hooks/useLeads';
+import { BUCKET_LABELS, BUCKET_STYLES, OUTCOME_LABELS, formatDateTime } from '@/data/followUp';
+import { useFollowUps, type FollowUpRow } from '@/hooks/useFollowUps';
 import type { SheetColumn } from '@/lib/sheet';
 
 /* ── Spreadsheet columns ────────────────────────────────────────────────────── */
 
 const FOLLOW_UP_COLUMNS = [
-  { key: 'reference',  header: 'Lead ID',      value: (r: FollowUpRow) => r.reference },
-  { key: 'client',     header: 'Client',       value: (r: FollowUpRow) => r.client.name },
-  { key: 'phone',      header: 'Phone',        value: (r: FollowUpRow) => r.client.phone },
-  { key: 'services',   header: 'Services',     value: (r: FollowUpRow) => r.services.map((s) => s.title).join(', ') },
+  { key: 'reference',  header: 'Lead ID',        value: (r: FollowUpRow) => r.reference },
+  { key: 'client',     header: 'Client',         value: (r: FollowUpRow) => r.client.name },
+  { key: 'phone',      header: 'Phone',          value: (r: FollowUpRow) => r.client.phone },
+  { key: 'services',   header: 'Services',       value: (r: FollowUpRow) => r.services.map((s) => s.title).join(', ') },
   { key: 'followUpAt', header: 'Next Follow Up', value: (r: FollowUpRow) => formatDateTime(r.followUpAt) },
-  { key: 'bucket',     header: 'Due',          value: (r: FollowUpRow) => BUCKET_LABELS[r.bucket] },
-  { key: 'note',       header: 'Latest Note',  value: (r: FollowUpRow) => r.history[0]?.note ?? r.followUpNote },
-  { key: 'count',      header: 'Follow Ups',   value: (r: FollowUpRow) => String(r.followUpCount) },
-  { key: 'owner',      header: 'Owner',        value: (r: FollowUpRow) => r.owner ?? '' },
+  { key: 'bucket',     header: 'Due',            value: (r: FollowUpRow) => BUCKET_LABELS[r.bucket] },
+  { key: 'note',       header: 'Latest Note',    value: (r: FollowUpRow) => r.history[0]?.note ?? r.followUpNote },
+  { key: 'count',      header: 'Follow Ups',     value: (r: FollowUpRow) => String(r.followUpCount) },
+  { key: 'owner',      header: 'Owner',          value: (r: FollowUpRow) => r.owner ?? '' },
 ] as const satisfies ReadonlyArray<SheetColumn<FollowUpRow> & { key: string }>;
 
 /* ── Page ───────────────────────────────────────────────────────────────────── */
 
-const BUCKET_ORDER: FollowUpBucket[] = ['overdue', 'today', 'this_week', 'later', 'unscheduled'];
+type Scope = 'all' | 'overdue';
+
+/**
+ * When a row last saw activity — the most recent logged follow-up, or failing
+ * that the date it is booked for. This is what "newest on top" sorts on: the
+ * board should open on what just happened, not on the oldest thing in the pile.
+ */
+const activityAt = (row: FollowUpRow) =>
+  Number(new Date(row.lastFollowUpAt ?? row.followUpAt ?? 0)) || 0;
 
 const FollowUpsPage = () => {
   const [query, setQuery] = useState('');
-  const [bucketFilter, setBucketFilter] = useState<FollowUpBucket | ''>('');
-  const [expanded, setExpanded] = useState<Set<string>>(new Set());
+  const [scope, setScope] = useState<Scope>('all');
+  const [dateRange, setDateRange] = useState<DateRange | undefined>();
+  const [detailsRow, setDetailsRow] = useState<FollowUpRow | null>(null);
   const [logTarget, setLogTarget] = useState<FollowUpRow | null>(null);
 
   const { data: rows = [], isLoading, isError, error, refetch } = useFollowUps();
 
-  const counts = useMemo(() => {
-    const tally = { overdue: 0, today: 0, this_week: 0, later: 0, unscheduled: 0 } as Record<FollowUpBucket, number>;
-    rows.forEach((row) => { tally[row.bucket] += 1; });
-    return tally;
-  }, [rows]);
+  const overdueCount = useMemo(() => rows.filter((row) => row.bucket === 'overdue').length, [rows]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return rows.filter((row) => {
-      const matchQ = !q
-        || row.client.name.toLowerCase().includes(q)
-        || row.client.phone.includes(q)
-        || row.client.company.toLowerCase().includes(q)
-        || row.reference.toLowerCase().includes(q)
-        || row.services.some((s) => s.title.toLowerCase().includes(q));
 
-      return matchQ && (!bucketFilter || row.bucket === bucketFilter);
-    });
-  }, [rows, query, bucketFilter]);
+    return rows
+      .filter((row) => {
+        const matchQ = !q
+          || row.client.name.toLowerCase().includes(q)
+          || row.client.phone.includes(q)
+          || row.client.company.toLowerCase().includes(q)
+          || row.reference.toLowerCase().includes(q)
+          || row.services.some((s) => s.title.toLowerCase().includes(q));
 
-  const toggleRow = (id: string) =>
-    setExpanded((current) => {
-      const next = new Set(current);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
+        const matchScope = scope === 'all' || row.bucket === 'overdue';
+        // The calendar narrows on when the next follow-up falls due.
+        const matchDate = isWithinRange(row.followUpAt, dateRange);
+
+        return matchQ && matchScope && matchDate;
+      })
+      // Newest activity first.
+      .sort((a, b) => activityAt(b) - activityAt(a));
+  }, [rows, query, scope, dateRange]);
 
   const thBase =
     'px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground whitespace-nowrap select-none';
 
   return (
     <div className="space-y-5">
-      {/* ── KPIs — clicking one filters the table ──────────────────────────── */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-        {BUCKET_ORDER.map((bucket) => {
-          const style = BUCKET_STYLES[bucket];
-          const active = bucketFilter === bucket;
-
-          return (
+      {/* ── Toolbar ────────────────────────────────────────────────────────── */}
+      <div className="flex flex-wrap items-center gap-2.5">
+        {/* All / Overdue */}
+        <div className="flex bg-muted rounded-lg p-1 gap-1">
+          {([
+            { key: 'all' as const, label: 'All', count: rows.length },
+            { key: 'overdue' as const, label: 'Overdue', count: overdueCount },
+          ]).map(({ key, label, count }) => (
             <button
-              key={bucket}
+              key={key}
               type="button"
-              onClick={() => setBucketFilter(active ? '' : bucket)}
-              className={`bg-card border rounded-lg px-4 py-3 text-left transition-all hover:shadow-sm ${
-                active ? 'border-primary ring-1 ring-primary' : 'border-border'
+              onClick={() => setScope(key)}
+              className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${
+                scope === key ? 'bg-card shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'
               }`}
             >
-              <span className={`block text-[10px] font-semibold leading-tight ${style.text}`}>
-                {BUCKET_LABELS[bucket]}
-              </span>
-              <span className="block text-2xl font-bold text-foreground leading-none mt-1">
-                {counts[bucket]}
+              {label}
+              <span className={`ml-1.5 ${key === 'overdue' && count > 0 ? 'text-red-600' : 'text-muted-foreground'}`}>
+                {count}
               </span>
             </button>
-          );
-        })}
-      </div>
+          ))}
+        </div>
 
-      {/* ── Toolbar ────────────────────────────────────────────────────────── */}
-      <div className="flex flex-wrap items-center gap-3">
         <div className="relative flex-1 min-w-[220px] max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
           <input
@@ -112,11 +108,8 @@ const FollowUpsPage = () => {
           />
         </div>
 
-        {bucketFilter && (
-          <Button variant="outline" size="sm" onClick={() => setBucketFilter('')}>
-            Clear filter — {BUCKET_LABELS[bucketFilter]}
-          </Button>
-        )}
+        {/* Narrows to follow-ups falling due between two dates. */}
+        <DateRangeFilter value={dateRange} onChange={setDateRange} label="Filter by follow-up date" />
 
         <div className="ml-auto">
           <ExportMenu rows={filtered} columns={[...FOLLOW_UP_COLUMNS]} baseName="follow-ups" />
@@ -129,7 +122,6 @@ const FollowUpsPage = () => {
           <table className="w-full text-sm">
             <thead className="bg-muted/40 border-b border-border">
               <tr>
-                <th className={thBase} style={{ width: 40 }} />
                 <th className={thBase}>Lead ID</th>
                 <th className={thBase}>Client</th>
                 <th className={thBase} style={{ width: 200 }}>Services</th>
@@ -141,11 +133,11 @@ const FollowUpsPage = () => {
 
             <tbody className="divide-y divide-border">
               {isLoading ? (
-                <tr><td colSpan={7} className="text-center py-16 text-muted-foreground text-sm">
+                <tr><td colSpan={6} className="text-center py-16 text-muted-foreground text-sm">
                   <Loader2 className="w-4 h-4 animate-spin inline mr-2" />Loading follow-ups…
                 </td></tr>
               ) : isError ? (
-                <tr><td colSpan={7} className="text-center py-16">
+                <tr><td colSpan={6} className="text-center py-16">
                   <p className="text-sm text-destructive mb-3">
                     {error instanceof Error ? error.message : 'Failed to load follow-ups.'}
                   </p>
@@ -154,32 +146,18 @@ const FollowUpsPage = () => {
                   </Button>
                 </td></tr>
               ) : filtered.length === 0 ? (
-                <tr><td colSpan={7} className="text-center py-16 text-muted-foreground text-sm">
+                <tr><td colSpan={6} className="text-center py-16 text-muted-foreground text-sm">
                   {rows.length === 0
                     ? 'Nothing to follow up. Set a follow-up date on a lead and it will show here.'
                     : 'No follow-ups match your filters.'}
                 </td></tr>
               ) : (
                 filtered.map((row) => {
-                  const isOpen = expanded.has(row._id);
                   const bucketStyle = BUCKET_STYLES[row.bucket];
                   const latest = row.history[0];
 
-                  return [
+                  return (
                     <tr key={row._id} className="hover:bg-muted/30 transition-colors">
-                      <td className="px-2 py-3 text-center">
-                        <button
-                          type="button"
-                          onClick={() => toggleRow(row._id)}
-                          title={isOpen ? 'Hide history' : 'Show follow-up history'}
-                          aria-expanded={isOpen}
-                          aria-label={`${isOpen ? 'Hide' : 'Show'} follow-up history for ${row.client.name}`}
-                          className="inline-flex items-center justify-center w-6 h-6 rounded border border-border bg-card text-muted-foreground hover:bg-muted transition-colors"
-                        >
-                          {isOpen ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
-                        </button>
-                      </td>
-
                       <td className="px-4 py-3 text-muted-foreground text-xs font-medium whitespace-nowrap">
                         {row.reference}
                       </td>
@@ -232,49 +210,24 @@ const FollowUpsPage = () => {
                       </td>
 
                       <td className="px-4 py-3 whitespace-nowrap text-right">
-                        <Button size="sm" onClick={() => setLogTarget(row)}>
-                          <CalendarClock className="w-3.5 h-3.5" />
-                          Log / Reschedule
-                        </Button>
+                        <div className="flex items-center gap-1.5 justify-end">
+                          <Button size="sm" onClick={() => setLogTarget(row)}>
+                            <CalendarClock className="w-3.5 h-3.5" />
+                            Log / Reschedule
+                          </Button>
+                          <button
+                            type="button"
+                            onClick={() => setDetailsRow(row)}
+                            title="View follow-up history"
+                            aria-label={`View follow-up history for ${row.client.name}`}
+                            className="inline-flex items-center justify-center w-8 h-8 rounded-full border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors"
+                          >
+                            <Info className="w-4 h-4" />
+                          </button>
+                        </div>
                       </td>
-                    </tr>,
-
-                    isOpen ? (
-                      <tr key={`${row._id}-history`} className="bg-muted/20">
-                        <td />
-                        <td colSpan={6} className="px-4 py-4">
-                          <p className="text-[11px] uppercase tracking-wider font-bold text-muted-foreground mb-2.5 flex items-center gap-1.5">
-                            <History className="w-3.5 h-3.5" />
-                            Follow-up history
-                          </p>
-                          <FollowUpTimeline
-                            history={row.history}
-                            nextFollowUpAt={row.followUpAt}
-                            bucket={row.bucket}
-                          />
-                          {row.services.length > 0 && (
-                            <div className="flex flex-wrap gap-1.5 mt-3">
-                              {row.services.map((service) => {
-                                const style = TEMPERATURE_STYLES[service.temperature as LeadTemperature]
-                                  ?? TEMPERATURE_STYLES.WARM;
-                                return (
-                                  <span
-                                    key={service._id}
-                                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-medium ${style.bg} ${style.text}`}
-                                  >
-                                    {service.title}
-                                    <span className="opacity-70">
-                                      · {TEMPERATURE_LABELS[service.temperature as LeadTemperature] ?? service.temperature}
-                                    </span>
-                                  </span>
-                                );
-                              })}
-                            </div>
-                          )}
-                        </td>
-                      </tr>
-                    ) : null,
-                  ];
+                    </tr>
+                  );
                 })
               )}
             </tbody>
@@ -289,6 +242,14 @@ const FollowUpsPage = () => {
           </div>
         )}
       </div>
+
+      {/* ── Everything about one lead's follow-ups ─────────────────────────── */}
+      <FollowUpDetailsDialog
+        row={detailsRow}
+        open={Boolean(detailsRow)}
+        onOpenChange={(open) => !open && setDetailsRow(null)}
+        onLog={(row) => setLogTarget(row)}
+      />
 
       {/* ── Log / reschedule ───────────────────────────────────────────────── */}
       <LogFollowUpDialog

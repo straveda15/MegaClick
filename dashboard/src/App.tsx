@@ -16,11 +16,6 @@ import LeadsPage from '@/pages/LeadsPage';
 import ClientsPage from '@/pages/ClientsPage';
 import FollowUpsPage from '@/pages/FollowUpsPage';
 import ServiceStepsPage from '@/pages/ServiceStepsPage';
-import DepartmentsPage from '@/pages/DepartmentsPage';
-import ReportsPage from '@/pages/ReportsPage';
-import NotificationsPage from '@/pages/NotificationsPage';
-import SettingsPage from '@/pages/SettingsPage';
-import FeesPage from '@/pages/FeesPage';
 import AccountsPage from '@/pages/AccountsPage'; // Added AccountsPage
 
 // ── People: employees, attendance, leave ─────────────────────────────────────
@@ -92,26 +87,6 @@ const App = () => (
                       <Route
                         path="/service-steps"
                         element={<RoleGuard><ServiceStepsPage /></RoleGuard>}
-                      />
-                      <Route
-                        path="/departments"
-                        element={<RoleGuard><DepartmentsPage /></RoleGuard>}
-                      />
-                      <Route
-                        path="/reports"
-                        element={<RoleGuard><ReportsPage /></RoleGuard>}
-                      />
-                      <Route
-                        path="/notifications"
-                        element={<RoleGuard><NotificationsPage /></RoleGuard>}
-                      />
-                      <Route
-                        path="/settings"
-                        element={<RoleGuard><SettingsPage /></RoleGuard>}
-                      />
-                      <Route
-                        path="/fees"
-                        element={<RoleGuard><FeesPage /></RoleGuard>}
                       />
                       <Route
                         path="/accounts"

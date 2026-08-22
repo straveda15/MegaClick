@@ -1,20 +1,20 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
-  CheckCircle2, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, ChevronsUpDown, FileDown,
+  CheckCircle2, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, ChevronsUpDown,
   Info, Loader2, RefreshCcw, Search, UserPlus, Receipt,
 } from 'lucide-react';
-import { generateInvoicePdf } from '@/lib/invoicePdf';
-import { useServiceFees } from '@/hooks/useServiceFees';
+import { generateInvoicePdf, invoiceNumber } from '@/lib/invoicePdf';
+import { buildParticulars } from '@/lib/invoiceParticulars';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import ExportMenu from '@/components/ExportMenu';
+import DateRangeFilter, { isWithinRange, type DateRange } from '@/components/DateRangeFilter';
 import ClientDetailsDialog from '@/components/clients/ClientDetailsDialog';
 import AssignServiceDialog from '@/components/leads/AssignServiceDialog';
 import AddClientDialog from '@/components/leads/AddClientDialog';
 import { STAGE_LABELS, STAGE_STYLES } from '@/data/services';
 import { TEMPERATURE_LABELS, TEMPERATURE_STYLES } from '@/data/leadTemperature';
 import { TASK_STATUS_LABELS, TASK_STATUS_STYLES } from '@/data/clientStatus';
-import { downloadClientPdf, downloadServicePdf, type PdfService } from '@/lib/serviceRequestPdf';
 import { useClients, type Client, type ClientService } from '@/hooks/useClients';
 import { useLead, type LeadService } from '@/hooks/useLeads';
 import type { SheetColumn } from '@/lib/sheet';
@@ -34,24 +34,6 @@ const formatDate = (iso?: string | null) => {
   const pad = (n: number) => String(n).padStart(2, '0');
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 };
-
-const toPdfService = (service: ClientService): PdfService => ({
-  title: service.title,
-  category: service.category,
-  stage: service.stage,
-  temperature: service.temperature,
-  startAt: service.startAt,
-  dueAt: service.dueAt,
-  assignedTo: service.assignedTo?.name ?? null,
-  taskStatus: service.taskStatus,
-  progress: service.progress,
-  steps: [...service.steps].sort((a, b) => a.order - b.order).map((step) => ({
-    title: step.title,
-    description: step.description,
-    done: step.done,
-  })),
-  notes: service.notes,
-});
 
 /**
  * Rebuilds the lead's own service subdocument from the clients rollup, so the
@@ -94,20 +76,6 @@ const toLeadService = (service: ClientService): LeadService => ({
     : null,
 });
 
-const toPdfClient = (client: Client) => ({
-  reference: client.clientId,
-  name: client.name,
-  phone: client.phone,
-  email: client.email,
-  company: client.company,
-  address: client.address,
-  city: client.city,
-  state: client.state,
-  source: client.source,
-  followUpAt: client.followUpAt,
-  followUpNote: client.followUpNote,
-});
-
 /* ── Spreadsheet columns ────────────────────────────────────────────────────── */
 
 const CLIENT_COLUMNS = [
@@ -125,31 +93,87 @@ const CLIENT_COLUMNS = [
 
 /* ── Small components ───────────────────────────────────────────────────────── */
 
-function ProgressBar({ value, className = '' }: { value: number; className?: string }) {
-  const color =
-    value === 100 ? 'bg-emerald-500' :
-    value >= 70   ? 'bg-blue-600'    :
-    value >= 40   ? 'bg-blue-500'    :
-    value > 0     ? 'bg-blue-400'    :
-                    'bg-gray-300';
+/**
+ * Whether a client is actually finished with us: the work has to be done AND
+ * paid for. Work finished with money still outstanding is the case worth
+ * flagging — it looks complete everywhere else on the board.
+ */
+function completionState(services: ClientService[], advance: number) {
+  const withWork = services.filter((service) => service.steps.length > 0 || service.taskId);
+  if (withWork.length === 0) return null;
+
+  const workDone = withWork.every(
+    (service) => service.taskStatus === 'completed' || service.stage === 'completed'
+  );
+  if (!workDone) return null;
+
+  const quoted = services.reduce((sum, service) => sum + (service.quotation ?? 0), 0);
+  const received = services.reduce((sum, service) => sum + service.paid, 0) + advance;
+
+  return received >= quoted ? 'completed' : 'payment_pending';
+}
+
+function CompletionBadge({ state }: { state: 'completed' | 'payment_pending' }) {
+  return state === 'completed' ? (
+    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap">
+      <CheckCircle2 className="w-3 h-3" />
+      Completed
+    </span>
+  ) : (
+    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-50 text-amber-700 border border-amber-200 whitespace-nowrap">
+      Payment Pending
+    </span>
+  );
+}
+
+/**
+ * Where a service's checklist has got to: the last step actually ticked off,
+ * marked completed. It moves down the list on its own as the employee works —
+ * a service with nothing ticked reads as not started, and one with everything
+ * ticked names its final step.
+ */
+function StepStatus({ service }: { service: ClientService }) {
+  const ordered = [...service.steps].sort((a, b) => a.order - b.order);
+  const lastDone = [...ordered].reverse().find((step) => step.done);
+  const next = ordered.find((step) => !step.done);
+
+  if (ordered.length === 0) {
+    return <span className="text-xs text-muted-foreground">No checklist</span>;
+  }
+
+  if (!lastDone) {
+    return (
+      <div className="min-w-0">
+        <span className="block text-xs text-muted-foreground">Not started</span>
+        {next && (
+          <span className="block text-[10px] text-muted-foreground truncate" title={next.title}>
+            Next: {next.title}
+          </span>
+        )}
+      </div>
+    );
+  }
 
   return (
-    <div className={`flex items-center gap-2 ${className}`}>
-      <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden min-w-[70px]">
-        <div className={`h-full rounded-full transition-all ${color}`} style={{ width: `${value}%` }} />
-      </div>
-      <span className="text-xs text-muted-foreground w-9 text-right shrink-0">{value}%</span>
+    <div className="min-w-0">
+      <span className="flex items-center gap-1.5 text-xs text-foreground min-w-0">
+        <span className="truncate" title={lastDone.title}>{lastDone.title}</span>
+        <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0">
+          Completed
+        </span>
+      </span>
+      <span className="block text-[10px] text-muted-foreground truncate" title={next?.title}>
+        {next ? `Next: ${next.title}` : `All ${ordered.length} steps done`}
+      </span>
     </div>
   );
 }
 
-/** The per-service controls: assign/reassign, PDF, invoice, and the details popup. */
-function ServiceActions({ service, onAssign, onPdf, onInvoice, downloading, invoicing, compact = false }: {
+/** The per-service controls: assign/reassign and the invoice. */
+function ServiceActions({ service, onAssign, onInvoice, invoicing, compact = false }: {
   service: ClientService;
   onAssign: () => void;
-  onPdf: () => void;
   onInvoice: () => void;
-  downloading: boolean;
   invoicing: boolean;
   compact?: boolean;
 }) {
@@ -167,16 +191,6 @@ function ServiceActions({ service, onAssign, onPdf, onInvoice, downloading, invo
           ? <><CheckCircle2 className="w-3.5 h-3.5" />Reassign</>
           : <><UserPlus className="w-3.5 h-3.5" />Assign</>}
       </Button>
-      <button
-        type="button"
-        onClick={onPdf}
-        disabled={downloading}
-        title={`Download "${service.title}" service request PDF`}
-        aria-label={`Download ${service.title} as a PDF`}
-        className="inline-flex items-center justify-center w-8 h-8 rounded-md border border-border bg-card text-muted-foreground hover:bg-muted transition-colors disabled:opacity-50"
-      >
-        {downloading ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileDown className="w-4 h-4" />}
-      </button>
       <button
         type="button"
         onClick={onInvoice}
@@ -202,9 +216,9 @@ const ClientsPage = () => {
   const [sortDir, setSortDir] = useState<SortDir>('asc');
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [detailsClient, setDetailsClient] = useState<Client | null>(null);
-  const [downloading, setDownloading] = useState<string | null>(null);
   const [invoicing, setInvoicing] = useState<string | null>(null);
   const [addClientOpen, setAddClientOpen] = useState(false);
+  const [dateRange, setDateRange] = useState<DateRange | undefined>();
   const [page, setPage] = useState(1);
   const PAGE_SIZE = 15;
 
@@ -219,7 +233,6 @@ const ClientsPage = () => {
   const { data: assignLead } = useLead(assignTarget?.leadId);
 
   const { data: clients = [], isLoading, isError, error, refetch } = useClients();
-  const { data: feesData = [] } = useServiceFees();
 
   const kpis = useMemo(() => {
     const services = clients.flatMap((c) => c.services);
@@ -231,25 +244,24 @@ const ClientsPage = () => {
       unassigned: services.length - assigned.length,
       inProgress: assigned.filter((s) => s.taskStatus === 'in_progress').length,
       completed: services.filter((s) => s.taskStatus === 'completed' || s.stage === 'completed').length,
-      // Averaged across every service, so the headline tracks the actual body
-      // of work rather than the number of clients.
-      progress: services.length
-        ? Math.round(services.reduce((sum, s) => sum + s.progress, 0) / services.length)
-        : 0,
     };
   }, [clients]);
 
   const rows = useMemo(() => {
     const q = query.toLowerCase();
-    let list = clients.filter((c) =>
-      !q
-      || c.name.toLowerCase().includes(q)
-      || c.company.toLowerCase().includes(q)
-      || c.phone.includes(q)
-      || c.city.toLowerCase().includes(q)
-      || c.clientId.toLowerCase().includes(q)
-      || c.services.some((s) => s.title.toLowerCase().includes(q))
-    );
+    let list = clients.filter((c) => {
+      const matchQ =
+        !q
+        || c.name.toLowerCase().includes(q)
+        || c.company.toLowerCase().includes(q)
+        || c.phone.includes(q)
+        || c.city.toLowerCase().includes(q)
+        || c.clientId.toLowerCase().includes(q)
+        || c.services.some((s) => s.title.toLowerCase().includes(q));
+
+      // Onboarded inside the dates picked on the calendar.
+      return matchQ && isWithinRange(c.createdAt, dateRange);
+    });
 
     if (sortKey) {
       list = [...list].sort((a, b) => {
@@ -258,12 +270,12 @@ const ClientsPage = () => {
       });
     }
     return list;
-  }, [clients, query, sortKey, sortDir]);
+  }, [clients, query, dateRange, sortKey, sortDir]);
 
   const totalPages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
   const pagedRows = rows.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
-  useEffect(() => { setPage(1); }, [query, sortKey, sortDir]);
+  useEffect(() => { setPage(1); }, [query, dateRange, sortKey, sortDir]);
 
   const handleSort = (key: NonNullable<SortKey>) => {
     if (sortKey === key) setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
@@ -281,42 +293,23 @@ const ClientsPage = () => {
   const openAssign = (client: Client, service: ClientService) =>
     setAssignTarget({ leadId: client.leadId, service: toLeadService(service) });
 
-  const handlePdf = async (client: Client, service?: ClientService) => {
-    setDownloading(service ? service._id : client._id);
-    try {
-      if (service) await downloadServicePdf(toPdfClient(client), toPdfService(service));
-      else await downloadClientPdf(toPdfClient(client), client.services.map(toPdfService));
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Could not build the PDF.');
-    } finally {
-      setDownloading(null);
-    }
-  };
-
   const handleInvoice = async (client: Client, service: ClientService) => {
     setInvoicing(service._id);
     try {
-      // Look up configured fees for this service slug
-      const serviceFee = feesData.find((f) => f.serviceSlug === (service.slug ?? ''));
-      const particulars = serviceFee && serviceFee.fees.length > 0
-        ? serviceFee.fees.map((f) => ({ name: f.name, amount: f.amount }))
-        : [
-            { name: 'Stamp Duty', amount: 0 },
-            { name: 'Registration Fee', amount: 0 },
-            { name: 'Document Handling Charges', amount: 0 },
-            { name: 'Legal Fee (Including Tenant Police Verification)', amount: 0 },
-          ];
+      // The Particulars are the fields agreed when the lead was confirmed.
+      const particulars = buildParticulars(service);
 
       const now = new Date();
       const pad = (n: number) => String(n).padStart(2, '0');
       const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
       const invoiceDate = `${pad(now.getDate())}-${months[now.getMonth()]}-${String(now.getFullYear()).slice(2)}`;
-      const invoiceNumber = `MC/${now.getFullYear()}-${String(now.getFullYear() + 1).slice(2)}/${client.clientId}`;
+      // Financial-year form, e.g. "26-27/025" — see lib/invoicePdf.
+      const reference = invoiceNumber(client.clientId, now);
 
       const addr = [client.address, client.city].filter(Boolean).join(', ');
 
       await generateInvoicePdf({
-        invoiceNumber,
+        invoiceNumber: reference,
         invoiceDate,
         consigneeName: client.company || client.name,
         consigneeAddress: addr,
@@ -349,26 +342,17 @@ const ClientsPage = () => {
   return (
     <div className="space-y-5">
       {/* ── KPIs ───────────────────────────────────────────────────────────── */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
         {[
           { label: 'Clients',        value: kpis.clients,              tone: 'text-foreground'  },
           { label: 'Services',       value: kpis.services,             tone: 'text-blue-700'    },
           { label: 'Unassigned',     value: kpis.unassigned,           tone: 'text-orange-600'  },
           { label: 'In Progress',    value: kpis.inProgress,           tone: 'text-sky-700'     },
           { label: 'Completed',      value: kpis.completed,            tone: 'text-emerald-700' },
-          { label: 'Avg Progress',   value: `${kpis.progress}%`,       tone: 'text-violet-700'  },
         ].map((kpi) => (
           <div key={kpi.label} className="bg-card border border-border rounded-lg px-4 py-3 hover:shadow-sm transition-shadow">
             <span className={`block text-[10px] font-semibold leading-tight ${kpi.tone}`}>{kpi.label}</span>
             <span className="block text-2xl font-bold text-foreground leading-none mt-1">{kpi.value}</span>
-            {kpi.label === 'Avg Progress' && (
-              <div className="mt-2 h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                <div
-                  className={`h-full rounded-full ${kpis.progress === 100 ? 'bg-emerald-500' : 'bg-violet-500'}`}
-                  style={{ width: `${kpis.progress}%` }}
-                />
-              </div>
-            )}
           </div>
         ))}
       </div>
@@ -385,6 +369,9 @@ const ClientsPage = () => {
             className="w-full h-9 pl-9 pr-3 rounded-md border border-border bg-card text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
           />
         </div>
+
+        {/* Narrows the board to the clients onboarded between two dates. */}
+        <DateRangeFilter value={dateRange} onChange={setDateRange} label="Filter by onboarding date" />
 
         <div className="ml-auto">
           <ExportMenu rows={rows} columns={[...CLIENT_COLUMNS]} baseName="clients" />
@@ -405,7 +392,7 @@ const ClientsPage = () => {
                   <span className="flex items-center">Client <SortIcon colKey="name" /></span>
                 </th>
                 <th className={thBase} style={{ minWidth: 190 }}>Service</th>
-                <th className={thBase} style={{ minWidth: 150 }}>Progress</th>
+                <th className={thBase} style={{ minWidth: 190 }}>Status</th>
                 <th className={thBase}>Assigned To</th>
                 <th className={`${thBase} text-right`} style={{ minWidth: 190 }}>Actions</th>
               </tr>
@@ -438,6 +425,7 @@ const ClientsPage = () => {
                   // With one service everything fits on the row; with several,
                   // the row summarises and the dropdown carries the detail.
                   const single = client.services.length === 1 ? client.services[0] : null;
+                  const state = completionState(client.services, client.advancePayment?.amount ?? 0);
 
                   return [
                     <tr key={client._id} className="hover:bg-muted/30 transition-colors">
@@ -487,20 +475,23 @@ const ClientsPage = () => {
                               </span>
                             </div>
                           </td>
-                          <td className="px-4 py-3" style={{ minWidth: 150 }}>
-                            <ProgressBar value={single.progress} />
+                          <td className="px-4 py-3" style={{ minWidth: 190, maxWidth: 230 }}>
+                            <StepStatus service={single} />
                           </td>
                           <td className="px-4 py-3 text-foreground text-xs">
-                            {single.assignedTo?.name ?? <span className="text-muted-foreground">Unassigned</span>}
+                            <div className="flex flex-col gap-1 items-start">
+                              <span>
+                                {single.assignedTo?.name ?? <span className="text-muted-foreground">Unassigned</span>}
+                              </span>
+                              {state && <CompletionBadge state={state} />}
+                            </div>
                           </td>
                           <td className="px-4 py-3">
                             <div className="flex items-center gap-1.5 justify-end">
                               <ServiceActions
                                 service={single}
                                 onAssign={() => openAssign(client, single)}
-                                onPdf={() => handlePdf(client, single)}
                                 onInvoice={() => handleInvoice(client, single)}
-                                downloading={downloading === single._id}
                                 invoicing={invoicing === single._id}
                               />
                               <button
@@ -532,29 +523,23 @@ const ClientsPage = () => {
                               </button>
                             )}
                           </td>
-                          <td className="px-4 py-3" style={{ minWidth: 150 }}>
-                            <ProgressBar value={client.progress} />
+                          <td className="px-4 py-3 text-xs text-muted-foreground" style={{ minWidth: 190 }}>
+                            {client.completedServices > 0
+                              ? `${client.completedServices} of ${client.services.length} completed`
+                              : 'Expand to see each step'}
                           </td>
+                          {/* Who is doing what is per service — it belongs in the
+                              dropdown, not smeared across one line out here. */}
                           <td className="px-4 py-3 text-foreground text-xs max-w-[160px]">
-                            <span className="block truncate" title={client.assignedTo.join(', ')}>
-                              {client.assignedTo.length > 0
-                                ? client.assignedTo.join(', ')
-                                : <span className="text-muted-foreground">Unassigned</span>}
-                            </span>
+                            <div className="flex flex-col gap-1 items-start">
+                              <span className="text-muted-foreground">
+                                {client.assignedServices} of {client.services.length} assigned
+                              </span>
+                              {state && <CompletionBadge state={state} />}
+                            </div>
                           </td>
                           <td className="px-4 py-3">
                             <div className="flex items-center gap-1.5 justify-end">
-                              <button
-                                type="button"
-                                onClick={() => handlePdf(client)}
-                                disabled={downloading === client._id || client.services.length === 0}
-                                title="Download every service request as a PDF"
-                                className="inline-flex items-center justify-center w-8 h-8 rounded-md border border-border bg-card text-muted-foreground hover:bg-muted transition-colors disabled:opacity-50"
-                              >
-                                {downloading === client._id
-                                  ? <Loader2 className="w-4 h-4 animate-spin" />
-                                  : <FileDown className="w-4 h-4" />}
-                              </button>
                               <button
                                 onClick={() => setDetailsClient(client)}
                                 title="View in-depth details"
@@ -602,8 +587,8 @@ const ClientsPage = () => {
                                     </div>
                                   </div>
 
-                                  <div>
-                                    <ProgressBar value={service.progress} />
+                                  <div className="min-w-0">
+                                    <StepStatus service={service} />
                                     <span className="block text-[10px] text-muted-foreground mt-1">
                                       {service.stepsTotal > 0
                                         ? `${service.stepsDone}/${service.stepsTotal} steps`
@@ -624,9 +609,7 @@ const ClientsPage = () => {
                                   <ServiceActions
                                     service={service}
                                     onAssign={() => openAssign(client, service)}
-                                    onPdf={() => handlePdf(client, service)}
                                     onInvoice={() => handleInvoice(client, service)}
-                                    downloading={downloading === service._id}
                                     invoicing={invoicing === service._id}
                                     compact
                                   />

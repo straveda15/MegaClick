@@ -52,12 +52,47 @@ export function LogFollowUpDialog({
     setNextAt('');
   }, [open, leadId]);
 
+  /**
+   * The earliest date a new follow-up may be booked for: later than the one
+   * already on the books, and never in the past. Rescheduling to the same slot
+   * is what leaves a lead permanently "due today".
+   */
+  const earliest = (() => {
+    const now = new Date();
+    if (!currentFollowUpAt) return now;
+
+    const current = new Date(currentFollowUpAt);
+    if (Number.isNaN(current.getTime())) return now;
+
+    // One minute past the current booking — the smallest step the input allows.
+    const afterCurrent = new Date(current.getTime() + 60_000);
+    return afterCurrent > now ? afterCurrent : now;
+  })();
+
   const handleSubmit = () => {
     if (!leadId) return;
 
     if (!note.trim() && !nextAt) {
       toast.error('Add a note, a next follow-up date, or both.');
       return;
+    }
+
+    if (nextAt) {
+      const picked = new Date(nextAt);
+      if (Number.isNaN(picked.getTime())) {
+        toast.error('Pick a valid date and time for the next follow-up.');
+        return;
+      }
+      if (currentFollowUpAt && picked <= new Date(currentFollowUpAt)) {
+        toast.error(
+          `The next follow-up has to be after ${formatDateTime(currentFollowUpAt)}.`
+        );
+        return;
+      }
+      if (picked < new Date(Date.now() - 60_000)) {
+        toast.error('The next follow-up cannot be in the past.');
+        return;
+      }
     }
 
     logFollowUp.mutate(
@@ -132,21 +167,23 @@ export function LogFollowUpDialog({
             <Input
               id="follow-up-next"
               type="datetime-local"
-              min={toLocalInput(new Date())}
+              min={toLocalInput(earliest)}
               value={nextAt}
               onChange={(e) => setNextAt(e.target.value)}
             />
             <div className="flex flex-wrap gap-1.5">
-              {PRESETS.map((preset) => (
-                <button
-                  key={preset.label}
-                  type="button"
-                  onClick={() => setNextAt(toLocalInput(preset.fn()))}
-                  className="px-2.5 py-1 rounded-full text-[10px] font-semibold text-muted-foreground border border-border bg-card hover:bg-muted hover:text-foreground transition-colors"
-                >
-                  {preset.label}
-                </button>
-              ))}
+              {PRESETS
+                .filter((preset) => preset.fn() > earliest)
+                .map((preset) => (
+                  <button
+                    key={preset.label}
+                    type="button"
+                    onClick={() => setNextAt(toLocalInput(preset.fn()))}
+                    className="px-2.5 py-1 rounded-full text-[10px] font-semibold text-muted-foreground border border-border bg-card hover:bg-muted hover:text-foreground transition-colors"
+                  >
+                    {preset.label}
+                  </button>
+                ))}
               {nextAt && (
                 <button
                   type="button"
@@ -158,7 +195,9 @@ export function LogFollowUpDialog({
               )}
             </div>
             <p className="text-[11px] text-muted-foreground">
-              Leave empty to close this off — the lead drops out of the due list.
+              {currentFollowUpAt
+                ? `Must be after the one already booked (${formatDateTime(currentFollowUpAt)}). Leave empty to close this off — the lead drops out of the due list.`
+                : 'Leave empty to close this off — the lead drops out of the due list.'}
             </p>
           </div>
         </div>

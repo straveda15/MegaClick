@@ -73,6 +73,11 @@ router.patch("/leads/:id/temperature", salesLeadController.setLeadTemperature);
 router.patch("/leads/:id/status", salesLeadController.updateLeadStatus);
 router.patch("/leads/:id/customer", salesLeadController.updateLeadCustomer);
 router.patch("/leads/:id/services/:serviceId/quotation", salesLeadController.updateServiceQuotation);
+// Confirm every service's quotation at once, with the shared advance payment.
+router.post("/leads/:id/confirm-quotation", salesLeadController.confirmLeadQuotation);
+// The customer ledger on the Accounts page — one per client, not per service.
+router.post("/leads/:id/payments", salesLeadController.addLeadPayment);
+router.delete("/leads/:id/payments/:paymentId", salesLeadController.deleteLeadPayment);
 router.patch("/leads/:id/convert", salesLeadController.convertLead);
 router.patch("/leads/:id/drop", salesLeadController.dropLead);
 

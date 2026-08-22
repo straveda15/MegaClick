@@ -1,4 +1,4 @@
-import { Briefcase, Building2, Check, Circle, Loader2, Mail, MapPin, Phone, StickyNote, User } from 'lucide-react';
+import { Check, Circle, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useUpdateServiceStep, type TaskServiceRequest } from '@/hooks/useTasks';
 
@@ -21,24 +21,34 @@ interface ServiceRequestPanelProps {
    * omit it (as the task card does) to render the steps read-only.
    */
   taskId?: string;
+  /** True once the task is finished; the checklist stops accepting changes. */
+  locked?: boolean;
 }
 
 /**
  * Everything the assignee needs to act on a client service request: which
- * service was requested and how to reach the client who asked for it. Rendered
- * on both the task card and the task detail modal so the context travels with
- * the task wherever the employee sees it.
+ * service was requested, how to reach the client who asked for it, and the
+ * checklist that defines what finishing it means.
+ *
+ * Ticking the last step does NOT close the task — completing it stays an
+ * explicit act, so nobody finishes an engagement by accident on their last tick.
  */
-export function ServiceRequestPanel({ request, variant = 'full', taskId }: ServiceRequestPanelProps) {
+export function ServiceRequestPanel({
+  request, variant = 'full', taskId, locked = false,
+}: ServiceRequestPanelProps) {
   const updateStep = useUpdateServiceStep();
 
   const steps = [...(request.steps ?? [])].sort((a, b) => a.order - b.order);
   const doneCount = steps.filter((step) => step.done).length;
-  const progress = steps.length ? Math.round((doneCount / steps.length) * 100) : 0;
-  const interactive = Boolean(taskId);
+  const interactive = Boolean(taskId) && !locked;
 
-  const toggleStep = (stepId: string, done: boolean) => {
-    if (!taskId) return;
+  // Work happens in order: the first unticked step is the one being done now,
+  // everything after it is still waiting its turn.
+  const currentIndex = steps.findIndex((step) => !step.done);
+  const lastDoneIndex = doneCount > 0 ? doneCount - 1 : -1;
+
+  const setStep = (stepId: string | undefined, done: boolean) => {
+    if (!taskId || !stepId) return;
     updateStep.mutate(
       { id: taskId, stepId, done },
       { onError: (err: Error) => toast.error(err?.message || 'Failed to update the checklist.') }
@@ -46,147 +56,147 @@ export function ServiceRequestPanel({ request, variant = 'full', taskId }: Servi
   };
 
   const contactRows = [
-    { icon: Phone, label: 'Phone', value: request.clientPhone, href: request.clientPhone ? `tel:${request.clientPhone}` : undefined },
-    { icon: Mail, label: 'Email', value: request.clientEmail, href: request.clientEmail ? `mailto:${request.clientEmail}` : undefined },
-    { icon: Building2, label: 'Company', value: request.clientCompany },
-    { icon: MapPin, label: 'Address', value: request.clientAddress },
+    { label: 'Phone', value: request.clientPhone, href: request.clientPhone ? `tel:${request.clientPhone}` : undefined },
+    { label: 'Email', value: request.clientEmail, href: request.clientEmail ? `mailto:${request.clientEmail}` : undefined },
+    { label: 'Company', value: request.clientCompany },
+    { label: 'Address', value: request.clientAddress },
   ].filter((row) => row.value);
 
   const compact = variant === 'compact';
 
   return (
-    <div className="rounded-xl border border-blue-200 bg-blue-50/50 overflow-hidden">
-      <div className="px-3.5 py-2 bg-blue-100/60 border-b border-blue-200 flex items-center gap-1.5">
-        <Briefcase className="w-3 h-3 text-blue-700 shrink-0" />
-        <span className="text-[9px] uppercase tracking-wider font-bold text-blue-800">
-          Client Service Request
-        </span>
-        {request.stage && (
-          <span className="ml-auto text-[9px] font-semibold text-blue-700 bg-white/70 border border-blue-200 px-1.5 py-0.5 rounded-full">
-            {STAGE_LABELS[request.stage] ?? request.stage}
-          </span>
-        )}
-      </div>
-
-      <div className={`px-3.5 ${compact ? 'py-2.5 space-y-2' : 'py-3 space-y-3'}`}>
-        {/* What they want */}
-        <div>
-          <p className="text-[9px] uppercase tracking-wider font-bold text-blue-700/70">Service requested</p>
-          <p className="text-[13px] font-semibold text-foreground leading-snug mt-0.5">
+    <div className="space-y-3">
+      {/* ── What, and who for ─────────────────────────────────────────────── */}
+      <div className="flex flex-col">
+        <div className="flex items-start justify-between gap-3 py-1.5 border-b border-border/50">
+          <span className="text-[11px] text-muted-foreground uppercase tracking-wide shrink-0">Service</span>
+          <span className="text-[13px] font-semibold text-foreground text-right min-w-0">
             {request.serviceTitle || '—'}
-          </p>
-          {request.serviceCategory && (
-            <p className="text-[11px] text-muted-foreground">{request.serviceCategory}</p>
-          )}
-        </div>
-
-        {/* Who wants it */}
-        <div>
-          <p className="text-[9px] uppercase tracking-wider font-bold text-blue-700/70 mb-1">Client</p>
-          <div className="flex items-center gap-1.5">
-            <User className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-            <span className="text-[13px] font-semibold text-foreground">{request.clientName || '—'}</span>
-          </div>
-
-          {contactRows.length > 0 && (
-            <div className={`mt-1.5 ${compact ? 'space-y-1' : 'grid grid-cols-1 sm:grid-cols-2 gap-1.5'}`}>
-              {contactRows.map(({ icon: Icon, label, value, href }) => (
-                <div key={label} className="flex items-start gap-1.5 min-w-0">
-                  <Icon className="w-3 h-3 text-muted-foreground shrink-0 mt-[3px]" />
-                  {href ? (
-                    <a href={href} className="text-[11px] text-blue-700 hover:underline truncate">
-                      {value}
-                    </a>
-                  ) : (
-                    <span className="text-[11px] text-foreground break-words">{value}</span>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* The checklist — what "done" actually means for this service */}
-        {steps.length > 0 && (
-          <div>
-            <div className="flex items-center justify-between gap-2 mb-1.5">
-              <p className="text-[9px] uppercase tracking-wider font-bold text-blue-700/70">
-                Steps
-              </p>
-              <span className="text-[10px] text-muted-foreground">
-                {doneCount}/{steps.length} · {progress}%
+            {request.serviceCategory && (
+              <span className="block text-[11px] font-normal text-muted-foreground">
+                {request.serviceCategory}
               </span>
-            </div>
+            )}
+          </span>
+        </div>
 
-            <div className="h-1.5 bg-white/70 rounded-full overflow-hidden mb-2">
-              <div
-                className={`h-full rounded-full transition-all ${progress === 100 ? 'bg-emerald-500' : 'bg-blue-600'}`}
-                style={{ width: `${progress}%` }}
-              />
-            </div>
+        <div className="flex items-start justify-between gap-3 py-1.5 border-b border-border/50">
+          <span className="text-[11px] text-muted-foreground uppercase tracking-wide shrink-0">Client</span>
+          <span className="text-[13px] font-semibold text-foreground text-right min-w-0">
+            {request.clientName || '—'}
+          </span>
+        </div>
 
-            <div className={`space-y-1 ${compact ? 'max-h-[120px] overflow-y-auto pr-1' : ''}`}>
-              {steps.map((step) => {
-                const Icon = step.done ? Check : Circle;
-                const content = (
-                  <>
-                    <Icon
-                      className={`w-3.5 h-3.5 shrink-0 mt-[2px] ${
-                        step.done ? 'text-emerald-600' : 'text-muted-foreground/50'
-                      }`}
-                    />
-                    <span className="min-w-0">
-                      <span className={`block text-[12px] leading-snug ${
-                        step.done ? 'text-muted-foreground line-through' : 'text-foreground'
-                      }`}>
-                        {step.title}
-                      </span>
-                      {!compact && step.description && (
-                        <span className="block text-[10px] text-muted-foreground">{step.description}</span>
-                      )}
-                    </span>
-                  </>
-                );
-
-                return interactive ? (
-                  <button
-                    key={step._id}
-                    type="button"
-                    onClick={() => toggleStep(step._id, !step.done)}
-                    disabled={updateStep.isPending}
-                    className="w-full flex items-start gap-2 text-left rounded px-1 py-0.5 hover:bg-white/60 transition-colors disabled:opacity-60"
-                  >
-                    {content}
-                  </button>
-                ) : (
-                  <div key={step._id} className="flex items-start gap-2 px-1 py-0.5">
-                    {content}
-                  </div>
-                );
-              })}
-            </div>
-
-            {interactive && updateStep.isPending && (
-              <p className="text-[10px] text-muted-foreground mt-1 flex items-center gap-1">
-                <Loader2 className="w-3 h-3 animate-spin" />
-                Saving…
-              </p>
+        {contactRows.map((row) => (
+          <div key={row.label} className="flex items-start justify-between gap-3 py-1.5 border-b border-border/50">
+            <span className="text-[11px] text-muted-foreground uppercase tracking-wide shrink-0">{row.label}</span>
+            {row.href ? (
+              <a href={row.href} className="text-[12px] text-blue-700 hover:underline text-right min-w-0 break-words">
+                {row.value}
+              </a>
+            ) : (
+              <span className="text-[12px] text-foreground text-right min-w-0 break-words">{row.value}</span>
             )}
           </div>
-        )}
+        ))}
 
-        {/* Anything else the assigner wanted them to know */}
-        {request.notes && (
-          <div>
-            <p className="text-[9px] uppercase tracking-wider font-bold text-blue-700/70 mb-1 flex items-center gap-1">
-              <StickyNote className="w-3 h-3" /> Notes
-            </p>
-            <p className="text-[11px] text-foreground leading-relaxed whitespace-pre-line">
-              {request.notes}
-            </p>
+        {request.stage && (
+          <div className="flex items-start justify-between gap-3 py-1.5 border-b border-border/50">
+            <span className="text-[11px] text-muted-foreground uppercase tracking-wide shrink-0">Stage</span>
+            <span className="text-[12px] font-medium text-foreground text-right">
+              {STAGE_LABELS[request.stage] ?? request.stage}
+            </span>
           </div>
         )}
       </div>
+
+      {/* ── The checklist — what "done" actually means for this service ────── */}
+      {steps.length > 0 && (
+        <div>
+          <div className="flex items-center justify-between gap-2 mb-1">
+            <p className="text-[11px] uppercase tracking-wide font-semibold text-muted-foreground">Steps</p>
+            <span className="text-[11px] text-muted-foreground">{doneCount} of {steps.length} done</span>
+          </div>
+
+          <div className={compact ? 'max-h-[160px] overflow-y-auto pr-1' : ''}>
+            {steps.map((step, index) => {
+              const isCurrent = interactive && index === currentIndex;
+              const canUndo = interactive && step.done && index === lastDoneIndex;
+              const waiting = interactive && !step.done && index > currentIndex;
+              const Icon = step.done ? Check : Circle;
+
+              return (
+                <div
+                  key={step._id ?? index}
+                  className="flex items-start gap-2 py-1.5 border-b border-border/40 last:border-b-0"
+                >
+                  <Icon
+                    className={`w-3.5 h-3.5 shrink-0 mt-[3px] ${
+                      step.done ? 'text-emerald-600' : isCurrent ? 'text-blue-600' : 'text-muted-foreground/50'
+                    }`}
+                  />
+
+                  <span className="min-w-0 flex-1">
+                    <span className={`block text-[12px] leading-snug ${
+                      step.done ? 'text-muted-foreground line-through'
+                        : waiting ? 'text-muted-foreground'
+                        : 'text-foreground font-medium'
+                    }`}>
+                      {index + 1}. {step.title}
+                    </span>
+                    {!compact && step.description && (
+                      <span className="block text-[10px] text-muted-foreground">{step.description}</span>
+                    )}
+                  </span>
+
+                  {/* Only the step in hand is actionable, and only the last tick
+                      can be taken back — the checklist has to reflect the order
+                      the work actually happened in. */}
+                  {isCurrent && (
+                    <button
+                      type="button"
+                      onClick={() => setStep(step._id, true)}
+                      disabled={updateStep.isPending}
+                      className="shrink-0 h-6 px-2 rounded bg-blue-600 text-white text-[10px] font-bold uppercase tracking-wider hover:bg-blue-700 transition-colors disabled:opacity-60"
+                    >
+                      Done
+                    </button>
+                  )}
+
+                  {canUndo && (
+                    <button
+                      type="button"
+                      onClick={() => setStep(step._id, false)}
+                      disabled={updateStep.isPending}
+                      title="Undo this step"
+                      className="shrink-0 h-6 px-2 rounded text-[10px] font-medium text-muted-foreground hover:bg-muted transition-colors disabled:opacity-60"
+                    >
+                      Undo
+                    </button>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {interactive && (
+            <p className="text-[10px] text-muted-foreground mt-1.5 flex items-center gap-1">
+              {updateStep.isPending && <Loader2 className="w-3 h-3 animate-spin" />}
+              {currentIndex === -1
+                ? 'Every step is done — the task can be marked complete.'
+                : `${steps.length - doneCount} step${steps.length - doneCount === 1 ? '' : 's'} left before this can be completed.`}
+            </p>
+          )}
+        </div>
+      )}
+
+      {/* ── Anything else the assigner wanted them to know ─────────────────── */}
+      {request.notes && (
+        <div>
+          <p className="text-[11px] uppercase tracking-wide font-semibold text-muted-foreground mb-0.5">Notes</p>
+          <p className="text-[12px] text-foreground leading-relaxed whitespace-pre-line">{request.notes}</p>
+        </div>
+      )}
     </div>
   );
 }

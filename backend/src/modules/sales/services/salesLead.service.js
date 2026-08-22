@@ -1,5 +1,5 @@
 import SalesCustomer from "../models/salesCustomer.model.js";
-import SalesLead from "../models/salesLead.model.js";
+import SalesLead, { PAYMENT_METHODS } from "../models/salesLead.model.js";
 import AppError from "../../../shared/utils/appError.js";
 import SalesActivityLog from "../models/salesActivityLog.model.js";
 import Task from "../../task/task.model.js";
@@ -623,8 +623,10 @@ export const buildLeadServices = (data) => {
             // The target date the client was promised. Assigning the service
             // carries it onto the task as its deadline.
             dueAt: parseDate(candidate?.dueAt ?? candidate?.targetDate ?? candidate?.deadline),
-            // Quotation set at lead creation time
+            // Quotation set at lead creation time. Mirrored into
+            // initialQuotation, which later confirmations never overwrite.
             quotation: candidate?.quotation != null ? Number(candidate.quotation) : undefined,
+            initialQuotation: candidate?.quotation != null ? Number(candidate.quotation) : undefined,
         });
     }
 
@@ -743,6 +745,14 @@ export const createManualLead = async (actorId, data) => {
 
     const customer = await upsertLeadCustomer(input, actorId);
 
+    // "Add Client" on the Clients board creates the record as CONVERTED — the
+    // act of adding someone as a client IS the confirmation, so its services
+    // start confirmed. A plain lead has to be confirmed on the Leads board
+    // before it becomes a client.
+    const services = input.status === "CONVERTED"
+        ? input.services.map((service) => ({ ...service, quotationConfirmed: true }))
+        : input.services;
+
     // A lead captured here stays deliberately unassigned until someone uses
     // "Assign to" — it is NOT pooled, so the auto-distribute job leaves it be.
     const lead = await SalesLead.create({
@@ -751,7 +761,7 @@ export const createManualLead = async (actorId, data) => {
         pool: false,
         status: input.status,
         source: input.source,
-        services: input.services,
+        services,
         productInterest: input.productInterest,
         serviceSlug: input.serviceSlug,
         serviceCategory: input.serviceCategory,
@@ -898,6 +908,23 @@ export const getLeadDetail = async (leadId) => {
         .lean();
 
     if (!lead) throw new AppError("Lead not found", 404);
+
+    // Newest first, with the author flattened to a name — the popups render
+    // this list directly, and an unsorted list of populated user objects is not
+    // something a timeline can display.
+    lead.followUpHistory = [...(lead.followUpHistory ?? [])]
+        .sort((a, b) => Number(new Date(b.createdAt ?? 0)) - Number(new Date(a.createdAt ?? 0)))
+        .map((entry) => ({
+            _id: String(entry._id),
+            note: entry.note ?? "",
+            outcome: entry.outcome ?? "note",
+            followUpAt: entry.followUpAt ?? null,
+            createdAt: entry.createdAt ?? null,
+            createdBy: entry.createdBy
+                ? [entry.createdBy.name, entry.createdBy.lastName].filter(Boolean).join(" ") || entry.createdBy.email
+                : null,
+        }));
+
     return withServices(lead);
 };
 
@@ -1121,6 +1148,174 @@ export const updateLeadServiceQuotation = async (leadId, serviceId, quotation, a
 
     await lead.save();
     return lead;
+};
+
+/** Sum of a service's agreed line items, rounded to paise. */
+const itemsTotal = (items = []) =>
+    Math.round(items.reduce((sum, item) => sum + (Number(item.amount) || 0), 0) * 100) / 100;
+
+/**
+ * Confirms the whole engagement in one go: the line items agreed for each
+ * service, the final quotation each of those sums to, and the single advance
+ * payment covering the lot.
+ *
+ * Services the payload doesn't mention are left exactly as they were, so a
+ * partial re-confirmation never silently wipes an earlier one.
+ */
+export const confirmLeadQuotation = async (leadId, payload, actorId) => {
+    const lead = await SalesLead.findById(leadId);
+    if (!lead) throw new Error("Lead not found");
+
+    const entries = Array.isArray(payload?.services) ? payload.services : [];
+    if (entries.length === 0) throw new Error("At least one service is required");
+
+    const confirmedTitles = [];
+
+    // A lead captured before multi-service support has no subdocument to
+    // confirm against — the board shows it one synthesized service, keyed on the
+    // lead's own id. Give it a real subdocument the first time it is confirmed.
+    if (lead.services.length === 0 && lead.productInterest) {
+        lead.services.push({
+            title: lead.productInterest,
+            slug: lead.serviceSlug,
+            category: lead.serviceCategory,
+            stage: lead.serviceStage || "documents_pending",
+            taskId: lead.taskId,
+            assignedTo: lead.assignedTo,
+        });
+    }
+
+    for (const entry of entries) {
+        // The legacy service carries the lead's id on the board, so accept that
+        // as a handle for the one subdocument just created above.
+        const service =
+            lead.services.id(entry.serviceId)
+            || (String(entry.serviceId) === String(lead._id) && lead.services.length === 1
+                ? lead.services[0]
+                : null);
+        if (!service) throw new Error("Service not found on this lead");
+
+        const items = (Array.isArray(entry.items) ? entry.items : [])
+            .filter((item) => String(item?.name ?? "").trim())
+            .map((item) => ({
+                name: String(item.name).trim(),
+                amount: Math.max(0, Number(item.amount) || 0),
+            }));
+
+        const nextQuotation = items.length
+            ? itemsTotal(items)
+            : Math.max(0, Number(entry.quotation) || 0);
+
+        // The opening figure is whatever was quoted when the lead was captured;
+        // backfilled here for services that pre-date the field.
+        if (service.initialQuotation == null && service.quotation != null) {
+            service.initialQuotation = service.quotation;
+        }
+
+        service.quotationItems = items;
+        // The quotation is the sum of its parts; an explicit total is only
+        // honoured when there are no line items to add up.
+        service.quotation = nextQuotation;
+        service.quotationConfirmed = true;
+        confirmedTitles.push(service.title);
+    }
+
+    const advance = payload?.advancePayment;
+    if (advance && Number(advance.amount) > 0) {
+        lead.advancePayment = {
+            amount: Math.max(0, Number(advance.amount) || 0),
+            mode: advance.mode === "online" ? "online" : "cash",
+            note: advance.note ? String(advance.note).trim() : undefined,
+            recordedAt: new Date(),
+            recordedBy: actorId,
+        };
+    }
+
+    const advanceNote = lead.advancePayment?.amount
+        ? ` Advance ${lead.advancePayment.amount} received (${lead.advancePayment.mode}).`
+        : "";
+
+    lead.statusHistory.push({
+        status: lead.status,
+        changedBy: actorId,
+        note: `Quotation confirmed for ${confirmedTitles.join(", ")}.${advanceNote}`,
+    });
+
+    await lead.save();
+    return await getLeadDetail(lead._id);
+};
+
+/**
+ * Records one payment received from the client.
+ *
+ * Payments sit on the account rather than on a service — an accountant opening
+ * the ledger adds what came in, and the outstanding balance falls by that much.
+ */
+export const addLeadPayment = async (leadId, entry, actorId) => {
+    const lead = await SalesLead.findById(leadId);
+    if (!lead) throw new Error("Lead not found");
+
+    const amount = Number(entry?.amount);
+    if (!Number.isFinite(amount) || amount <= 0) throw new Error("Enter a payment amount greater than zero");
+
+    const mode = PAYMENT_METHODS.includes(String(entry?.mode)) ? String(entry.mode) : "cash";
+
+    lead.payments.push({
+        amount: Math.round(amount * 100) / 100,
+        mode,
+        note: entry?.note ? String(entry.note).trim() : undefined,
+        paidAt: entry?.paidAt ? new Date(entry.paidAt) : new Date(),
+        recordedBy: actorId,
+    });
+
+    lead.statusHistory.push({
+        status: lead.status,
+        changedBy: actorId,
+        note: `Payment of ${amount} received.`,
+    });
+
+    await lead.save();
+    return await getLeadDetail(lead._id);
+};
+
+/**
+ * Removes a wrongly recorded payment. Looks on the account first, then falls
+ * back to the per-service ledgers so receipts recorded before payments moved to
+ * the account can still be corrected.
+ */
+export const deleteLeadPayment = async (leadId, paymentId, actorId) => {
+    const lead = await SalesLead.findById(leadId);
+    if (!lead) throw new Error("Lead not found");
+
+    const existing = lead.payments.id(paymentId);
+    if (existing) {
+        const { amount } = existing;
+        existing.deleteOne();
+        lead.statusHistory.push({
+            status: lead.status,
+            changedBy: actorId,
+            note: `Payment of ${amount} removed.`,
+        });
+        await lead.save();
+        return await getLeadDetail(lead._id);
+    }
+
+    for (const service of lead.services) {
+        const legacy = service.ledger?.id(paymentId);
+        if (!legacy) continue;
+
+        const { amount } = legacy;
+        legacy.deleteOne();
+        lead.statusHistory.push({
+            status: lead.status,
+            changedBy: actorId,
+            note: `Payment of ${amount} removed from '${service.title}'.`,
+        });
+        await lead.save();
+        return await getLeadDetail(lead._id);
+    }
+
+    throw new Error("Payment not found");
 };
 
 export const updateLeadCustomer = async (leadId, customerData) => {
@@ -1608,6 +1803,16 @@ export const logFollowUp = async (leadId, actorId, { note, outcome, nextFollowUp
     // An entry with neither a note nor a new date records nothing.
     if (!text && !next) {
         throw new AppError("Add a note, a next follow-up date, or both.", 400);
+    }
+
+    // Rescheduling has to move the date forward. Booking the next call on or
+    // before the one currently on the books is how a lead ends up permanently
+    // "due today" without anyone ever actually calling.
+    if (next && lead.followUpAt && next.getTime() <= new Date(lead.followUpAt).getTime()) {
+        throw new AppError(
+            "The next follow-up has to be later than the one already scheduled.",
+            400
+        );
     }
 
     const resolvedOutcome = FOLLOW_UP_OUTCOMES.includes(String(outcome ?? "").toLowerCase())

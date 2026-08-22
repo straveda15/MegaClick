@@ -1,10 +1,9 @@
 import {
-  CheckCircle, Circle, Clock, Calendar, Timer, XCircle,
-  User, UserCheck, Info, AlertTriangle, Bell, MessageSquare,
+  CheckCircle, Check, Clock, XCircle, User, UserCheck, Info, AlertTriangle, Briefcase, Loader2,
 } from "lucide-react";
 import { format } from "date-fns";
-import type { Task } from "@/hooks/useTasks";
-import ServiceRequestPanel from "./ServiceRequestPanel";
+import { toast } from "sonner";
+import { useUpdateServiceStep, type Task, type TaskServiceStep } from "@/hooks/useTasks";
 
 // ── Shared visual constants ───────────────────────────────────────────────────
 
@@ -42,6 +41,68 @@ export function isPastDue(iso: string, status: string) {
   return new Date(iso) < new Date() && status !== "completed";
 }
 
+/** Steps in the order they are meant to be worked. */
+export function orderedSteps(task: Task): TaskServiceStep[] {
+  return [...(task.serviceRequest?.steps ?? [])].sort((a, b) => a.order - b.order);
+}
+
+// ── Stepper ───────────────────────────────────────────────────────────────────
+
+/**
+ * The checklist at a glance: a tick for everything done, an outlined marker for
+ * the step in hand, and hollow ones for what is still to come.
+ */
+export function TaskStepper({ steps, compact = false }: { steps: TaskServiceStep[]; compact?: boolean }) {
+  if (steps.length === 0) return null;
+
+  const currentIndex = steps.findIndex((step) => !step.done);
+
+  return (
+    <div className="flex items-start">
+      {steps.map((step, index) => {
+        const isCurrent = index === currentIndex;
+        const isLast = index === steps.length - 1;
+
+        return (
+          <div key={step._id ?? index} className="flex-1 min-w-0 flex flex-col items-center">
+            <div className="flex items-center w-full">
+              {/* The line into this marker — nothing before the first. */}
+              <span
+                className={`h-[2px] flex-1 ${index === 0 ? "opacity-0" : steps[index - 1].done ? "bg-emerald-500" : "bg-border"}`}
+              />
+              <span
+                className={`shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold border-2 ${
+                  step.done
+                    ? "bg-emerald-500 border-emerald-500 text-white"
+                    : isCurrent
+                      ? "bg-background border-blue-500 text-blue-600"
+                      : "bg-background border-border text-muted-foreground"
+                }`}
+              >
+                {step.done ? <Check className="w-3 h-3" /> : index + 1}
+              </span>
+              <span
+                className={`h-[2px] flex-1 ${isLast ? "opacity-0" : step.done ? "bg-emerald-500" : "bg-border"}`}
+              />
+            </div>
+
+            {!compact && (
+              <span
+                title={step.title}
+                className={`mt-1 text-[9px] leading-tight text-center px-0.5 line-clamp-2 ${
+                  step.done ? "text-muted-foreground" : isCurrent ? "text-blue-700 font-semibold" : "text-muted-foreground"
+                }`}
+              >
+                {step.title}
+              </span>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 // ── Task Card ─────────────────────────────────────────────────────────────────
 // Shared between the admin Tasks dashboard and every staff portal's Tasks tab so
 // the two render identically.
@@ -57,6 +118,8 @@ export interface TaskCardProps {
 }
 
 export const TaskCard = ({ task, myId, oversight, onComplete, onStart, onCancel, onViewDetail }: TaskCardProps) => {
+  const updateStep = useUpdateServiceStep();
+
   const isCompleted = task.status === "completed";
   const isCancelled = task.status === "cancelled";
   const pastDue     = !isCompleted && !isCancelled && task.dueAt && isPastDue(task.dueAt, task.status);
@@ -79,9 +142,35 @@ export const TaskCard = ({ task, myId, oversight, onComplete, onStart, onCancel,
   const assignedToName = [task.assignedTo?.name, task.assignedTo?.lastName].filter(Boolean).join(" ") || "Unassigned";
   const assignedByName = [task.assignedBy?.name,  task.assignedBy?.lastName].filter(Boolean).join(" ") || "System";
 
+  // The checklist is the work: the card's main button walks it one step at a
+  // time, so nobody has to open the details to move a task along.
+  const steps = orderedSteps(task);
+  const nextStep = steps.find((step) => !step.done);
+
+  const markStepDone = (stepId?: string) => {
+    if (!stepId) return;
+    updateStep.mutate(
+      { id: task._id, stepId, done: true },
+      { onError: (err: Error) => toast.error(err?.message || "Failed to update the checklist.") }
+    );
+  };
+
+  const rows = [
+    { icon: UserCheck, label: "From", value: assignedByName },
+    { icon: User, label: "To", value: assignedToName },
+    {
+      icon: Clock,
+      label: "Deadline",
+      value: task.dueAt ? fmtDate(task.dueAt) : "—",
+      tone: pastDue ? "text-red-600 font-bold" : undefined,
+    },
+    { icon: User, label: "Client", value: task.serviceRequest?.clientName || "—" },
+    { icon: Briefcase, label: "Service", value: task.serviceRequest?.serviceTitle || task.title },
+  ];
+
   return (
     <div
-      className={`flex flex-col h-full min-h-[340px] p-5 rounded-2xl border transition-all shadow-sm ${
+      className={`flex flex-col h-full p-5 rounded-2xl border transition-all shadow-sm ${
         needsAttention
           ? "bg-amber-50/60 border-amber-300 ring-1 ring-amber-200"
           : isCompleted || isCancelled
@@ -89,203 +178,110 @@ export const TaskCard = ({ task, myId, oversight, onComplete, onStart, onCancel,
           : "bg-card border-border hover:shadow-md hover:border-primary/20"
       }`}
     >
-      {/* Status icon — shown to the assignee (the doer) */}
-      {isAssignee && !oversight && isCompleted && (
-        <button
-          onClick={() => onComplete(task)}
-          className="mt-0.5 shrink-0 text-green-500"
+      {/* ── Badges ─────────────────────────────────────────────────────────── */}
+      <div className="flex items-center gap-2 flex-wrap mb-3">
+        <span
+          className={`text-[9px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full ${
+            STATUS_COLORS[task.status] ?? "bg-gray-100 text-gray-600"
+          }`}
         >
-          <CheckCircle className="w-5 h-5 fill-green-50" />
-        </button>
-      )}
-      {isAssignee && !oversight && !isCompleted && !isCancelled && (
-        <div className="mt-0.5 shrink-0 text-muted-foreground/40">
-          <Circle className="w-5 h-5" />
+          {task.status.replace("_", " ")}
+        </span>
+        <span className={`text-[9px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border ${priorityCls}`}>
+          {task.priority}
+        </span>
+
+        {showInactiveAlert && (
+          <span className={`inline-flex items-center gap-1 text-[9px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border bg-red-100 text-red-700 border-red-300 ${needsAttention ? "animate-pulse" : ""}`}>
+            <AlertTriangle className="w-3 h-3" />
+            Assignee Inactive
+          </span>
+        )}
+        {(task.flags?.some((f) => !f.resolvedAt) ?? false) && !isCompleted && !isCancelled && (
+          <span className="inline-flex items-center gap-1 text-[9px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border bg-red-100 text-red-700 border-red-300 animate-pulse">
+            <AlertTriangle className="w-3 h-3" />
+            Issue Open
+          </span>
+        )}
+      </div>
+
+      {/* ── The five things worth seeing without opening anything ──────────── */}
+      <div className="flex flex-col">
+        {rows.map((row) => (
+          <div key={row.label} className="flex items-start justify-between gap-3 py-1.5 border-b border-border/40">
+            <span className="flex items-center gap-1.5 text-[11px] text-muted-foreground uppercase tracking-wide shrink-0">
+              <row.icon className="w-3.5 h-3.5" />
+              {row.label}
+            </span>
+            <span className={`text-[12px] font-semibold text-right min-w-0 ${row.tone ?? "text-foreground"}`}>
+              {row.value}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      {/* ── Where the work has got to ──────────────────────────────────────── */}
+      {steps.length > 0 && (
+        <div className="pt-4">
+          <TaskStepper steps={steps} />
         </div>
       )}
-      {isAssignee && !oversight && isCancelled && (
-        <div className="mt-0.5 shrink-0 text-gray-400">
-          <XCircle className="w-5 h-5" />
-        </div>
-      )}
 
-      <div className="flex flex-col flex-1 min-w-0">
-        {/* Header */}
-        <div className="flex items-start justify-between gap-3 mb-4">
-
-          {/* Title */}
-          <div className="flex-1 min-w-0">
-            <h3
-              className={`text-sm font-semibold leading-snug ${
-                isCompleted || isCancelled
-                  ? "line-through text-muted-foreground"
-                  : "text-foreground"
-              }`}
-            >
-              {task.title}
-            </h3>
-          </div>
-          {/* Badges */}
-          <div className="flex items-center gap-2 shrink-0 flex-wrap justify-end">
-            {/* Assignee deactivated — task auto-cancelled, needs reassign/confirm */}
-            {showInactiveAlert && (
-              <span className={`inline-flex items-center gap-1 text-[9px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border bg-red-100 text-red-700 border-red-300 ${needsAttention ? "animate-pulse" : ""}`}>
-                <AlertTriangle className="w-3 h-3" />
-                Assignee Inactive
-              </span>
-            )}
-            {/* Open issue — visible to assigner and to admin/founder oversight */}
-            {(task.flags?.some(f => !f.resolvedAt) ?? false) && !isCompleted && !isCancelled && (
-              <span className="inline-flex items-center gap-1 text-[9px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border bg-red-100 text-red-700 border-red-300 animate-pulse">
-                <AlertTriangle className="w-3 h-3" />
-                Issue Open
-              </span>
-            )}
-            {/* Priority */}
-            <span
-              className={`text-[9px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border ${priorityCls}`}
-            >
-              {task.priority}
-            </span>
-            {/* Status */}
-            <span
-              className={`text-[9px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full ${
-                STATUS_COLORS[task.status] ?? "bg-gray-100 text-gray-600"
-              }`}
-            >
-              {task.status.replace("_", " ")}
-            </span>
-          </div>
-        </div>
-        {/* Meta Information */}
-        <div className="flex flex-col gap-3 mb-4">
-          {/* From */}
-          <div className="flex items-center justify-between border-b border-border/40 pb-2">
-            <div className="flex items-center gap-2 text-[11px] text-muted-foreground uppercase tracking-wide">
-              <UserCheck className="w-3.5 h-3.5" />
-              <span>From</span>
-            </div>
-            <span className="text-[12px] font-semibold text-foreground text-right">
-              {assignedByName}
-            </span>
-          </div>
-          {/* To */}
-          <div className="flex items-center justify-between border-b border-border/40 pb-2">
-            <div className="flex items-center gap-2 text-[11px] text-muted-foreground uppercase tracking-wide">
-              <User className="w-3.5 h-3.5" />
-              <span>To</span>
-            </div>
-            <span className="text-[12px] font-semibold text-foreground text-right">
-              {assignedToName}
-            </span>
-          </div>
-          {/* Assigned */}
-          <div className="flex items-center justify-between border-b border-border/40 pb-2">
-            <div className="flex items-center gap-2 text-[11px] text-muted-foreground uppercase tracking-wide">
-              <Calendar className="w-3.5 h-3.5" />
-              <span>Assigned</span>
-            </div>
-            <span className="text-[12px] font-medium text-foreground text-right">
-              {fmtDate(task.createdAt)}
-            </span>
-          </div>
-          {/* Followers (tagged for follow-up) */}
-          {(task.followers?.length ?? 0) > 0 && (
-            <div className="flex items-start justify-between border-b border-border/40 pb-2 gap-2">
-              <div className="flex items-center gap-2 text-[11px] text-muted-foreground uppercase tracking-wide shrink-0">
-                <Bell className="w-3.5 h-3.5" />
-                <span>Follow-up</span>
-              </div>
-              <span className="text-[12px] font-medium text-foreground text-right">
-                {task.followers!.map((f) => [f.name, f.lastName].filter(Boolean).join(" ")).join(", ")}
-              </span>
-            </div>
-          )}
-          {/* Service request details — replaces the description, which just
-              restates the same client/service in prose. */}
-          {task.serviceRequest?.clientName ? (
-            <div className="pt-1">
-              <ServiceRequestPanel request={task.serviceRequest} variant="compact" />
-            </div>
-          ) : task.description ? (
-            <div className="pt-1">
-              <p className="text-[10px] uppercase tracking-wide text-muted-foreground mb-2">
-                Description
-              </p>
-              <div className="p-3 rounded-xl bg-muted/40 border border-border/40">
-                <p className="text-[12px] leading-relaxed text-muted-foreground">
-                  {task.description}
-                </p>
-              </div>
-            </div>
-          ) : null}
-
-        </div>
-
-        {/* Footer: deadline + time taken + action */}
-        <div className="mt-auto flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-border/50">
-          <div className="flex items-center gap-3 flex-wrap">
-            <div className="flex items-center gap-1.5 text-[10px] font-medium">
-              <Clock className="w-3.5 h-3.5 text-muted-foreground" />
-              <span className={pastDue ? "text-red-500 font-bold" : "text-muted-foreground"}>
-                Deadline: {task.dueAt ? fmtDate(task.dueAt) : "—"}
-              </span>
-            </div>
-
-            {/* Time taken — shown to both admin and staff when completed */}
-            {isCompleted && task.timeTakenMinutes != null && (
-              <div className="flex items-center gap-1 text-[10px] font-semibold text-green-700 bg-green-50 border border-green-200 px-1.5 py-0.5 rounded">
-                <Timer className="w-3 h-3" />
-                Done in {fmtTimeTaken(task.timeTakenMinutes)}
-              </div>
-            )}
-
-            {/* Follow-up notes count */}
-            {(task.followUps?.length ?? 0) > 0 && (
-              <div className="flex items-center gap-1 text-[10px] font-semibold text-amber-700 bg-amber-50 border border-amber-200 px-1.5 py-0.5 rounded">
-                <MessageSquare className="w-3 h-3" />
-                {task.followUps!.length} note{task.followUps!.length !== 1 ? "s" : ""}
-              </div>
-            )}
-          </div>
-
-          {/* Assignee actions */}
-          {canAct && task.status === "pending" && (
-            <button
-              onClick={(e) => { e.stopPropagation(); onStart(task); }}
-              className="flex items-center gap-1.5 px-3 py-1 bg-blue-600 text-white text-[10px] font-bold uppercase tracking-wider rounded shadow-sm hover:bg-blue-700 transition-colors"
-            >
-              Start Task
-            </button>
-          )}
-          {canAct && task.status === "in_progress" && (
-            <button
-              onClick={(e) => { e.stopPropagation(); onComplete(task); }}
-              className="flex items-center gap-1.5 px-3 py-1 bg-green-600 text-white text-[10px] font-bold uppercase tracking-wider rounded shadow-sm hover:bg-green-700 transition-colors"
-            >
-              <CheckCircle className="w-3.5 h-3.5" />
-              Mark Complete
-            </button>
-          )}
-          {/* Assigner cancel action */}
-          {canManage && (task.status === "pending" || task.status === "in_progress" || task.status === "overdue") && onCancel && (
-            <button
-              onClick={(e) => { e.stopPropagation(); onCancel(task); }}
-              className="flex items-center gap-1.5 px-3 py-1 bg-red-50 text-red-600 text-[10px] font-bold uppercase tracking-wider rounded shadow-sm hover:bg-red-100 transition-colors border border-red-200"
-            >
-              <XCircle className="w-3.5 h-3.5" />
-              Cancel Task
-            </button>
-          )}
-          {/* View details action */}
+      {/* ── Actions ────────────────────────────────────────────────────────── */}
+      <div className="mt-auto flex flex-wrap items-center gap-2 pt-4">
+        {canAct && task.status === "pending" && (
           <button
-            onClick={(e) => { e.stopPropagation(); onViewDetail(task); }}
-            className="flex items-center gap-1.5 px-3 py-1 bg-secondary text-secondary-foreground text-[10px] font-bold uppercase tracking-wider rounded shadow-sm hover:bg-secondary/80 transition-colors border border-border"
+            onClick={(e) => { e.stopPropagation(); onStart(task); }}
+            className="flex-1 min-w-[140px] flex items-center justify-center gap-1.5 px-3 py-2 bg-blue-600 text-white text-[10px] font-bold uppercase tracking-wider rounded-lg shadow-sm hover:bg-blue-700 transition-colors"
           >
-            <Info className="w-3.5 h-3.5" />
-            View Details
+            Start Task
           </button>
-        </div>
+        )}
+
+        {/* Mid-checklist: the button IS the next step. Pressing it ticks that
+            step off — no need to open the task to move it along. */}
+        {canAct && task.status === "in_progress" && nextStep?._id && (
+          <button
+            onClick={(e) => { e.stopPropagation(); markStepDone(nextStep._id); }}
+            disabled={updateStep.isPending}
+            title={`Mark "${nextStep.title}" done`}
+            className="flex-1 min-w-[140px] flex items-center justify-center gap-1.5 px-3 py-2 bg-blue-600 text-white text-[10px] font-bold uppercase tracking-wider rounded-lg shadow-sm hover:bg-blue-700 transition-colors disabled:opacity-60"
+          >
+            {updateStep.isPending
+              ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
+              : <Check className="w-3.5 h-3.5 shrink-0" />}
+            <span className="truncate">{nextStep.title}</span>
+          </button>
+        )}
+
+        {/* Checklist clear (or none to begin with) — the task can be closed. */}
+        {canAct && task.status === "in_progress" && !nextStep && (
+          <button
+            onClick={(e) => { e.stopPropagation(); onComplete(task); }}
+            className="flex-1 min-w-[140px] flex items-center justify-center gap-1.5 px-3 py-2 bg-green-600 text-white text-[10px] font-bold uppercase tracking-wider rounded-lg shadow-sm hover:bg-green-700 transition-colors"
+          >
+            <CheckCircle className="w-3.5 h-3.5" />
+            Mark Complete
+          </button>
+        )}
+
+        {canManage && ["pending", "in_progress", "overdue"].includes(task.status) && onCancel && (
+          <button
+            onClick={(e) => { e.stopPropagation(); onCancel(task); }}
+            className="flex items-center gap-1.5 px-3 py-2 bg-red-50 text-red-600 text-[10px] font-bold uppercase tracking-wider rounded-lg shadow-sm hover:bg-red-100 transition-colors border border-red-200"
+          >
+            <XCircle className="w-3.5 h-3.5" />
+            Cancel
+          </button>
+        )}
+
+        <button
+          onClick={(e) => { e.stopPropagation(); onViewDetail(task); }}
+          className="flex items-center gap-1.5 px-3 py-2 bg-secondary text-secondary-foreground text-[10px] font-bold uppercase tracking-wider rounded-lg shadow-sm hover:bg-secondary/80 transition-colors border border-border"
+        >
+          <Info className="w-3.5 h-3.5" />
+          Details
+        </button>
       </div>
     </div>
   );
