@@ -90,11 +90,10 @@ const Hero = () => {
     }
   };
 
-  // Contact Us Button Handler - Now strictly redirects to the /contact page
   const handleContactRedirect = () => {
     if (navigate) {
       navigate("/contact");
-      window.scrollTo(0, 0); // Ensures the new page starts at the very top
+      window.scrollTo(0, 0);
     } else {
       window.location.href = "/contact";
     }
@@ -105,8 +104,235 @@ const Hero = () => {
       id="home"
       className="relative overflow-hidden bg-white font-['Inter',sans-serif]"
     >
+      {/* DIRECT DESKTOP MEDIA QUERIES TO GUARANTEE 100% RESPONSIVENESS AT 1440px, 1920px, 2560px & 3840px (4K) */}
+      <style>{`
+        /* Standard Desktop (1440px x 900px) */
+        @media (min-width: 1440px) {
+          .hero-container {
+            max-width: 1440px !important;
+            padding-left: 4rem !important;
+            padding-right: 4rem !important;
+            padding-top: 3.5rem !important;
+            padding-bottom: 3.5rem !important;
+          }
+          .hero-grid {
+            gap: 4rem !important;
+          }
+          .hero-title {
+            font-size: 3.25rem !important;
+            line-height: 1.15 !important;
+          }
+          .hero-desc {
+            font-size: 1.125rem !important;
+            max-width: 36rem !important;
+            line-height: 1.75rem !important;
+          }
+          .hero-stat-num {
+            font-size: 2.25rem !important;
+          }
+          .hero-stat-label {
+            font-size: 0.95rem !important;
+          }
+          .hero-cards-grid {
+            max-width: 680px !important;
+            gap: 1.25rem !important;
+          }
+          .hero-card {
+            min-height: 240px !important;
+            padding: 1.5rem !important;
+          }
+          .hero-card-title {
+            font-size: 1.15rem !important;
+          }
+          .hero-card-desc {
+            font-size: 0.85rem !important;
+          }
+        }
+
+        /* Large Desktop (1920px x 1080px Full HD) */
+        @media (min-width: 1920px) {
+          .hero-container {
+            max-width: 1800px !important;
+            padding-left: 5rem !important;
+            padding-right: 5rem !important;
+            padding-top: 4.5rem !important;
+            padding-bottom: 4.5rem !important;
+          }
+          .hero-grid {
+            gap: 5rem !important;
+          }
+          .hero-badge-text {
+            font-size: 1.1rem !important;
+          }
+          .hero-title {
+            font-size: 4.25rem !important;
+            line-height: 1.12 !important;
+          }
+          .hero-desc {
+            font-size: 1.35rem !important;
+            max-width: 44rem !important;
+            line-height: 2.1rem !important;
+          }
+          .hero-stat-num {
+            font-size: 3rem !important;
+          }
+          .hero-stat-label {
+            font-size: 1.05rem !important;
+          }
+          .hero-btn {
+            padding: 1rem 2.5rem !important;
+            font-size: 1.15rem !important;
+          }
+          .hero-cards-grid {
+            max-width: 800px !important;
+            gap: 1.5rem !important;
+          }
+          .hero-card {
+            min-height: 280px !important;
+            padding: 2rem !important;
+            border-radius: 1.75rem !important;
+          }
+          .hero-card-img-box {
+            height: 5.5rem !important;
+            margin-bottom: 1.25rem !important;
+          }
+          .hero-card-title {
+            font-size: 1.35rem !important;
+            margin-bottom: 0.6rem !important;
+          }
+          .hero-card-desc {
+            font-size: 0.98rem !important;
+            line-height: 1.6 !important;
+          }
+        }
+
+        /* QHD / 2K Ultra-Wide (2560px Desktop) */
+        @media (min-width: 2560px) {
+          .hero-container {
+            max-width: 2300px !important;
+            padding-left: 6rem !important;
+            padding-right: 6rem !important;
+            padding-top: 6rem !important;
+            padding-bottom: 6rem !important;
+          }
+          .hero-grid {
+            gap: 6rem !important;
+          }
+          .hero-badge-text {
+            font-size: 1.35rem !important;
+          }
+          .hero-title {
+            font-size: 5.5rem !important;
+            line-height: 1.1 !important;
+          }
+          .hero-desc {
+            font-size: 1.75rem !important;
+            max-width: 56rem !important;
+            line-height: 2.6rem !important;
+          }
+          .hero-stat-num {
+            font-size: 4rem !important;
+          }
+          .hero-stat-label {
+            font-size: 1.3rem !important;
+          }
+          .hero-btn {
+            padding: 1.25rem 3.25rem !important;
+            font-size: 1.4rem !important;
+          }
+          .hero-cards-grid {
+            max-width: 1000px !important;
+            gap: 2rem !important;
+          }
+          .hero-card {
+            min-height: 350px !important;
+            padding: 2.5rem !important;
+            border-radius: 2.25rem !important;
+          }
+          .hero-card-img-box {
+            height: 7rem !important;
+            margin-bottom: 1.5rem !important;
+          }
+          .hero-card-title {
+            font-size: 1.75rem !important;
+            margin-bottom: 0.75rem !important;
+          }
+          .hero-card-desc {
+            font-size: 1.2rem !important;
+            line-height: 1.65 !important;
+          }
+        }
+
+        /* 4K Ultra-Wide Desktop (3840px x 2160px) */
+        @media (min-width: 3840px) {
+          .hero-container {
+            max-width: 3400px !important;
+            padding-left: 8rem !important;
+            padding-right: 8rem !important;
+            padding-top: 8rem !important;
+            padding-bottom: 8rem !important;
+          }
+          .hero-grid {
+            gap: 8rem !important;
+          }
+          .hero-badge-text {
+            font-size: 2rem !important;
+          }
+          .hero-badge-icon {
+            width: 2.5rem !important;
+            height: 2.5rem !important;
+          }
+          .hero-title {
+            font-size: 7.5rem !important;
+            line-height: 1.08 !important;
+          }
+          .hero-desc {
+            font-size: 2.5rem !important;
+            max-width: 78rem !important;
+            line-height: 3.75rem !important;
+          }
+          .hero-stat-num {
+            font-size: 5.5rem !important;
+          }
+          .hero-stat-label {
+            font-size: 1.75rem !important;
+          }
+          .hero-btn {
+            padding: 1.75rem 4.5rem !important;
+            font-size: 2rem !important;
+            border-radius: 9999px !important;
+          }
+          .hero-btn-icon {
+            width: 2rem !important;
+            height: 2rem !important;
+          }
+          .hero-cards-grid {
+            max-width: 1500px !important;
+            gap: 3rem !important;
+          }
+          .hero-card {
+            min-height: 480px !important;
+            padding: 3.5rem !important;
+            border-radius: 3rem !important;
+          }
+          .hero-card-img-box {
+            height: 10rem !important;
+            margin-bottom: 2rem !important;
+          }
+          .hero-card-title {
+            font-size: 2.5rem !important;
+            margin-bottom: 1.25rem !important;
+          }
+          .hero-card-desc {
+            font-size: 1.6rem !important;
+            line-height: 1.8 !important;
+          }
+        }
+      `}</style>
+
       <div
         className="
+          hero-container
           max-w-[1500px]
           mx-auto
           px-5
@@ -120,6 +346,7 @@ const Hero = () => {
       >
         <div
           className="
+            hero-grid
             grid
             grid-cols-1
             lg:grid-cols-2
@@ -127,11 +354,11 @@ const Hero = () => {
             sm:gap-10
             lg:gap-12
             xl:gap-16
-            items-center
+            items-start
           "
         >
           {/* =====================================================
-              LEFT CONTENT (PERFECT STARTING ALIGNMENT)
+              LEFT CONTENT (PERFECT HORIZONTAL ALIGNMENT AT TOP)
           ====================================================== */}
           <div
             className="
@@ -145,9 +372,10 @@ const Hero = () => {
               text-left
             "
           >
-            {/* TRUSTED BUSINESS SOLUTIONS BADGE */}
+            {/* TRUSTED BUSINESS SOLUTIONS TEXT (TOP HORIZONTAL LINE WITH CARDS) */}
             <div
               className="
+                hero-badge-text
                 inline-flex
                 items-center
                 gap-2
@@ -159,7 +387,7 @@ const Hero = () => {
                 text-left
               "
             >
-              <CheckCircle2 size={18} className="text-[#0B4EA2] flex-shrink-0" />
+              <CheckCircle2 size={18} className="hero-badge-icon text-[#0B4EA2] flex-shrink-0" />
               <span>Trusted Business Solutions</span>
             </div>
 
@@ -167,6 +395,7 @@ const Hero = () => {
             <h1
               style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
               className="
+                hero-title
                 text-3xl
                 sm:text-3xl
                 md:text-4xl
@@ -188,6 +417,7 @@ const Hero = () => {
             {/* DESCRIPTION */}
             <p
               className="
+                hero-desc
                 text-sm
                 sm:text-base
                 md:text-lg
@@ -220,6 +450,7 @@ const Hero = () => {
               <div className="text-left">
                 <h3
                   className="
+                    hero-stat-num
                     text-2xl
                     sm:text-3xl
                     font-bold
@@ -228,7 +459,7 @@ const Hero = () => {
                 >
                   15000+
                 </h3>
-                <p className="text-black text-xs sm:text-sm whitespace-nowrap">
+                <p className="hero-stat-label text-black text-xs sm:text-sm whitespace-nowrap">
                   Happy Clients
                 </p>
               </div>
@@ -236,6 +467,7 @@ const Hero = () => {
               <div className="text-left">
                 <h3
                   className="
+                    hero-stat-num
                     text-2xl
                     sm:text-3xl
                     font-bold
@@ -244,7 +476,7 @@ const Hero = () => {
                 >
                   25+
                 </h3>
-                <p className="text-black text-xs sm:text-sm whitespace-nowrap">
+                <p className="hero-stat-label text-black text-xs sm:text-sm whitespace-nowrap">
                   Services
                 </p>
               </div>
@@ -252,6 +484,7 @@ const Hero = () => {
               <div className="text-left">
                 <h3
                   className="
+                    hero-stat-num
                     text-2xl
                     sm:text-3xl
                     font-bold
@@ -260,7 +493,7 @@ const Hero = () => {
                 >
                   10+
                 </h3>
-                <p className="text-black text-xs sm:text-sm whitespace-nowrap">
+                <p className="hero-stat-label text-black text-xs sm:text-sm whitespace-nowrap">
                   Years Experience
                 </p>
               </div>
@@ -283,6 +516,7 @@ const Hero = () => {
               <button
                 onClick={scrollToHowItWorks}
                 className="
+                  hero-btn
                   group
                   flex-1
                   sm:flex-initial
@@ -317,13 +551,14 @@ const Hero = () => {
                 <span>Get Started</span>
                 <ArrowRight
                   size={17}
-                  className="transition-transform duration-200 group-hover:translate-x-1"
+                  className="hero-btn-icon transition-transform duration-200 group-hover:translate-x-1"
                 />
               </button>
 
               <button
                 onClick={handleContactRedirect}
                 className="
+                  hero-btn
                   flex-1
                   sm:flex-initial
                   inline-flex
@@ -361,12 +596,13 @@ const Hero = () => {
           {/* =====================================================
               RIGHT 4 CARDS GRID
           ====================================================== */}
-          <div className="w-full flex justify-center items-center">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-5 w-full max-w-[620px]">
+          <div className="w-full flex justify-center lg:justify-end items-center">
+            <div className="hero-cards-grid grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-5 w-full max-w-[620px]">
               {services.map((service) => (
                 <div
                   key={service.id}
                   className={`
+                    hero-card
                     group
                     relative
                     bg-gradient-to-b ${service.gradient}
@@ -390,7 +626,7 @@ const Hero = () => {
                   `}
                 >
                   {/* Card Image Container */}
-                  <div className="h-14 sm:h-16 w-full flex items-center justify-center mb-3">
+                  <div className="hero-card-img-box h-14 sm:h-16 w-full flex items-center justify-center mb-3">
                     {service.image ? (
                       <img
                         src={service.image}
@@ -413,6 +649,7 @@ const Hero = () => {
                     <h3
                       style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
                       className="
+                        hero-card-title
                         text-[15px]
                         sm:text-[16.5px]
                         font-bold
@@ -427,6 +664,7 @@ const Hero = () => {
                     <p
                       style={{ fontFamily: "'Inter', sans-serif" }}
                       className="
+                        hero-card-desc
                         text-[11.5px]
                         sm:text-[12px]
                         text-slate-600
