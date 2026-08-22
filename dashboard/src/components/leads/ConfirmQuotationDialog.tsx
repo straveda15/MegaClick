@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Banknote, CheckCircle2, CreditCard, IndianRupee, Loader2, Plus, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { sanitizeAmountInput } from '@/lib/amount';
 import {
   Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
 } from '@/components/ui/dialog';
@@ -24,6 +25,8 @@ interface DraftItem {
   name: string;
   amount: string;
 }
+
+const SERVICE_FEE_NAME = 'Service Fees';
 
 const rupees = (value: number) =>
   value.toLocaleString('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 2 });
@@ -61,12 +64,19 @@ export default function ConfirmQuotationDialog({ lead, open, onOpenChange }: Con
     const initial: Record<string, DraftItem[]> = {};
     for (const service of lead.services ?? []) {
       const existing = service.quotationItems ?? [];
-      // Only real line items come back as editable rows. The figure quoted when
-      // the lead was captured is shown alongside as reference text — it was an
-      // estimate, not a breakdown, so it has nothing to edit.
-      initial[service._id] = existing.length > 0
-        ? existing.map((item) => newItem(item.name, String(item.amount ?? '')))
-        : [newItem()];
+      const draftItems: DraftItem[] = [];
+
+      const serviceFeeItem = existing.find((item) => item.name === SERVICE_FEE_NAME);
+      const otherItems = existing.filter((item) => item.name !== SERVICE_FEE_NAME);
+
+      // Enforce Service Fees as the first item
+      draftItems.push(newItem(SERVICE_FEE_NAME, serviceFeeItem ? String(serviceFeeItem.amount) : ''));
+
+      otherItems.forEach((item) => {
+        draftItems.push(newItem(item.name, String(item.amount ?? '')));
+      });
+
+      initial[service._id] = draftItems;
     }
     setDraft(initial);
     setAdvance(lead.advancePayment?.amount ? String(lead.advancePayment.amount) : '');
@@ -87,8 +97,12 @@ export default function ConfirmQuotationDialog({ lead, open, onOpenChange }: Con
   const removeItem = (serviceId: string, key: string) =>
     setDraft((current) => {
       const remaining = (current[serviceId] ?? []).filter((item) => item.key !== key);
-      // Never leave a service with nothing to type into.
-      return { ...current, [serviceId]: remaining.length > 0 ? remaining : [newItem()] };
+      // Never leave a service with nothing to type into. Ensure Service Fees is always there.
+      const hasServiceFee = remaining.some((item) => item.name === SERVICE_FEE_NAME);
+      if (!hasServiceFee) {
+        remaining.unshift(newItem(SERVICE_FEE_NAME, ''));
+      }
+      return { ...current, [serviceId]: remaining.length > 0 ? remaining : [newItem(SERVICE_FEE_NAME, '')] };
     });
 
   const grandTotal = services.reduce((sum, service) => sum + itemsTotal(draft[service._id] ?? []), 0);
@@ -110,6 +124,16 @@ export default function ConfirmQuotationDialog({ lead, open, onOpenChange }: Con
       const service = services.find((s) => s._id === missing.serviceId);
       toast.error(`Add at least one field for “${service?.title ?? 'this service'}”.`);
       return;
+    }
+
+    // Ensure Service Fees is filled
+    for (const service of services) {
+      const serviceItems = draft[service._id] ?? [];
+      const feeItem = serviceItems.find(i => i.name === SERVICE_FEE_NAME);
+      if (!feeItem || feeItem.amount.trim() === '') {
+        toast.error(`Enter a Service Fees amount for "${service.title}". Use 0 if there is none.`);
+        return;
+      }
     }
 
     // A field with no price is fine (it reads as zero); one with a broken or
@@ -139,7 +163,9 @@ export default function ConfirmQuotationDialog({ lead, open, onOpenChange }: Con
       {
         leadId: lead._id,
         services: payload,
-        advancePayment: advanceAmount > 0 ? { amount: advanceAmount, mode: advanceMode } : undefined,
+        // Always sent, even at zero — this dialog is what edits the advance, so
+        // clearing it here must actually clear it, not just leave the old figure.
+        advancePayment: { amount: advanceAmount, mode: advanceMode },
       },
       {
         onSuccess: () => {
@@ -156,10 +182,6 @@ export default function ConfirmQuotationDialog({ lead, open, onOpenChange }: Con
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Confirm — {lead?.customer?.name?.trim() || lead?.customer?.phone || 'Lead'}</DialogTitle>
-          <DialogDescription>
-            List what each service covers and what each field costs. The final quotation for a
-            service is the sum of its fields.
-          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 py-2">
@@ -192,38 +214,42 @@ export default function ConfirmQuotationDialog({ lead, open, onOpenChange }: Con
                       )}
                     </div>
 
-                    {items.map((item) => (
-                      <div key={item.key} className="flex items-center gap-2">
-                        <Input
-                          placeholder="Field (e.g. Stamp Duty)"
-                          value={item.name}
-                          onChange={(e) => updateItem(service._id, item.key, { name: e.target.value })}
-                          className="flex-1 h-9"
-                        />
-                        <div className="relative w-36 shrink-0">
-                          <IndianRupee className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+                    {items.map((item) => {
+                      const isServiceFee = item.name === SERVICE_FEE_NAME;
+                      return (
+                        <div key={item.key} className="flex items-center gap-2">
                           <Input
-                            type="number"
-                            min="0"
-                            step="0.01"
-                            inputMode="decimal"
-                            placeholder="0.00"
-                            value={item.amount}
-                            onChange={(e) => updateItem(service._id, item.key, { amount: e.target.value })}
-                            className="pl-7 h-9"
+                            placeholder="Field (e.g. Stamp Duty)"
+                            value={item.name}
+                            onChange={(e) => updateItem(service._id, item.key, { name: e.target.value })}
+                            className="flex-1 h-9"
+                            readOnly={isServiceFee}
                           />
+                          <div className="relative w-36 shrink-0">
+                            <IndianRupee className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+                            <Input
+                              type="text"
+                              inputMode="decimal"
+                              placeholder="0.00"
+                              value={item.amount}
+                              onChange={(e) => updateItem(service._id, item.key, { amount: sanitizeAmountInput(e.target.value) })}
+                              className="pl-7 h-9"
+                            />
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => removeItem(service._id, item.key)}
+                            title={isServiceFee ? "Service Fees cannot be removed" : "Remove this field"}
+                            disabled={isServiceFee}
+                            aria-label={`Remove field ${item.name || 'row'}`}
+                            className={`inline-flex items-center justify-center w-9 h-9 shrink-0 rounded-md transition-colors ${isServiceFee ? 'opacity-30 cursor-not-allowed' : 'text-muted-foreground hover:bg-muted hover:text-destructive'
+                              }`}
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
                         </div>
-                        <button
-                          type="button"
-                          onClick={() => removeItem(service._id, item.key)}
-                          title="Remove this field"
-                          aria-label={`Remove field ${item.name || 'row'}`}
-                          className="inline-flex items-center justify-center w-9 h-9 shrink-0 rounded-md text-muted-foreground hover:bg-muted hover:text-destructive transition-colors"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    ))}
+                      )
+                    })}
 
                     <div className="flex items-center justify-between gap-3">
                       <button
@@ -260,12 +286,11 @@ export default function ConfirmQuotationDialog({ lead, open, onOpenChange }: Con
                     <IndianRupee className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
                     <Input
                       id="advance-payment"
-                      type="number"
-                      min="0"
+                      type="text"
                       inputMode="decimal"
                       placeholder="0.00"
                       value={advance}
-                      onChange={(e) => setAdvance(e.target.value)}
+                      onChange={(e) => setAdvance(sanitizeAmountInput(e.target.value))}
                       className="pl-7 h-9"
                     />
                   </div>
@@ -282,11 +307,10 @@ export default function ConfirmQuotationDialog({ lead, open, onOpenChange }: Con
                         key={option.value}
                         type="button"
                         onClick={() => setAdvanceMode(option.value)}
-                        className={`h-9 rounded-md border text-sm font-medium flex items-center justify-center gap-1.5 transition-colors ${
-                          advanceMode === option.value
+                        className={`h-9 rounded-md border text-sm font-medium flex items-center justify-center gap-1.5 transition-colors ${advanceMode === option.value
                             ? 'border-primary bg-primary/10 text-primary'
                             : 'border-border bg-card text-foreground hover:bg-muted'
-                        }`}
+                          }`}
                       >
                         <option.icon className="w-4 h-4" />
                         {option.label}

@@ -468,3 +468,72 @@ export function useUpdateLeadStatus() {
     },
   });
 }
+
+/**
+ * Rewrites the whole lead draft — customer details plus every service, in the
+ * same shape "Add Lead" captures them — while the lead is still unconfirmed.
+ * This is what the edit dialog (the same UI as Add Lead, pre-filled) saves to.
+ */
+export function useUpdateLead() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, ...payload }: {
+      id: string;
+      name: string;
+      phone: string;
+      email?: string;
+      company?: string;
+      city?: string;
+      state?: string;
+      services: LeadServiceInput[];
+      followUpAt?: string;
+      followUpNote?: string;
+    }) => {
+      const res = await fetch(`${BASE_URL}/leads/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", ...authHeaders() },
+        body: JSON.stringify(payload),
+      });
+      const data = await readJson(res, "Failed to update this lead");
+      return data.data as SalesLead;
+    },
+    onSuccess: (lead) => {
+      qc.invalidateQueries({ queryKey: ["leads"] });
+      qc.invalidateQueries({ queryKey: ["lead", lead?._id] });
+      qc.invalidateQueries({ queryKey: ["clients"] });
+    },
+  });
+}
+
+/**
+ * Corrects what the client told us — name, phone, email, company, city and
+ * state — while the lead is still a lead. Once a quotation is confirmed the
+ * record becomes a client and this stops being the place to fix it.
+ */
+export function useUpdateLeadCustomer() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, ...customer }: {
+      id: string;
+      firstName?: string;
+      email?: string;
+      phone?: string;
+      company?: string;
+      city?: string;
+      state?: string;
+    }) => {
+      const res = await fetch(`${BASE_URL}/leads/${id}/customer`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", ...authHeaders() },
+        body: JSON.stringify(customer),
+      });
+      const data = await readJson(res, "Failed to update this client's details");
+      return data.data as SalesLead;
+    },
+    onSuccess: (lead) => {
+      qc.invalidateQueries({ queryKey: ["leads"] });
+      qc.invalidateQueries({ queryKey: ["lead", lead?._id] });
+      qc.invalidateQueries({ queryKey: ["clients"] });
+    },
+  });
+}

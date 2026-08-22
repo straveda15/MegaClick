@@ -39,11 +39,13 @@ export default function AccountsPage() {
         return matchQ && isWithinRange(client.createdAt, dateRange);
       })
       // Quoted, received and due are account-wide — payments are made against
-      // the client, not against one of their services.
+      // the client, not against one of their services. Received is the running
+      // total (the advance plus every ledger payment since), so it grows the
+      // moment a payment is recorded — the same figure the ledger dialog shows.
       .map((client) => ({
         client,
         quoted: client.quoted,
-        advance: client.advancePayment?.amount ?? 0,
+        received: client.received,
         credit: client.credit,
         due: client.due,
       }));
@@ -129,7 +131,7 @@ export default function AccountsPage() {
               </thead>
 
               <tbody className="divide-y divide-border">
-                {pagedAccounts.map(({ client, quoted, advance, credit, due }) => (
+                {pagedAccounts.map(({ client, quoted, received, credit, due }) => (
                   <tr key={client._id} className="hover:bg-muted/20 transition-colors align-top">
                     <td className="px-4 py-3 align-top">
                       <span className="block font-medium text-foreground">{client.name}</span>
@@ -162,10 +164,10 @@ export default function AccountsPage() {
                           <span className="text-muted-foreground">Quoted</span>
                           <span className="font-medium text-foreground">{rupees(quoted)}</span>
                         </div>
-                        {advance > 0 && (
+                        {received > 0 && (
                           <div className="flex justify-between gap-4">
-                            <span className="text-muted-foreground">Advance Payment</span>
-                            <span className="font-medium text-blue-700">{rupees(advance)}</span>
+                            <span className="text-muted-foreground">Received</span>
+                            <span className="font-medium text-emerald-700">{rupees(received)}</span>
                           </div>
                         )}
                         {/* Paid past the total quoted — held for whatever they
@@ -237,9 +239,8 @@ export default function AccountsPage() {
   );
 }
 
-/** One service written out: name, its agreed fields, and what it comes to. */
+/** One service written out: just its name and what it was quoted at, before and now. */
 function ServiceLines({ service }: { service: ClientService }) {
-  const items = service.quotationItems ?? [];
   const quotation = service.quotation ?? 0;
   const previous = service.initialQuotation;
 
@@ -252,14 +253,10 @@ function ServiceLines({ service }: { service: ClientService }) {
         )}
       </div>
 
-      {items.length > 0 && (
-        <div className="mt-1 max-w-[340px]">
-          {items.map((item, i) => (
-            <div key={item._id ?? i} className="flex justify-between text-xs py-0.5">
-              <span className="text-muted-foreground truncate pr-3">{item.name}</span>
-              <span className="text-foreground whitespace-nowrap">{rupees(item.amount)}</span>
-            </div>
-          ))}
+      {previous != null && previous !== quotation && (
+        <div className="mt-1 max-w-[340px] flex justify-between text-[11px]">
+          <span className="text-muted-foreground">Previous quotation</span>
+          <span className="text-muted-foreground line-through whitespace-nowrap">{rupees(previous)}</span>
         </div>
       )}
 
@@ -267,13 +264,6 @@ function ServiceLines({ service }: { service: ClientService }) {
         <span className="text-foreground">Final quotation</span>
         <span className="text-foreground whitespace-nowrap">{rupees(quotation)}</span>
       </div>
-
-      {previous != null && previous !== quotation && (
-        <div className="max-w-[340px] flex justify-between text-[11px]">
-          <span className="text-muted-foreground">Previous quotation</span>
-          <span className="text-muted-foreground line-through whitespace-nowrap">{rupees(previous)}</span>
-        </div>
-      )}
     </div>
   );
 }

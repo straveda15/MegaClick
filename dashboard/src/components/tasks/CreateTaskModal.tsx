@@ -111,10 +111,14 @@ export function CreateTaskModal({ onClose }: { onClose: () => void }) {
     ).slice(0, 6);
   }, [clients, clientSearch]);
 
-  /** Picking a service names the task after it. */
+  /** Picking a service names the task after it and pulls in its own target date. */
   const chooseService = (next: ClientService) => {
     setService(next);
     setTitle(next.title);
+    if (next.dueAt) {
+      const target = new Date(next.dueAt);
+      if (!Number.isNaN(target.getTime())) setDueAt(toLocalInput(target));
+    }
   };
 
   const chooseClient = (next: Client | null) => {
@@ -122,8 +126,11 @@ export function CreateTaskModal({ onClose }: { onClose: () => void }) {
     setService(null);
     setClientSearch("");
     setTitle("");
-    // With a single service there is nothing to choose — fill it straight in.
-    if (next?.services.length === 1) chooseService(next.services[0]);
+    // With a single service there is nothing to choose — fill it straight in,
+    // unless it's already spoken for.
+    const only = next?.services.length === 1 ? next.services[0] : null;
+    const onlyIsTaken = only && (only.stage === "completed" || (Boolean(only.assignedTo) && only.taskStatus !== "unassigned"));
+    if (only && !onlyIsTaken) chooseService(only);
   };
 
   const priority = service ? PRIORITY_FROM_TEMPERATURE[service.temperature] ?? "medium" : "medium";
@@ -135,19 +142,26 @@ export function CreateTaskModal({ onClose }: { onClose: () => void }) {
   const isAdmin = user?.role === "admin";
   const { data: adminUsers = [] } = useUsers("admin");
   const assignableStaff = useMemo(() => {
-    if (!isAdmin) return team;
-    const inTeam = new Set(team.map((emp) => String(emp.userId?._id)));
-    const adminProfiles = adminUsers
-      .filter((au) => au._id && !inTeam.has(String(au._id)))
-      .map((au) => ({
-        _id: `admin-${au._id}`,
-        userId: au,
-        designation: "Founder / Admin",
-        department: "management",
-        status: au.isActive === false ? "inactive" : "active",
-      }));
-    return [...adminProfiles, ...team] as AssignableStaff[];
-  }, [isAdmin, adminUsers, team]);
+    const combined = isAdmin
+      ? (() => {
+          const inTeam = new Set(team.map((emp) => String(emp.userId?._id)));
+          const adminProfiles = adminUsers
+            .filter((au) => au._id && !inTeam.has(String(au._id)))
+            .map((au) => ({
+              _id: `admin-${au._id}`,
+              userId: au,
+              designation: "Founder / Admin",
+              department: "management",
+              status: au.isActive === false ? "inactive" : "active",
+            }));
+          return [...adminProfiles, ...team] as AssignableStaff[];
+        })()
+      : team;
+
+    // Never list the signed-in user themselves — a task can't be assigned to
+    // (or a follow-up tagged on) whoever is creating it.
+    return combined.filter((emp) => String(emp.userId?._id) !== String(user?._id));
+  }, [isAdmin, adminUsers, team, user?._id]);
 
   // Earliest selectable deadline = now. Computed once on open.
   const minDateTime = useMemo(() => toLocalInput(new Date()), []);
@@ -425,21 +439,43 @@ export function CreateTaskModal({ onClose }: { onClose: () => void }) {
                   {client.services.map((s) => {
                     const active = service?._id === s._id;
                     const tempStyle = TEMPERATURE_STYLES[s.temperature];
+                    // A service already handed off has its own task in flight (or
+                    // done) — creating a second one here would just collide with it.
+                    const isCompleted = s.taskStatus === "completed" || s.stage === "completed";
+                    const isTaken = isCompleted || (Boolean(s.assignedTo) && s.taskStatus !== "unassigned");
+                    const takenLabel = isCompleted
+                      ? `Completed by ${s.assignedTo?.name ?? "someone"}`
+                      : isTaken
+                      ? `Assigned to ${s.assignedTo?.name ?? "someone"}`
+                      : null;
 
                     return (
                       <button
                         key={s._id}
                         type="button"
+                        disabled={isTaken}
                         onClick={() => chooseService(s)}
                         className={`w-full text-left rounded-lg border px-3 py-2 transition-colors ${
-                          active ? "border-blue-400 bg-blue-50" : "border-border bg-card hover:bg-muted/50"
+                          isTaken
+                            ? "border-border bg-muted/40 opacity-60 cursor-not-allowed"
+                            : active
+                            ? "border-blue-400 bg-blue-50"
+                            : "border-border bg-card hover:bg-muted/50"
                         }`}
                       >
                         <div className="flex items-center justify-between gap-2">
                           <span className="text-sm font-medium text-foreground truncate">{s.title}</span>
-                          <span className={`shrink-0 px-1.5 py-0.5 rounded text-[10px] font-medium ${tempStyle.bg} ${tempStyle.text}`}>
-                            {TEMPERATURE_LABELS[s.temperature]}
-                          </span>
+                          {takenLabel ? (
+                            <span className={`shrink-0 px-1.5 py-0.5 rounded text-[10px] font-medium ${
+                              isCompleted ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"
+                            }`}>
+                              {takenLabel}
+                            </span>
+                          ) : (
+                            <span className={`shrink-0 px-1.5 py-0.5 rounded text-[10px] font-medium ${tempStyle.bg} ${tempStyle.text}`}>
+                              {TEMPERATURE_LABELS[s.temperature]}
+                            </span>
+                          )}
                         </div>
                         {s.category && (
                           <span className="block text-[11px] text-muted-foreground truncate">{s.category}</span>

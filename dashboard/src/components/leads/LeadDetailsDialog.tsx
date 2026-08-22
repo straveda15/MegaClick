@@ -1,6 +1,6 @@
 import {
   Building2, CalendarClock, CalendarDays, FileDown, History, Loader2, Mail, MapPin,
-  MessageSquare, Phone, Tag, User,
+  MessageSquare, Pencil, Phone, Tag, User,
 } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -16,6 +16,7 @@ import { useLead, type LeadService, type SalesLead } from '@/hooks/useLeads';
 import { buildParticulars } from '@/lib/invoiceParticulars';
 import FollowUpHistoryDialog from '@/components/followups/FollowUpHistoryDialog';
 import LogFollowUpDialog from '@/components/followups/LogFollowUpDialog';
+import AddLeadDialog from '@/components/leads/AddLeadDialog';
 import type { FollowUpEntry } from '@/hooks/useFollowUps';
 
 /* ── Display constants ──────────────────────────────────────────────────────── */
@@ -74,18 +75,37 @@ interface LeadDetailsDialogProps {
  * The "i" popup on the Leads board: everything the client told us, and every
  * service they asked for, each downloadable as a PDF.
  *
- * Read-only by design — handing work to an employee happens on the Clients
- * board, where the client's whole engagement is in view.
+ * Editing stays available for as long as the lead is a lead — "Edit details"
+ * opens the same form Add Lead uses, pre-filled, so the client's info,
+ * services and quotation can all be corrected in one place. Once a quotation
+ * is confirmed the record becomes a client, and correcting it moves to the
+ * Clients board, where the client's whole engagement is in view.
  */
 export function LeadDetailsDialog({ leadId, open, onOpenChange }: LeadDetailsDialogProps) {
   const { data: lead, isLoading, isError, error } = useLead(open ? leadId : undefined);
   const [downloading, setDownloading] = useState<string | null>(null);
   const [historyOpen, setHistoryOpen] = useState(false);
   const [logOpen, setLogOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  // A snapshot taken at the moment "Edit details" is clicked — closing this
+  // dialog clears the parent's leadId (and so `lead`, via useLead), so the
+  // edit dialog needs its own copy of what to pre-fill rather than reading
+  // straight off `lead` after that happens.
+  const [editingLead, setEditingLead] = useState<SalesLead | null>(null);
 
   const customer = lead?.customer;
   const clientName = customer?.name?.trim() || customer?.phone || 'Unnamed client';
   const services = lead?.services ?? [];
+  // Once any service's quotation is confirmed, this lead has become a client —
+  // corrections belong on the Clients board from here on.
+  const isConfirmed = services.some((s) => s.quotationConfirmed);
+
+  const startEditing = () => {
+    if (!lead) return;
+    setEditingLead(lead);
+    onOpenChange(false);
+    setEditOpen(true);
+  };
 
   const handleDownload = async (service?: LeadService) => {
     if (!lead) return;
@@ -137,19 +157,27 @@ export function LeadDetailsDialog({ leadId, open, onOpenChange }: LeadDetailsDia
             Everything this client shared, and the services they asked for.
           </DialogDescription>
 
-          {services.length > 0 && (
-            <div className="pt-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => handleDownload()}
-                disabled={downloading !== null}
-              >
-                {downloading === 'all'
-                  ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                  : <FileDown className="w-3.5 h-3.5" />}
-                Download Invoice
-              </Button>
+          {(services.length > 0 || (lead && !isConfirmed)) && (
+            <div className="pt-2 flex items-center gap-2">
+              {services.length > 0 && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleDownload()}
+                  disabled={downloading !== null}
+                >
+                  {downloading === 'all'
+                    ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    : <FileDown className="w-3.5 h-3.5" />}
+                  Download Invoice
+                </Button>
+              )}
+              {lead && !isConfirmed && (
+                <Button variant="outline" size="sm" onClick={startEditing}>
+                  <Pencil className="w-3.5 h-3.5" />
+                  Edit details
+                </Button>
+              )}
             </div>
           )}
         </DialogHeader>
@@ -171,6 +199,7 @@ export function LeadDetailsDialog({ leadId, open, onOpenChange }: LeadDetailsDia
                 <h3 className="text-[11px] uppercase tracking-wider font-bold text-muted-foreground mb-3">
                   Client Information
                 </h3>
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 rounded-lg border border-border bg-muted/20 p-4">
                   <InfoRow icon={User} label="Name" value={customer?.name} />
                   <InfoRow icon={Phone} label="Phone" value={customer?.phone} />
@@ -341,6 +370,12 @@ export function LeadDetailsDialog({ leadId, open, onOpenChange }: LeadDetailsDia
         currentFollowUpAt={lead?.followUpAt}
         open={logOpen}
         onOpenChange={setLogOpen}
+      />
+
+      <AddLeadDialog
+        open={editOpen}
+        onOpenChange={setEditOpen}
+        lead={editingLead}
       />
     </Dialog>
   );

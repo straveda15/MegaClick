@@ -43,9 +43,12 @@ const Topbar = () => {
       '/clients': 'Clients',
       '/leads': 'Leads',
       '/tasks': 'Tasks',
+      '/tasks/team-logs': 'Team Logs',
       '/employees': 'Employees',
       '/attendance': 'Attendance',
       '/leave': 'Leave',
+      '/people/attendance': 'Attendance Management',
+      '/people/hr': 'HR & Leave',
     };
     const exact = routeMap[location.pathname];
     if (exact) return exact;
