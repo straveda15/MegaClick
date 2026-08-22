@@ -1,19 +1,12 @@
 import React from "react";
-import { BriefcaseBusiness, ArrowRight } from "lucide-react";
+import { BriefcaseBusiness } from "lucide-react";
 import img1 from "../../assets/img1.jpg";
 
 const HeroSection = () => {
-  // Smooth scroll to services section
-  const scrollToServices = () => {
-    const servicesSection = document.getElementById("services-section");
-    if (servicesSection) {
-      servicesSection.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
   return (
     <section
       className="
+        hero-section
         relative
         overflow-hidden
         bg-[#073FA8]
@@ -27,9 +20,180 @@ const HeroSection = () => {
         lg:py-10
       "
     >
-      {/* =====================================================
-          BLUE BACKGROUND
-      ====================================================== */}
+      <style>{`
+        .app-container {
+          width: 100%;
+          max-width: 1500px;
+          margin-left: auto;
+          margin-right: auto;
+          padding-left: 1.25rem;
+          padding-right: 1.25rem;
+        }
+
+        @media (min-width: 640px) {
+          .app-container {
+            padding-left: 2rem;
+            padding-right: 2rem;
+          }
+        }
+
+        @media (min-width: 1024px) {
+          .app-container {
+            padding-left: 4rem;
+            padding-right: 4rem;
+          }
+        }
+
+        @media (min-width: 1280px) {
+          .app-container {
+            padding-left: 6rem;
+            padding-right: 6rem;
+          }
+        }
+
+        @media (min-width: 1440px) {
+          .app-container {
+            max-width: 1440px !important;
+            padding-left: 5rem !important;
+            padding-right: 5rem !important;
+          }
+        }
+
+        @media (min-width: 1920px) {
+          .app-container {
+            max-width: 1800px !important;
+            padding-left: 6rem !important;
+            padding-right: 6rem !important;
+          }
+
+          .hero-section {
+            min-height: 580px !important;
+            padding-top: 3.5rem !important;
+            padding-bottom: 3.5rem !important;
+          }
+
+          .hero-image-outer {
+            width: 380px !important;
+            height: 380px !important;
+          }
+
+          .hero-image-inner {
+            width: 330px !important;
+            height: 330px !important;
+          }
+
+          .hero-badge {
+            font-size: 0.9rem !important;
+            padding: 0.4rem 1.1rem !important;
+          }
+
+          .hero-heading-1 {
+            font-size: 2.5rem !important;
+          }
+
+          .hero-heading-2 {
+            font-size: 2.15rem !important;
+          }
+
+          .hero-quote {
+            font-size: 1.25rem !important;
+            line-height: 1.5 !important;
+          }
+        }
+
+        @media (min-width: 2560px) {
+          .app-container {
+            max-width: 2400px !important;
+            padding-left: 8rem !important;
+            padding-right: 8rem !important;
+          }
+
+          .hero-section {
+            min-height: 660px !important;
+            padding-top: 4.5rem !important;
+            padding-bottom: 4.5rem !important;
+          }
+
+          .hero-image-outer {
+            width: 460px !important;
+            height: 460px !important;
+          }
+
+          .hero-image-inner {
+            width: 400px !important;
+            height: 400px !important;
+          }
+
+          .hero-badge {
+            font-size: 1.05rem !important;
+            padding: 0.5rem 1.35rem !important;
+          }
+
+          .hero-heading-1 {
+            font-size: 3.25rem !important;
+          }
+
+          .hero-heading-2 {
+            font-size: 2.75rem !important;
+          }
+
+          .hero-quote {
+            font-size: 1.55rem !important;
+            line-height: 1.55 !important;
+          }
+        }
+
+        @media (min-width: 3840px) {
+          .app-container {
+            max-width: 3400px !important;
+            padding-left: 10rem !important;
+            padding-right: 10rem !important;
+          }
+
+          .hero-section {
+            min-height: 800px !important;
+            padding-top: 6rem !important;
+            padding-bottom: 6rem !important;
+          }
+
+          .hero-image-outer {
+            width: 600px !important;
+            height: 600px !important;
+          }
+
+          .hero-image-inner {
+            width: 520px !important;
+            height: 520px !important;
+          }
+
+          .hero-badge {
+            font-size: 1.45rem !important;
+            padding: 0.75rem 2rem !important;
+            border-radius: 9999px !important;
+          }
+
+          .hero-badge-icon {
+            width: 1.65rem !important;
+            height: 1.65rem !important;
+          }
+
+          .hero-heading-1 {
+            font-size: 4.25rem !important;
+          }
+
+          .hero-heading-2 {
+            font-size: 3.65rem !important;
+          }
+
+          .hero-quote {
+            font-size: 2.15rem !important;
+            line-height: 1.6 !important;
+            max-width: 850px !important;
+          }
+        }
+      `}</style>
+
+      {/* BLUE BACKGROUND */}
       <div
         className="
           absolute
@@ -42,9 +206,7 @@ const HeroSection = () => {
         "
       />
 
-      {/* =====================================================
-          LEFT GREEN SLANT
-      ====================================================== */}
+      {/* LEFT GREEN SLANT */}
       <div
         className="
           absolute
@@ -66,9 +228,7 @@ const HeroSection = () => {
         }}
       />
 
-      {/* =====================================================
-          RIGHT GREEN SLANT
-      ====================================================== */}
+      {/* RIGHT GREEN SLANT */}
       <div
         className="
           absolute
@@ -90,9 +250,7 @@ const HeroSection = () => {
         }}
       />
 
-      {/* =====================================================
-          TOP LEFT DOTS
-      ====================================================== */}
+      {/* TOP LEFT DOTS */}
       <div
         className="
           absolute
@@ -110,15 +268,20 @@ const HeroSection = () => {
           {Array.from({ length: 24 }).map((_, index) => (
             <span
               key={index}
-              className="w-[3px] h-[3px] sm:w-[4px] sm:h-[4px] rounded-full bg-white"
+              className="
+                w-[3px]
+                h-[3px]
+                sm:w-[4px]
+                sm:h-[4px]
+                rounded-full
+                bg-white
+              "
             />
           ))}
         </div>
       </div>
 
-      {/* =====================================================
-          TOP RIGHT DOTS
-      ====================================================== */}
+      {/* TOP RIGHT DOTS */}
       <div
         className="
           absolute
@@ -136,15 +299,20 @@ const HeroSection = () => {
           {Array.from({ length: 28 }).map((_, index) => (
             <span
               key={index}
-              className="w-[3px] h-[3px] sm:w-[4px] sm:h-[4px] rounded-full bg-white"
+              className="
+                w-[3px]
+                h-[3px]
+                sm:w-[4px]
+                sm:h-[4px]
+                rounded-full
+                bg-white
+              "
             />
           ))}
         </div>
       </div>
 
-      {/* =====================================================
-          BOTTOM RIGHT DOTS
-      ====================================================== */}
+      {/* BOTTOM RIGHT DOTS */}
       <div
         className="
           absolute
@@ -162,28 +330,21 @@ const HeroSection = () => {
           {Array.from({ length: 24 }).map((_, index) => (
             <span
               key={index}
-              className="w-[3px] h-[3px] sm:w-[4px] sm:h-[4px] rounded-full bg-white"
+              className="
+                w-[3px]
+                h-[3px]
+                sm:w-[4px]
+                sm:h-[4px]
+                rounded-full
+                bg-white
+              "
             />
           ))}
         </div>
       </div>
 
-      {/* =====================================================
-          MAIN CONTAINER (MOBILE SAFE & PAGE UTILIZED)
-      ====================================================== */}
-      <div
-        className="
-          relative
-          z-10
-          w-full
-          max-w-[1500px]
-          mx-auto
-          px-4
-          sm:px-6
-          lg:px-12
-          xl:px-16
-        "
-      >
+      {/* MAIN CONTAINER */}
+      <div className="relative z-10 app-container">
         <div
           className="
             grid
@@ -196,9 +357,7 @@ const HeroSection = () => {
             min-w-0
           "
         >
-          {/* =================================================
-              IMAGE SECTION (CLEAN - NO BADGES)
-          ================================================== */}
+          {/* IMAGE SECTION */}
           <div
             className="
               relative
@@ -211,6 +370,7 @@ const HeroSection = () => {
           >
             <div
               className="
+                hero-image-outer
                 relative
                 flex
                 items-center
@@ -266,6 +426,7 @@ const HeroSection = () => {
               {/* IMAGE */}
               <div
                 className="
+                  hero-image-inner
                   relative
                   z-10
                   w-[155px]
@@ -290,11 +451,7 @@ const HeroSection = () => {
                 <img
                   src={img1}
                   alt="MegaClick Professional Services"
-                  className="
-                    w-full
-                    h-full
-                    object-cover
-                  "
+                  className="w-full h-full object-cover"
                 />
               </div>
 
@@ -369,9 +526,7 @@ const HeroSection = () => {
             </div>
           </div>
 
-          {/* =================================================
-              RIGHT CONTENT (MOBILE SAFE - NO OVERFLOW)
-          ================================================== */}
+          {/* RIGHT CONTENT */}
           <div
             className="
               relative
@@ -396,6 +551,7 @@ const HeroSection = () => {
             >
               <span
                 className="
+                  hero-badge
                   inline-flex
                   max-w-full
                   items-center
@@ -422,15 +578,17 @@ const HeroSection = () => {
                 <BriefcaseBusiness
                   size={15}
                   className="
+                    hero-badge-icon
                     text-green-400
                     flex-shrink-0
                   "
                 />
+
                 <span>Our Professional Services</span>
               </span>
             </div>
 
-            {/* MAIN HEADING WITH GRADIENT */}
+            {/* MAIN HEADING */}
             <h1
               className="
                 mt-3
@@ -445,6 +603,7 @@ const HeroSection = () => {
             >
               <span
                 className="
+                  hero-heading-1
                   block
                   text-[22px]
                   sm:text-[30px]
@@ -459,6 +618,7 @@ const HeroSection = () => {
 
               <span
                 className="
+                  hero-heading-2
                   block
                   mt-1
                   text-green-300
@@ -473,27 +633,11 @@ const HeroSection = () => {
               </span>
             </h1>
 
-            {/* UNDERLINE ACCENT */}
+            {/* QUOTE */}
             <div
               className="
-                mt-3
-                sm:mt-4
-                flex
-                justify-center
-                lg:justify-start
-                items-center
-                max-w-full
-              "
-            >
-              <div className="h-[3px] w-12 sm:w-16 bg-green-400 rounded-full flex-shrink-0" />
-              <div className="h-[2px] w-16 sm:w-24 bg-white/25 flex-shrink-0" />
-            </div>
-
-            {/* QUOTE (HIGH-CONTRAST READABLE TEXT) */}
-            <div
-              className="
-                mt-3.5
-                sm:mt-4.5
+                mt-4
+                sm:mt-5
                 w-full
                 max-w-[580px]
                 mx-auto
@@ -502,6 +646,7 @@ const HeroSection = () => {
             >
               <p
                 className="
+                  hero-quote
                   text-emerald-300
                   font-extrabold
                   text-[13px]
@@ -516,64 +661,41 @@ const HeroSection = () => {
                 "
               >
                 <span className="block">
-                  “ONE PLATFORM.
+                  “ONE PLATFORM COMPLETE
                 </span>
+
                 <span className="block">
-                  COMPLETE SOLUTIONS FOR
+                   SOLUTIONS FOR  BUSINESSES
                 </span>
+
                 <span className="block">
-                  BUSINESSES &amp; INDIVIDUALS”
+                  &amp; INDIVIDUALS”
                 </span>
               </p>
             </div>
-
-            {/* ACTION CTA BUTTON */}
-            <div className="mt-5 sm:mt-6 flex justify-center lg:justify-start">
-              <button
-                type="button"
-                onClick={scrollToServices}
-                className="
-                  group
-                  inline-flex
-                  items-center
-                  gap-2
-                  bg-green-500
-                  hover:bg-green-400
-                  active:bg-green-600
-                  text-gray-950
-                  font-extrabold
-                  text-xs
-                  sm:text-sm
-                  px-5
-                  sm:px-6
-                  py-2.5
-                  sm:py-3
-                  rounded-xl
-                  shadow-md
-                  shadow-green-500/25
-                  transition-all
-                  duration-300
-                  hover:-translate-y-0.5
-                  cursor-pointer
-                "
-              >
-                <span>Explore All Services</span>
-                <ArrowRight
-                  size={16}
-                  className="transition-transform duration-300 group-hover:translate-x-1"
-                />
-              </button>
-            </div>
-
           </div>
         </div>
       </div>
 
-      {/* =====================================================
-          BOTTOM LINE & GLOW
-      ====================================================== */}
+      {/* BOTTOM LINE & GLOW */}
       <div className="absolute bottom-0 left-0 right-0 h-px bg-white/20 z-20" />
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-24 sm:w-32 h-[3px] bg-white rounded-full blur-[4px] opacity-80 z-20" />
+
+      <div
+        className="
+          absolute
+          bottom-0
+          left-1/2
+          -translate-x-1/2
+          w-24
+          sm:w-32
+          h-[3px]
+          bg-white
+          rounded-full
+          blur-[4px]
+          opacity-80
+          z-20
+        "
+      />
     </section>
   );
 };

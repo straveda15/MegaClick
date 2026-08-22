@@ -249,3 +249,76 @@ animation:floatFast 4.8s ease-in-out infinite;
 .animate-hexagon-mobile {
   animation: hexagonMobile 3.5s ease-in-out infinite;
 }
+
+
+
+
+/* =====================================================
+   SHARED APP CONTAINER — Used across ALL page sections
+   Matches Navbar margins exactly at every breakpoint
+====================================================== */
+.app-container {
+  width: 100%;
+  max-width: 1500px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .app-container {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .app-container {
+    padding-left: 4rem;
+    padding-right: 4rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .app-container {
+    padding-left: 6rem;
+    padding-right: 6rem;
+  }
+}
+
+/* Standard Desktop (1440px x 900px) */
+@media (min-width: 1440px) {
+  .app-container {
+    max-width: 1440px;
+    padding-left: 5rem;
+    padding-right: 5rem;
+  }
+}
+
+/* Large Desktop (1920px x 1080px Full HD) */
+@media (min-width: 1920px) {
+  .app-container {
+    max-width: 1800px;
+    padding-left: 6rem;
+    padding-right: 6rem;
+  }
+}
+
+/* QHD / 2K */
+@media (min-width: 2560px) {
+  .app-container {
+    max-width: 2400px;
+    padding-left: 8rem;
+    padding-right: 8rem;
+  }
+}
+
+/* 4K Ultra-Wide (3840px x 2160px) */
+@media (min-width: 3840px) {
+  .app-container {
+    max-width: 3400px;
+    padding-left: 10rem;
+    padding-right: 10rem;
+  }
+}
