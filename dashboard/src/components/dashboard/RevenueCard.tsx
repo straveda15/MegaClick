@@ -19,13 +19,10 @@ export default function RevenueCard() {
     const confirmed: Array<{ id: string; client: string; service: string; amount: number; at: number }> = [];
 
     for (const client of clients) {
-      total += client.advancePayment?.amount ?? 0;
+      // Everything actually received from this client, advance included.
+      total += client.received;
 
       for (const service of client.services) {
-        // Only new money — a ledger entry funded by the advance was already
-        // counted when that advance came in.
-        total += service.directPaid;
-
         if (service.quotationConfirmed && service.quotation != null) {
           // Newest first needs a date; a service confirmed before the client
           // record carries one falls back to when the client was created.

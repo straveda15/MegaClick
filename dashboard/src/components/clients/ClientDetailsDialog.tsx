@@ -58,20 +58,11 @@ function ServiceCard({ service }: { service: ClientService }) {
           {service.category && (
             <p className="text-[11px] text-muted-foreground mt-0.5">{service.category}</p>
           )}
-          {/* What it costs, what has come in, and what is still owed. */}
-          {service.quotation != null ? (
-            <p className="text-xs text-foreground mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5">
-              <span className="font-medium">{rupees(service.quotation)}</span>
-              <span className="text-muted-foreground">·</span>
-              <span className="text-emerald-700">Paid {rupees(service.paid)}</span>
-              <span className="text-muted-foreground">·</span>
-              <span className={service.balance > 0 ? 'text-orange-600' : 'text-emerald-700'}>
-                Due {rupees(Math.max(0, service.balance))}
-              </span>
-            </p>
-          ) : (
-            <p className="text-xs font-medium text-muted-foreground mt-1">Quotation not set</p>
-          )}
+          {/* What this service costs. What has been paid is a property of the
+              account, not of one service — see the summary in the header. */}
+          <p className="text-xs font-medium text-foreground mt-1">
+            {service.quotation != null ? rupees(service.quotation) : 'Quotation not set'}
+          </p>
         </div>
         <div className="flex items-center gap-1.5 shrink-0">
           <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium ${
@@ -155,14 +146,13 @@ export function ClientDetailsDialog({ client, open, onOpenChange }: ClientDetail
   const [logOpen, setLogOpen] = useState(false);
   const [downloading, setDownloading] = useState(false);
 
-  // The whole engagement in money terms: what was quoted, what has come in
-  // (ledgers plus the shared advance), and what is still owed.
-  const totals = useMemo(() => {
-    const quoted = (client?.services ?? []).reduce((sum, s) => sum + (s.quotation ?? 0), 0);
-    const paid = (client?.services ?? []).reduce((sum, s) => sum + s.paid, 0)
-      + (client?.advancePayment?.amount ?? 0);
-    return { quoted, paid, due: Math.max(0, quoted - paid) };
-  }, [client]);
+  // The whole engagement in money terms, straight off the account.
+  const totals = useMemo(() => ({
+    quoted: client?.quoted ?? 0,
+    paid: client?.received ?? 0,
+    due: client?.due ?? 0,
+    credit: client?.credit ?? 0,
+  }), [client]);
 
   const handleDownloadInvoice = async () => {
     if (!client) return;
@@ -214,10 +204,10 @@ export function ClientDetailsDialog({ client, open, onOpenChange }: ClientDetail
               <span className={totals.due > 0 ? 'text-orange-600' : 'text-emerald-700'}>
                 Due <span className="font-semibold">{rupees(totals.due)}</span>
               </span>
-              {client.advancePayment && client.advancePayment.amount > 0 && (
+              {totals.credit > 0 && (
                 <>
                   <span className="text-muted-foreground">·</span>
-                  <span className="text-blue-700">Advance {rupees(client.advancePayment.amount)}</span>
+                  <span className="text-blue-700">Credit {rupees(totals.credit)}</span>
                 </>
               )}
             </p>

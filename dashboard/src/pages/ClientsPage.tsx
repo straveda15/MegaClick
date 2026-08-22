@@ -98,8 +98,8 @@ const CLIENT_COLUMNS = [
  * paid for. Work finished with money still outstanding is the case worth
  * flagging — it looks complete everywhere else on the board.
  */
-function completionState(services: ClientService[], advance: number) {
-  const withWork = services.filter((service) => service.steps.length > 0 || service.taskId);
+function completionState(client: Client) {
+  const withWork = client.services.filter((service) => service.steps.length > 0 || service.taskId);
   if (withWork.length === 0) return null;
 
   const workDone = withWork.every(
@@ -107,10 +107,8 @@ function completionState(services: ClientService[], advance: number) {
   );
   if (!workDone) return null;
 
-  const quoted = services.reduce((sum, service) => sum + (service.quotation ?? 0), 0);
-  const received = services.reduce((sum, service) => sum + service.paid, 0) + advance;
-
-  return received >= quoted ? 'completed' : 'payment_pending';
+  // Payments are account-wide, so what is still owed is the account's balance.
+  return client.due <= 0 ? 'completed' : 'payment_pending';
 }
 
 function CompletionBadge({ state }: { state: 'completed' | 'payment_pending' }) {
@@ -425,7 +423,7 @@ const ClientsPage = () => {
                   // With one service everything fits on the row; with several,
                   // the row summarises and the dropdown carries the detail.
                   const single = client.services.length === 1 ? client.services[0] : null;
-                  const state = completionState(client.services, client.advancePayment?.amount ?? 0);
+                  const state = completionState(client);
 
                   return [
                     <tr key={client._id} className="hover:bg-muted/30 transition-colors">
