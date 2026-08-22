@@ -5,7 +5,6 @@ const categories = [
     name: "All Services",
     icon: "🌐",
     count: 36,
-    services: []
   },
   {
     name: "Legal Services",
@@ -23,8 +22,27 @@ const categories = [
       "Trademark Registration",
       "Patent / Copyright Registration",
       "Digital 7/12 & Mutation Entries",
-      "Character Certificate by Police"
-    ]
+      "Character Certificate by Police",
+    ],
+  },
+  {
+    name: "Business & Financial Services",
+    icon: "💼",
+    count: 12,
+    services: [
+      "Income Tax Services",
+      "GST Registration & Filing",
+      "Bank Loan / Financing Consultancy",
+      "Liaisoning with Govt. Offices",
+      "Tender Consultancy",
+      "Company Registration & Annual Compliance",
+      "LLP Registration & Related Compliance",
+      "Accounting / Audit Services",
+      "Project Report & Financing",
+      "Trust Registration & Audit",
+      "Import Export Code (IEC)",
+      "Digital Signature Certificate (DSC)",
+    ],
   },
   {
     name: "Other Services",
@@ -42,72 +60,103 @@ const categories = [
       "FSSAI / Food License",
       "Passport Services",
       "Voter ID / PAN / TAN Services",
-      "Liquor Consumption License"
-    ]
+      "Liquor Consumption License",
+    ],
   },
-  {
-    name: "Business / Financial Services",
-    icon: "💼",
-    count: 12,
-    services: [
-      "Income Tax Services",
-      "GST Registration & Filing",
-      "Bank Loan / Financing Consultancy",
-      "Liaisoning with Govt. Offices",
-      "Tender Consultancy",
-      "Company Registration & Annual Compliance",
-      "LLP Registration & Related Compliance",
-      "Accounting / Audit Services",
-      "Project Report & Financing",
-      "Trust Registration & Audit",
-      "Import Export Code (IEC)",
-      "Digital Signature Certificate (DSC)"
-    ]
-  }
 ];
 
-// All categories except "All Services" — used for grouped display
 const serviceCategories = categories.filter((cat) => cat.name !== "All Services");
 
 const CategoriesSidebar = ({
   selectedCategory,
   setSelectedCategory,
   setSelectedService,
-  selectedService
+  selectedService,
 }) => {
   const [openCategory, setOpenCategory] = useState("Legal Services");
 
   return (
-    <aside
-      className="
-        sticky
-        top-24
-        bg-white
-        rounded-3xl
-        border
-        border-slate-100
-        shadow-xl
-        shadow-slate-200/40
-        p-4
-        sm:p-5
-        w-full
-      "
-    >
-      {/* =================================================
-          HEADER
-      ================================================= */}
+    <aside className="cat-sidebar sticky top-24 bg-white rounded-3xl border border-slate-100 shadow-xl shadow-slate-200/40 p-4 sm:p-5 w-full font-['Inter',sans-serif]">
+      <style>{`
+        /* Standard Desktop (1440px) */
+        @media (min-width: 1440px) {
+          .cat-sidebar {
+            padding: 1.25rem !important;
+          }
+        }
+
+        /* Large Desktop (1920px Full HD) */
+        @media (min-width: 1920px) {
+          .cat-sidebar {
+            padding: 1.5rem !important;
+            border-radius: 1.5rem !important;
+          }
+          .cat-header-title {
+            font-size: 0.95rem !important;
+          }
+          .cat-btn {
+            padding: 0.85rem 1rem !important;
+          }
+          .cat-btn-text {
+            font-size: 0.95rem !important;
+          }
+          .cat-badge {
+            font-size: 0.85rem !important;
+            padding: 0.2rem 0.75rem !important;
+          }
+          .cat-sub-btn {
+            font-size: 0.85rem !important;
+            padding: 0.55rem 0.85rem !important;
+          }
+        }
+
+        /* 4K Ultra-Wide Desktop (3840px) */
+        @media (min-width: 3840px) {
+          .cat-sidebar {
+            padding: 2.5rem !important;
+            border-radius: 2.25rem !important;
+          }
+          .cat-header-title {
+            font-size: 1.45rem !important;
+          }
+          .cat-header-icon {
+            width: 3.25rem !important;
+            height: 3.25rem !important;
+            font-size: 1.4rem !important;
+          }
+          .cat-btn {
+            padding: 1.35rem 1.6rem !important;
+            border-radius: 1.25rem !important;
+          }
+          .cat-btn-text {
+            font-size: 1.45rem !important;
+          }
+          .cat-badge {
+            font-size: 1.25rem !important;
+            padding: 0.35rem 1.25rem !important;
+          }
+          .cat-sub-btn {
+            font-size: 1.25rem !important;
+            padding: 0.85rem 1.35rem !important;
+            border-radius: 1rem !important;
+          }
+        }
+      `}</style>
+
+      {/* HEADER */}
       <div className="flex items-center gap-3 pb-3 mb-3 border-b border-slate-100">
-        <div className="w-8 h-8 rounded-xl bg-amber-100/70 text-amber-700 flex items-center justify-center text-sm shadow-xs">
+        <div className="cat-header-icon w-8 h-8 rounded-xl bg-amber-100/70 text-amber-700 flex items-center justify-center text-sm shadow-xs">
           📁
         </div>
-        <h3 className="font-extrabold text-xs tracking-wider text-slate-800 uppercase">
+        <h3
+          style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+          className="cat-header-title font-bold text-sm tracking-wider text-slate-800 uppercase"
+        >
           Categories
         </h3>
       </div>
 
-      {/* =================================================
-          CATEGORY LIST
-      ================================================= */}
+      {/* CATEGORY LIST */}
       <div className="space-y-1.5">
         {categories.map((category) => {
           const isSelected = selectedCategory === category.name;
@@ -116,8 +165,6 @@ const CategoriesSidebar = ({
 
           return (
             <div key={category.name} className="w-full">
-
-              {/* CATEGORY BUTTON */}
               <button
                 type="button"
                 onClick={() => {
@@ -126,6 +173,7 @@ const CategoriesSidebar = ({
                   setOpenCategory(isOpen ? "" : category.name);
                 }}
                 className={`
+                  cat-btn
                   w-full
                   flex
                   items-center
@@ -136,6 +184,7 @@ const CategoriesSidebar = ({
                   transition-all
                   duration-200
                   text-left
+                  cursor-pointer
                   ${
                     isSelected
                       ? "bg-emerald-50/80 border border-emerald-300/80 text-emerald-900 shadow-xs"
@@ -146,17 +195,17 @@ const CategoriesSidebar = ({
                 <div className="flex items-center gap-3 pr-2">
                   <span className="text-lg shrink-0">{category.icon}</span>
                   <span
-                    className={`text-xs sm:text-sm font-bold leading-tight ${
-                      isSelected ? "text-emerald-900" : "text-slate-700"
+                    className={`cat-btn-text text-xs sm:text-sm font-semibold leading-tight ${
+                      isSelected ? "text-emerald-900 font-bold" : "text-slate-700"
                     }`}
                   >
                     {category.name}
                   </span>
                 </div>
 
-                {/* COUNT BADGE */}
                 <span
                   className={`
+                    cat-badge
                     text-xs
                     px-2.5
                     py-0.5
@@ -175,22 +224,19 @@ const CategoriesSidebar = ({
                 </span>
               </button>
 
-              {/* =================================================
-                  SUB SERVICES DROPDOWN
-              ================================================= */}
-
-              {/* --- "All Services" grouped dropdown --- */}
+              {/* SUB-SERVICES */}
               {isAllServices && isOpen && (
                 <div className="my-2 ml-4 pl-3 border-l-2 border-emerald-300 space-y-4 transition-all">
                   {serviceCategories.map((group) => (
                     <div key={group.name}>
-                      {/* GROUP HEADING */}
-                      <p className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 mb-1.5 flex items-center gap-1.5">
+                      <p
+                        style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+                        className="text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5 flex items-center gap-1.5"
+                      >
                         <span>{group.icon}</span>
                         {group.name}
                       </p>
 
-                      {/* GROUP SERVICES */}
                       <div className="space-y-1">
                         {group.services.map((service) => {
                           const isServiceSelected = selectedService === service;
@@ -200,10 +246,11 @@ const CategoriesSidebar = ({
                               key={service}
                               type="button"
                               onClick={() => {
-                                setSelectedCategory(category.name);
+                                setSelectedCategory(group.name);
                                 setSelectedService(service);
                               }}
                               className={`
+                                cat-sub-btn
                                 w-full
                                 text-left
                                 px-3
@@ -216,6 +263,7 @@ const CategoriesSidebar = ({
                                 flex
                                 items-center
                                 gap-2
+                                cursor-pointer
                                 ${
                                   isServiceSelected
                                     ? "bg-emerald-100/70 text-emerald-900 font-bold"
@@ -225,9 +273,7 @@ const CategoriesSidebar = ({
                             >
                               <span
                                 className={`w-1.5 h-1.5 rounded-full shrink-0 ${
-                                  isServiceSelected
-                                    ? "bg-emerald-600"
-                                    : "bg-slate-300"
+                                  isServiceSelected ? "bg-emerald-600" : "bg-slate-300"
                                 }`}
                               />
                               <span>{service}</span>
@@ -240,7 +286,6 @@ const CategoriesSidebar = ({
                 </div>
               )}
 
-              {/* --- Individual category dropdown --- */}
               {!isAllServices && isOpen && (
                 <div className="my-2 ml-4 pl-3 border-l-2 border-emerald-300 space-y-1 transition-all">
                   {category.services.map((service) => {
@@ -255,6 +300,7 @@ const CategoriesSidebar = ({
                           setSelectedService(service);
                         }}
                         className={`
+                          cat-sub-btn
                           w-full
                           text-left
                           px-3
@@ -267,6 +313,7 @@ const CategoriesSidebar = ({
                           flex
                           items-center
                           gap-2
+                          cursor-pointer
                           ${
                             isServiceSelected
                               ? "bg-emerald-100/70 text-emerald-900 font-bold"
@@ -276,9 +323,7 @@ const CategoriesSidebar = ({
                       >
                         <span
                           className={`w-1.5 h-1.5 rounded-full shrink-0 ${
-                            isServiceSelected
-                              ? "bg-emerald-600"
-                              : "bg-slate-300"
+                            isServiceSelected ? "bg-emerald-600" : "bg-slate-300"
                           }`}
                         />
                         <span>{service}</span>
@@ -287,7 +332,6 @@ const CategoriesSidebar = ({
                   })}
                 </div>
               )}
-
             </div>
           );
         })}

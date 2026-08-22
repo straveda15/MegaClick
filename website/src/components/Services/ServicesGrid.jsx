@@ -11,7 +11,6 @@ const ServicesGrid = ({
 }) => {
   const [openCategories, setOpenCategories] = useState({});
 
-  // 1. Group services by category
   const categoriesList = useMemo(() => {
     if (Array.isArray(categoriesData) && categoriesData.length > 0) {
       return categoriesData;
@@ -20,7 +19,7 @@ const ServicesGrid = ({
       const grouped = services.reduce((acc, service) => {
         const catName =
           typeof service === "string"
-            ? "Services"
+            ? "Legal Services"
             : service.category || "Other Services";
 
         if (!acc[catName]) {
@@ -46,15 +45,18 @@ const ServicesGrid = ({
   };
 
   const isCategoryOpen = (catTitle) => {
-    return openCategories[catTitle] !== false; // Open by default
+    return openCategories[catTitle] !== false;
   };
 
-  // 2. Filter categories dynamically
   const displayedCategories = useMemo(() => {
     let list = categoriesList;
 
-    if (selectedCategory !== "All Services") {
-      list = list.filter((cat) => cat.title === selectedCategory);
+    if (selectedCategory && selectedCategory !== "All Services") {
+      list = list.filter(
+        (cat) =>
+          cat.title.toLowerCase().trim() ===
+          selectedCategory.toLowerCase().trim()
+      );
     }
 
     return list
@@ -63,11 +65,12 @@ const ServicesGrid = ({
           const sTitle = typeof s === "string" ? s : s.title;
 
           const matchesService = selectedService
-            ? sTitle === selectedService
+            ? sTitle.toLowerCase().trim() ===
+              selectedService.toLowerCase().trim()
             : true;
 
           const matchesSearch = searchTerm.trim()
-            ? sTitle.toLowerCase().includes(searchTerm.toLowerCase())
+            ? sTitle.toLowerCase().includes(searchTerm.toLowerCase().trim())
             : true;
 
           return matchesService && matchesSearch;
@@ -78,7 +81,6 @@ const ServicesGrid = ({
       .filter((cat) => cat.services.length > 0);
   }, [categoriesList, selectedCategory, selectedService, searchTerm]);
 
-  // 3. Dynamic counts
   const totalFilteredServicesCount = displayedCategories.reduce(
     (acc, cat) => acc + (cat.services ? cat.services.length : 0),
     0
@@ -86,38 +88,48 @@ const ServicesGrid = ({
   const totalDisplayedCategoriesCount = displayedCategories.length;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 font-['Inter',sans-serif]">
+      <style>{`
+        /* Large Desktop (1920px Full HD) */
+        @media (min-width: 1920px) {
+          .grid-summary-bar {
+            font-size: 1rem !important;
+            padding: 1.1rem 1.5rem !important;
+          }
+          .grid-category-title {
+            font-size: 1.35rem !important;
+          }
+          .grid-category-badge {
+            font-size: 0.95rem !important;
+            padding: 0.45rem 1rem !important;
+          }
+        }
+
+        /* 4K Ultra-Wide Desktop (3840px) */
+        @media (min-width: 3840px) {
+          .grid-summary-bar {
+            font-size: 1.5rem !important;
+            padding: 1.75rem 2.25rem !important;
+            border-radius: 1.5rem !important;
+          }
+          .grid-category-title {
+            font-size: 2.25rem !important;
+          }
+          .grid-category-badge {
+            font-size: 1.35rem !important;
+            padding: 0.75rem 1.6rem !important;
+          }
+        }
+      `}</style>
 
       {/* TOP SUMMARY BAR */}
-      <div
-        className="
-          bg-white
-          border
-          border-gray-200/80
-          rounded-2xl
-          px-5
-          py-3.5
-          shadow-xs
-          text-xs
-          sm:text-sm
-          text-gray-600
-          flex
-          flex-col
-          sm:flex-row
-          sm:items-center
-          justify-between
-          gap-2.5
-        "
-      >
-        {/* LEFT COUNTS */}
+      <div className="grid-summary-bar bg-white border border-gray-200/80 rounded-2xl px-5 py-3.5 shadow-xs text-xs sm:text-sm text-gray-600 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
         <div>
-          <span className="font-bold text-gray-900">{totalFilteredServicesCount}</span>{" "}
-          services across{" "}
+          <span className="font-bold text-gray-900">{totalFilteredServicesCount}</span> services across{" "}
           <span className="font-bold text-gray-900">{totalDisplayedCategoriesCount}</span>{" "}
           {totalDisplayedCategoriesCount === 1 ? "category" : "categories"}
         </div>
 
-        {/* RIGHT BADGES */}
         {(selectedCategory !== "All Services" || selectedService || searchTerm) && (
           <div className="flex items-center gap-2 flex-wrap">
             {selectedCategory !== "All Services" && (
@@ -139,101 +151,38 @@ const ServicesGrid = ({
         )}
       </div>
 
-      {/* CATEGORY ACCORDION CARDS */}
+      {/* CATEGORIES ACCORDION */}
       <div className="space-y-6">
         {displayedCategories.map((category) => {
           const isOpen = isCategoryOpen(category.title);
           const servicesList = category.services || [];
 
           return (
-            <div
-              key={category.id || category.title}
-              className="
-                bg-white
-                rounded-3xl
-                border
-                border-gray-200/80
-                shadow-sm
-                overflow-hidden
-                transition-all
-                duration-300
-              "
-            >
-              {/* CATEGORY HEADER (TURNS GRAY ON HOVER) */}
+            <div key={category.id || category.title} className="bg-white rounded-3xl border border-gray-200/80 shadow-sm overflow-hidden transition-all duration-300">
               <div
                 onClick={() => toggleCategory(category.title)}
-                className="
-                  p-4
-                  sm:p-5
-                  flex
-                  items-center
-                  justify-between
-                  gap-3
-                  bg-white
-                  hover:bg-slate-100/70
-                  border-b
-                  border-gray-100
-                  transition-colors
-                  duration-200
-                  cursor-pointer
-                  group/header
-                "
+                className="p-4 sm:p-5 flex items-center justify-between gap-3 bg-white hover:bg-slate-100/70 border-b border-gray-100 transition-colors duration-200 cursor-pointer group/header"
               >
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="w-8 h-8 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center text-lg shrink-0 group-hover/header:bg-amber-100 transition-colors">
                     {category.emoji || "📋"}
                   </div>
-                  <h2 className="text-base sm:text-lg font-bold text-gray-800 truncate group-hover/header:text-gray-900">
+                  <h2
+                    style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+                    className="grid-category-title text-base sm:text-lg font-bold text-gray-800 truncate group-hover/header:text-gray-900"
+                  >
                     {category.title}
                   </h2>
                 </div>
 
-                {/* DROPDOWN BADGE */}
-                <div
-                  className="
-                    flex
-                    items-center
-                    gap-2
-                    bg-emerald-50
-                    group-hover/header:bg-emerald-100
-                    text-emerald-700
-                    px-3.5
-                    py-1.5
-                    rounded-full
-                    text-xs
-                    sm:text-sm
-                    font-semibold
-                    transition-all
-                    shrink-0
-                  "
-                >
+                <div className="grid-category-badge flex items-center gap-2 bg-emerald-50 group-hover/header:bg-emerald-100 text-emerald-700 px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-semibold transition-all shrink-0">
                   <span>{servicesList.length} services</span>
-                  <ChevronDown
-                    size={16}
-                    className={`transition-transform duration-300 ${
-                      isOpen ? "rotate-180" : "rotate-0"
-                    }`}
-                  />
+                  <ChevronDown size={16} className={`transition-transform duration-300 ${isOpen ? "rotate-180" : "rotate-0"}`} />
                 </div>
               </div>
 
-              {/* SERVICE CARDS GRID CONTAINER */}
               {isOpen && (
-                <div
-                  className="
-                    p-4
-                    sm:p-6
-                    grid
-                    grid-cols-2
-                    sm:grid-cols-3
-                    lg:grid-cols-4
-                    gap-4
-                    sm:gap-5
-                    bg-slate-100/70
-                    border-t
-                    border-gray-100
-                  "
-                >
+                <div className="p-4 sm:p-6 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5 bg-slate-100/70 border-t border-gray-100">
                   {servicesList.map((service, index) => {
                     const serviceObj =
                       typeof service === "string"
@@ -253,7 +202,6 @@ const ServicesGrid = ({
           );
         })}
       </div>
-
     </div>
   );
 };
