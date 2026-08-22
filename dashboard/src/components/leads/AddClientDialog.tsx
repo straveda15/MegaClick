@@ -147,20 +147,6 @@ export function AddClientDialog({ open, onOpenChange }: AddClientDialogProps) {
     );
   };
 
-  /**
-   * Moving the start date drags an earlier target date along with it, rather
-   * than leaving the row in a state the form would only reject on submit.
-   */
-  const handleStartChange = (id: string, startAt: string) => {
-    setServices((current) =>
-      current.map((service) =>
-        service.id === id
-          ? { ...service, startAt, dueAt: service.dueAt && service.dueAt < startAt ? startAt : service.dueAt }
-          : service
-      )
-    );
-  };
-
   const removeService = (id: string) =>
     setServices((current) => current.filter((service) => service.id !== id));
 
@@ -179,30 +165,23 @@ export function AddClientDialog({ open, onOpenChange }: AddClientDialogProps) {
   const handleSubmit = () => {
     const client = form.client.trim();
     const phone = form.phone.trim();
+    const phoneDigits = phone.replace(/^\+91/, '');
 
-    if (!client || !phone) {
-      toast.error('Client name and phone number are required.');
+    if (!client) {
+      toast.error('Client name is required.');
+      return;
+    }
+    if (phoneDigits.length !== 10) {
+      toast.error('Enter a valid 10-digit phone number.');
       return;
     }
 
     const chosen = services.filter((service) => service.slug);
     const today = todayDateInput();
 
-    const missingStart = chosen.find((service) => !service.startAt);
-    if (missingStart) {
-      toast.error(`${missingStart.title || 'A service'}: pick a start date.`);
-      return;
-    }
-
-    const startsInPast = chosen.find((service) => service.startAt < today);
-    if (startsInPast) {
-      toast.error(`${startsInPast.title || 'A service'}: the start date can't be in the past.`);
-      return;
-    }
-
-    const outOfOrder = chosen.find((service) => service.dueAt && service.dueAt < service.startAt);
-    if (outOfOrder) {
-      toast.error(`${outOfOrder.title || 'A service'}: the target date can't be before the start date.`);
+    const dueInPast = chosen.find((service) => service.dueAt && service.dueAt < today);
+    if (dueInPast) {
+      toast.error(`${dueInPast.title || 'A service'}: the target date can't be in the past.`);
       return;
     }
 
@@ -398,11 +377,10 @@ export function AddClientDialog({ open, onOpenChange }: AddClientDialogProps) {
                 <div className="min-w-[600px]">
                   <div
                     className="grid gap-2 mb-1"
-                    style={{ gridTemplateColumns: 'minmax(0, 4fr) minmax(0, 2fr) minmax(0, 3fr) minmax(0, 3fr) minmax(0, 2fr) 28px' }}
+                    style={{ gridTemplateColumns: 'minmax(0, 4fr) minmax(0, 2fr) minmax(0, 3fr) minmax(0, 2fr) 28px' }}
                   >
                     <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Select Service</div>
                     <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Quotation</div>
-                    <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">When to Start</div>
                     <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Target Date</div>
                     <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Status</div>
                     <div></div>
@@ -412,7 +390,7 @@ export function AddClientDialog({ open, onOpenChange }: AddClientDialogProps) {
                     <div
                       key={service.id}
                       className="grid gap-2 items-center mb-2"
-                      style={{ gridTemplateColumns: 'minmax(0, 4fr) minmax(0, 2fr) minmax(0, 3fr) minmax(0, 3fr) minmax(0, 2fr) 28px' }}
+                      style={{ gridTemplateColumns: 'minmax(0, 4fr) minmax(0, 2fr) minmax(0, 3fr) minmax(0, 2fr) 28px' }}
                     >
                       <Select value={service.slug} onValueChange={(val) => handleServiceSelect(service.id, val)}>
                         <SelectTrigger className="h-9 text-xs">
@@ -447,14 +425,6 @@ export function AddClientDialog({ open, onOpenChange }: AddClientDialogProps) {
                       <Input
                         type="date"
                         min={todayDateInput()}
-                        value={service.startAt}
-                        onChange={(e) => handleStartChange(service.id, e.target.value)}
-                        className="h-9 text-xs"
-                      />
-
-                      <Input
-                        type="date"
-                        min={service.startAt || undefined}
                         value={service.dueAt}
                         onChange={(e) => updateService(service.id, 'dueAt', e.target.value)}
                         className="h-9 text-xs"
@@ -537,7 +507,7 @@ export function AddClientDialog({ open, onOpenChange }: AddClientDialogProps) {
             <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
             <Button
               onClick={handleSubmit}
-              disabled={createLead.isPending || !form.client || !form.phone}
+              disabled={createLead.isPending || !form.client.trim() || form.phone.replace(/^\+91/, '').length !== 10}
               className="bg-blue-600 hover:bg-blue-700 text-white"
             >
               {createLead.isPending ? 'Saving...' : 'Add Client'}

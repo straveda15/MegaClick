@@ -6,7 +6,7 @@ import { usePendingLeaves, useApproveLeave, useRejectLeave } from "@/hooks/useLe
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
 
-const tabs = ["Attendance (Today)", "Leave Approvals", "Payroll"];
+const tabs = ["Attendance (Today)", "Leave Approvals"];
 
 const HrLeavePage = () => {
   const [tab, setTab] = useState(0);
@@ -56,7 +56,7 @@ const HrLeavePage = () => {
   };
 
   return (
-    <GenericPage title="HR Data Station" subtitle="Attendance monitors, leave queues & payroll info.">
+    <GenericPage>
       <div className="flex gap-1 border-b border-border mb-6">
         {tabs.map((t, i) => (
           <button
@@ -255,13 +255,6 @@ const HrLeavePage = () => {
               </table>
             </div>
           </div>
-        </div>
-      )}
-
-      {tab === 2 && (
-        <div className="flex flex-col items-center justify-center py-16 gap-3 text-muted-foreground">
-          <p className="text-sm">Payroll runs will appear here</p>
-          <div className="text-xs bg-muted/50 px-3 py-1 rounded-full border border-border">Coming module in next sprint</div>
         </div>
       )}
     </GenericPage>

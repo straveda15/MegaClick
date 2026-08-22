@@ -72,6 +72,9 @@ router.post("/leads/:id/services/:serviceId/assign", salesLeadController.assignL
 router.patch("/leads/:id/temperature", salesLeadController.setLeadTemperature);
 router.patch("/leads/:id/status", salesLeadController.updateLeadStatus);
 router.patch("/leads/:id/customer", salesLeadController.updateLeadCustomer);
+// Full "Add Lead"-shaped edit — customer, services, dates, quotation — while
+// the lead is still unconfirmed.
+router.patch("/leads/:id", salesLeadController.updateLead);
 router.patch("/leads/:id/services/:serviceId/quotation", salesLeadController.updateServiceQuotation);
 // Confirm every service's quotation at once, with the shared advance payment.
 router.post("/leads/:id/confirm-quotation", salesLeadController.confirmLeadQuotation);

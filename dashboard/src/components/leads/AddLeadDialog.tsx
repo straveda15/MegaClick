@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Pencil, Plus, Trash2, IndianRupee } from 'lucide-react';
 import { toast } from 'sonner';
 import { sanitizeAmountInput } from '@/lib/amount';
@@ -17,9 +17,11 @@ import {
   LEAD_TEMPERATURES,
   LEAD_PRIORITIES,
   useCreateLead,
+  useUpdateLead,
   type LeadServiceInput,
   type LeadTemperature,
   type LeadPriority,
+  type SalesLead,
 } from '@/hooks/useLeads';
 
 /* ── Helpers ────────────────────────────────────────────────────────────────── */
@@ -80,16 +82,55 @@ const EMPTY_FORM: ClientForm = {
 interface AddLeadDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  /**
+   * Editing an existing (still-unconfirmed) lead instead of capturing a new
+   * one — the dialog pre-fills from it and saves back to it instead of
+   * creating a fresh record.
+   */
+  lead?: SalesLead | null;
 }
 
+/** Draft rows from an existing lead's services — the form's own shape, pre-filled. */
+const servicesFromLead = (lead: SalesLead): DraftService[] =>
+  (lead.services ?? []).map((service) => ({
+    id: service._id,
+    slug: service.slug ?? '',
+    title: service.title,
+    category: service.category ?? '',
+    categorySlug: service.categorySlug ?? '',
+    startAt: service.startAt ? formatDateInput(new Date(service.startAt)) : todayDateInput(),
+    dueAt: service.dueAt ? formatDateInput(new Date(service.dueAt)) : inDays(30),
+    quotation: service.quotation != null ? String(service.quotation) : '',
+    temperature: service.temperature ?? 'WARM',
+  }));
+
+const formFromLead = (lead: SalesLead): ClientForm => {
+  const customer = lead.customer;
+  const phone = (customer?.phone ?? '').trim();
+  return {
+    client: customer?.name ?? '',
+    phone: phone.startsWith('+91') ? phone : `+91${phone.replace(/\D/g, '')}`,
+    email: customer?.email ?? '',
+    company: customer?.company ?? '',
+    state: customer?.state || DEFAULT_STATE,
+    city: customer?.city ?? '',
+    followUpAt: lead.followUpAt ? formatDateInput(new Date(lead.followUpAt)) : '',
+    followUpNote: lead.followUpNote ?? '',
+  };
+};
+
 /**
- * Captures a client and everything they asked for.
+ * Captures a client and everything they asked for — or, when `lead` is
+ * passed, edits that same information on a lead that hasn't been confirmed
+ * yet (the identical form, pre-filled, saving back instead of creating).
  *
  * Each service carries its own start date, target date and status, because a
  * client rarely wants two filings on the same timeline — the marriage
  * registration may be urgent while the trademark can wait a quarter.
  */
-export function AddLeadDialog({ open, onOpenChange }: AddLeadDialogProps) {
+export function AddLeadDialog({ open, onOpenChange, lead }: AddLeadDialogProps) {
+  const isEdit = Boolean(lead);
+
   const defaultService = () => ({
     id: crypto.randomUUID(),
     slug: '',
@@ -108,6 +149,27 @@ export function AddLeadDialog({ open, onOpenChange }: AddLeadDialogProps) {
   const [cityIsFreeText, setCityIsFreeText] = useState(false);
 
   const createLead = useCreateLead();
+  const updateLead = useUpdateLead();
+  const saving = isEdit ? updateLead.isPending : createLead.isPending;
+
+  // Pre-fill from the lead being edited every time the dialog opens (or reset
+  // to a blank capture form when there's no lead) — state persists across
+  // opens, so it can't just be set once.
+  useEffect(() => {
+    if (!open) return;
+    if (lead) {
+      setForm(formFromLead(lead));
+      const rows = servicesFromLead(lead);
+      setServices(rows.length > 0 ? rows : [defaultService()]);
+      const state = lead.customer?.state || DEFAULT_STATE;
+      setCityIsFreeText(Boolean(lead.customer?.city) && citiesForState(state).length === 0);
+    } else {
+      setForm(EMPTY_FORM);
+      setServices([defaultService()]);
+      setCityIsFreeText(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, lead?._id]);
 
   const cities = useMemo(() => citiesForState(form.state), [form.state]);
 
@@ -186,25 +248,34 @@ export function AddLeadDialog({ open, onOpenChange }: AddLeadDialogProps) {
   const handleSubmit = () => {
     const client = form.client.trim();
     const phone = form.phone.trim();
+    const phoneDigits = phone.replace(/^\+91/, '');
 
-    if (!client || !phone) {
-      toast.error('Client name and phone number are required.');
+    if (!client) {
+      toast.error('Client name is required.');
+      return;
+    }
+    if (phoneDigits.length !== 10) {
+      toast.error('Enter a valid 10-digit phone number.');
       return;
     }
 
     const chosen = services.filter((service) => service.slug);
     const today = todayDateInput();
 
-    const missingStart = chosen.find((service) => !service.startAt);
-    if (missingStart) {
-      toast.error(`${missingStart.title || 'A service'}: pick a start date.`);
-      return;
-    }
+    // A service being edited may genuinely have started before today — only a
+    // brand-new capture is held to "start date can't be in the past".
+    if (!isEdit) {
+      const missingStart = chosen.find((service) => !service.startAt);
+      if (missingStart) {
+        toast.error(`${missingStart.title || 'A service'}: pick a start date.`);
+        return;
+      }
 
-    const startsInPast = chosen.find((service) => service.startAt < today);
-    if (startsInPast) {
-      toast.error(`${startsInPast.title || 'A service'}: the start date can't be in the past.`);
-      return;
+      const startsInPast = chosen.find((service) => service.startAt < today);
+      if (startsInPast) {
+        toast.error(`${startsInPast.title || 'A service'}: the start date can't be in the past.`);
+        return;
+      }
     }
 
     const outOfOrder = chosen.find((service) => service.dueAt && service.dueAt < service.startAt);
@@ -249,6 +320,31 @@ export function AddLeadDialog({ open, onOpenChange }: AddLeadDialogProps) {
         temperature: s.temperature as LeadTemperature,
       }));
 
+    if (isEdit && lead) {
+      updateLead.mutate(
+        {
+          id: lead._id,
+          name: client,
+          phone,
+          email: form.email.trim() || undefined,
+          company: form.company.trim() || undefined,
+          state: form.state || undefined,
+          city: form.city.trim() || undefined,
+          services: payload,
+          followUpAt: form.followUpAt || undefined,
+          followUpNote: form.followUpNote.trim() || undefined,
+        },
+        {
+          onSuccess: () => {
+            onOpenChange(false);
+            toast.success(`Saved changes for ${client}.`);
+          },
+          onError: (err: Error) => toast.error(err?.message || 'Failed to save changes.'),
+        }
+      );
+      return;
+    }
+
     createLead.mutate(
       {
         name: client,
@@ -287,7 +383,7 @@ export function AddLeadDialog({ open, onOpenChange }: AddLeadDialogProps) {
       >
         <DialogContent className="max-w-4xl p-0 overflow-hidden">
           <DialogHeader className="px-5 pt-4 pb-2 border-b border-border">
-            <DialogTitle>Add Lead</DialogTitle>
+            <DialogTitle>{isEdit ? `Edit Lead — ${lead?.customer?.name || lead?.customer?.phone || ''}` : 'Add Lead'}</DialogTitle>
           </DialogHeader>
           <div className="px-5 py-3 space-y-2 max-h-[75vh] overflow-y-auto">
             {/* ── Who they are ──────────────────────────────────────────────── */}
@@ -454,7 +550,7 @@ export function AddLeadDialog({ open, onOpenChange }: AddLeadDialogProps) {
 
                       <Input
                         type="date"
-                        min={todayDateInput()}
+                        min={isEdit ? undefined : todayDateInput()}
                         value={service.startAt}
                         onChange={(e) => handleStartChange(service.id, e.target.value)}
                         className="h-9 text-xs"
@@ -515,7 +611,7 @@ export function AddLeadDialog({ open, onOpenChange }: AddLeadDialogProps) {
                   <Input
                     id="lead-followup"
                     type="date"
-                    min={todayDateInput()}
+                    min={isEdit ? undefined : todayDateInput()}
                     value={form.followUpAt}
                     onChange={(e) => update('followUpAt', e.target.value)}
                     className="h-9"
@@ -545,9 +641,11 @@ export function AddLeadDialog({ open, onOpenChange }: AddLeadDialogProps) {
             <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
             <Button
               onClick={handleSubmit}
-              disabled={!form.client.trim() || !form.phone.trim() || createLead.isPending}
+              disabled={!form.client.trim() || form.phone.replace(/^\+91/, '').length !== 10 || saving}
             >
-              {createLead.isPending ? 'Adding…' : 'Add Lead'}
+              {isEdit
+                ? (saving ? 'Saving…' : 'Save Changes')
+                : (saving ? 'Adding…' : 'Add Lead')}
             </Button>
           </DialogFooter>
         </DialogContent>

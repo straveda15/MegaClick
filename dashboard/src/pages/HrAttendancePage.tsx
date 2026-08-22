@@ -193,7 +193,7 @@ const HrAttendancePage = () => {
     "bg-red-100 text-red-700";
 
   return (
-    <GenericPage title="Attendance Management" subtitle="Monitor and manage team attendance records and early exit requests.">
+    <GenericPage>
       {/* HR Pending Alert Banner — Only for Admins */}
       {currentUser?.role === "admin" && stats.hrPending > 0 && (
         <div className="mb-5 p-4 rounded-xl bg-amber-50 border border-amber-200 flex items-center gap-3 animate-in fade-in slide-in-from-top-2">

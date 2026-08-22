@@ -176,19 +176,24 @@ function ServiceActions({ service, onAssign, onInvoice, invoicing, compact = fal
   compact?: boolean;
 }) {
   const assigned = Boolean(service.assignedTo);
+  // A finished service has nothing left to hand off — reassigning it would
+  // only reopen work that's already done.
+  const isCompleted = service.taskStatus === 'completed' || service.stage === 'completed';
 
   return (
     <div className="flex items-center gap-1.5 justify-end">
-      <Button
-        size="sm"
-        variant={assigned ? 'outline' : 'default'}
-        onClick={onAssign}
-        className={compact ? 'h-7 px-2 text-[11px]' : ''}
-      >
-        {assigned
-          ? <><CheckCircle2 className="w-3.5 h-3.5" />Reassign</>
-          : <><UserPlus className="w-3.5 h-3.5" />Assign</>}
-      </Button>
+      {!isCompleted && (
+        <Button
+          size="sm"
+          variant={assigned ? 'outline' : 'default'}
+          onClick={onAssign}
+          className={compact ? 'h-7 px-2 text-[11px]' : ''}
+        >
+          {assigned
+            ? <><CheckCircle2 className="w-3.5 h-3.5" />Reassign</>
+            : <><UserPlus className="w-3.5 h-3.5" />Assign</>}
+        </Button>
+      )}
       <button
         type="button"
         onClick={onInvoice}

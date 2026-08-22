@@ -91,6 +91,15 @@ export function useSocket(): UseSocketReturn {
   const authRetried = useRef(false);
 
   useEffect(() => {
+    // The deployed backend runs as a Vercel serverless function (api/index.js),
+    // which never attaches Socket.IO — only the long-running src/server.js
+    // used for local dev does (Vercel's model can't hold a persistent
+    // connection open). Connecting from a production build just loops on
+    // 404s and failed reconnects for a server that was never listening.
+    // Pages already refetch normally via React Query without it. Drop this
+    // guard once the backend runs somewhere with a persistent process.
+    if (import.meta.env.PROD) return;
+
     const token = getAccessToken();
     if (!token) return;
 

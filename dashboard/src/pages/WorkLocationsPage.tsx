@@ -342,14 +342,6 @@ export default function WorkLocationsPage() {
                     onChange={(e) => setForm({ ...form, radiusMeters: e.target.value === "" ? 0 : parseInt(e.target.value) })}
                   />
                 </div>
-                <div>
-                  <label className="text-xs font-medium text-muted-foreground mb-1 block">Departments (comma-separated, optional)</label>
-                  <Input
-                    placeholder="e.g. warehouse, dispatch"
-                    value={deptInput}
-                    onChange={(e) => setDeptInput(e.target.value)}
-                  />
-                </div>
                 <div className="flex items-center justify-between py-2 border-t border-border/50">
                   <label className="text-sm font-medium">Active</label>
                   <Switch

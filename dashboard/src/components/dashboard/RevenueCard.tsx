@@ -1,17 +1,24 @@
 import { useMemo } from 'react';
 import { Loader2 } from 'lucide-react';
 import { useClients } from '@/hooks/useClients';
+import { isWithinRange, type DateRange } from '@/components/DateRangeFilter';
 
 const rupees = (value: number) =>
   value.toLocaleString('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 });
+
+interface RevenueCardProps {
+  dateRange?: DateRange;
+}
 
 /**
  * Revenue actually received — each service's customer ledger plus the advance
  * taken at confirmation. A ₹10,000 quotation against which ₹2,000 has been paid
  * contributes ₹2,000; the rest lands here on its own as the ledger is updated
  * on the Accounts page.
+ *
+ * Filtered by the dashboard date-range picker when one is active.
  */
-export default function RevenueCard() {
+export default function RevenueCard({ dateRange }: RevenueCardProps) {
   const { data: clients = [], isLoading } = useClients();
 
   const { received, quotations } = useMemo(() => {
@@ -19,6 +26,9 @@ export default function RevenueCard() {
     const confirmed: Array<{ id: string; client: string; service: string; amount: number; at: number }> = [];
 
     for (const client of clients) {
+      // Apply the date range filter — same pattern as ClientsPage / ServiceChargeCard.
+      if (!isWithinRange(client.createdAt, dateRange)) continue;
+
       // Everything actually received from this client, advance included.
       total += client.received;
 
@@ -42,7 +52,7 @@ export default function RevenueCard() {
       received: total,
       quotations: confirmed.sort((a, b) => b.at - a.at).slice(0, 5),
     };
-  }, [clients]);
+  }, [clients, dateRange]);
 
   return (
     <div className="kpi-card">

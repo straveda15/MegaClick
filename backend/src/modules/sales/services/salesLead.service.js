@@ -1220,15 +1220,26 @@ export const confirmLeadQuotation = async (leadId, payload, actorId) => {
         confirmedTitles.push(service.title);
     }
 
+    // The advance is edited here, not just set once — a re-confirmation that
+    // clears or lowers it must actually take, or the old figure keeps showing
+    // everywhere else (Accounts, the client's ledger) no matter what's resaved.
     const advance = payload?.advancePayment;
-    if (advance && Number(advance.amount) > 0) {
-        lead.advancePayment = {
-            amount: Math.max(0, Number(advance.amount) || 0),
-            mode: advance.mode === "online" ? "online" : "cash",
-            note: advance.note ? String(advance.note).trim() : undefined,
-            recordedAt: new Date(),
-            recordedBy: actorId,
-        };
+    if (advance) {
+        const amount = Math.max(0, Number(advance.amount) || 0);
+        const mode = advance.mode === "online" ? "online" : "cash";
+
+        if (amount > 0) {
+            const unchanged = lead.advancePayment?.amount === amount && lead.advancePayment?.mode === mode;
+            lead.advancePayment = {
+                amount,
+                mode,
+                note: advance.note ? String(advance.note).trim() : undefined,
+                recordedAt: unchanged ? lead.advancePayment.recordedAt : new Date(),
+                recordedBy: unchanged ? lead.advancePayment.recordedBy : actorId,
+            };
+        } else {
+            lead.advancePayment = null;
+        }
     }
 
     const advanceNote = lead.advancePayment?.amount
@@ -1332,6 +1343,7 @@ export const updateLeadCustomer = async (leadId, customerData) => {
     }
     if (customerData.email) customer.email = customerData.email;
     if (customerData.phone) customer.phone = customerData.phone;
+    if (customerData.company !== undefined) customer.company = customerData.company;
     if (customerData.flat) customer.addressLine1 = customerData.flat;
     if (customerData.area) customer.addressLine2 = customerData.area;
     if (customerData.city) customer.city = customerData.city;
@@ -1340,7 +1352,105 @@ export const updateLeadCustomer = async (leadId, customerData) => {
     if (customerData.landmark !== undefined) customer.landmark = customerData.landmark;
 
     await customer.save();
-    return lead;
+    return await getLeadDetail(lead._id);
+};
+
+/**
+ * Rewrites a lead's whole draft — customer details, every service (fields,
+ * dates, quotation, temperature), and the follow-up — the same shape "Add
+ * Lead" captures it in, so the edit dialog is that same form pre-filled.
+ *
+ * Only available before confirmation: once a service's quotation is confirmed
+ * the lead has become a client, and corrections move to the Clients board.
+ */
+export const updateManualLead = async (leadId, data, actorId) => {
+    const lead = await SalesLead.findById(leadId);
+    if (!lead) throw new Error("Lead not found");
+    if (!lead.customer) throw new Error("No customer associated with this lead");
+
+    const alreadyConfirmed = (lead.services ?? []).some((s) => s.quotationConfirmed);
+    if (alreadyConfirmed) {
+        const err = new Error("This lead has already been confirmed and become a client — edit it from the Clients board instead.");
+        err.statusCode = 400;
+        throw err;
+    }
+
+    const name = String(data.name ?? "").trim();
+    if (!name) {
+        const err = new Error("Name is required.");
+        err.statusCode = 400;
+        throw err;
+    }
+    const phone = String(data.phone ?? "").trim();
+    if (!phone) {
+        const err = new Error("Phone number is required — it identifies the customer.");
+        err.statusCode = 400;
+        throw err;
+    }
+
+    // Mutate the customer already linked to this lead, rather than re-keying by
+    // the (possibly just-edited) phone number — that would risk merging into a
+    // different customer's record if the new number happens to match one.
+    const customer = await SalesCustomer.findById(lead.customer);
+    if (!customer) throw new Error("Customer not found");
+    customer.name = name;
+    customer.phone = phone;
+    if (data.email !== undefined) customer.email = String(data.email ?? "").trim();
+    if (data.company !== undefined) customer.company = String(data.company ?? "").trim();
+    if (data.city !== undefined) customer.city = String(data.city ?? "").trim();
+    if (data.state !== undefined) customer.state = String(data.state ?? "").trim();
+    await customer.save();
+
+    const incomingServices = buildLeadServices(data);
+    const keyOf = (s) => String(s.slug || s.title || "").toLowerCase();
+    const existingByKey = new Map((lead.services ?? []).map((s) => [keyOf(s), s]));
+
+    // A service being dropped from the draft that's already assigned to
+    // someone would orphan their task — refuse rather than silently losing it.
+    const incomingKeys = new Set(incomingServices.map(keyOf));
+    const droppingAssigned = (lead.services ?? []).find((s) => !incomingKeys.has(keyOf(s)) && s.assignedTo);
+    if (droppingAssigned) {
+        const err = new Error(`"${droppingAssigned.title}" is already assigned to someone — remove it from the Clients board instead.`);
+        err.statusCode = 400;
+        throw err;
+    }
+
+    lead.services = incomingServices.map((incoming) => {
+        const existing = existingByKey.get(keyOf(incoming));
+        if (!existing) return incoming;
+
+        // Carry the subdocument forward (same _id, any assignment) and only
+        // refresh the fields this form actually edits. The very first
+        // quotation stays put once set, so a later confirmation can still show
+        // what changed since the lead was captured.
+        existing.title = incoming.title;
+        existing.slug = incoming.slug;
+        existing.category = incoming.category;
+        existing.categorySlug = incoming.categorySlug;
+        existing.temperature = incoming.temperature;
+        existing.startAt = incoming.startAt;
+        existing.dueAt = incoming.dueAt;
+        existing.quotation = incoming.quotation;
+        if (existing.initialQuotation == null) existing.initialQuotation = incoming.quotation;
+        return existing;
+    });
+
+    if (data.followUpAt !== undefined) {
+        const parsed = data.followUpAt ? new Date(data.followUpAt) : null;
+        lead.followUpAt = parsed && !Number.isNaN(parsed.getTime()) ? parsed : null;
+    }
+    if (data.followUpNote !== undefined) {
+        lead.followUpNote = String(data.followUpNote ?? "").trim() || undefined;
+    }
+
+    lead.statusHistory.push({
+        status: lead.status,
+        changedBy: actorId,
+        note: "Lead details updated",
+    });
+
+    await lead.save();
+    return await getLeadDetail(lead._id);
 };
 
 // ─── Sales Team & Lead Distribution ──────────────────────────────────────────

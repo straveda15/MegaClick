@@ -360,6 +360,23 @@ export const updateLeadCustomer = async (req, res, next) => {
     }
 };
 
+/**
+ * Full edit of an unconfirmed lead — the same "Add Lead" shape, pre-filled and
+ * resaved. Used by the Leads board's edit dialog.
+ */
+export const updateLead = async (req, res, next) => {
+    try {
+        const lead = await salesLeadService.updateManualLead(req.params.id, req.body, req.user._id);
+        res.status(200).json({
+            success: true,
+            message: "Lead updated successfully",
+            data: lead
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 // ─── Sales Team & Distribution ───────────────────────────────────────────────
 
 export const getSalesTeam = async (req, res, next) => {

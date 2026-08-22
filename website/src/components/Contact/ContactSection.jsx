@@ -51,6 +51,8 @@ const totalServiceCount = serviceOptions.reduce(
   0
 );
 
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 /**
  * Matches on the service name AND its category, so typing "legal" surfaces
  * every legal service and "gst" finds GST wherever it sits.
@@ -95,6 +97,8 @@ const ContactSection = () => {
   // A visitor can ask about several services at once — each becomes its own
   // piece of work on the dashboard, assigned to whoever handles that service.
   const [selectedServices, setSelectedServices] = useState([]);
+  // Digits only — the "+91" country code is fixed and shown alongside the field.
+  const [phone, setPhone] = useState("");
   const [submitting, setSubmitting] = useState(false);
   // { type: "success" | "error", message: string }
   const [submitState, setSubmitState] = useState(null);
@@ -112,6 +116,42 @@ const ContactSection = () => {
     const form = e.currentTarget;
     const data = new FormData(form);
 
+    const name = String(data.get("name") || "").trim();
+    const email = String(data.get("email") || "").trim();
+    const message = String(data.get("message") || "").trim();
+
+    if (name.length < 2) {
+      setSubmitState({
+        type: "error",
+        message: "Please enter your full name.",
+      });
+      return;
+    }
+
+    if (phone.length !== 10) {
+      setSubmitState({
+        type: "error",
+        message: "Enter a valid 10-digit phone number.",
+      });
+      return;
+    }
+
+    if (email && !EMAIL_PATTERN.test(email)) {
+      setSubmitState({
+        type: "error",
+        message: "Enter a valid email address, or leave it blank.",
+      });
+      return;
+    }
+
+    if (!message) {
+      setSubmitState({
+        type: "error",
+        message: "Tell us a little about your requirements.",
+      });
+      return;
+    }
+
     if (selectedServices.length === 0) {
       setSubmitState({
         type: "error",
@@ -127,10 +167,10 @@ const ContactSection = () => {
       const [primary] = selectedServices;
 
       await submitContactForm({
-        name: String(data.get("name") || "").trim(),
-        phone: String(data.get("phone") || "").trim(),
-        email: String(data.get("email") || "").trim(),
-        message: String(data.get("message") || "").trim(),
+        name,
+        phone: `+91${phone}`,
+        email,
+        message,
         services: selectedServices.map((option) => ({
           title: option.title,
           slug: option.slug,
@@ -150,6 +190,7 @@ const ContactSection = () => {
       });
       form.reset();
       setSelectedServices([]);
+      setPhone("");
     } catch (err) {
       setSubmitState({ type: "error", message: err.message });
     } finally {
@@ -428,23 +469,41 @@ const ContactSection = () => {
                 {/* PHONE */}
 
                 <div className="relative min-w-0">
-                  <Phone
-                    size={18}
+                  <div
                     className="
                       pointer-events-none
                       absolute
-                      left-4
-                      top-1/2
+                      left-0
+                      top-0
                       z-10
-                      -translate-y-1/2
-                      text-gray-400
+                      flex
+                      h-14
+                      items-center
+                      gap-1.5
+                      border-r
+                      border-gray-200
+                      pl-4
+                      pr-2
+                      text-sm
+                      font-medium
+                      text-gray-500
+                      sm:pl-4.5
                     "
-                  />
+                  >
+                    <Phone size={18} className="text-gray-400" />
+                    +91
+                  </div>
 
                   <input
                     type="tel"
                     name="phone"
+                    inputMode="numeric"
                     required
+                    value={phone}
+                    onChange={(e) =>
+                      setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))
+                    }
+                    maxLength={10}
                     placeholder="Phone Number *"
                     className="
                       h-14
@@ -454,7 +513,7 @@ const ContactSection = () => {
                       border
                       border-gray-200
                       bg-gray-50
-                      pl-11
+                      pl-24
                       pr-4
                       text-sm
                       text-gray-900
@@ -465,7 +524,7 @@ const ContactSection = () => {
                       focus:bg-white
                       focus:ring-4
                       focus:ring-blue-100
-                      sm:pl-12
+                      sm:pl-24
                       sm:text-base
                     "
                   />
