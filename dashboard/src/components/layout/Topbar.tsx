@@ -1,10 +1,8 @@
-import { Bell, Menu, LogOut, ChevronDown, AlertCircle, CheckCircle2, Plus, FileText, FileSpreadsheet } from "lucide-react";
+import { Menu, LogOut, ChevronDown, AlertCircle, CheckCircle2, Plus } from "lucide-react";
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { toast } from "sonner";
 import { useSidebarStore } from "@/store/sidebarStore";
 import { useAuth } from "@/context/AuthContext";
-import { MOCK_NOTIFICATIONS } from "@/data/mockNotifications";
 
 const Topbar = () => {
   const { toggleSidebar, toggleMobileSidebar } = useSidebarStore();
@@ -15,7 +13,6 @@ const Topbar = () => {
   const [roleMenuOpen, setRoleMenuOpen] = useState(false);
   const [switchingRole, setSwitchingRole] = useState<string | null>(null);
   const [roleError, setRoleError] = useState<string | null>(null);
-  const hasUnreadNotifications = MOCK_NOTIFICATIONS.some((n) => !n.read);
 
   const initials = user
     ? `${user.name?.[0] ?? ""}${user.lastName?.[0] ?? ""}`.toUpperCase()
@@ -47,10 +44,6 @@ const Topbar = () => {
       '/leads': 'Leads',
       '/tasks': 'Tasks',
       '/employees': 'Employees',
-      '/departments': 'Departments',
-      '/reports': 'Reports',
-      '/notifications': 'Notifications',
-      '/settings': 'Settings',
       '/attendance': 'Attendance',
       '/leave': 'Leave',
     };
@@ -84,16 +77,6 @@ const Topbar = () => {
       {/* Context-aware CTA button */}
       <div className="hidden sm:flex items-center gap-2">
 
-        {location.pathname === '/fees' && (
-          <button
-            onClick={() => window.dispatchEvent(new CustomEvent('openSetFeeModal'))}
-            className="flex items-center gap-1.5 h-9 px-4 rounded-full bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors shadow-sm"
-          >
-            <Plus className="w-4 h-4" />
-            Set Service Fee
-          </button>
-        )}
-
         {location.pathname === '/employees' && (
           <button
             onClick={() => window.dispatchEvent(new CustomEvent('openAddEmployeeModal'))}
@@ -102,24 +85,6 @@ const Topbar = () => {
             <Plus className="w-4 h-4" />
             Add Employee
           </button>
-        )}
-        {location.pathname === '/reports' && (
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => toast.info('Export PDF coming soon.')}
-              className="flex items-center gap-1.5 h-9 px-4 rounded-full border border-border bg-card text-foreground text-sm font-medium hover:bg-muted transition-colors shadow-sm"
-            >
-              <FileText className="w-4 h-4" />
-              Export PDF
-            </button>
-            <button
-              onClick={() => toast.info('Export Excel coming soon.')}
-              className="flex items-center gap-1.5 h-9 px-4 rounded-full bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors shadow-sm"
-            >
-              <FileSpreadsheet className="w-4 h-4" />
-              Export Excel
-            </button>
-          </div>
         )}
       </div>
 
@@ -227,17 +192,6 @@ const Topbar = () => {
             Add Client
           </button>
         )}
-
-        {/* Notifications */}
-        <button
-          onClick={() => navigate("/notifications")}
-          className="relative p-2 rounded-md hover:bg-muted transition-colors"
-        >
-          <Bell className="w-5 h-5 text-muted-foreground" />
-          {hasUnreadNotifications && (
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500" />
-          )}
-        </button>
 
         {/* User Menu */}
         <div className="relative">

@@ -35,6 +35,66 @@ const serviceProgress = (service, task, steps) => {
   return Math.round(((index + 1) / SERVICE_STAGE_VALUES.length) * 100);
 };
 
+/**
+ * Has this lead been confirmed? One confirmed service is enough — a client can
+ * be mid-negotiation on a second service while the first is already running.
+ */
+const isConfirmed = (lead) =>
+  (lead.services ?? []).some((service) => service.quotationConfirmed === true);
+
+/**
+ * Every receipt on the account, newest first: the advance taken at confirmation,
+ * the payments recorded since, and any receipt still sitting in a per-service
+ * ledger from before payments moved to the account.
+ *
+ * Entries the old ledger marked "credit" are skipped — those were the advance
+ * being allocated to a service, not new money, so counting them would bank the
+ * same rupee twice.
+ */
+const accountReceipts = (lead) => {
+  const rows = [];
+
+  if (lead.advancePayment?.amount > 0) {
+    rows.push({
+      _id: `advance-${String(lead._id)}`,
+      amount: Number(lead.advancePayment.amount) || 0,
+      mode: lead.advancePayment.mode ?? "cash",
+      note: lead.advancePayment.note || "Advance Payment",
+      paidAt: lead.advancePayment.recordedAt ?? lead.createdAt ?? null,
+      // The advance is captured when the quotation is confirmed, so it is
+      // corrected there rather than deleted from the ledger.
+      removable: false,
+    });
+  }
+
+  for (const payment of lead.payments ?? []) {
+    rows.push({
+      _id: String(payment._id),
+      amount: Number(payment.amount) || 0,
+      mode: payment.mode ?? "cash",
+      note: payment.note ?? "",
+      paidAt: payment.paidAt ?? null,
+      removable: true,
+    });
+  }
+
+  for (const service of lead.services ?? []) {
+    for (const entry of service.ledger ?? []) {
+      if (entry.source === "credit") continue;
+      rows.push({
+        _id: String(entry._id),
+        amount: Number(entry.amount) || 0,
+        mode: entry.mode ?? "cash",
+        note: entry.note || `Payment — ${service.title}`,
+        paidAt: entry.paidAt ?? null,
+        removable: true,
+      });
+    }
+  }
+
+  return rows.sort((a, b) => Number(new Date(b.paidAt ?? 0)) - Number(new Date(a.paidAt ?? 0)));
+};
+
 /** Human-facing reference, derived from the record so it needs no counter. */
 const shortId = (id) => `LD-${String(id).slice(-5).toUpperCase()}`;
 
@@ -52,7 +112,17 @@ const projectService = (service, lead) => {
     stage: task?.serviceRequest?.stage || service.stage || "documents_pending",
     temperature: service.temperature || "WARM",
     quotation: service.quotation ?? null,
+    // What this service was quoted at when the lead was first captured.
+    initialQuotation: service.initialQuotation ?? null,
     quotationConfirmed: service.quotationConfirmed ?? false,
+    // The agreed line items — what the Accounts page lists under the service,
+    // and what the invoice's Particulars are built from.
+    quotationItems: (service.quotationItems ?? []).map((item) => ({
+      _id: String(item._id),
+      name: item.name,
+      amount: Number(item.amount) || 0,
+    })),
+
     startAt: service.startAt ?? null,
     dueAt: task?.dueAt ?? service.dueAt ?? null,
     taskId: task ? String(task._id) : null,
@@ -123,10 +193,24 @@ export const listClients = async (user, filters = {}) => {
     .lean();
 
   const clients = leads
-    .filter((lead) => lead.customer)
+    // A lead only becomes a client once its quotation has been confirmed on the
+    // Leads board — that is the moment the engagement is real. Everything still
+    // being negotiated stays on Leads and out of Accounts.
+    .filter((lead) => lead.customer && isConfirmed(lead))
     .map((lead) => {
       const customer = lead.customer;
       const services = leadServices(lead).map((service) => projectService(service, lead));
+
+      // What the engagement costs, what has come in against it, and what is
+      // left. Payments are account-wide, so the balance is simply the one
+      // subtracted from the other.
+      const receipts = accountReceipts(lead);
+      const quoted = Math.round(
+        services.reduce((sum, service) => sum + (service.quotation ?? 0), 0) * 100
+      ) / 100;
+      const received = Math.round(
+        receipts.reduce((sum, receipt) => sum + receipt.amount, 0) * 100
+      ) / 100;
 
       const assigned = services.filter((service) => service.assignedTo);
       const active = assigned.filter((service) => !TERMINAL_TASK_STATUSES.includes(service.taskStatus));
@@ -181,6 +265,23 @@ export const listClients = async (user, filters = {}) => {
           })),
         message: lead.message ?? "",
         createdAt: lead.createdAt,
+        // One advance covering the whole engagement, captured when the
+        // quotations were confirmed. Counted as received alongside the ledgers.
+        advancePayment: lead.advancePayment?.amount
+          ? {
+              amount: Number(lead.advancePayment.amount) || 0,
+              mode: lead.advancePayment.mode ?? "cash",
+              note: lead.advancePayment.note ?? "",
+              recordedAt: lead.advancePayment.recordedAt ?? null,
+            }
+          : null,
+        // The account's money, in one place.
+        payments: receipts,
+        quoted,
+        received,
+        due: Math.max(0, Math.round((quoted - received) * 100) / 100),
+        // Paid past the total quoted: money held for whatever they ask for next.
+        credit: Math.max(0, Math.round((received - quoted) * 100) / 100),
         services,
         totalServices: services.length,
         assignedServices: assigned.length,

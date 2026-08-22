@@ -81,6 +81,60 @@ export const updateServiceQuotation = async (req, res, next) => {
     }
 };
 
+/**
+ * Confirms the whole engagement from the Leads board: the line items and final
+ * quotation for each service, plus the one advance payment covering them all.
+ */
+export const confirmLeadQuotation = async (req, res, next) => {
+    try {
+        const lead = await salesLeadService.confirmLeadQuotation(
+            req.params.id,
+            req.body,
+            req.user._id
+        );
+
+        res.status(200).json({
+            success: true,
+            message: "Quotation confirmed successfully",
+            data: lead
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const addLeadPayment = async (req, res, next) => {
+    try {
+        const lead = await salesLeadService.addLeadPayment(req.params.id, req.body, req.user._id);
+
+        res.status(201).json({
+            success: true,
+            message: "Payment recorded",
+            data: lead
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const deleteLeadPayment = async (req, res, next) => {
+    try {
+        const lead = await salesLeadService.deleteLeadPayment(
+            req.params.id,
+            req.params.paymentId,
+            req.user._id
+        );
+
+        res.status(200).json({
+            success: true,
+            message: "Payment removed",
+            data: lead
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 export const convertLead = async (req, res, next) => {
     try {
         const leadId = req.params.id;

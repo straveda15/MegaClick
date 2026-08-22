@@ -1,5 +1,11 @@
 import mongoose from "mongoose";
 
+/**
+ * How a payment reached us. "online" predates the split into named methods and
+ * is kept so historic entries stay valid.
+ */
+export const PAYMENT_METHODS = ["cash", "upi", "bank_transfer", "card", "online"];
+
 export const SERVICE_STAGE_VALUES = [
   "documents_pending",
   "documents_received",
@@ -45,12 +51,56 @@ const leadServiceSchema = new mongoose.Schema(
     assignedAt: { type: Date },
     dueAt: { type: Date },
     notes: { type: String, trim: true },
+    // The line items agreed with the client for this service — the "fields"
+    // captured in the Confirm dialog on the Leads board. Their sum is the
+    // final quotation below, and they become the invoice particulars.
+    quotationItems: {
+      type: [
+        new mongoose.Schema(
+          {
+            name: { type: String, required: true, trim: true },
+            amount: { type: Number, default: 0, min: 0 },
+          },
+          { _id: true, timestamps: false }
+        ),
+      ],
+      default: [],
+    },
     quotation: { type: Number, min: 0 },
+    // The figure quoted when the lead (or client) was first captured, before
+    // anyone sat down and itemised it. Kept untouched by later confirmations so
+    // the Accounts page can show what the client was originally told.
+    initialQuotation: { type: Number, min: 0 },
     // True only after the salesperson explicitly clicks "Confirm" in the
-    // Quotation dialog. Having a quotation amount does NOT mean it is confirmed
-    // — the amount comes from the Fees page defaults but confirmation is a
-    // deliberate act.
+    // Confirm dialog. Having a quotation amount does NOT mean it is confirmed
+    // — confirmation is a deliberate act.
     quotationConfirmed: { type: Boolean, default: false },
+    /**
+     * LEGACY. Payments used to be recorded per service; they now live on the
+     * lead as `payments`. Nothing writes here any more, but existing entries
+     * are still read into the account's history so no receipt is lost.
+     */
+    ledger: {
+      type: [
+        new mongoose.Schema(
+          {
+            amount: { type: Number, required: true, min: 0 },
+            // How the money reached us. "online" is retained for entries
+            // recorded before the methods were broken out.
+            mode: { type: String, enum: PAYMENT_METHODS, default: "cash" },
+            note: { type: String, trim: true },
+            paidAt: { type: Date, default: Date.now },
+            // "direct" is money that arrived for this service. "credit" is the
+            // customer's unallocated advance being applied to it — the money
+            // was already received, so it must not be counted as revenue twice.
+            source: { type: String, enum: ["direct", "credit"], default: "direct" },
+            recordedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+          },
+          { _id: true, timestamps: false }
+        ),
+      ],
+      default: [],
+    },
   },
   { _id: true, timestamps: false }
 );
@@ -136,6 +186,39 @@ const salesLeadSchema = new mongoose.Schema(
     estimatedValue: {
       type: Number,
       min: 0,
+    },
+    /**
+     * Every payment received from this client, oldest first.
+     *
+     * Money arrives against the account, not against a line item: a client
+     * paying 5,000 off a 30,000 engagement is not paying for one particular
+     * service, so nothing here is allocated to one. What is still owed is
+     * simply the total quoted minus everything received.
+     */
+    payments: {
+      type: [
+        new mongoose.Schema(
+          {
+            amount: { type: Number, required: true, min: 0 },
+            mode: { type: String, enum: PAYMENT_METHODS, default: "cash" },
+            note: { type: String, trim: true },
+            paidAt: { type: Date, default: Date.now },
+            recordedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+          },
+          { _id: true, timestamps: false }
+        ),
+      ],
+      default: [],
+    },
+    // One advance payment covering the whole engagement, captured alongside the
+    // quotations in the Confirm dialog. It is common to every service rather
+    // than tied to one, so it lives on the lead. Counted as received revenue.
+    advancePayment: {
+      amount: { type: Number, min: 0, default: 0 },
+      mode: { type: String, enum: PAYMENT_METHODS, default: "cash" },
+      note: { type: String, trim: true },
+      recordedAt: { type: Date },
+      recordedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     },
     followUpAt: {
       type: Date,

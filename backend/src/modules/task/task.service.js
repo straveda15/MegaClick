@@ -266,11 +266,34 @@ export const updateTaskStatus = async (taskId, userId, newStatus, options = {}) 
     if (task.startedAt) {
       task.timeTakenMinutes = Math.round((task.completedAt.getTime() - new Date(task.startedAt).getTime()) / 60000);
     }
+
+    // A finished task has a finished checklist. Without this the Clients board —
+    // which measures progress by steps ticked — would keep reading 2 of 6 on
+    // work everyone else considers done.
+    const steps = task.serviceRequest?.steps;
+    if (steps?.length) {
+      for (const step of steps) {
+        if (step.done) continue;
+        step.done = true;
+        step.completedAt = task.completedAt;
+        step.completedBy = userId;
+      }
+      task.serviceRequest.stage = "completed";
+    }
   } else {
     task.completedAt = null;
   }
 
   await task.save();
+
+  // Mirror the service's stage onto the lead, the same way ticking a single
+  // step does — so the Leads and Clients boards agree with the task board.
+  if (newStatus === "completed" && task.serviceRequest?.leadId && task.serviceRequest?.leadServiceId) {
+    await SalesLead.updateOne(
+      { _id: task.serviceRequest.leadId, "services._id": task.serviceRequest.leadServiceId },
+      { $set: { "services.$.stage": task.serviceRequest.stage } }
+    );
+  }
 
   // ── WORK LOG ───────────────────────────────────────────────────────────────
   // A completed task becomes a day-wise activity log entry for whoever did it,

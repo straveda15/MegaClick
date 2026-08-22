@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { API_BASE } from "./api-config";
 import type { ServiceStage } from "./useTasks";
 import type { FollowUpEntry } from "./useFollowUps";
+import type { AdvancePayment, LedgerEntry, QuotationItem } from "./useLeads";
 
 const BASE_URL = `${API_BASE}/api/v1/sales`;
 
@@ -48,7 +49,19 @@ export interface ClientService {
   /** Percentage — 0 until assigned, then the checklist, else the stage. */
   progress: number;
   quotation?: number;
+  /** What was quoted when the lead was first captured. */
+  initialQuotation?: number | null;
   quotationConfirmed?: boolean;
+  /** The agreed line items — also the invoice's Particulars. */
+  quotationItems: QuotationItem[];
+  /** Payments received against this service, oldest first. */
+  ledger: LedgerEntry[];
+  /** Sum of the ledger — what has actually been received for this service. */
+  paid: number;
+  /** The part of that which is new money, excluding applied customer credit. */
+  directPaid: number;
+  /** Quotation minus what has been received. */
+  balance: number;
   notes?: string;
 }
 
@@ -77,6 +90,8 @@ export interface Client {
   followUpHistory: FollowUpEntry[];
   message?: string;
   createdAt?: string;
+  /** One advance covering the whole engagement, taken at confirmation. */
+  advancePayment: AdvancePayment | null;
   services: ClientService[];
   totalServices: number;
   assignedServices: number;

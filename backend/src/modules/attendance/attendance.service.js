@@ -162,17 +162,20 @@ class AttendanceService {
       throw new AppError("halfDayReason is required when isHalfDay is true.", 400);
     }
 
-    const mode = workMode === "site" ? "site" : "office";
+    const mode = ["site", "home"].includes(workMode) ? workMode : "office";
 
     // ── Criterion 1: location gate ────────────────────────────────────────────
     // Office work is checked against the assigned geofence. Site work has no
-    // geofence to check, so the declared site stands in its place.
+    // geofence to check, so the declared site stands in its place. Work from
+    // home has neither — there is nowhere to be, so nothing is verified.
     let workLocation = null;
     let gpsVerified = false;
     let declaredSite;
 
     if (mode === "site") {
       declaredSite = validateSite(site);
+    } else if (mode === "home") {
+      // Nothing to verify: remote work is taken at its word.
     } else {
       ({ workLocation, gpsVerified } = await this.verifyWorkLocationGate(
         userId,
@@ -233,12 +236,12 @@ class AttendanceService {
       return { requiresConfirmation: true, message: "Please confirm punch-out." };
     }
 
-    // Punching out of a site shift is gated the same way it was punched in —
-    // on the declared site, not on an office geofence the employee was never
+    // Punching out of a site or work-from-home shift is gated the same way it
+    // was punched in — never on an office geofence the employee was never
     // expected to be inside.
     let workLocation = null;
     let gpsVerified = false;
-    if (attendance.workMode !== "site") {
+    if (!["site", "home"].includes(attendance.workMode)) {
       ({ workLocation, gpsVerified } = await this.verifyWorkLocationGate(
         userId,
         gpsLocation,

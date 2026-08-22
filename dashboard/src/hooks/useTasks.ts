@@ -175,6 +175,11 @@ export function useUpdateTaskStatus() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["tasks"] });
+      // Completing a task closes out its checklist server-side, which is what
+      // the Clients board measures progress by — refetch both boards or they
+      // keep showing the work as unfinished.
+      qc.invalidateQueries({ queryKey: ["clients"] });
+      qc.invalidateQueries({ queryKey: ["leads"] });
     },
   });
 }

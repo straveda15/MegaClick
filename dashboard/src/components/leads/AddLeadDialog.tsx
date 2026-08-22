@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Pencil, Plus, Trash2, IndianRupee } from 'lucide-react';
 import { toast } from 'sonner';
+import { sanitizeAmountInput } from '@/lib/amount';
 import { Button } from '@/components/ui/button';
 import {
   Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
@@ -38,6 +39,9 @@ const inDays = (days: number) => {
 
 /** Sentinel for "the city I need isn't in the list" — switches to free text. */
 const OTHER_CITY = '__other__';
+
+/** How long a follow-up note may run. Long enough for a reminder, not an essay. */
+const NOTE_MAX = 100;
 
 /* ── Form shape ─────────────────────────────────────────────────────────────── */
 
@@ -150,8 +154,28 @@ export function AddLeadDialog({ open, onOpenChange }: AddLeadDialogProps) {
     );
   };
 
+  /**
+   * Moving the start date drags an earlier target date along with it, rather
+   * than leaving the row in a state the form would only reject on submit.
+   */
+  const handleStartChange = (id: string, startAt: string) => {
+    setServices((current) =>
+      current.map((service) =>
+        service.id === id
+          ? { ...service, startAt, dueAt: service.dueAt && service.dueAt < startAt ? startAt : service.dueAt }
+          : service
+      )
+    );
+  };
+
   const removeService = (id: string) =>
     setServices((current) => current.filter((service) => service.id !== id));
+
+  /** Every service already chosen on the form — see the dropdown filter. */
+  const takenSlugs = useMemo(
+    () => new Set(services.map((service) => service.slug).filter(Boolean)),
+    [services]
+  );
 
   const reset = () => {
     setForm(EMPTY_FORM);
@@ -168,10 +192,47 @@ export function AddLeadDialog({ open, onOpenChange }: AddLeadDialogProps) {
       return;
     }
 
-    const dated = services.filter((service) => service.startAt && service.dueAt && service.slug);
-    const outOfOrder = dated.find((service) => service.dueAt < service.startAt);
+    const chosen = services.filter((service) => service.slug);
+    const today = todayDateInput();
+
+    const missingStart = chosen.find((service) => !service.startAt);
+    if (missingStart) {
+      toast.error(`${missingStart.title || 'A service'}: pick a start date.`);
+      return;
+    }
+
+    const startsInPast = chosen.find((service) => service.startAt < today);
+    if (startsInPast) {
+      toast.error(`${startsInPast.title || 'A service'}: the start date can't be in the past.`);
+      return;
+    }
+
+    const outOfOrder = chosen.find((service) => service.dueAt && service.dueAt < service.startAt);
     if (outOfOrder) {
       toast.error(`${outOfOrder.title || 'A service'}: the target date can't be before the start date.`);
+      return;
+    }
+
+    // A quotation is optional, but a nonsense one is not.
+    const badQuote = chosen.find((service) => {
+      if (!service.quotation.trim()) return false;
+      const amount = Number(service.quotation);
+      return !Number.isFinite(amount) || amount < 0;
+    });
+    if (badQuote) {
+      toast.error(`${badQuote.title || 'A service'}: enter a valid quotation amount (0 or more).`);
+      return;
+    }
+
+    // Belt and braces — the dropdown already hides what's taken.
+    const slugs = chosen.map((service) => service.slug);
+    if (new Set(slugs).size !== slugs.length) {
+      toast.error('The same service is listed more than once.');
+      return;
+    }
+
+    if (form.followUpNote.trim().length > NOTE_MAX) {
+      toast.error(`Keep the follow-up note under ${NOTE_MAX} characters.`);
       return;
     }
 
@@ -366,27 +427,36 @@ export function AddLeadDialog({ open, onOpenChange }: AddLeadDialogProps) {
                           <SelectValue placeholder="Select..." />
                         </SelectTrigger>
                         <SelectContent>
-                          {catalog?.services.map((s) => (
-                            <SelectItem key={s.slug} value={s.slug} className="text-xs">{s.title}</SelectItem>
-                          ))}
+                          {/* A service already on the form is off the menu —
+                              asking for the same filing twice is a mistake, not
+                              a second order. */}
+                          {catalog?.services
+                            .filter((s) => s.slug === service.slug || !takenSlugs.has(s.slug))
+                            .map((s) => (
+                              <SelectItem key={s.slug} value={s.slug} className="text-xs">{s.title}</SelectItem>
+                            ))}
                         </SelectContent>
                       </Select>
 
                       <div className="relative">
                         <IndianRupee className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
                         <Input
-                          type="number"
+                          type="text"
+                          inputMode="decimal"
                           placeholder="0.00"
                           value={service.quotation}
-                          onChange={(e) => updateService(service.id, 'quotation', e.target.value)}
+                          onChange={(e) =>
+                            updateService(service.id, 'quotation', sanitizeAmountInput(e.target.value))
+                          }
                           className="h-9 pl-8 text-xs"
                         />
                       </div>
 
                       <Input
                         type="date"
+                        min={todayDateInput()}
                         value={service.startAt}
-                        onChange={(e) => updateService(service.id, 'startAt', e.target.value)}
+                        onChange={(e) => handleStartChange(service.id, e.target.value)}
                         className="h-9 text-xs"
                       />
 
@@ -453,11 +523,17 @@ export function AddLeadDialog({ open, onOpenChange }: AddLeadDialogProps) {
                 </div>
 
                 <div className="space-y-1.5">
-                  <Label htmlFor="lead-followup-note" className="text-[11px]">Follow-up note</Label>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="lead-followup-note" className="text-[11px]">Follow-up note</Label>
+                    <span className={`text-[10px] ${form.followUpNote.length >= NOTE_MAX ? 'text-amber-600' : 'text-muted-foreground'}`}>
+                      {form.followUpNote.length}/{NOTE_MAX}
+                    </span>
+                  </div>
                   <textarea
                     id="lead-followup-note"
+                    maxLength={NOTE_MAX}
                     value={form.followUpNote}
-                    onChange={(e) => update('followUpNote', e.target.value)}
+                    onChange={(e) => update('followUpNote', e.target.value.slice(0, NOTE_MAX))}
                     className="w-full min-h-[38px] h-9 rounded-md border border-border bg-card px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
                   />
                 </div>

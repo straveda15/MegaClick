@@ -69,6 +69,54 @@ export interface LeadEmployee {
 }
 
 /**
+ * How a payment reached us. "online" predates the split into named methods and
+ * is kept so historic entries keep rendering.
+ */
+export const PAYMENT_METHODS = ["cash", "upi", "bank_transfer", "card"] as const;
+export type PaymentMode = (typeof PAYMENT_METHODS)[number] | "online";
+
+/** What a payment is: new money, or the customer's own advance being applied. */
+export type PaymentSource = "direct" | "credit";
+
+export const PAYMENT_METHOD_LABELS: Record<string, string> = {
+  cash: "Cash",
+  upi: "UPI",
+  bank_transfer: "Bank Transfer",
+  card: "Card",
+  online: "Online",
+};
+
+/** One line of a service's quotation: what it covers and what it costs. */
+export interface QuotationItem {
+  _id?: string;
+  name: string;
+  amount: number;
+}
+
+/** One payment received against a service — a row of its customer ledger. */
+export interface LedgerEntry {
+  _id: string;
+  amount: number;
+  mode: PaymentMode;
+  note?: string;
+  paidAt?: string | null;
+  /** "credit" means this was the customer's unallocated advance being applied. */
+  source?: PaymentSource;
+}
+
+/** The single advance covering the whole engagement, taken at confirmation. */
+export interface AdvancePayment {
+  amount: number;
+  mode: PaymentMode;
+  note?: string;
+  recordedAt?: string | null;
+  /** How much of the advance has been applied to a service. */
+  allocated?: number;
+  /** What is still sitting on the account as customer credit. */
+  unallocated?: number;
+}
+
+/**
  * One service the client opted for. A lead can carry several, and each is
  * assigned to an employee on its own — hence the per-service task and assignee.
  */
@@ -81,10 +129,16 @@ export interface LeadService {
   stage?: ServiceStage;
   /** How warm this particular request is — tracked per service. */
   temperature?: LeadTemperature;
-  /** Custom quotation amount given to the client */
+  /** The agreed line items — what the client is being charged for, and why. */
+  quotationItems?: QuotationItem[];
+  /** Custom quotation amount given to the client — the sum of the line items. */
   quotation?: number;
+  /** What was quoted when the lead was first captured. */
+  initialQuotation?: number | null;
   /** True only if the salesperson explicitly confirmed the quotation */
   quotationConfirmed?: boolean;
+  /** Every payment received against this service, oldest first. */
+  ledger?: LedgerEntry[];
   /** When work on this service should begin. */
   startAt?: string;
   /** The target date promised to the client; becomes the task's deadline. */
@@ -128,6 +182,8 @@ export interface SalesLead {
   source: string;
   /** Everything the client asked for. Each entry is assigned separately. */
   services?: LeadService[];
+  /** One advance payment covering every service, taken at confirmation. */
+  advancePayment?: AdvancePayment | null;
   /** Legacy single-service mirror of services[0]. */
   productInterest?: string;
   serviceSlug?: string;
@@ -315,6 +371,86 @@ export function useUpdateServiceQuotation() {
         body: JSON.stringify({ quotation }),
       });
       const data = await readJson(res, "Failed to update quotation");
+      return data.data as SalesLead;
+    },
+    onSuccess: (lead) => {
+      qc.invalidateQueries({ queryKey: ["leads"] });
+      qc.invalidateQueries({ queryKey: ["lead", lead?._id] });
+      qc.invalidateQueries({ queryKey: ["clients"] });
+    },
+  });
+}
+
+/**
+ * Confirms the whole engagement in one call: the line items and final quotation
+ * for every service, plus the one advance payment covering them all.
+ */
+export function useConfirmLeadQuotation() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ leadId, services, advancePayment }: {
+      leadId: string;
+      services: Array<{ serviceId: string; items: QuotationItem[]; quotation: number }>;
+      advancePayment?: { amount: number; mode: PaymentMode; note?: string };
+    }) => {
+      const res = await fetch(`${BASE_URL}/leads/${leadId}/confirm-quotation`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...authHeaders() },
+        body: JSON.stringify({ services, advancePayment }),
+      });
+      const data = await readJson(res, "Failed to confirm quotation");
+      return data.data as SalesLead;
+    },
+    onSuccess: (lead) => {
+      qc.invalidateQueries({ queryKey: ["leads"] });
+      qc.invalidateQueries({ queryKey: ["lead", lead?._id] });
+      qc.invalidateQueries({ queryKey: ["clients"] });
+    },
+  });
+}
+
+/** Records one payment against a service's customer ledger. */
+export function useAddLedgerEntry() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ leadId, serviceId, amount, mode, note, paidAt, source }: {
+      leadId: string;
+      serviceId: string;
+      amount: number;
+      mode: PaymentMode;
+      note?: string;
+      paidAt?: string;
+      /** Omit for new money; "credit" applies the customer's advance. */
+      source?: PaymentSource;
+    }) => {
+      const res = await fetch(`${BASE_URL}/leads/${leadId}/services/${serviceId}/ledger`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...authHeaders() },
+        body: JSON.stringify({ amount, mode, note, paidAt, source }),
+      });
+      const data = await readJson(res, "Failed to record payment");
+      return data.data as SalesLead;
+    },
+    onSuccess: (lead) => {
+      qc.invalidateQueries({ queryKey: ["leads"] });
+      qc.invalidateQueries({ queryKey: ["lead", lead?._id] });
+      qc.invalidateQueries({ queryKey: ["clients"] });
+    },
+  });
+}
+
+/** Removes a wrongly recorded payment from a service's ledger. */
+export function useDeleteLedgerEntry() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ leadId, serviceId, entryId }: {
+      leadId: string; serviceId: string; entryId: string;
+    }) => {
+      const res = await fetch(
+        `${BASE_URL}/leads/${leadId}/services/${serviceId}/ledger/${entryId}`,
+        { method: "DELETE", headers: authHeaders() }
+      );
+      const data = await readJson(res, "Failed to remove payment");
       return data.data as SalesLead;
     },
     onSuccess: (lead) => {

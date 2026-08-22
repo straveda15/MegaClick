@@ -1,8 +1,9 @@
 import { useState } from "react";
 import GenericPage from "@/components/GenericPage";
 import {
-  Calendar, Search, User, Clock, CheckCircle2, XCircle,
-  AlertCircle, Edit, Trash2, History, Users, Timer, ShieldAlert, AlertTriangle
+  Search, User, Clock, CheckCircle2, XCircle,
+  AlertCircle, Edit, Trash2, History, Users, Timer, ShieldAlert, AlertTriangle,
+  Home, MapPin, Building2
 } from "lucide-react";
 import {
   useAttendanceByDate,
@@ -12,6 +13,7 @@ import {
   useApproveHalfDay,
   AttendanceRecord
 } from "@/hooks/useAttendance";
+import { SingleDateFilter } from "@/components/DateRangeFilter";
 import { useTeam } from "@/hooks/useTeam";
 import { useAuth } from "@/context/AuthContext";
 import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
@@ -30,6 +32,40 @@ import {
 
 
 type Tab = "all" | "pending";
+
+/**
+ * Where an employee is working from today. A site punch has no geofence behind
+ * it, so the site the employee declared is named here — it is the only record
+ * of where they actually were.
+ */
+const WorkModeCell = ({ record }: { record: AttendanceRecord }) => {
+  const mode = record.workMode ?? "office";
+
+  const style =
+    mode === "home" ? "bg-violet-50 text-violet-700 border-violet-200"
+    : mode === "site" ? "bg-blue-50 text-blue-700 border-blue-200"
+    : "bg-slate-50 text-slate-700 border-slate-200";
+
+  const label = mode === "home" ? "Work From Home" : mode === "site" ? "Site" : "Office";
+  const Icon = mode === "home" ? Home : mode === "site" ? MapPin : Building2;
+
+  return (
+    <div className="min-w-0">
+      <span className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase border ${style}`}>
+        <Icon className="w-3 h-3" />
+        {label}
+      </span>
+      {mode === "site" && (
+        <p
+          className="text-[11px] text-muted-foreground mt-1 truncate max-w-[160px]"
+          title={record.site?.name || "Unnamed site"}
+        >
+          {record.site?.name || "Unnamed site"}
+        </p>
+      )}
+    </div>
+  );
+};
 
 const HrAttendancePage = () => {
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0]);
@@ -225,16 +261,12 @@ const HrAttendancePage = () => {
               className="h-9 pl-9 pr-3 rounded-lg border border-border bg-background text-sm focus:ring-2 focus:ring-primary/20 outline-none w-48"
             />
           </div>
-          {/* Date picker */}
-          <div className="flex items-center gap-2 border border-border rounded-lg px-3 h-9 bg-background">
-            <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
-            <input
-              type="date"
-              className="bg-transparent text-sm outline-none"
-              value={selectedDate}
-              onChange={e => setSelectedDate(e.target.value)}
-            />
-          </div>
+          {/* Date picker — the same control the Leads and Accounts boards use. */}
+          <SingleDateFilter
+            value={selectedDate}
+            onChange={setSelectedDate}
+            label="Pick a date"
+          />
         </div>
 
         <button
@@ -251,17 +283,17 @@ const HrAttendancePage = () => {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border bg-muted/5">
-                {["Employee", "Status", "Punch In / Out", "Total Hours", "Requests", "Actions"].map(h => (
+                {["Employee", "Status", "Working From", "Punch In / Out", "Total Hours", "Requests", "Actions"].map(h => (
                   <th key={h} className="text-left py-4 px-4 text-[11px] font-bold uppercase text-muted-foreground tracking-widest whitespace-nowrap">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody className="divide-y divide-border/50">
               {isLoading ? (
-                <tr><td colSpan={7} className="py-20 text-center text-muted-foreground italic">Loading attendance...</td></tr>
+                <tr><td colSpan={8} className="py-20 text-center text-muted-foreground italic">Loading attendance...</td></tr>
               ) : filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="py-20 text-center text-muted-foreground">
+                  <td colSpan={8} className="py-20 text-center text-muted-foreground">
                     <History className="w-10 h-10 mx-auto mb-2 opacity-20" />
                     <p>{activeTab === "pending" ? "No pending approval requests." : "No records for this date."}</p>
                   </td>
@@ -288,6 +320,10 @@ const HrAttendancePage = () => {
                       <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${statusColor(record.status)}`}>
                         {record.status}
                       </span>
+                    </td>
+                    {/* Where the shift is being worked from — a site names itself. */}
+                    <td className="py-3.5 px-4">
+                      <WorkModeCell record={record} />
                     </td>
                     <td className="py-4 px-4 font-mono text-[11px] text-muted-foreground whitespace-nowrap">
                       <div className="flex flex-col">

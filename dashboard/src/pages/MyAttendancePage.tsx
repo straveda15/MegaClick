@@ -8,6 +8,7 @@ import {
   Play,
   Square,
   Calendar,
+  Home,
   AlertCircle,
   ShieldAlert
 } from "lucide-react";
@@ -33,8 +34,8 @@ const MyAttendancePage = () => {
   const [halfDayReason, setHalfDayReason] = useState("");
   // Where today's shift is being worked from. Office punches are checked
   // against the assigned geofence; site punches have none, so the employee
-  // says where they are instead.
-  const [workMode, setWorkMode] = useState<"office" | "site">("office");
+  // says where they are instead; working from home has no location at all.
+  const [workMode, setWorkMode] = useState<"office" | "site" | "home">("office");
   const [siteName, setSiteName] = useState("");
   const [siteLat, setSiteLat] = useState("");
   const [siteLng, setSiteLng] = useState("");
@@ -210,6 +211,12 @@ const MyAttendancePage = () => {
                 </div>
 
                 {/* Where this shift is being worked from */}
+                {todayRecord.workMode === "home" && (
+                  <div className="flex items-start gap-2.5 p-3 rounded-xl bg-violet-50 border border-violet-200">
+                    <Home className="w-4 h-4 text-violet-600 flex-shrink-0 mt-0.5" />
+                    <p className="text-sm font-bold text-violet-800">Working from home</p>
+                  </div>
+                )}
                 {todayRecord.workMode === "site" && (
                   <div className="flex items-start gap-2.5 p-3 rounded-xl bg-blue-50 border border-blue-200">
                     <MapPin className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
@@ -335,10 +342,11 @@ const MyAttendancePage = () => {
                     because it decides whether the geofence applies at all. */}
                 <div className="space-y-2 py-2 border-t border-border/50">
                   <p className="text-sm font-medium text-foreground">Working from</p>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-3 gap-2">
                     {([
                       { value: "office", label: "Office", hint: "Checked against your work location" },
                       { value: "site", label: "Site", hint: "Tell us where you are" },
+                      { value: "home", label: "Work From Home", hint: "No location check" },
                     ] as const).map((option) => (
                       <button
                         key={option.value}
@@ -393,6 +401,16 @@ const MyAttendancePage = () => {
                       </button>
                       <p className="text-[10px] text-muted-foreground">
                         Site punches aren't distance-checked — the site you enter is recorded as-is.
+                      </p>
+                    </div>
+                  )}
+
+                  {workMode === "home" && (
+                    <div className="flex items-start gap-2.5 rounded-lg border border-border bg-muted/20 p-3">
+                      <Home className="w-4 h-4 text-muted-foreground flex-shrink-0 mt-0.5" />
+                      <p className="text-[11px] text-muted-foreground">
+                        Working from home isn't distance-checked — your shift is recorded as remote
+                        and shows as Work From Home on the attendance register.
                       </p>
                     </div>
                   )}
