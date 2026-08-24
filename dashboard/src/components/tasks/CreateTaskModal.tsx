@@ -101,14 +101,14 @@ export function CreateTaskModal({ onClose }: { onClose: () => void }) {
 
   const matchingClients = useMemo(() => {
     const q = clientSearch.trim().toLowerCase();
-    if (!q) return clients.slice(0, 6);
+    if (!q) return clients;
     return clients.filter((c) =>
       c.name.toLowerCase().includes(q) ||
       c.phone.includes(q) ||
       c.company.toLowerCase().includes(q) ||
       c.clientId.toLowerCase().includes(q) ||
       c.services.some((s) => s.title.toLowerCase().includes(q))
-    ).slice(0, 6);
+    );
   }, [clients, clientSearch]);
 
   /** Picking a service names the task after it and pulls in its own target date. */

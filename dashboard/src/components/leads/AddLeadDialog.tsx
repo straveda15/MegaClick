@@ -45,6 +45,8 @@ const OTHER_CITY = '__other__';
 /** How long a follow-up note may run. Long enough for a reminder, not an essay. */
 const NOTE_MAX = 100;
 
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 /* ── Form shape ─────────────────────────────────────────────────────────────── */
 
 /** A service on the form, with the dates and status captured alongside it. */
@@ -259,7 +261,21 @@ export function AddLeadDialog({ open, onOpenChange, lead }: AddLeadDialogProps) 
       return;
     }
 
+    const email = form.email.trim();
+    if (!email) {
+      toast.error('Email is required.');
+      return;
+    }
+    if (!EMAIL_PATTERN.test(email)) {
+      toast.error('Enter a valid email address.');
+      return;
+    }
+
     const chosen = services.filter((service) => service.slug);
+    if (chosen.length === 0) {
+      toast.error('Select at least one service.');
+      return;
+    }
     const today = todayDateInput();
 
     // A service being edited may genuinely have started before today — only a
@@ -284,14 +300,13 @@ export function AddLeadDialog({ open, onOpenChange, lead }: AddLeadDialogProps) 
       return;
     }
 
-    // A quotation is optional, but a nonsense one is not.
     const badQuote = chosen.find((service) => {
-      if (!service.quotation.trim()) return false;
+      if (!service.quotation.trim()) return true;
       const amount = Number(service.quotation);
-      return !Number.isFinite(amount) || amount < 0;
+      return !Number.isFinite(amount) || amount <= 0;
     });
     if (badQuote) {
-      toast.error(`${badQuote.title || 'A service'}: enter a valid quotation amount (0 or more).`);
+      toast.error(`${badQuote.title || 'A service'}: enter a quotation amount.`);
       return;
     }
 
@@ -418,7 +433,7 @@ export function AddLeadDialog({ open, onOpenChange, lead }: AddLeadDialogProps) 
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="lead-email">Email</Label>
+                <Label htmlFor="lead-email">Email *</Label>
                 <Input
                   id="lead-email"
                   type="email"
@@ -494,7 +509,7 @@ export function AddLeadDialog({ open, onOpenChange, lead }: AddLeadDialogProps) 
             <section>
               <div className="flex items-center justify-between gap-3 mb-3">
                 <div>
-                  <Label>Services</Label>
+                  <Label>Services *</Label>
                 </div>
               </div>
 
@@ -505,7 +520,7 @@ export function AddLeadDialog({ open, onOpenChange, lead }: AddLeadDialogProps) 
                     style={{ gridTemplateColumns: 'minmax(0, 4fr) minmax(0, 2fr) minmax(0, 3fr) minmax(0, 3fr) minmax(0, 2fr) 28px' }}
                   >
                     <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Select Service</div>
-                    <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Quotation</div>
+                    <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Quotation *</div>
                     <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">When to Start</div>
                     <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Target Date</div>
                     <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Status</div>
@@ -641,7 +656,14 @@ export function AddLeadDialog({ open, onOpenChange, lead }: AddLeadDialogProps) 
             <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
             <Button
               onClick={handleSubmit}
-              disabled={!form.client.trim() || form.phone.replace(/^\+91/, '').length !== 10 || saving}
+              disabled={
+                !form.client.trim() ||
+                form.phone.replace(/^\+91/, '').length !== 10 ||
+                !EMAIL_PATTERN.test(form.email.trim()) ||
+                !services.some((service) => service.slug) ||
+                services.some((service) => service.slug && (!service.quotation.trim() || Number(service.quotation) <= 0)) ||
+                saving
+              }
             >
               {isEdit
                 ? (saving ? 'Saving…' : 'Save Changes')
