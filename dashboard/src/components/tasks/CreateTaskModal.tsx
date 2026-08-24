@@ -99,17 +99,24 @@ export function CreateTaskModal({ onClose }: { onClose: () => void }) {
     setSteps((current) => current.map((step, i) => ({ ...step, done: i <= index })));
   };
 
+  // A client with nothing left to do has no service a new task could attach
+  // to — leave them off the picker entirely.
+  const assignableClients = useMemo(
+    () => clients.filter((c) => c.services.some((s) => s.stage !== 'completed')),
+    [clients]
+  );
+
   const matchingClients = useMemo(() => {
     const q = clientSearch.trim().toLowerCase();
-    if (!q) return clients;
-    return clients.filter((c) =>
+    if (!q) return assignableClients;
+    return assignableClients.filter((c) =>
       c.name.toLowerCase().includes(q) ||
       c.phone.includes(q) ||
       c.company.toLowerCase().includes(q) ||
       c.clientId.toLowerCase().includes(q) ||
       c.services.some((s) => s.title.toLowerCase().includes(q))
     );
-  }, [clients, clientSearch]);
+  }, [assignableClients, clientSearch]);
 
   /** Picking a service names the task after it and pulls in its own target date. */
   const chooseService = (next: ClientService) => {

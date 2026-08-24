@@ -557,7 +557,7 @@ export default function TasksPage() {
         <WorkLogsPanel />
       ) : (
         /* Task list */
-        <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-5 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 items-start">
           {isLoading ? (
             <div className="text-center py-12 text-sm text-muted-foreground">Loading tasks…</div>
           ) : tasks.length === 0 ? (
