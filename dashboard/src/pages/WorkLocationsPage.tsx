@@ -39,9 +39,14 @@ const emptyForm: WorkLocationInput = {
   assignedDepartments: [],
 };
 
-/** A location name is a label, not free text — letters/digits plus common
- *  punctuation, so stray symbols or an all-whitespace name can't slip through. */
-const NAME_PATTERN = /^[a-zA-Z0-9][a-zA-Z0-9 .,'&()/-]*$/;
+/** A location name is letters only — no digits, symbols or punctuation. Spaces
+ *  are allowed between words so multi-word names stay typable. */
+const NAME_PATTERN = /^[a-zA-Z][a-zA-Z ]*$/;
+
+/** Strips anything that isn't a letter or a space, filtered on the way in. */
+function sanitizeNameInput(raw: string): string {
+  return raw.replace(/[^a-zA-Z ]/g, '');
+}
 
 /**
  * Keeps a coordinate field to digits and a single decimal point.
@@ -144,7 +149,7 @@ export default function WorkLocationsPage() {
     if (trimmedName.length < 2 || !NAME_PATTERN.test(trimmedName)) {
       toast({
         title: "Invalid name",
-        description: "Use letters, numbers, spaces and basic punctuation only — at least 2 characters.",
+        description: "Letters only — at least 2 characters.",
         variant: "destructive",
       });
       return;
@@ -341,11 +346,11 @@ export default function WorkLocationsPage() {
                   <Input
                     required
                     minLength={2}
-                    pattern="^[a-zA-Z0-9][a-zA-Z0-9 .,'&()/-]*$"
-                    title="Letters, numbers, spaces and basic punctuation only"
+                    pattern="^[a-zA-Z][a-zA-Z ]*$"
+                    title="Letters only"
                     placeholder="e.g. MegaClick HQ"
                     value={form.name}
-                    onChange={(e) => setForm({ ...form, name: e.target.value })}
+                    onChange={(e) => setForm({ ...form, name: sanitizeNameInput(e.target.value) })}
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-2">
