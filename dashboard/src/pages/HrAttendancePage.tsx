@@ -17,6 +17,7 @@ import { SingleDateFilter } from "@/components/DateRangeFilter";
 import { useTeam } from "@/hooks/useTeam";
 import { useAuth } from "@/context/AuthContext";
 import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
+import ModalPortal from "@/components/ui/ModalPortal";
 import { toast } from "sonner";
 import {
   AlertDialog,
@@ -73,6 +74,9 @@ const HrAttendancePage = () => {
   const [activeTab, setActiveTab] = useState<Tab>("all");
   const [isOverrideModalOpen, setIsOverrideModalOpen] = useState(false);
   const [editingRecord, setEditingRecord] = useState<Partial<AttendanceRecord> | null>(null);
+  const [overrideStatus, setOverrideStatus] = useState<string>("present");
+  const [overridePunchIn, setOverridePunchIn] = useState("");
+  const [overridePunchOut, setOverridePunchOut] = useState("");
 
   // Lock background scroll while the Manual Override modal is open.
   useBodyScrollLock(isOverrideModalOpen);
@@ -148,8 +152,14 @@ const HrAttendancePage = () => {
     } catch (err: any) { toast.error(err.message, { id: t }); }
   };
 
+  const toTimeInput = (iso?: string) =>
+    iso ? new Date(iso).toLocaleTimeString([], { hour12: false, hour: "2-digit", minute: "2-digit" }) : "";
+
   const openOverride = (record?: AttendanceRecord) => {
     setEditingRecord(record || { date: selectedDate });
+    setOverrideStatus(record?.status || "present");
+    setOverridePunchIn(toTimeInput(record?.punchIn));
+    setOverridePunchOut(toTimeInput(record?.punchOut));
     setIsOverrideModalOpen(true);
   };
 
@@ -167,7 +177,8 @@ const HrAttendancePage = () => {
     const todayISO = new Date().toLocaleDateString("en-CA");
     if (date > todayISO) { toast.error("Date cannot be in the future"); return; }
 
-    if (status === "present" || status === "half-day") {
+    const worksToday = status === "present" || status === "half-day";
+    if (worksToday) {
       if (!punchIn || !punchOut) { toast.error("Punch In and Punch Out are required"); return; }
       if (punchOut <= punchIn) { toast.error("Punch Out must be after Punch In"); return; }
     }
@@ -177,8 +188,10 @@ const HrAttendancePage = () => {
         await overrideMutation.mutateAsync({
         userId,
         date,
-        punchIn: punchIn ? new Date(`${date}T${punchIn}`).toISOString() : undefined,
-        punchOut: punchOut ? new Date(`${date}T${punchOut}`).toISOString() : undefined,
+        // Absent/on-leave carry no punch times — clear any stale ones rather
+        // than leaving a prior present/half-day's times on the record.
+        punchIn: worksToday && punchIn ? new Date(`${date}T${punchIn}`).toISOString() : null,
+        punchOut: worksToday && punchOut ? new Date(`${date}T${punchOut}`).toISOString() : null,
         status,
       });
       toast.success("Updated", { id: t });
@@ -422,9 +435,11 @@ const HrAttendancePage = () => {
         </div>
       </div>
 
-      {/* Override Modal */}
+      {/* Override Modal — portalled to <body> so the backdrop escapes the page's
+          own stacking context and actually covers the topbar/sidebar. */}
       {isOverrideModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+        <ModalPortal>
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-background border border-border rounded-2xl shadow-2xl w-full max-w-lg animate-in fade-in zoom-in duration-200">
             <div className="flex items-center justify-between px-6 py-4 border-b border-border">
               <h2 className="text-base font-bold">Manual Override</h2>
@@ -447,26 +462,44 @@ const HrAttendancePage = () => {
                 <input name="date" type="date" required defaultValue={editingRecord?.date || selectedDate}
                   className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm outline-none" />
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-muted-foreground uppercase">Punch In</label>
-                  <input name="punchIn" type="time"
-                    defaultValue={editingRecord?.punchIn ? new Date(editingRecord.punchIn).toLocaleTimeString([], { hour12: false, hour: "2-digit", minute: "2-digit" }) : ""}
-                    className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm outline-none" />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-muted-foreground uppercase">Punch Out</label>
-                  <input name="punchOut" type="time"
-                    defaultValue={editingRecord?.punchOut ? new Date(editingRecord.punchOut).toLocaleTimeString([], { hour12: false, hour: "2-digit", minute: "2-digit" }) : ""}
-                    className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm outline-none" />
-                </div>
-              </div>
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-muted-foreground uppercase">Status</label>
-                <select name="status" defaultValue={editingRecord?.status || "present"}
+                <select name="status" value={overrideStatus}
+                  onChange={(e) => {
+                    const next = e.target.value;
+                    setOverrideStatus(next);
+                    // Absent/on-leave don't carry punch times — drop whatever was there.
+                    if (next !== "present" && next !== "half-day") {
+                      setOverridePunchIn("");
+                      setOverridePunchOut("");
+                    }
+                  }}
                   className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm outline-none">
                   {["present", "half-day", "absent", "on-leave"].map(s => <option key={s} value={s}>{s}</option>)}
                 </select>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                {(() => {
+                  const worksToday = overrideStatus === "present" || overrideStatus === "half-day";
+                  return (
+                    <>
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-bold text-muted-foreground uppercase">Punch In</label>
+                        <input name="punchIn" type="time" disabled={!worksToday}
+                          value={overridePunchIn}
+                          onChange={(e) => setOverridePunchIn(e.target.value)}
+                          className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm outline-none disabled:opacity-50 disabled:cursor-not-allowed" />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-bold text-muted-foreground uppercase">Punch Out</label>
+                        <input name="punchOut" type="time" disabled={!worksToday}
+                          value={overridePunchOut}
+                          onChange={(e) => setOverridePunchOut(e.target.value)}
+                          className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm outline-none disabled:opacity-50 disabled:cursor-not-allowed" />
+                      </div>
+                    </>
+                  );
+                })()}
               </div>
               <div className="flex gap-3 pt-2">
                 <button type="button" onClick={() => setIsOverrideModalOpen(false)}
@@ -479,6 +512,7 @@ const HrAttendancePage = () => {
             </form>
           </div>
         </div>
+        </ModalPortal>
       )}
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={!!deleteId} onOpenChange={(open) => !open && setDeleteId(null)}>

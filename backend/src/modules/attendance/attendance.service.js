@@ -424,8 +424,10 @@ class AttendanceService {
         if (attendance.punchIn && attendance.punchOut) {
           const diffMs = new Date(attendance.punchOut).getTime() - new Date(attendance.punchIn).getTime();
           attendance.totalHours = Math.round((diffMs / (1000 * 60 * 60)) * 100) / 100;
+        } else {
+          attendance.totalHours = 0;
         }
-        
+
         await attendance.save();
       } else {
         // Create new override

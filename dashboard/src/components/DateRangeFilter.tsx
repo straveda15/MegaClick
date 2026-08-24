@@ -63,8 +63,9 @@ export function isWithinRange(iso: string | null | undefined, range: DateRange |
 
 /**
  * A calendar icon that opens a date range picker: quick ranges down the left,
- * the calendar itself on the right. Collapsed to just the icon until something
- * is picked, so it costs a toolbar nothing when unused.
+ * the calendar itself on the right. Picks are staged locally and only take
+ * effect on "Apply" — closing without it (Cancel, click-outside, Esc) leaves
+ * the active filter untouched.
  */
 export default function DateRangeFilter({
   value,
@@ -73,6 +74,7 @@ export default function DateRangeFilter({
   align = 'start',
 }: DateRangeFilterProps) {
   const [open, setOpen] = useState(false);
+  const [draft, setDraft] = useState<DateRange | undefined>(value);
   const active = Boolean(value?.from);
 
   const summary = value?.from
@@ -81,17 +83,28 @@ export default function DateRangeFilter({
       : format(value.from, 'dd MMM yyyy')
     : null;
 
+  const handleOpenChange = (next: boolean) => {
+    if (next) setDraft(value);
+    setOpen(next);
+  };
+
   const applyPreset = (days: number) => {
     const to = new Date();
     const from = new Date();
     from.setDate(from.getDate() - (days - 1));
-    onChange({ from: startOfDay(from), to: endOfDay(to) });
+    setDraft({ from: startOfDay(from), to: endOfDay(to) });
+  };
+
+  const handleApply = () => {
+    onChange(draft);
     setOpen(false);
   };
 
+  const handleCancel = () => setOpen(false);
+
   return (
     <div className="flex items-center">
-      <Popover open={open} onOpenChange={setOpen}>
+      <Popover open={open} onOpenChange={handleOpenChange}>
         <PopoverTrigger asChild>
           <button
             type="button"
@@ -124,7 +137,7 @@ export default function DateRangeFilter({
               ))}
               <button
                 type="button"
-                onClick={() => { onChange(undefined); setOpen(false); }}
+                onClick={() => setDraft(undefined)}
                 className="h-7 px-2 mt-1 rounded-md text-left text-xs font-medium text-muted-foreground hover:bg-muted transition-colors"
               >
                 Clear
@@ -135,12 +148,30 @@ export default function DateRangeFilter({
             <Calendar
               mode="range"
               numberOfMonths={1}
-              defaultMonth={value?.from}
-              selected={value}
-              onSelect={onChange}
+              defaultMonth={draft?.from}
+              selected={draft}
+              onSelect={setDraft}
               className="p-2 pointer-events-auto"
               classNames={COMPACT_CALENDAR}
             />
+          </div>
+
+          {/* Apply / Cancel — nothing takes effect until Apply is pressed. */}
+          <div className="flex items-center justify-end gap-2 border-t border-border p-2">
+            <button
+              type="button"
+              onClick={handleCancel}
+              className="h-7 px-3 rounded-md text-xs font-medium text-muted-foreground hover:bg-muted transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={handleApply}
+              className="h-7 px-3 rounded-md text-xs font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+            >
+              Apply
+            </button>
           </div>
         </PopoverContent>
       </Popover>
@@ -185,7 +216,8 @@ interface SingleDateFilterProps {
 /**
  * The one-day sibling of DateRangeFilter, for boards that load a single date at
  * a time. Same icon trigger and the same quick-picks-left, calendar-right
- * layout, so the two read as one control across the app.
+ * layout, so the two read as one control across the app. Same staged-until-
+ * Apply behaviour too.
  */
 export function SingleDateFilter({
   value,
@@ -194,20 +226,35 @@ export function SingleDateFilter({
   align = 'start',
 }: SingleDateFilterProps) {
   const [open, setOpen] = useState(false);
+  const [draft, setDraft] = useState(value);
 
   const selected = value ? new Date(`${value}T00:00:00`) : undefined;
   const valid = selected && !Number.isNaN(selected.getTime()) ? selected : undefined;
   const isToday = value === toInputDate(new Date());
 
+  const draftSelected = draft ? new Date(`${draft}T00:00:00`) : undefined;
+  const draftValid = draftSelected && !Number.isNaN(draftSelected.getTime()) ? draftSelected : undefined;
+
+  const handleOpenChange = (next: boolean) => {
+    if (next) setDraft(value);
+    setOpen(next);
+  };
+
   const applyPreset = (offset: number) => {
     const date = new Date();
     date.setDate(date.getDate() - offset);
-    onChange(toInputDate(date));
+    setDraft(toInputDate(date));
+  };
+
+  const handleApply = () => {
+    if (draft) onChange(draft);
     setOpen(false);
   };
 
+  const handleCancel = () => setOpen(false);
+
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover open={open} onOpenChange={handleOpenChange}>
       <PopoverTrigger asChild>
         <button
           type="button"
@@ -240,16 +287,33 @@ export function SingleDateFilter({
           <Calendar
             mode="single"
             numberOfMonths={1}
-            defaultMonth={valid}
-            selected={valid}
+            defaultMonth={draftValid}
+            selected={draftValid}
             onSelect={(date) => {
               if (!date) return;
-              onChange(toInputDate(date));
-              setOpen(false);
+              setDraft(toInputDate(date));
             }}
             className="p-2 pointer-events-auto"
             classNames={COMPACT_CALENDAR}
           />
+        </div>
+
+        {/* Apply / Cancel — nothing takes effect until Apply is pressed. */}
+        <div className="flex items-center justify-end gap-2 border-t border-border p-2">
+          <button
+            type="button"
+            onClick={handleCancel}
+            className="h-7 px-3 rounded-md text-xs font-medium text-muted-foreground hover:bg-muted transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={handleApply}
+            className="h-7 px-3 rounded-md text-xs font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+          >
+            Apply
+          </button>
         </div>
       </PopoverContent>
     </Popover>

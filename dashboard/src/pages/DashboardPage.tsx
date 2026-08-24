@@ -16,15 +16,7 @@ const DashboardPage = () => {
   return (
     <div className="space-y-6">
       {/* ── Page header with calendar filter ────────────────────────────── */}
-      <div className="flex items-center justify-between gap-4 flex-wrap">
-        <div>
-          <h2 className="text-base font-semibold text-foreground">Dashboard</h2>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            {dateRange?.from
-              ? 'Showing data for selected date range'
-              : 'Showing all-time data'}
-          </p>
-        </div>
+      <div className="flex items-center justify-end gap-4 flex-wrap">
         <DateRangeFilter
           value={dateRange}
           onChange={setDateRange}
