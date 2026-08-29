@@ -135,6 +135,9 @@ const formFromLead = (lead: SalesLead): ClientForm => {
  */
 export function AddLeadDialog({ open, onOpenChange, lead }: AddLeadDialogProps) {
   const isEdit = Boolean(lead);
+  // Once any service's quotation is confirmed, the lead has become a client —
+  // corrections belong on the Clients board from here on, not on this form.
+  const isLocked = isEdit && (lead?.services ?? []).some((s) => s.quotationConfirmed);
 
   const defaultService = () => ({
     id: crypto.randomUUID(),
@@ -403,6 +406,20 @@ export function AddLeadDialog({ open, onOpenChange, lead }: AddLeadDialogProps) 
           <DialogHeader className="px-5 pt-4 pb-2 border-b border-border">
             <DialogTitle>{isEdit ? `Edit Lead — ${lead?.customer?.name || lead?.customer?.phone || ''}` : 'Add Lead'}</DialogTitle>
           </DialogHeader>
+          {isLocked ? (
+            <>
+              <div className="px-5 py-10 text-center space-y-2">
+                <p className="text-sm font-medium text-foreground">This lead's quotation is confirmed.</p>
+                <p className="text-sm text-muted-foreground">
+                  It's now a client — make corrections from the Clients board instead.
+                </p>
+              </div>
+              <DialogFooter className="px-5 py-3 border-t border-border">
+                <Button onClick={() => onOpenChange(false)}>Close</Button>
+              </DialogFooter>
+            </>
+          ) : (
+          <>
           <div className="px-5 py-3 space-y-2 max-h-[75vh] overflow-y-auto">
             {/* ── Who they are ──────────────────────────────────────────────── */}
             <section className="space-y-2">
@@ -673,6 +690,8 @@ export function AddLeadDialog({ open, onOpenChange, lead }: AddLeadDialogProps) 
                 : (saving ? 'Adding…' : 'Add Lead')}
             </Button>
           </DialogFooter>
+          </>
+          )}
         </DialogContent>
       </Dialog>
 
