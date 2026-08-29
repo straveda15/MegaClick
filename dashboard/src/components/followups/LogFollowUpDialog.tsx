@@ -34,8 +34,9 @@ interface LogFollowUpDialogProps {
 /**
  * Records one follow-up: what happened, and when to come back to it.
  *
- * Both halves are optional individually but at least one is required — a note
- * with no new date closes the loop, a date with no note is a plain reschedule.
+ * Note and next-date are both optional — a note with no new date closes the
+ * loop, a date with no note is a plain reschedule, and neither just logs the
+ * outcome picked above.
  */
 export function LogFollowUpDialog({
   leadId, clientName, currentFollowUpAt, open, onOpenChange,
@@ -71,11 +72,6 @@ export function LogFollowUpDialog({
 
   const handleSubmit = () => {
     if (!leadId) return;
-
-    if (!note.trim() && !nextAt) {
-      toast.error('Add a note, a next follow-up date, or both.');
-      return;
-    }
 
     if (nextAt) {
       const picked = new Date(nextAt);

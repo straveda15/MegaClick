@@ -83,6 +83,7 @@ router.post("/leads/:id/payments", salesLeadController.addLeadPayment);
 router.delete("/leads/:id/payments/:paymentId", salesLeadController.deleteLeadPayment);
 router.patch("/leads/:id/convert", salesLeadController.convertLead);
 router.patch("/leads/:id/drop", salesLeadController.dropLead);
+router.delete("/leads/:id", salesLeadController.deleteLead);
 
 // --- Returns ---
 router.post("/returns", salesReturnController.createReturn);

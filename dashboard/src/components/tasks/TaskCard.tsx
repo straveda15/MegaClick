@@ -139,6 +139,11 @@ export const TaskCard = ({ task, myId, oversight, onComplete, onStart, onCancel,
   const showInactiveAlert = inactiveCancelled && (isAssigner || oversight);
   const needsAttention    = showInactiveAlert && !task.cancelAlertAck;
 
+  // Stopped because the service was handed to someone else — the original
+  // assignee's card says so instead of just quietly going grey.
+  const wasReassigned = isCancelled && task.cancelReason === "reassigned";
+  const reassignedToName = [task.reassignedTo?.name, task.reassignedTo?.lastName].filter(Boolean).join(" ");
+
   const assignedToName = [task.assignedTo?.name, task.assignedTo?.lastName].filter(Boolean).join(" ") || "Unassigned";
   const assignedByName = [task.assignedBy?.name,  task.assignedBy?.lastName].filter(Boolean).join(" ") || "System";
 
@@ -197,6 +202,12 @@ export const TaskCard = ({ task, myId, oversight, onComplete, onStart, onCancel,
             Assignee Inactive
           </span>
         )}
+        {wasReassigned && (
+          <span className="inline-flex items-center gap-1 text-[9px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border bg-blue-100 text-blue-700 border-blue-300">
+            <UserCheck className="w-3 h-3" />
+            Reassigned
+          </span>
+        )}
         {(task.flags?.some((f) => !f.resolvedAt) ?? false) && !isCompleted && !isCancelled && (
           <span className="inline-flex items-center gap-1 text-[9px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border bg-red-100 text-red-700 border-red-300 animate-pulse">
             <AlertTriangle className="w-3 h-3" />
@@ -204,6 +215,12 @@ export const TaskCard = ({ task, myId, oversight, onComplete, onStart, onCancel,
           </span>
         )}
       </div>
+
+      {wasReassigned && (
+        <p className="text-[11px] text-blue-700 bg-blue-50 border border-blue-200 rounded-lg px-3 py-2 mb-3">
+          Task reassigned to {reassignedToName || "another employee"}.
+        </p>
+      )}
 
       {/* ── The five things worth seeing without opening anything ──────────── */}
       <div className="flex flex-col">

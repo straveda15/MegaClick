@@ -397,6 +397,26 @@ export const convertLead = async (leadId, actorId, orderData) => {
     return { lead, order: finalOrder };
 };
 
+/**
+ * Permanently removes a lead — for garbage/duplicate entries (bad imports,
+ * mistakes) rather than leads that just didn't go anywhere, which "Drop"
+ * already covers by keeping the record around with a reason attached.
+ */
+export const deleteLead = async (leadId, actorId) => {
+    const lead = await SalesLead.findByIdAndDelete(leadId);
+    if (!lead) throw new Error("Lead not found");
+
+    await SalesActivityLog.create({
+        actor: actorId,
+        action: "LEAD_DELETED",
+        entityType: "SalesLead",
+        entityId: lead._id,
+        metadata: { customerId: lead.customer }
+    });
+
+    return lead;
+};
+
 export const dropLead = async (leadId, actorId, reason) => {
     const lead = await SalesLead.findById(leadId);
     if (!lead) throw new Error("Lead not found");
@@ -1081,6 +1101,21 @@ export const assignLeadService = async (leadId, serviceId, actorId, { assignedTo
             stage: nextStage,
         },
     });
+
+    // Reassignment: the previous assignee's copy of this work is done — stop it
+    // rather than leaving it active alongside the new task just created for the
+    // same service, and mark who it went to so their card can say so.
+    const previousTaskId = target.taskId;
+    const previousAssigneeId = target.assignedTo ? String(target.assignedTo) : null;
+    if (previousTaskId && previousAssigneeId && previousAssigneeId !== String(assignedTo)) {
+        await Task.findByIdAndUpdate(previousTaskId, {
+            status: "cancelled",
+            cancelledAt: new Date(),
+            cancelledBy: actorId,
+            cancelReason: "reassigned",
+            reassignedTo: assignedTo,
+        });
+    }
 
     target.taskId = task._id;
     target.assignedTo = assignedTo;

@@ -153,6 +153,20 @@ export const convertLead = async (req, res, next) => {
     }
 };
 
+export const deleteLead = async (req, res, next) => {
+    try {
+        const lead = await salesLeadService.deleteLead(req.params.id, req.user._id);
+
+        res.status(200).json({
+            success: true,
+            message: "Lead deleted",
+            data: lead
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 export const dropLead = async (req, res, next) => {
     try {
         const leadId = req.params.id;

@@ -114,7 +114,10 @@ const formFromLead = (lead: SalesLead): ClientForm => {
     phone: phone.startsWith('+91') ? phone : `+91${phone.replace(/\D/g, '')}`,
     email: customer?.email ?? '',
     company: customer?.company ?? '',
-    state: customer?.state || DEFAULT_STATE,
+    // Genuinely blank stays blank here (unlike a brand-new capture, which
+    // defaults to DEFAULT_STATE) — defaulting it would make an incomplete
+    // lead's edit form look filled in when the state was never actually set.
+    state: customer?.state ?? '',
     city: customer?.city ?? '',
     followUpAt: lead.followUpAt ? formatDateInput(new Date(lead.followUpAt)) : '',
     followUpNote: lead.followUpNote ?? '',

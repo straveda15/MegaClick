@@ -72,12 +72,20 @@ export function AssignServiceDialog({ lead, service, open, onOpenChange }: Assig
   );
   const assignService = useAssignLeadService();
 
-  const activeEmployees = useMemo(() =>
-    team.filter((e) => e.status !== 'inactive' && e.userId?._id && e.userId?.isActive !== false),
-  [team]);
-
   const assignedTask = typeof service?.taskId === 'object' ? service.taskId : null;
   const isReassign = Boolean(service?.assignedTo?._id);
+  const currentAssigneeId = service?.assignedTo?._id ? String(service.assignedTo._id) : null;
+
+  // Reassigning to whoever already has it isn't a reassignment — leave them
+  // off the list entirely rather than let the picker offer a no-op.
+  const activeEmployees = useMemo(() =>
+    team.filter((e) =>
+      e.status !== 'inactive' &&
+      e.userId?._id &&
+      e.userId?.isActive !== false &&
+      (!isReassign || String(e.userId._id) !== currentAssigneeId)
+    ),
+  [team, isReassign, currentAssigneeId]);
 
   // Reset the form each time a different service is opened.
   useEffect(() => {
@@ -198,7 +206,7 @@ export function AssignServiceDialog({ lead, service, open, onOpenChange }: Assig
           </DialogDescription>
         </DialogHeader>
 
-        <div className="grid gap-0 md:grid-cols-[minmax(0,1fr)_minmax(300px,1fr)] max-h-[60vh] overflow-y-auto">
+        <div className="grid gap-0 md:grid-cols-[minmax(0,1fr)_minmax(300px,1fr)]">
           {/* ── Who, when, how urgent ───────────────────────────────────────── */}
           <div className="p-5 space-y-4 border-b md:border-b-0 md:border-r border-border">
             <div className="rounded-md border border-border bg-muted/30 px-3 py-3 space-y-1">
@@ -325,7 +333,7 @@ export function AssignServiceDialog({ lead, service, open, onOpenChange }: Assig
                   Tick anything already done. Tap the number to mark everything up to that step.
                 </p>
 
-                <div className="space-y-1.5 max-h-[300px] overflow-y-auto pr-1">
+                <div className={`space-y-1.5 pr-1 ${steps.length > 6 ? 'max-h-[300px] overflow-y-auto' : ''}`}>
                   {steps.map((step, index) => (
                     <div
                       key={`${step.title}-${index}`}

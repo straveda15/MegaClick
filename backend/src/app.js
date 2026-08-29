@@ -79,7 +79,11 @@ app.get("/", (_req, res) => {
 
 // global error handler
 app.use((err, _req, res, _next) => {
-  const status = err.httpStatus || 500;
+  // AppError sets `httpStatus`; a handful of services throw a plain Error with
+  // `.statusCode` set by hand instead — both are honoured so those messages
+  // (e.g. "No valid rows found...") reach the client instead of collapsing
+  // into a generic 500.
+  const status = err.httpStatus || err.statusCode || 500;
   const payload = typeof err.toJSON === "function" ? err.toJSON() : null;
   const isClientError = status >= 400 && status < 500;
   const isServerError = status >= 500 && status < 600;
