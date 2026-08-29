@@ -108,47 +108,45 @@ export default function ConfirmQuotationDialog({ lead, open, onOpenChange }: Con
   const grandTotal = services.reduce((sum, service) => sum + itemsTotal(draft[service._id] ?? []), 0);
   const advanceAmount = Number(advance) || 0;
 
+  // Every row needs both a name and a price — Confirm stays disabled while any
+  // service has an empty row instead of only complaining after the click.
+  const hasIncompleteField = services.some((service) =>
+    (draft[service._id] ?? []).some((item) => !item.name.trim() || item.amount.trim() === '')
+  );
+
   const handleConfirm = () => {
     if (!lead) return;
 
-    const payload = services.map((service) => {
-      const items = (draft[service._id] ?? [])
-        .filter((item) => item.name.trim())
-        .map((item) => ({ name: item.name.trim(), amount: Number(item.amount) || 0 }));
-
-      return { serviceId: service._id, items, quotation: itemsTotal(draft[service._id] ?? []) };
-    });
-
-    const missing = payload.find((entry) => entry.items.length === 0);
-    if (missing) {
-      const service = services.find((s) => s._id === missing.serviceId);
-      toast.error(`Add at least one field for “${service?.title ?? 'this service'}”.`);
-      return;
-    }
-
-    // Ensure Service Fees is filled
+    // Every row on the form — Service Fees included — must carry both a name
+    // and a price before it can be saved. A half-filled row used to get
+    // silently dropped (or saved with no name); now it just blocks Confirm.
     for (const service of services) {
-      const serviceItems = draft[service._id] ?? [];
-      const feeItem = serviceItems.find(i => i.name === SERVICE_FEE_NAME);
-      if (!feeItem || feeItem.amount.trim() === '') {
-        toast.error(`Enter a Service Fees amount for "${service.title}". Use 0 if there is none.`);
+      const items = draft[service._id] ?? [];
+      if (items.length === 0) {
+        toast.error(`Add at least one field for “${service.title}”.`);
+        return;
+      }
+      const incomplete = items.find((item) => !item.name.trim() || item.amount.trim() === '');
+      if (incomplete) {
+        toast.error(`Fill in both the field name and price for every row under “${service.title}” — or remove the empty one.`);
+        return;
+      }
+      const badAmount = items.find((item) => {
+        const amount = Number(item.amount);
+        return !Number.isFinite(amount) || amount < 0;
+      });
+      if (badAmount) {
+        toast.error(`“${badAmount.name}” under “${service.title}” needs a valid amount of 0 or more.`);
         return;
       }
     }
 
-    // A field with no price is fine (it reads as zero); one with a broken or
-    // negative price is not.
-    const badAmount = (Object.entries(draft) as Array<[string, DraftItem[]]>).some(([, items]) =>
-      items.some((item) => {
-        if (!item.name.trim() || item.amount === '') return false;
-        const amount = Number(item.amount);
-        return !Number.isFinite(amount) || amount < 0;
-      })
-    );
-    if (badAmount) {
-      toast.error('Every field needs a valid amount of 0 or more.');
-      return;
-    }
+    const payload = services.map((service) => {
+      const items = (draft[service._id] ?? [])
+        .map((item) => ({ name: item.name.trim(), amount: Number(item.amount) || 0 }));
+
+      return { serviceId: service._id, items, quotation: itemsTotal(draft[service._id] ?? []) };
+    });
 
     if (advance !== '' && (!Number.isFinite(Number(advance)) || Number(advance) < 0)) {
       toast.error('Enter a valid advance payment amount.');
@@ -333,7 +331,7 @@ export default function ConfirmQuotationDialog({ lead, open, onOpenChange }: Con
           <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
           <Button
             onClick={handleConfirm}
-            disabled={services.length === 0 || confirmQuotation.isPending}
+            disabled={services.length === 0 || hasIncompleteField || confirmQuotation.isPending}
           >
             {confirmQuotation.isPending
               ? <><Loader2 className="w-4 h-4 animate-spin" />Confirming…</>

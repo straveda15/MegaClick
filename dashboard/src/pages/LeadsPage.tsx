@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
-  Search, ChevronUp, ChevronDown, ChevronsUpDown, ChevronLeft, ChevronRight, Info, Loader2, RefreshCcw, Upload, CheckCircle2,
+  Search, ChevronUp, ChevronDown, ChevronsUpDown, ChevronLeft, ChevronRight, Info, Loader2, RefreshCcw, Upload, CheckCircle2, AlertTriangle,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -21,6 +21,7 @@ import type { SheetColumn } from '@/lib/sheet';
 import { STAGE_LABELS, SERVICE_STAGES, type ServiceStage } from '@/data/services';
 import { TEMPERATURE_LABELS } from '@/data/leadTemperature';
 import { SOURCE_STYLES, sourceLabel } from '@/data/leadSource';
+import { INDIAN_STATES, citiesForState } from '@/data/indiaLocations';
 import {
   LEAD_PRIORITIES,
   LEAD_STATUSES,
@@ -35,6 +36,7 @@ import {
   type SalesLead,
 } from '@/hooks/useLeads';
 import { useTeam } from '@/hooks/useTeam';
+import { useServiceCatalog, type CatalogService } from '@/hooks/useServiceCatalog';
 
 /* ── Display constants ──────────────────────────────────────────────────────── */
 
@@ -79,6 +81,8 @@ interface LeadRow {
   id: string;
   leadId: string;
   client: string;
+  /** False when `client` is only the phone-number fallback — no real name was captured. */
+  hasName: boolean;
   clientInitials: string;
   phone: string;
   email: string;
@@ -128,6 +132,7 @@ const toRow = (lead: SalesLead): LeadRow => {
     id: lead._id,
     leadId: `LD-${lead._id.slice(-5).toUpperCase()}`,
     client,
+    hasName: Boolean(lead.customer?.name?.trim()),
     clientInitials: makeInitials(client),
     phone: lead.customer?.phone ?? '',
     email: lead.customer?.email ?? '',
@@ -176,23 +181,6 @@ const LEAD_COLUMNS = [
 
 type LeadColumnKey = (typeof LEAD_COLUMNS)[number]['key'];
 
-/**
- * Columns worth flagging when blank on an imported row — not hard-required
- * (only phone is, since it's the customer's identity key), but useful enough
- * that the user should be nudged to fill them in. City is deliberately left
- * out: it genuinely doesn't matter if it's missing.
- */
-const RECOMMENDED_IMPORT_FIELDS: Array<{ key: LeadColumnKey; label: string }> = [
-  { key: 'name', label: 'client name' },
-  { key: 'email', label: 'email' },
-  { key: 'company', label: 'company' },
-  { key: 'state', label: 'state' },
-  { key: 'productInterest', label: 'services' },
-  { key: 'quotation', label: 'quotation' },
-  { key: 'startAt', label: 'start date' },
-  { key: 'targetDate', label: 'target date' },
-];
-
 /** Accepts either the stored key or the label a client sees in the table. */
 const parseStage = (value: string): ServiceStage | undefined => {
   const normalized = value.trim().toLowerCase().replace(/[^a-z]/g, '_');
@@ -218,30 +206,181 @@ const parseTemperature = (value: string): LeadTemperature | undefined => {
     : undefined;
 };
 
-/** Tolerates stray currency symbols/commas ("₹45,000") without throwing. */
+/**
+ * Tolerates stray currency symbols/commas ("₹45,000") without throwing, but
+ * rejects anything negative or non-numeric outright — a "-500" comes back
+ * empty rather than silently becoming a positive 500, and words-only cells
+ * ("TBD", "N/A") already fall out since nothing numeric survives the strip.
+ */
 const parseQuotation = (value?: string): number | undefined => {
-  const cleaned = String(value ?? '').replace(/[^0-9.]/g, '');
+  const raw = String(value ?? '').trim();
+  if (!raw) return undefined;
+
+  const isNegative = /^-|^\(.*\)$/.test(raw.replace(/[₹$,\s]/g, ''));
+  const cleaned = raw.replace(/[^0-9.]/g, '');
   if (!cleaned) return undefined;
+
   const parsed = Number(cleaned);
-  return Number.isFinite(parsed) ? parsed : undefined;
+  return Number.isFinite(parsed) && !isNegative ? parsed : undefined;
+};
+
+/** A name is letters (plus normal spacing/punctuation) — never a number, code
+ *  or other garbage cell value. */
+const NAME_TEXT_PATTERN = /^[a-zA-Z][a-zA-Z\s.'-]*$/;
+const parseImportName = (value?: string): string | undefined => {
+  const trimmed = String(value ?? '').trim();
+  return trimmed && NAME_TEXT_PATTERN.test(trimmed) ? trimmed : undefined;
+};
+
+const EMAIL_TEXT_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const parseImportEmail = (value?: string): string | undefined => {
+  const trimmed = String(value ?? '').trim();
+  return trimmed && EMAIL_TEXT_PATTERN.test(trimmed) ? trimmed : undefined;
 };
 
 /**
- * A sheet cell can list several services — split it back into an array. The
- * quotation/start/target date columns apply to the lead as a whole, so every
- * parsed service carries the same values.
+ * Confirms a real 10-digit number, with or without a "+91"/"91" country code
+ * — either is fine — and normalizes to the same "+91XXXXXXXXXX" shape the Add
+ * Lead form saves, so the same person imported once and added manually later
+ * doesn't end up as two different customers. Anything else (too few/many
+ * digits, letters mixed in) comes back empty rather than a mangled number.
  */
-const parseServices = (value?: string, extra?: { quotation?: number; startAt?: string; dueAt?: string }) =>
-  String(value ?? '')
-    .split(/[,;|]/)
-    .map((title) => title.trim())
-    .filter(Boolean)
-    .map((title) => ({
-      title,
+const parseImportPhone = (value?: string): string | undefined => {
+  let digits = String(value ?? '').replace(/\D/g, '');
+  if (digits.length === 12 && digits.startsWith('91')) digits = digits.slice(2);
+  return /^\d{10}$/.test(digits) ? `+91${digits}` : undefined;
+};
+
+/** Only a real state from the fixed list counts — anything else (typos,
+ *  places outside India, garbage) is left for the user to fill in by hand. */
+const parseImportState = (value?: string): string | undefined => {
+  const trimmed = String(value ?? '').trim().toLowerCase();
+  if (!trimmed) return undefined;
+  return INDIAN_STATES.find((s) => s.toLowerCase() === trimmed);
+};
+
+/**
+ * When the resolved state has a known city list, the cell has to match one of
+ * them — same rule the dropdown on Add Lead enforces. States without a list
+ * fall back to a structural check (looks like a place name, not a number or
+ * symbols) since there's nothing to validate against.
+ */
+const parseImportCity = (value: string | undefined, state: string | undefined): string | undefined => {
+  const trimmed = String(value ?? '').trim();
+  if (!trimmed) return undefined;
+
+  const knownCities = citiesForState(state);
+  if (knownCities.length > 0) {
+    return knownCities.find((c) => c.toLowerCase() === trimmed.toLowerCase());
+  }
+  return NAME_TEXT_PATTERN.test(trimmed) ? trimmed : undefined;
+};
+
+/** Excel's own date epoch — day 0 is 1899-12-30 (its leap-year bug baked in). */
+const EXCEL_EPOCH_MS = Date.UTC(1899, 11, 30);
+
+const toIsoDate = (y: number, m: number, d: number): string | undefined => {
+  const date = new Date(Date.UTC(y, m - 1, d));
+  const valid = !Number.isNaN(date.getTime())
+    && date.getUTCFullYear() === y && date.getUTCMonth() === m - 1 && date.getUTCDate() === d;
+  if (!valid) return undefined;
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return `${y}-${pad(m)}-${pad(d)}`;
+};
+
+/**
+ * Accepts pretty much whatever date format a spreadsheet throws at it — ISO,
+ * DD/MM/YYYY, DD-MM-YYYY, "1 Jan 2026", even Excel's own serial day numbers —
+ * and normalizes to YYYY-MM-DD. Day-first is assumed for an ambiguous
+ * slash/dash date, matching how this business's own sheets are filled in.
+ * Anything that still doesn't resolve to a real calendar date comes back
+ * undefined so the field is simply left blank.
+ */
+const parseFlexibleDate = (value?: string): string | undefined => {
+  const raw = String(value ?? '').trim();
+  if (!raw) return undefined;
+
+  // A bare number is a date cell Excel handed back as its serial day-count.
+  if (/^\d+(\.\d+)?$/.test(raw)) {
+    const serial = Number(raw);
+    if (serial < 20000 || serial > 80000) return undefined; // sane range: ~1954–2119
+    const date = new Date(EXCEL_EPOCH_MS + serial * 86400000);
+    return Number.isNaN(date.getTime())
+      ? undefined
+      : toIsoDate(date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate());
+  }
+
+  const dmy = raw.match(/^(\d{1,2})[/\-.](\d{1,2})[/\-.](\d{2,4})$/);
+  if (dmy) {
+    const [, d, m, yRaw] = dmy;
+    const y = yRaw.length === 2 ? 2000 + Number(yRaw) : Number(yRaw);
+    return toIsoDate(y, Number(m), Number(d));
+  }
+
+  const ymd = raw.match(/^(\d{4})[/\-.](\d{1,2})[/\-.](\d{1,2})$/);
+  if (ymd) {
+    const [, y, m, d] = ymd;
+    return toIsoDate(Number(y), Number(m), Number(d));
+  }
+
+  // "1 Jan 2026", "January 1, 2026", ISO timestamps, etc. — hand to the
+  // native parser rather than reinventing every format it already knows.
+  const parsed = new Date(raw);
+  return Number.isNaN(parsed.getTime())
+    ? undefined
+    : toIsoDate(parsed.getFullYear(), parsed.getMonth() + 1, parsed.getDate());
+};
+
+/**
+ * A sheet cell can list several services — split it back into names. The
+ * quotation/start/target date columns apply to the lead as a whole, so every
+ * resolved service carries the same values.
+ *
+ * Anything typed in the sheet that doesn't match a real catalog service by
+ * name is dropped rather than saved as-is — an importer fat-fingering
+ * "Trademark Registeration" (or listing a service that doesn't exist) should
+ * not silently create a made-up service on the lead. `allMatched` is false
+ * whenever at least one typed name failed to resolve, so the caller can flag
+ * that row as needing attention instead of pretending nothing was lost.
+ */
+const resolveImportServices = (
+  value: string | undefined,
+  catalogByTitle: Map<string, CatalogService>,
+  extra?: { quotation?: number; startAt?: string; dueAt?: string }
+) => {
+  const names = String(value ?? '').split(/[,;|]/).map((title) => title.trim()).filter(Boolean);
+
+  const services = names
+    .map((name) => catalogByTitle.get(name.toLowerCase()))
+    .filter((s): s is CatalogService => Boolean(s))
+    .map((s) => ({
+      title: s.title,
+      slug: s.slug,
+      category: s.category,
+      categorySlug: s.categorySlug,
       ...(extra?.quotation !== undefined ? { quotation: extra.quotation } : {}),
       ...(extra?.startAt ? { startAt: extra.startAt } : {}),
       ...(extra?.dueAt ? { dueAt: extra.dueAt } : {}),
     }));
+
+  return { services, allMatched: names.length === services.length };
+};
+
+/**
+ * The identity/contact fields a well-formed lead should carry regardless of
+ * where it's at in the pipeline — deliberately excludes quotation/dates,
+ * which are normal to be unset before the Confirm step and already have
+ * their own indicator (the Confirm button/badge).
+ */
+const COMPLETENESS_CHECKS: Array<{ label: string; test: (row: LeadRow) => boolean }> = [
+  { label: 'client name', test: (r) => !r.hasName },
+  { label: 'email', test: (r) => !r.email },
+  { label: 'state', test: (r) => !r.state },
+  { label: 'services', test: (r) => r.services.length === 0 },
+];
+
+const missingFieldsFor = (row: LeadRow) =>
+  COMPLETENESS_CHECKS.filter((check) => check.test(row)).map((check) => check.label);
 
 /* ── Small controls ─────────────────────────────────────────────────────────── */
 
@@ -292,14 +431,25 @@ const LeadsPage = () => {
 
   const [detailsLeadId, setDetailsLeadId] = useState<string | null>(null);
   const [confirmLeadId, setConfirmLeadId] = useState<string | null>(null);
+  /** Set when the Add Lead dialog was opened from a row's incomplete-data
+   *  alert rather than the toolbar — pre-fills the dialog for editing instead
+   *  of starting a blank capture. */
+  const [editLead, setEditLead] = useState<SalesLead | null>(null);
 
   const { data: leads = [], isLoading, isError, error, refetch } = useLeads();
   const confirmLead = useMemo(() => leads.find((l) => l._id === confirmLeadId) ?? null, [leads, confirmLeadId]);
   const { data: team = [], isLoading: teamLoading } = useTeam();
+  const { data: catalog } = useServiceCatalog();
   const importLeads = useImportLeads();
 
+  const catalogByTitle = useMemo(() => {
+    const map = new Map<string, CatalogService>();
+    for (const service of catalog?.services ?? []) map.set(service.title.trim().toLowerCase(), service);
+    return map;
+  }, [catalog]);
+
   useEffect(() => {
-    const openModal = () => setAddOpen(true);
+    const openModal = () => { setEditLead(null); setAddOpen(true); };
     window.addEventListener('openAddLeadModal', openModal);
     return () => window.removeEventListener('openAddLeadModal', openModal);
   }, []);
@@ -309,6 +459,21 @@ const LeadsPage = () => {
   [team]);
 
   const allRows = useMemo(() => leads.map(toRow), [leads]);
+
+  // Recomputed live from the current lead data (not a one-time import
+  // snapshot), so the alert stays accurate for leads edited or created any
+  // other way too.
+  const incompleteCount = useMemo(
+    () => allRows.filter((r) => missingFieldsFor(r).length > 0).length,
+    [allRows]
+  );
+
+  const openIncompleteLead = (row: LeadRow) => {
+    const lead = leads.find((l) => l._id === row.id);
+    if (!lead) return;
+    setEditLead(lead);
+    setAddOpen(true);
+  };
 
   // Counts are per SERVICE, since hot/warm/cold belongs to the request rather
   // than to the client — one person can be urgent about one thing and relaxed
@@ -329,7 +494,6 @@ const LeadsPage = () => {
       hot: services.filter((s) => s.temperature === 'HOT').length,
       warm: services.filter((s) => (s.temperature ?? 'WARM') === 'WARM').length,
       cold: services.filter((s) => s.temperature === 'COLD').length,
-      unassigned: services.filter((s) => !s.assignedTo?._id).length,
     };
   }, [allRows]);
 
@@ -382,53 +546,111 @@ const LeadsPage = () => {
 
 
   const handleImport = async (importRows: Array<Record<LeadColumnKey, string>>) => {
-    const payload: LeadImportRow[] = importRows.map((row) => ({
-      name: row.name ?? '',
-      phone: row.phone ?? '',
-      email: row.email,
-      company: row.company,
-      city: row.city,
-      state: row.state,
-      // One cell can list several services — they come in as separate entries,
-      // each carrying the same quotation/start/target date from the row.
-      services: parseServices(row.productInterest, {
+    // Every field below is validated/normalized before anything is sent —
+    // wrong-shaped data (a numeric name, a bad email, a state that isn't
+    // real, dates in whatever format, a negative quotation…) is left blank
+    // rather than saved as typed. Only the phone number blocks the row
+    // entirely, since it's the customer's identity key.
+    const validated = importRows.map((row) => {
+      const state = parseImportState(row.state);
+      const startAt = parseFlexibleDate(row.startAt);
+      const dueAt = parseFlexibleDate(row.targetDate);
+      // A start date on or after the target date is backwards — drop it
+      // rather than save a service that's already "late" on day one.
+      const orderedStartAt = startAt && dueAt && startAt >= dueAt ? undefined : startAt;
+
+      return {
+        name: parseImportName(row.name),
+        phone: parseImportPhone(row.phone),
+        email: parseImportEmail(row.email),
+        city: parseImportCity(row.city, state),
+        state,
         quotation: parseQuotation(row.quotation),
-        startAt: row.startAt || undefined,
-        dueAt: row.targetDate || undefined,
-      }),
-      productInterest: row.productInterest,
-      serviceCategory: row.serviceCategory,
-      serviceStage: row.serviceStage ? parseStage(row.serviceStage) : undefined,
-      source: row.source || 'excel',
-      assignedToName: row.assignedToName,
-      temperature: row.temperature ? parseTemperature(row.temperature) : undefined,
-      priority: row.priority ? parsePriority(row.priority) : undefined,
-      status: row.status ? parseStatus(row.status) : undefined,
-      followUpAt: row.followUpAt,
-      followUpNote: row.followUpNote,
-    }));
+        startAt: orderedStartAt,
+        dueAt,
+      };
+    });
+
+    // One cell can list several services — resolve each name against the real
+    // service catalog before anything is sent. A name that doesn't match
+    // anything real is dropped rather than saved as a made-up service.
+    const resolved = importRows.map((row, i) =>
+      resolveImportServices(row.productInterest, catalogByTitle, {
+        quotation: validated[i].quotation,
+        startAt: validated[i].startAt,
+        dueAt: validated[i].dueAt,
+      })
+    );
+
+    const payload: LeadImportRow[] = importRows.map((row, i) => {
+      const { services } = resolved[i];
+      const v = validated[i];
+      return {
+        name: v.name ?? '',
+        phone: v.phone ?? '',
+        email: v.email,
+        company: row.company,
+        city: v.city,
+        state: v.state,
+        services,
+        productInterest: services[0]?.title,
+        serviceCategory: services[0]?.category ?? row.serviceCategory,
+        serviceStage: row.serviceStage ? parseStage(row.serviceStage) : undefined,
+        source: row.source || 'excel',
+        assignedToName: row.assignedToName,
+        temperature: row.temperature ? parseTemperature(row.temperature) : undefined,
+        priority: row.priority ? parsePriority(row.priority) : undefined,
+        status: row.status ? parseStatus(row.status) : undefined,
+        followUpAt: row.followUpAt,
+        followUpNote: row.followUpNote,
+      };
+    });
 
     const result = await importLeads.mutateAsync({
       rows: payload,
       fallbackAssignedTo: importFallbackAssignee || undefined,
     });
 
-    // Nothing here blocks the import — only a missing phone does that, and
-    // those rows already come back in `skipped`. This just tells the user
+    // The backend reports every phone-less row as "missing" — give the ones
+    // that actually had a phone typed in, just not a valid one, a truer reason.
+    const skipped = (result.skipped ?? []).map((s) => {
+      const row = importRows[s.row - 2];
+      const hadRawPhone = Boolean(String(row?.phone ?? '').trim());
+      return hadRawPhone && !validated[s.row - 2]?.phone
+        ? { ...s, reason: 'Invalid phone number — needs 10 digits (a +91 country code is fine).' }
+        : s;
+    });
+
+    // Nothing else here blocks the import — only a missing/invalid phone does
+    // that, and those rows are already in `skipped`. This just tells the user
     // which of the leads that DID come in are worth a follow-up to complete.
-    const skippedRows = new Set(result.skipped?.map((s) => s.row) ?? []);
+    const skippedRows = new Set(skipped.map((s) => s.row));
     const incomplete = importRows
       .map((row, i) => {
         const rowNumber = i + 2; // header is row 1
         if (skippedRows.has(rowNumber)) return null;
-        const missing = RECOMMENDED_IMPORT_FIELDS
-          .filter(({ key }) => !String(row[key] ?? '').trim())
-          .map(({ label }) => label);
+
+        const v = validated[i];
+        const missing: string[] = [];
+        if (!v.name) missing.push('client name');
+        if (!v.email) missing.push('email');
+        if (!v.state) missing.push('state');
+        if (resolved[i].services.length === 0) missing.push('services');
+        if (v.quotation === undefined) missing.push('quotation');
+        if (!v.startAt) missing.push('start date');
+        if (!v.dueAt) missing.push('target date');
+
+        // A cell that named one real service and one bogus one still needs a
+        // look, even though "services" itself came through non-empty.
+        if (!resolved[i].allMatched && resolved[i].services.length > 0) {
+          missing.push("a listed service name didn't match the catalog");
+        }
+
         return missing.length > 0 ? { row: rowNumber, missing } : null;
       })
       .filter((entry): entry is { row: number; missing: string[] } => entry !== null);
 
-    return { ...result, incomplete };
+    return { ...result, skipped, incomplete };
   };
 
   const thBase = 'px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground whitespace-nowrap select-none';
@@ -437,8 +659,23 @@ const LeadsPage = () => {
   return (
     <div className="space-y-5">
 
+      {/* ── Incomplete-data notice ──────────────────────────────────────────── */}
+      {incompleteCount > 0 && (
+        <div className="flex items-center gap-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3">
+          <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
+          <p className="text-sm text-amber-800">
+            {incompleteCount === 1
+              ? '1 lead has incomplete data.'
+              : 'Many leads have incomplete data.'}{' '}
+            <span className="text-amber-700">
+              Look for the blinking alert icon on a row and click it to fill in what's missing.
+            </span>
+          </p>
+        </div>
+      )}
+
       {/* ── KPI strip ───────────────────────────────────────────────────────── */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3">
         {[
           { label: 'Total Leads',       value: kpis.total,      tone: 'text-foreground'    },
           { label: 'Follow-ups Due',    value: kpis.followUpsDue, tone: 'text-rose-700'    },
@@ -446,7 +683,6 @@ const LeadsPage = () => {
           { label: 'Warm',              value: kpis.warm,       tone: 'text-amber-700'     },
           { label: 'Cold',              value: kpis.cold,       tone: 'text-sky-700'       },
           { label: 'Services Requested',value: kpis.services,   tone: 'text-blue-700'      },
-          { label: 'Unassigned',        value: kpis.unassigned, tone: 'text-orange-600'    },
         ].map((kpi) => (
           <div key={kpi.label} className="bg-card border border-border rounded-lg px-4 py-3 flex flex-col gap-1 hover:shadow-sm transition-shadow">
             <span className={`text-[10px] font-semibold leading-tight ${kpi.tone}`}>{kpi.label}</span>
@@ -500,6 +736,7 @@ const LeadsPage = () => {
           <table className="w-full text-sm">
             <thead className="bg-muted/40 border-b border-border">
               <tr>
+                <th className="px-2 py-3 w-8" />
                 <th className={thSort} onClick={() => handleSort('leadId')}>
                   <span className="flex items-center">Lead ID <SortIcon col="leadId" sortKey={sortKey} sortDir={sortDir} /></span>
                 </th>
@@ -522,11 +759,11 @@ const LeadsPage = () => {
 
             <tbody className="divide-y divide-border">
               {isLoading ? (
-                <tr><td colSpan={7} className="text-center py-16 text-muted-foreground text-sm">
+                <tr><td colSpan={8} className="text-center py-16 text-muted-foreground text-sm">
                   <Loader2 className="w-4 h-4 animate-spin inline mr-2" />Loading leads…
                 </td></tr>
               ) : isError ? (
-                <tr><td colSpan={6} className="text-center py-16">
+                <tr><td colSpan={8} className="text-center py-16">
                   <p className="text-sm text-destructive mb-3">
                     {error instanceof Error ? error.message : 'Failed to load leads.'}
                   </p>
@@ -535,7 +772,7 @@ const LeadsPage = () => {
                   </Button>
                 </td></tr>
               ) : rows.length === 0 ? (
-                <tr><td colSpan={6} className="text-center py-16 text-muted-foreground text-sm">
+                <tr><td colSpan={8} className="text-center py-16 text-muted-foreground text-sm">
                   {allRows.length === 0
                     ? 'No leads yet. Use “Add Lead” to capture one, or import a spreadsheet.'
                     : 'No leads match your filters.'}
@@ -545,9 +782,23 @@ const LeadsPage = () => {
                   const source = sourceLabel(row.source);
                   const sourceStyle = SOURCE_STYLES[source];
                   const isConfirmed = row.services.length > 0 && row.services.every(s => s.quotationConfirmed === true);
+                  const missing = missingFieldsFor(row);
 
                   return (
                     <tr key={row.id} className="hover:bg-muted/30 transition-colors">
+                      <td className="px-2 py-3">
+                        {missing.length > 0 && (
+                          <button
+                            type="button"
+                            onClick={() => openIncompleteLead(row)}
+                            title={`Incomplete: missing ${missing.join(', ')}. Click to fill in.`}
+                            aria-label={`${row.client} has incomplete data — click to fill it in`}
+                            className="flex items-center justify-center w-6 h-6 rounded-full text-amber-600 hover:bg-amber-100 transition-colors"
+                          >
+                            <AlertTriangle className="w-4 h-4" />
+                          </button>
+                        )}
+                      </td>
                       <td className="px-4 py-3 text-muted-foreground text-xs font-medium whitespace-nowrap">
                         {row.leadId}
                       </td>
@@ -687,7 +938,7 @@ const LeadsPage = () => {
         open={importOpen}
         onOpenChange={setImportOpen}
         title="Import Leads"
-        description="Upload a CSV or Excel file of leads. Only the phone number is required — it identifies the client, and rows sharing a number update the same contact. Every other column can be left blank; anything missing can be filled in later. List several services in one cell, separated by commas."
+        description="Upload a CSV or Excel file of leads. Only the phone number is required (a valid 10-digit number, with or without a +91 country code) — it identifies the client, and rows sharing a number update the same contact. Every other column is validated on the way in; anything that doesn't look right (a garbled name, email, state, date or quotation) is simply left blank rather than saved as-is, and can be filled in later. List several services in one cell, separated by commas."
         columns={[...LEAD_COLUMNS]}
         templateBaseName="leads"
         onImport={handleImport}
@@ -714,8 +965,13 @@ const LeadsPage = () => {
         }
       />
 
-      {/* ── Add Lead ────────────────────────────────────────────── */}
-      <AddLeadDialog open={addOpen} onOpenChange={setAddOpen} />
+      {/* ── Add Lead — also doubles as the "fix incomplete data" editor when
+          opened from a row's alert icon, via `editLead`. ─────────────────── */}
+      <AddLeadDialog
+        open={addOpen}
+        onOpenChange={(open) => { setAddOpen(open); if (!open) setEditLead(null); }}
+        lead={editLead}
+      />
     </div>
   );
 };

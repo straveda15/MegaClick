@@ -276,6 +276,23 @@ export function useCreateLead() {
   });
 }
 
+/** Permanently removes a lead — for duplicates/mistakes, not leads that just went nowhere (use Drop for that). */
+export function useDeleteLead() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const res = await fetch(`${BASE_URL}/leads/${id}`, {
+        method: "DELETE",
+        headers: authHeaders(),
+      });
+      await readJson(res, "Failed to delete lead");
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["leads"] });
+    },
+  });
+}
+
 /**
  * Bulk-creates leads from a parsed spreadsheet. Rows missing a phone number
  * come back in `skipped` rather than failing the whole import.

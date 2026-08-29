@@ -74,9 +74,11 @@ export interface Task {
   type: string;
   status: "pending" | "in_progress" | "completed" | "cancelled" | "overdue";
   priority: "low" | "medium" | "high" | "urgent" | "critical";
-  cancelReason?: "manual" | "assignee_inactive";
+  cancelReason?: "manual" | "assignee_inactive" | "reassigned";
   cancelAlertAck?: boolean;
   cancelledAt?: string;
+  /** Who this cancelled task's work went to instead — only set when cancelReason is "reassigned". */
+  reassignedTo?: TeamMember;
   assignedTo: TeamMember;
   assignedBy?: TeamMember;
   createdBy?: TeamMember | string;

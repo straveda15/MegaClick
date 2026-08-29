@@ -100,6 +100,7 @@ export const getMyTasks = async (userId, filters = {}) => {
   const tasks = await Task.find(query)
     .populate("assignedTo", "name lastName email isActive")
     .populate("assignedBy", "name lastName email")
+    .populate("reassignedTo", "name lastName email")
     .populate("flags.raisedBy", "name lastName email")
     .populate("followers", "name lastName email")
     .populate("followUps.author", "name lastName email")

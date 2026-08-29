@@ -30,10 +30,13 @@ const taskSchema = new mongoose.Schema(
     },
     // Why the task was cancelled. "assignee_inactive" is set automatically when
     // the assigned staff member is deactivated, and drives the "cancelled" alert
-    // shown to the assigner and to admin/founder oversight.
+    // shown to the assigner and to admin/founder oversight. "reassigned" is set
+    // automatically when a lead service this task belongs to is handed to a
+    // different employee — the original assignee's copy stops rather than
+    // sitting there as a second, orphaned task for the same work.
     cancelReason: {
       type: String,
-      enum: ["manual", "assignee_inactive"],
+      enum: ["manual", "assignee_inactive", "reassigned"],
       default: "manual",
     },
     // For assignee_inactive cancellations: false until the assigner/oversight has
@@ -41,6 +44,12 @@ const taskSchema = new mongoose.Schema(
     cancelAlertAck: {
       type: Boolean,
       default: false,
+    },
+    // Who the work went to instead — only set for cancelReason "reassigned", so
+    // the original assignee's card can say who has it now.
+    reassignedTo: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
     assignedTo: {
       type: mongoose.Schema.Types.ObjectId,
