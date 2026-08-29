@@ -247,12 +247,9 @@ export function CreateTaskModal({ onClose }: { onClose: () => void }) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!client) return toast.error("Select a client");
+    if (!service) return toast.error("Select a service for this client");
     if (!title.trim()) return toast.error("Task Title is required");
-    // Catalog service names legitimately carry punctuation ("Govt. Gazette –
-    // Name / DOB Change"), so the letters-and-numbers rule only applies to
-    // titles the user typed themselves.
-    if (!service && !/^[A-Za-z0-9\s]+$/.test(title.trim()))
-      return toast.error("Title can only contain letters, numbers and spaces");
     if (!dueAt) return toast.error("Deadline is required");
     if (new Date(dueAt).getTime() < Date.now()) {
       return toast.error("Deadline can't be in the past — pick a future date and time");
@@ -504,13 +501,8 @@ export function CreateTaskModal({ onClose }: { onClose: () => void }) {
               required
               className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm focus:ring-2 focus:ring-primary/40 focus:border-primary outline-none transition-shadow"
               value={title}
-              // Free-typed titles stay letters/numbers only; a title that came
-              // from a service keeps its punctuation intact.
-              onChange={(e) => {
-                setService(null);
-                setTitle(e.target.value.replace(/[^A-Za-z0-9\s]/g, ""));
-              }}
-              placeholder="Pick a service above, or type a title"
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Pick a service above to fill this in, or adjust it here"
             />
           </div>
 
@@ -801,7 +793,7 @@ export function CreateTaskModal({ onClose }: { onClose: () => void }) {
             </button>
             <button
               type="submit"
-              disabled={createTask.isPending}
+              disabled={createTask.isPending || !client || !service || !dueAt || assignedToIds.length === 0}
               className="h-9 px-5 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 disabled:opacity-50 transition-colors"
             >
               {createTask.isPending ? "Creating…" : "Assign Task"}

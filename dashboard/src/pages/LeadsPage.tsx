@@ -787,7 +787,9 @@ const LeadsPage = () => {
                   return (
                     <tr key={row.id} className="hover:bg-muted/30 transition-colors">
                       <td className="px-2 py-3">
-                        {missing.length > 0 && (
+                        {/* A confirmed lead is a client now — nothing here is
+                            fixable from this page, so don't offer a dead-end click. */}
+                        {missing.length > 0 && !isConfirmed && (
                           <button
                             type="button"
                             onClick={() => openIncompleteLead(row)}
@@ -851,16 +853,16 @@ const LeadsPage = () => {
 
                       <td className="px-4 py-3 whitespace-nowrap">
                         {isConfirmed ? (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setConfirmLeadId(row.id)}
-                            title="Review or edit the confirmed quotation"
-                            className="h-7 text-xs font-medium border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 hover:text-emerald-800"
+                          // Locked, not a button — this lead is a client now;
+                          // re-editing a confirmed quotation happens on the
+                          // Clients board, not by reopening it from here.
+                          <span
+                            title="Quotation confirmed — this lead is now a client. View or adjust it from the Clients board."
+                            className="inline-flex items-center h-7 px-2.5 rounded-md text-xs font-medium border border-emerald-200 bg-emerald-50 text-emerald-700 cursor-default"
                           >
                             <CheckCircle2 className="w-3.5 h-3.5 mr-1" />
                             Confirmed
-                          </Button>
+                          </span>
                         ) : (
                           <Button
                             size="sm"
