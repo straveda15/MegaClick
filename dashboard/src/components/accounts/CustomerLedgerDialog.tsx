@@ -83,6 +83,11 @@ export default function CustomerLedgerDialog({ target, open, onOpenChange }: Cus
   const due = target?.due ?? 0;
   const credit = target?.credit ?? 0;
 
+  // Live check as the amount is typed, so the "exceeds due" warning shows up
+  // right where the mistake is instead of only after clicking Add Payment.
+  const enteredAmount = Number(amount);
+  const amountExceedsDue = amount.trim() !== '' && Number.isFinite(enteredAmount) && enteredAmount > due;
+
   const resetForm = () => {
     setAmount('');
     setNote('');
@@ -96,6 +101,14 @@ export default function CustomerLedgerDialog({ target, open, onOpenChange }: Cus
     const value = Number(amount);
     if (!Number.isFinite(value) || value <= 0) {
       toast.error('Enter a payment amount greater than zero.');
+      return;
+    }
+    if (value > due) {
+      toast.error(
+        due > 0
+          ? `Payment can't exceed the ${rupees(due)} still due.`
+          : 'This account has nothing due — there is no balance left to record a payment against.'
+      );
       return;
     }
 
@@ -290,10 +303,12 @@ export default function CustomerLedgerDialog({ target, open, onOpenChange }: Cus
               <h3 className="text-[11px] uppercase tracking-wider font-semibold text-muted-foreground">
                 Record a Payment
               </h3>
-              {due > 0 && (
+              {due > 0 ? (
                 <span className="text-[11px] text-muted-foreground">
                   {rupees(due)} still due
                 </span>
+              ) : (
+                <span className="text-[11px] text-emerald-700">Fully paid — nothing due</span>
               )}
             </div>
 
@@ -309,9 +324,16 @@ export default function CustomerLedgerDialog({ target, open, onOpenChange }: Cus
                     placeholder="0.00"
                     value={amount}
                     onChange={(e) => setAmount(sanitizeAmountInput(e.target.value))}
-                    className="pl-7"
+                    disabled={due <= 0}
+                    aria-invalid={amountExceedsDue}
+                    className={`pl-7 ${amountExceedsDue ? 'border-destructive focus-visible:ring-destructive' : ''}`}
                   />
                 </div>
+                {amountExceedsDue && (
+                  <p className="text-[11px] text-destructive">
+                    That's more than the {rupees(due)} still due.
+                  </p>
+                )}
               </div>
 
               <div className="space-y-1.5">
@@ -349,7 +371,11 @@ export default function CustomerLedgerDialog({ target, open, onOpenChange }: Cus
               </div>
             </div>
 
-            <Button onClick={handleAdd} disabled={addPayment.isPending} className="mt-3 w-full sm:w-auto">
+            <Button
+              onClick={handleAdd}
+              disabled={addPayment.isPending || due <= 0 || !amount.trim() || amountExceedsDue}
+              className="mt-3 w-full sm:w-auto"
+            >
               {addPayment.isPending
                 ? <><Loader2 className="w-4 h-4 animate-spin" />Recording…</>
                 : <><Plus className="w-4 h-4" />Add Payment</>}
