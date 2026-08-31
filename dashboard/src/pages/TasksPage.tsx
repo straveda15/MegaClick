@@ -9,6 +9,7 @@ import { TaskCard } from "@/components/tasks/TaskCard";
 import ServiceRequestPanel from "@/components/tasks/ServiceRequestPanel";
 import { WorkLogsPanel } from "@/components/tasks/WorkLogsPanel";
 import { useTeam, EmployeeProfile } from "@/hooks/useTeam";
+import { useAbsentTodayUserIds } from "@/hooks/useAttendance";
 import { useAuth } from "@/context/AuthContext";
 import {
   CheckCircle, Clock, AlertCircle, Plus, CalendarPlus,
@@ -231,6 +232,7 @@ export default function TasksPage() {
   const deleteTask = useDeleteTask();
   const [taskToDelete, setTaskToDelete] = useState<Task | null>(null);
   const { data: team = [] } = useTeam();
+  const absentTodayIds = useAbsentTodayUserIds();
 
   // Compute all tasks in the same group as the selected task
   const relatedTasks = useMemo(() => {
@@ -578,6 +580,7 @@ export default function TasksPage() {
                 task={task}
                 myId={myId}
                 oversight={oversight}
+                assigneeAbsentToday={absentTodayIds.has(String(task.assignedTo?._id))}
                 onComplete={handleComplete}
                 onStart={handleStart}
                 onCancel={handleCancel}
@@ -602,6 +605,7 @@ export default function TasksPage() {
           onDelete={(task) => setTaskToDelete(task)}
           onSelectTask={setSelectedTask}
           team={team}
+          absentTodayIds={absentTodayIds}
           relatedTasks={relatedTasks}
           alreadyAssignedIds={alreadyAssignedIds}
           onRespond={(id, flagId, response) => {
@@ -778,6 +782,7 @@ interface TaskDetailModalProps {
   onUpdateFollowers?: (taskId: string, followerIds: string[]) => void;
   onSelectTask?: (task: Task) => void;
   team?: EmployeeProfile[];
+  absentTodayIds?: Set<string>;
   relatedTasks?: Task[];
   alreadyAssignedIds?: Set<string>;
 }
@@ -793,7 +798,7 @@ const PRIORITY_LABELS: Record<string, { label: string; bg: string; text: string;
 function TaskDetailModal({
   task, myId, oversight, onClose, onStart, onComplete, onCancel, onDelete,
   onRespond, onExtendDue, onReassign, onAssignMore, onOpenReassign, onAckCancel,
-  onAddFollowUp, onUpdateFollowers, onSelectTask, team = [],
+  onAddFollowUp, onUpdateFollowers, onSelectTask, team = [], absentTodayIds = new Set(),
   relatedTasks = [], alreadyAssignedIds = new Set()
 }: TaskDetailModalProps) {
   useEffect(() => {
@@ -1275,6 +1280,7 @@ function TaskDetailModal({
                       <option value="">Select Staff to Reassign to...</option>
                       {team
                         .filter(emp => emp.status !== "inactive" && emp.userId?.isActive !== false)
+                        .filter(emp => !absentTodayIds.has(String(emp.userId?._id)))
                         .filter(emp => String(emp.userId?._id) !== String(task.assignedTo?._id))
                         .map(emp => (
                           <option key={emp.userId?._id} value={emp.userId?._id}>
@@ -1305,6 +1311,7 @@ function TaskDetailModal({
                     <div className="max-h-40 overflow-y-auto bg-background border border-border rounded p-2 space-y-1">
                       {team
                         .filter(emp => emp.status !== "inactive" && emp.userId?.isActive !== false)
+                        .filter(emp => !absentTodayIds.has(String(emp.userId?._id)))
                         .filter(emp => !alreadyAssignedIds.has(String(emp.userId?._id)))
                         .map(emp => {
                           const empName = [emp.userId?.name, emp.userId?.lastName].filter(Boolean).join(" ");
@@ -1329,7 +1336,10 @@ function TaskDetailModal({
                           );
                         })
                       }
-                      {team.filter(emp => emp.status !== "inactive" && emp.userId?.isActive !== false).filter(emp => !alreadyAssignedIds.has(String(emp.userId?._id))).length === 0 && (
+                      {team
+                        .filter(emp => emp.status !== "inactive" && emp.userId?.isActive !== false)
+                        .filter(emp => !absentTodayIds.has(String(emp.userId?._id)))
+                        .filter(emp => !alreadyAssignedIds.has(String(emp.userId?._id))).length === 0 && (
                         <p className="text-[10px] text-muted-foreground text-center italic py-2">All active team members already have this task.</p>
                       )}
                     </div>

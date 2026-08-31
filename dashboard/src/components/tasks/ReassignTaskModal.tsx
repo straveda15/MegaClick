@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import { UserPlus, User, Check, Search, X } from "lucide-react";
 import { toast } from "sonner";
 import { useTeam } from "@/hooks/useTeam";
+import { useAbsentTodayUserIds } from "@/hooks/useAttendance";
 import { ROLE_CATEGORIES, matchesRoleFilter } from "@/components/tasks/roleFilter";
 
 interface ReassignTaskModalProps {
@@ -35,6 +36,7 @@ export function ReassignTaskModal({
   }, []);
 
   const { data: team = [] } = useTeam();
+  const absentToday = useAbsentTodayUserIds();
   const [roleFilters, setRoleFilters] = useState<string[]>([]);
   const [assignedToIds, setAssignedToIds] = useState<string[]>([]);
   const [search, setSearch] = useState("");
@@ -42,8 +44,10 @@ export function ReassignTaskModal({
   const filteredStaff = useMemo(() => {
     const q = search.trim().toLowerCase();
     return team
-      // Never offer deactivated staff or the people we were told to exclude.
+      // Never offer deactivated staff, staff marked absent today, or the
+      // people we were told to exclude.
       .filter((emp) => emp.status !== "inactive" && emp.userId?.isActive !== false)
+      .filter((emp) => !absentToday.has(String(emp.userId?._id)))
       .filter((emp) => !excludeIds.has(String(emp.userId?._id)))
       .filter((emp) => matchesRoleFilter(emp, roleFilters))
       .filter((emp) => {
@@ -51,7 +55,7 @@ export function ReassignTaskModal({
         const name = [emp.userId?.name, emp.userId?.lastName].filter(Boolean).join(" ").toLowerCase();
         return name.includes(q) || (emp.designation ?? "").toLowerCase().includes(q);
       });
-  }, [team, roleFilters, search, excludeIds]);
+  }, [team, roleFilters, search, excludeIds, absentToday]);
 
   const selectedStaff = useMemo(() => {
     const map = new Map<string, string>();

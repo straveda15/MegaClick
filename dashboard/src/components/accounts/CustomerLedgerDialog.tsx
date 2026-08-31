@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { IndianRupee, Loader2, Plus, Trash2, Wallet } from 'lucide-react';
+import { CheckCircle2, IndianRupee, Loader2, Plus, Trash2, Wallet } from 'lucide-react';
 import { toast } from 'sonner';
 import {
   Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle,
@@ -308,7 +308,10 @@ export default function CustomerLedgerDialog({ target, open, onOpenChange }: Cus
                   {rupees(due)} still due
                 </span>
               ) : (
-                <span className="text-[11px] text-emerald-700">Fully paid — nothing due</span>
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap">
+                  <CheckCircle2 className="w-3 h-3" />
+                  Payment Completed
+                </span>
               )}
             </div>
 
@@ -343,6 +346,7 @@ export default function CustomerLedgerDialog({ target, open, onOpenChange }: Cus
                   type="date"
                   value={paidAt}
                   onChange={(e) => setPaidAt(e.target.value)}
+                  disabled={due <= 0}
                 />
               </div>
 
@@ -352,7 +356,8 @@ export default function CustomerLedgerDialog({ target, open, onOpenChange }: Cus
                   id="ledger-method"
                   value={method}
                   onChange={(e) => setMethod(e.target.value as PaymentMode)}
-                  className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                  disabled={due <= 0}
+                  className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm focus:outline-none focus:ring-1 focus:ring-ring disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {PAYMENT_METHODS.map((value) => (
                     <option key={value} value={value}>{PAYMENT_METHOD_LABELS[value]}</option>
@@ -367,6 +372,7 @@ export default function CustomerLedgerDialog({ target, open, onOpenChange }: Cus
                   placeholder="e.g. Second instalment"
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
+                  disabled={due <= 0}
                 />
               </div>
             </div>

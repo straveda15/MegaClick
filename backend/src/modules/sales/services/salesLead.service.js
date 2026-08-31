@@ -4,6 +4,7 @@ import AppError from "../../../shared/utils/appError.js";
 import SalesActivityLog from "../models/salesActivityLog.model.js";
 import Task from "../../task/task.model.js";
 import User from "../../user/user.model.js";
+import Attendance from "../../attendance/attendance.model.js";
 import Order from "../../order/order.model.js";
 import Product from "../../product/product.model.js";
 import Leave from "../../leave/leave.model.js";
@@ -1025,6 +1026,15 @@ export const assignLeadService = async (leadId, serviceId, actorId, { assignedTo
     if (assignee.isActive === false) {
         const name = [assignee.name, assignee.lastName].filter(Boolean).join(" ") || "That employee";
         throw new AppError(`${name} is deactivated — reactivate the account first.`, 400);
+    }
+
+    // Staff marked absent today (manual attendance override or their own
+    // record) can't take on a new service — hand it to someone available.
+    const today = new Date().toISOString().split("T")[0];
+    const todaysAttendance = await Attendance.findOne({ userId: assignedTo, date: today, status: "absent" });
+    if (todaysAttendance) {
+        const name = [assignee.name, assignee.lastName].filter(Boolean).join(" ") || "That employee";
+        throw new AppError(`${name} is marked absent today — assign this service to someone else.`, 400);
     }
 
     // Leads captured before multi-service support carry their service in the

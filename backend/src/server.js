@@ -4,6 +4,7 @@ import app from "./app.js";
 import connectDB from "./config/db.js";
 import { startOverdueTaskScheduler } from "./modules/task/task.service.js";
 import { startLeadAutoDistributeScheduler } from "./modules/sales/services/salesLead.service.js";
+import { startAutoPunchOutScheduler } from "./modules/attendance/attendance.service.js";
 import { bootstrapNotificationListeners } from "./modules/notification/notification.eventListener.js";
 import { initSocketServer } from "./shared/websocket/socketServer.js";
 import { registerTaskNotificationHandlers } from "./modules/task/events/taskNotificationHandler.js";
@@ -23,6 +24,8 @@ const startServer = async () => {
     startOverdueTaskScheduler();
     // Spread new/freed sales leads equally across the roster every 30 min
     startLeadAutoDistributeScheduler();
+    // Force-punch-out anyone still clocked in 8+ hours after punch-in
+    startAutoPunchOutScheduler();
     bootstrapNotificationListeners();
     registerTaskNotificationHandlers();
 

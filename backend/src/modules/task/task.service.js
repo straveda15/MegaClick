@@ -1,6 +1,7 @@
 import Task from "./task.model.js";
 import User from "../user/user.model.js";
 import SalesLead from "../sales/models/salesLead.model.js";
+import Attendance from "../attendance/attendance.model.js";
 import AppError from "../../shared/utils/appError.js";
 import taskEventEmitter, { TASK_EVENTS } from "./events/taskEventEmitter.js";
 
@@ -19,6 +20,28 @@ const assertAssigneesActive = async (assigneeIds) => {
       .join(", ");
     throw new AppError(
       `Cannot assign tasks to inactive staff: ${names}. Please reactivate the account first.`,
+      400
+    );
+  }
+};
+
+/**
+ * Reject task assignment to staff marked absent today — whether by a manual
+ * HR override or their own attendance record. Mirrors assertAssigneesActive.
+ */
+const assertAssigneesNotAbsentToday = async (assigneeIds) => {
+  const ids = (Array.isArray(assigneeIds) ? assigneeIds : [assigneeIds]).filter(Boolean);
+  if (ids.length === 0) return;
+
+  const date = new Date().toISOString().split("T")[0];
+  const absent = await Attendance.find({ userId: { $in: ids }, date, status: "absent" })
+    .populate("userId", "name lastName");
+  if (absent.length > 0) {
+    const names = absent
+      .map((r) => [r.userId?.name, r.userId?.lastName].filter(Boolean).join(" ") || "a staff member")
+      .join(", ");
+    throw new AppError(
+      `Cannot assign tasks to staff marked absent today: ${names}.`,
       400
     );
   }
@@ -361,6 +384,7 @@ export const createManualTask = async (data, actorId) => {
 
   await assertAssigneesActive(assignees);
   await assertAssigneesActive(followerIds);
+  await assertAssigneesNotAbsentToday(assignees);
 
   const groupId = assignees.length > 1 ? new (await import("mongoose")).default.Types.ObjectId() : null;
 
@@ -798,6 +822,7 @@ export const reassignTask = async (taskId, actorId, newAssignee) => {
   const ids = (Array.isArray(newAssignee) ? newAssignee : [newAssignee]).filter(Boolean);
   if (ids.length === 0) throw new AppError("Select at least one staff member to reassign to.", 400);
   await assertAssigneesActive(ids);
+  await assertAssigneesNotAbsentToday(ids);
 
   const task = await Task.findById(taskId);
   if (!task) throw new AppError("Task not found.", 404);
@@ -846,6 +871,7 @@ export const reassignTask = async (taskId, actorId, newAssignee) => {
 
 export const assignMore = async (taskId, actorId, assigneeIds) => {
   await assertAssigneesActive(assigneeIds);
+  await assertAssigneesNotAbsentToday(assigneeIds);
   const task = await Task.findById(taskId);
   if (!task.taskGroup) {
     task.taskGroup = task._id;

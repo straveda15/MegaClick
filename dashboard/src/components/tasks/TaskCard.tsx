@@ -111,19 +111,23 @@ export interface TaskCardProps {
   task: Task;
   myId: string;
   oversight: boolean;
+  /** The assignee is marked absent today (manual attendance override) while
+   *  this task is still ongoing — the work needs to move to someone else. */
+  assigneeAbsentToday?: boolean;
   onComplete: (task: Task) => void;
   onStart: (task: Task) => void;
   onCancel?: (task: Task) => void;
   onViewDetail: (task: Task) => void;
 }
 
-export const TaskCard = ({ task, myId, oversight, onComplete, onStart, onCancel, onViewDetail }: TaskCardProps) => {
+export const TaskCard = ({ task, myId, oversight, assigneeAbsentToday = false, onComplete, onStart, onCancel, onViewDetail }: TaskCardProps) => {
   const updateStep = useUpdateServiceStep();
 
   const isCompleted = task.status === "completed";
   const isCancelled = task.status === "cancelled";
   const pastDue     = !isCompleted && !isCancelled && task.dueAt && isPastDue(task.dueAt, task.status);
   const priorityCls = PRIORITY_COLORS[task.priority] ?? PRIORITY_COLORS.medium;
+  const needsReassignment = assigneeAbsentToday && !isCompleted && !isCancelled;
 
   // The assignee (doer) can start/complete; the assigner can cancel what they
   // assigned. In oversight mode (admin / founder / co-founder) everything is
@@ -177,7 +181,7 @@ export const TaskCard = ({ task, myId, oversight, onComplete, onStart, onCancel,
   return (
     <div
       className={`flex flex-col h-full p-5 rounded-2xl border transition-all shadow-sm ${
-        needsAttention
+        needsAttention || needsReassignment
           ? "bg-amber-50/60 border-amber-300 ring-1 ring-amber-200"
           : isCompleted || isCancelled || wasTransferredAway
           ? "bg-muted/20 border-transparent opacity-70 hover:opacity-90"
@@ -209,6 +213,12 @@ export const TaskCard = ({ task, myId, oversight, onComplete, onStart, onCancel,
             Transferred
           </span>
         )}
+        {needsReassignment && (
+          <span className="inline-flex items-center gap-1 text-[9px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border bg-amber-100 text-amber-700 border-amber-300 animate-pulse">
+            <AlertTriangle className="w-3 h-3" />
+            Needs Reassignment
+          </span>
+        )}
         {(task.flags?.some((f) => !f.resolvedAt) ?? false) && !isCompleted && !isCancelled && (
           <span className="inline-flex items-center gap-1 text-[9px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border bg-red-100 text-red-700 border-red-300 animate-pulse">
             <AlertTriangle className="w-3 h-3" />
@@ -220,6 +230,13 @@ export const TaskCard = ({ task, myId, oversight, onComplete, onStart, onCancel,
       {wasTransferredAway && (
         <p className="text-[11px] text-blue-700 bg-blue-50 border border-blue-200 rounded-lg px-3 py-2 mb-3">
           Task transferred to {assignedToName}.
+        </p>
+      )}
+
+      {needsReassignment && (
+        <p className="flex items-start gap-1.5 text-[11px] text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mb-3">
+          <AlertTriangle className="w-3.5 h-3.5 shrink-0 mt-0.5" />
+          {assignedToName} is marked absent today — this task needs to be reassigned.
         </p>
       )}
 

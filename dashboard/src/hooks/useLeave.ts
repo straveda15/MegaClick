@@ -19,9 +19,11 @@ export interface LeaveRecord {
   isHalfDay?: boolean;
   halfDaySession?: "first_half" | "second_half";
   reason: string;
-  status: "pending" | "approved" | "rejected";
+  status: "pending" | "approved" | "rejected" | "cancelled";
   approvedBy?: any;
   rejectionReason?: string;
+  /** Set when the employee cancelled this leave themselves. */
+  cancelledAt?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -201,6 +203,9 @@ export function useCancelMyLeave() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["my-leaves"] });
       qc.invalidateQueries({ queryKey: ["my-leave-balance"] });
+      // HR's leave log carries this same record — keep it in sync too.
+      qc.invalidateQueries({ queryKey: ["pending-leaves"] });
+      qc.invalidateQueries({ queryKey: ["all-leaves"] });
     },
   });
 }
