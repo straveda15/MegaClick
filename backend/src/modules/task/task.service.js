@@ -106,7 +106,11 @@ export const getMyTasks = async (userId, filters = {}) => {
     .populate("flags.raisedBy", "name lastName email")
     .populate("followers", "name lastName email")
     .populate("followUps.author", "name lastName email")
-    .sort({ createdAt: -1 });
+    // Newest activity first — a reassignment now updates the same task
+    // document rather than creating a new one, so createdAt alone would leave
+    // it stuck wherever it was originally created instead of rising to the
+    // top for its new assignee.
+    .sort({ updatedAt: -1 });
 
   // Enrich with a human-readable reference for the related entity (batch number /
   // order number) so the UI can show e.g. "BATCH #1023" instead of a raw ObjectId.
