@@ -30,13 +30,10 @@ const taskSchema = new mongoose.Schema(
     },
     // Why the task was cancelled. "assignee_inactive" is set automatically when
     // the assigned staff member is deactivated, and drives the "cancelled" alert
-    // shown to the assigner and to admin/founder oversight. "reassigned" is set
-    // automatically when a lead service this task belongs to is handed to a
-    // different employee — the original assignee's copy stops rather than
-    // sitting there as a second, orphaned task for the same work.
+    // shown to the assigner and to admin/founder oversight.
     cancelReason: {
       type: String,
-      enum: ["manual", "assignee_inactive", "reassigned"],
+      enum: ["manual", "assignee_inactive"],
       default: "manual",
     },
     // For assignee_inactive cancellations: false until the assigner/oversight has
@@ -44,12 +41,6 @@ const taskSchema = new mongoose.Schema(
     cancelAlertAck: {
       type: Boolean,
       default: false,
-    },
-    // Who the work went to instead — only set for cancelReason "reassigned", so
-    // the original assignee's card can say who has it now.
-    reassignedTo: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
     },
     assignedTo: {
       type: mongoose.Schema.Types.ObjectId,
@@ -60,6 +51,19 @@ const taskSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
+    // Reassigning a service's task hands the SAME task document to the new
+    // assignee (rather than spinning up a second one) so there is only ever one
+    // card for the work — this is the running log of who held it before. A
+    // former holder's board still shows the task (read-only, "Transferred to
+    // X") by matching on this array instead of losing it the moment assignedTo
+    // changes.
+    previousAssignees: [
+      {
+        user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        transferredTo: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        transferredAt: { type: Date, default: Date.now },
+      },
+    ],
     relatedEntity: {
       entityType: {
         type: String,
@@ -204,6 +208,7 @@ taskSchema.index({ dueAt: 1, status: 1 });
 taskSchema.index({ "relatedEntity.entityType": 1, "relatedEntity.entityId": 1 });
 taskSchema.index({ taskGroup: 1 });
 taskSchema.index({ followers: 1, status: 1 });
+taskSchema.index({ "previousAssignees.user": 1 });
 
 const Task = mongoose.model("Task", taskSchema);
 
