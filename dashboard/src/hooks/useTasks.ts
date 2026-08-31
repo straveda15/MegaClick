@@ -74,11 +74,9 @@ export interface Task {
   type: string;
   status: "pending" | "in_progress" | "completed" | "cancelled" | "overdue";
   priority: "low" | "medium" | "high" | "urgent" | "critical";
-  cancelReason?: "manual" | "assignee_inactive" | "reassigned";
+  cancelReason?: "manual" | "assignee_inactive";
   cancelAlertAck?: boolean;
   cancelledAt?: string;
-  /** Who this cancelled task's work went to instead — only set when cancelReason is "reassigned". */
-  reassignedTo?: TeamMember;
   assignedTo: TeamMember;
   assignedBy?: TeamMember;
   createdBy?: TeamMember | string;
@@ -86,6 +84,17 @@ export interface Task {
   startedAt?: string;
   completedAt?: string;
   timeTakenMinutes?: number;
+  /**
+   * Everyone who held this task before the current assignee — reassigning
+   * hands the same task document on rather than creating a new one, so a
+   * former holder still finds it here (read-only) instead of it just
+   * disappearing from their board.
+   */
+  previousAssignees?: Array<{
+    user: TeamMember;
+    transferredTo: TeamMember;
+    transferredAt: string;
+  }>;
   relatedEntity?: {
     entityType: "SalesLead" | "Order" | "SalesReturn" | "None";
     entityId: string | null;

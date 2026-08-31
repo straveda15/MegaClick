@@ -61,14 +61,15 @@ export const getMyTasks = async (userId, filters = {}) => {
     query.assignedBy = userId;
     query.type = "manual";
   } else if (view === "assigned_to_me") {
+    // Also surface tasks the user held before being reassigned off them — that
+    // single card keeps showing on their board (read-only, "Transferred to X")
+    // instead of vanishing the moment someone else takes it over.
+    const everHeld = [{ assignedTo: userId }, { previousAssignees: { $elemMatch: { user: userId } } }];
     if (isProduction) {
-      // My own tasks OR any production_stage task (the shared floor queue).
-      query.$or = [
-        { assignedTo: userId },
-        { type: "production_stage" },
-      ];
+      // My own / past tasks OR any production_stage task (the shared floor queue).
+      query.$or = [...everHeld, { type: "production_stage" }];
     } else {
-      query.assignedTo = userId;
+      query.$or = everHeld;
     }
   } else if (view === "following") {
     // "Follow Up" view = tasks where the user is tagged as a follower (not the
@@ -100,7 +101,8 @@ export const getMyTasks = async (userId, filters = {}) => {
   const tasks = await Task.find(query)
     .populate("assignedTo", "name lastName email isActive")
     .populate("assignedBy", "name lastName email")
-    .populate("reassignedTo", "name lastName email")
+    .populate("previousAssignees.user", "name lastName email")
+    .populate("previousAssignees.transferredTo", "name lastName email")
     .populate("flags.raisedBy", "name lastName email")
     .populate("followers", "name lastName email")
     .populate("followUps.author", "name lastName email")
@@ -798,6 +800,18 @@ export const reassignTask = async (taskId, actorId, newAssignee) => {
 
   const [first, ...rest] = ids;
   const groupId = ids.length > 1 ? task.taskGroup || task._id : task.taskGroup;
+
+  // Same task document handed on, not a new one — a former holder's board
+  // still shows this one card (read-only, via previousAssignees) instead of
+  // it just disappearing.
+  const previousAssigneeId = task.assignedTo ? String(task.assignedTo) : null;
+  if (previousAssigneeId && previousAssigneeId !== String(first)) {
+    task.previousAssignees.push({
+      user: task.assignedTo,
+      transferredTo: first,
+      transferredAt: new Date(),
+    });
+  }
 
   task.assignedTo = first;
   task.assignedBy = actorId;

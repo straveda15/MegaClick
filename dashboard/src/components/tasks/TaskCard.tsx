@@ -139,12 +139,13 @@ export const TaskCard = ({ task, myId, oversight, onComplete, onStart, onCancel,
   const showInactiveAlert = inactiveCancelled && (isAssigner || oversight);
   const needsAttention    = showInactiveAlert && !task.cancelAlertAck;
 
-  // Stopped because the service was handed to someone else — the original
-  // assignee's card says so instead of just quietly going grey.
-  const wasReassigned = isCancelled && task.cancelReason === "reassigned";
-  const reassignedToName = [task.reassignedTo?.name, task.reassignedTo?.lastName].filter(Boolean).join(" ");
-
   const assignedToName = [task.assignedTo?.name, task.assignedTo?.lastName].filter(Boolean).join(" ") || "Unassigned";
+
+  // Reassigning hands this SAME task on to someone else rather than spinning
+  // up a duplicate — a former holder still finds it here, but locked: no
+  // actions, just who has it now. Handing it back to them later reactivates
+  // this very card instead of creating another one.
+  const wasTransferredAway = !isAssignee && (task.previousAssignees ?? []).some((p) => String(p.user?._id) === myId);
   const assignedByName = [task.assignedBy?.name,  task.assignedBy?.lastName].filter(Boolean).join(" ") || "System";
 
   // The checklist is the work: the card's main button walks it one step at a
@@ -178,7 +179,7 @@ export const TaskCard = ({ task, myId, oversight, onComplete, onStart, onCancel,
       className={`flex flex-col h-full p-5 rounded-2xl border transition-all shadow-sm ${
         needsAttention
           ? "bg-amber-50/60 border-amber-300 ring-1 ring-amber-200"
-          : isCompleted || isCancelled
+          : isCompleted || isCancelled || wasTransferredAway
           ? "bg-muted/20 border-transparent opacity-70 hover:opacity-90"
           : "bg-card border-border hover:shadow-md hover:border-primary/20"
       }`}
@@ -202,10 +203,10 @@ export const TaskCard = ({ task, myId, oversight, onComplete, onStart, onCancel,
             Assignee Inactive
           </span>
         )}
-        {wasReassigned && (
+        {wasTransferredAway && (
           <span className="inline-flex items-center gap-1 text-[9px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border bg-blue-100 text-blue-700 border-blue-300">
             <UserCheck className="w-3 h-3" />
-            Reassigned
+            Transferred
           </span>
         )}
         {(task.flags?.some((f) => !f.resolvedAt) ?? false) && !isCompleted && !isCancelled && (
@@ -216,9 +217,9 @@ export const TaskCard = ({ task, myId, oversight, onComplete, onStart, onCancel,
         )}
       </div>
 
-      {wasReassigned && (
+      {wasTransferredAway && (
         <p className="text-[11px] text-blue-700 bg-blue-50 border border-blue-200 rounded-lg px-3 py-2 mb-3">
-          Task reassigned to {reassignedToName || "another employee"}.
+          Task transferred to {assignedToName}.
         </p>
       )}
 
@@ -282,7 +283,7 @@ export const TaskCard = ({ task, myId, oversight, onComplete, onStart, onCancel,
           </button>
         )}
 
-        {canManage && ["pending", "in_progress", "overdue"].includes(task.status) && onCancel && (
+        {canManage && !wasTransferredAway && ["pending", "in_progress", "overdue"].includes(task.status) && onCancel && (
           <button
             onClick={(e) => { e.stopPropagation(); onCancel(task); }}
             className="flex items-center gap-1.5 px-3 py-2 bg-red-50 text-red-600 text-[10px] font-bold uppercase tracking-wider rounded-lg shadow-sm hover:bg-red-100 transition-colors border border-red-200"

@@ -1069,16 +1069,13 @@ export const assignLeadService = async (leadId, serviceId, actorId, { assignedTo
     const clientAddress = [lead.customer?.addressLine1, lead.customer?.addressLine2, lead.customer?.city, lead.customer?.state]
         .filter(Boolean).join(", ") || undefined;
 
-    const task = await Task.create({
+    const taskFields = {
         title: serviceTitle,
         description: [
             `Service request: ${serviceTitle}`,
             `Client: ${clientName}`,
             notes ? `Notes: ${String(notes).trim()}` : null,
         ].filter(Boolean).join("\n"),
-        type: "manual",
-        source: "manual",
-        status: "pending",
         priority: taskPriority,
         dueAt: due,
         assignedTo,
@@ -1100,21 +1097,43 @@ export const assignLeadService = async (leadId, serviceId, actorId, { assignedTo
             steps: taskSteps,
             stage: nextStage,
         },
-    });
+    };
 
-    // Reassignment: the previous assignee's copy of this work is done — stop it
-    // rather than leaving it active alongside the new task just created for the
-    // same service, and mark who it went to so their card can say so.
-    const previousTaskId = target.taskId;
-    const previousAssigneeId = target.assignedTo ? String(target.assignedTo) : null;
-    if (previousTaskId && previousAssigneeId && previousAssigneeId !== String(assignedTo)) {
-        await Task.findByIdAndUpdate(previousTaskId, {
-            status: "cancelled",
-            cancelledAt: new Date(),
-            cancelledBy: actorId,
-            cancelReason: "reassigned",
-            reassignedTo: assignedTo,
-        });
+    // Reassigning hands the SAME task document to the new assignee instead of
+    // spinning up a second one for the same service — so a former holder's
+    // board still shows exactly one card for this work (read-only, via
+    // previousAssignees) rather than a pile of orphaned duplicates, and handing
+    // it back to someone who had it before reactivates that one card again
+    // instead of creating yet another.
+    const existingTask = target.taskId ? await Task.findById(target.taskId) : null;
+    let task;
+
+    if (existingTask) {
+        const previousAssigneeId = existingTask.assignedTo ? String(existingTask.assignedTo) : null;
+        if (previousAssigneeId && previousAssigneeId !== String(assignedTo)) {
+            existingTask.previousAssignees.push({
+                user: existingTask.assignedTo,
+                transferredTo: assignedTo,
+                transferredAt: new Date(),
+            });
+        }
+        Object.assign(existingTask, taskFields);
+        // A new holder starts fresh — their own timer and status — even though
+        // the checklist itself (in `taskSteps`, supplied by the caller) carries
+        // over its progress.
+        existingTask.status = "pending";
+        existingTask.cancelledAt = undefined;
+        existingTask.cancelledBy = undefined;
+        existingTask.cancelReason = "manual";
+        existingTask.cancelAlertAck = false;
+        existingTask.startedAt = undefined;
+        existingTask.completedAt = undefined;
+        existingTask.timeTakenMinutes = undefined;
+        existingTask.overdueAt = undefined;
+        await existingTask.save();
+        task = existingTask;
+    } else {
+        task = await Task.create({ ...taskFields, type: "manual", source: "manual", status: "pending" });
     }
 
     target.taskId = task._id;
