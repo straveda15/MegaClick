@@ -26,6 +26,14 @@ import { toast } from "sonner";
 
 import { format } from "date-fns";
 
+// A short timeout looks fine locally because the browser already remembers a
+// prior location grant for localhost. On a fresh HTTPS deploy the permission
+// prompt itself eats into that window before the GPS fix even starts, so the
+// very first request of a session times out and only a retry (permission now
+// granted) succeeds. 15s leaves room for the prompt; a short maximumAge lets
+// a just-granted fix be reused instead of triggering another full lookup.
+const GEOLOCATION_OPTIONS: PositionOptions = { timeout: 15000, maximumAge: 30000 };
+
 const MyAttendancePage = () => {
   const { user } = useAuth();
   const [selectedMonth, setSelectedMonth] = useState(format(new Date(), "yyyy-MM"));
@@ -54,7 +62,7 @@ const MyAttendancePage = () => {
   const useMyLocationForSite = async () => {
     try {
       const pos = await new Promise<GeolocationPosition>((resolve, reject) =>
-        navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 5000 })
+        navigator.geolocation.getCurrentPosition(resolve, reject, GEOLOCATION_OPTIONS)
       );
       setSiteLat(String(pos.coords.latitude));
       setSiteLng(String(pos.coords.longitude));
@@ -81,7 +89,7 @@ const MyAttendancePage = () => {
 
     try {
       const pos = await new Promise<GeolocationPosition>((resolve, reject) =>
-        navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 5000 })
+        navigator.geolocation.getCurrentPosition(resolve, reject, GEOLOCATION_OPTIONS)
       );
       gpsLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
       setLocationError(null);
@@ -119,7 +127,7 @@ const MyAttendancePage = () => {
 
     try {
       const pos = await new Promise<GeolocationPosition>((resolve, reject) =>
-        navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 5000 })
+        navigator.geolocation.getCurrentPosition(resolve, reject, GEOLOCATION_OPTIONS)
       );
       gpsLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
       setLocationError(null);
