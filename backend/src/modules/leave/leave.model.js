@@ -46,7 +46,7 @@ const leaveSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["pending", "approved", "rejected"],
+      enum: ["pending", "approved", "rejected", "cancelled"],
       default: "pending",
     },
     requestedBy: {
@@ -63,6 +63,10 @@ const leaveSchema = new mongoose.Schema(
     },
     rejectionReason: {
       type: String,
+    },
+    // Set when the employee cancels their own leave (status becomes "cancelled").
+    cancelledAt: {
+      type: Date,
     },
     // True when this leave deducted from the user's LeaveBalance (self-service apply).
     // Gates balance restoration on cancel/reject so admin-created leaves aren't refunded.

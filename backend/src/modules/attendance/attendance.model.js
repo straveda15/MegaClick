@@ -86,6 +86,12 @@ const attendanceSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    // True when the 8-hour scheduler punched this out because the employee
+    // never pressed punch-out themselves.
+    autoPunchedOut: {
+      type: Boolean,
+      default: false,
+    },
     source: {
       type: String,
       enum: ["mobile", "web", "dashboard"],

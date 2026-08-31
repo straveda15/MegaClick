@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useServiceStepTemplate } from '@/hooks/useServiceSteps';
 import { useAssignLeadService, type LeadService, type SalesLead } from '@/hooks/useLeads';
 import { useTeam } from '@/hooks/useTeam';
+import { useAbsentTodayUserIds } from '@/hooks/useAttendance';
 
 /* ── Helpers ────────────────────────────────────────────────────────────────── */
 
@@ -71,21 +72,24 @@ export function AssignServiceDialog({ lead, service, open, onOpenChange }: Assig
     open ? service?.slug : undefined
   );
   const assignService = useAssignLeadService();
+  const absentToday = useAbsentTodayUserIds();
 
   const assignedTask = typeof service?.taskId === 'object' ? service.taskId : null;
   const isReassign = Boolean(service?.assignedTo?._id);
   const currentAssigneeId = service?.assignedTo?._id ? String(service.assignedTo._id) : null;
 
   // Reassigning to whoever already has it isn't a reassignment — leave them
-  // off the list entirely rather than let the picker offer a no-op.
+  // off the list entirely rather than let the picker offer a no-op. Staff
+  // marked absent today (manual attendance override) can't take on new work.
   const activeEmployees = useMemo(() =>
     team.filter((e) =>
       e.status !== 'inactive' &&
       e.userId?._id &&
       e.userId?.isActive !== false &&
+      !absentToday.has(String(e.userId._id)) &&
       (!isReassign || String(e.userId._id) !== currentAssigneeId)
     ),
-  [team, isReassign, currentAssigneeId]);
+  [team, isReassign, currentAssigneeId, absentToday]);
 
   // Reset the form each time a different service is opened.
   useEffect(() => {

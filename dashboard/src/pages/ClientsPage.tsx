@@ -12,11 +12,10 @@ import DateRangeFilter, { isWithinRange, type DateRange } from '@/components/Dat
 import ClientDetailsDialog from '@/components/clients/ClientDetailsDialog';
 import AssignServiceDialog from '@/components/leads/AssignServiceDialog';
 import AddClientDialog from '@/components/leads/AddClientDialog';
-import { STAGE_LABELS, STAGE_STYLES } from '@/data/services';
-import { TEMPERATURE_LABELS, TEMPERATURE_STYLES } from '@/data/leadTemperature';
 import { TASK_STATUS_LABELS, TASK_STATUS_STYLES } from '@/data/clientStatus';
 import { useClients, type Client, type ClientService } from '@/hooks/useClients';
 import { useLead, type LeadService } from '@/hooks/useLeads';
+import { useServiceStepTemplates } from '@/hooks/useServiceSteps';
 import type { SheetColumn } from '@/lib/sheet';
 
 /* ── Helpers ────────────────────────────────────────────────────────────────── */
@@ -57,38 +56,38 @@ const toLeadService = (service: ClientService): LeadService => ({
     : null,
   taskId: service.taskId
     ? {
-        _id: service.taskId,
-        title: service.title,
-        status: service.taskStatus,
-        dueAt: service.dueAt ?? undefined,
-        serviceRequest: {
-          stage: service.stage,
-          steps: service.steps.map((step) => ({
-            _id: step._id,
-            title: step.title,
-            description: step.description,
-            order: step.order,
-            done: step.done,
-            completedAt: step.completedAt ?? undefined,
-          })),
-        },
-      }
+      _id: service.taskId,
+      title: service.title,
+      status: service.taskStatus,
+      dueAt: service.dueAt ?? undefined,
+      serviceRequest: {
+        stage: service.stage,
+        steps: service.steps.map((step) => ({
+          _id: step._id,
+          title: step.title,
+          description: step.description,
+          order: step.order,
+          done: step.done,
+          completedAt: step.completedAt ?? undefined,
+        })),
+      },
+    }
     : null,
 });
 
 /* ── Spreadsheet columns ────────────────────────────────────────────────────── */
 
 const CLIENT_COLUMNS = [
-  { key: 'clientId',  header: 'Client ID',     value: (c: Client) => c.clientId },
-  { key: 'name',      header: 'Client',        value: (c: Client) => c.name },
-  { key: 'company',   header: 'Business',      value: (c: Client) => c.company },
-  { key: 'phone',     header: 'Phone',         value: (c: Client) => c.phone },
-  { key: 'email',     header: 'Email',         value: (c: Client) => c.email },
-  { key: 'city',      header: 'City',          value: (c: Client) => c.city },
-  { key: 'services',  header: 'Services',      value: (c: Client) => c.services.map((s) => s.title).join(', ') },
-  { key: 'assigned',  header: 'Handled By',    value: (c: Client) => c.assignedTo.join(', ') },
-  { key: 'progress',  header: 'Progress',      value: (c: Client) => `${c.progress}%` },
-  { key: 'deadline',  header: 'Next Deadline', value: (c: Client) => formatDate(c.nextDeadline) },
+  { key: 'clientId', header: 'Client ID', value: (c: Client) => c.clientId },
+  { key: 'name', header: 'Client', value: (c: Client) => c.name },
+  { key: 'company', header: 'Business', value: (c: Client) => c.company },
+  { key: 'phone', header: 'Phone', value: (c: Client) => c.phone },
+  { key: 'email', header: 'Email', value: (c: Client) => c.email },
+  { key: 'city', header: 'City', value: (c: Client) => c.city },
+  { key: 'services', header: 'Services', value: (c: Client) => c.services.map((s) => s.title).join(', ') },
+  { key: 'assigned', header: 'Handled By', value: (c: Client) => c.assignedTo.join(', ') },
+  { key: 'progress', header: 'Progress', value: (c: Client) => `${c.progress}%` },
+  { key: 'deadline', header: 'Next Deadline', value: (c: Client) => formatDate(c.nextDeadline) },
 ] as const satisfies ReadonlyArray<SheetColumn<Client> & { key: string }>;
 
 /* ── Small components ───────────────────────────────────────────────────────── */
@@ -237,6 +236,14 @@ const ClientsPage = () => {
 
   const { data: clients = [], isLoading, isError, error, refetch } = useClients();
 
+  // A service can't be handed off as a task until it has a checklist defined
+  // on the Service Steps page — otherwise the employee gets an empty task.
+  const { data: stepTemplates = [] } = useServiceStepTemplates();
+  const slugsWithSteps = useMemo(
+    () => new Set(stepTemplates.filter((t) => (t.steps?.length ?? 0) > 0).map((t) => t.serviceSlug)),
+    [stepTemplates]
+  );
+
   const kpis = useMemo(() => {
     const services = clients.flatMap((c) => c.services);
     const assigned = services.filter((s) => s.assignedTo);
@@ -293,8 +300,15 @@ const ClientsPage = () => {
       return next;
     });
 
-  const openAssign = (client: Client, service: ClientService) =>
+  const openAssign = (client: Client, service: ClientService) => {
+    // An existing task already carries its own checklist, so only a brand-new
+    // assignment needs a template to draw its steps from.
+    if (!service.taskId && (!service.slug || !slugsWithSteps.has(service.slug))) {
+      toast.error('Please define Service Steps for this first');
+      return;
+    }
     setAssignTarget({ leadId: client.leadId, service: toLeadService(service) });
+  };
 
   const handleInvoice = async (client: Client, service: ClientService) => {
     setInvoicing(service._id);
@@ -304,7 +318,7 @@ const ClientsPage = () => {
 
       const now = new Date();
       const pad = (n: number) => String(n).padStart(2, '0');
-      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
       const invoiceDate = `${pad(now.getDate())}-${months[now.getMonth()]}-${String(now.getFullYear()).slice(2)}`;
       // Financial-year form, e.g. "26-27/025" — see lib/invoicePdf.
       const reference = invoiceNumber(client.clientId, now);
@@ -347,11 +361,11 @@ const ClientsPage = () => {
       {/* ── KPIs ───────────────────────────────────────────────────────────── */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
         {[
-          { label: 'Clients',        value: kpis.clients,              tone: 'text-foreground'  },
-          { label: 'Services',       value: kpis.services,             tone: 'text-blue-700'    },
-          { label: 'Unassigned',     value: kpis.unassigned,           tone: 'text-orange-600'  },
-          { label: 'In Progress',    value: kpis.inProgress,           tone: 'text-sky-700'     },
-          { label: 'Completed',      value: kpis.completed,            tone: 'text-emerald-700' },
+          { label: 'Clients', value: kpis.clients, tone: 'text-foreground' },
+          { label: 'Services', value: kpis.services, tone: 'text-blue-700' },
+          { label: 'Unassigned', value: kpis.unassigned, tone: 'text-orange-600' },
+          { label: 'In Progress', value: kpis.inProgress, tone: 'text-sky-700' },
+          { label: 'Completed', value: kpis.completed, tone: 'text-emerald-700' },
         ].map((kpi) => (
           <div key={kpi.label} className="bg-card border border-border rounded-lg px-4 py-3 hover:shadow-sm transition-shadow">
             <span className={`block text-[10px] font-semibold leading-tight ${kpi.tone}`}>{kpi.label}</span>
@@ -472,8 +486,7 @@ const ClientsPage = () => {
                               <span title={single.title} className="block text-sm text-foreground truncate">
                                 {single.title}
                               </span>
-                              <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium mt-0.5 ${
-                                TASK_STATUS_STYLES[single.taskStatus]?.bg} ${TASK_STATUS_STYLES[single.taskStatus]?.text}`}>
+                              <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium mt-0.5 ${TASK_STATUS_STYLES[single.taskStatus]?.bg} ${TASK_STATUS_STYLES[single.taskStatus]?.text}`}>
                                 {TASK_STATUS_LABELS[single.taskStatus] ?? single.taskStatus}
                               </span>
                             </div>
@@ -564,30 +577,15 @@ const ClientsPage = () => {
                         <td colSpan={6} className="px-4 py-3">
                           <div className="space-y-2">
                             {client.services.map((service) => {
-                              const stageStyle = STAGE_STYLES[service.stage] ?? STAGE_STYLES.documents_pending;
-                              const statusStyle = TASK_STATUS_STYLES[service.taskStatus] ?? TASK_STATUS_STYLES.pending;
-                              const tempStyle = TEMPERATURE_STYLES[service.temperature];
-
                               return (
                                 <div
                                   key={service._id}
-                                  className="rounded-lg border border-border bg-card px-3.5 py-3 grid grid-cols-1 lg:grid-cols-[minmax(0,2fr)_minmax(0,1.4fr)_minmax(0,1fr)_auto] gap-3 items-center"
+                                  className="rounded-lg border border-border bg-card px-3.5 py-3 grid grid-cols-1 lg:grid-cols-[minmax(0,2fr)_minmax(0,1.4fr)_minmax(0,1fr)_168px] gap-3 items-center"
                                 >
                                   <div className="min-w-0">
                                     <span className="block text-sm font-semibold text-foreground truncate" title={service.title}>
                                       {service.title}
                                     </span>
-                                    <div className="flex items-center gap-1.5 flex-wrap mt-1">
-                                      <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium ${tempStyle.bg} ${tempStyle.text}`}>
-                                        {TEMPERATURE_LABELS[service.temperature]}
-                                      </span>
-                                      <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium ${stageStyle.bg} ${stageStyle.text}`}>
-                                        {STAGE_LABELS[service.stage] ?? service.stage}
-                                      </span>
-                                      <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium ${statusStyle.bg} ${statusStyle.text}`}>
-                                        {TASK_STATUS_LABELS[service.taskStatus] ?? service.taskStatus}
-                                      </span>
-                                    </div>
                                   </div>
 
                                   <div className="min-w-0">

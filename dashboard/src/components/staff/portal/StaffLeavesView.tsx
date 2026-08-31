@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { useMyLeaves, useMyLeaveBalance, useApplyLeaveSelf, useCancelMyLeave } from "@/hooks/useLeave";
+import { createPortal } from "react-dom";
+import { useMyLeaves, useMyLeaveBalance, useApplyLeaveSelf, useCancelMyLeave, type LeaveRecord } from "@/hooks/useLeave";
 import { format, differenceInDays } from "date-fns";
-import { Plus, ChevronLeft } from "lucide-react";
+import { Plus, ChevronLeft, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import { Calendar } from "@/components/ui/calendar";
 import type { DateRange } from "react-day-picker";
@@ -16,7 +17,9 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
-const FILTERS = ["All", "Pending", "Approved", "Rejected"] as const;
+const FILTERS = ["All", "Pending", "Approved", "Rejected", "Cancelled"] as const;
+
+const HOURS_48_MS = 48 * 60 * 60 * 1000;
 
 // Parse a yyyy-MM-dd / ISO string as a LOCAL calendar date (avoids the UTC
 // off-by-one that `new Date("2026-07-05")` causes in negative-offset zones).
@@ -24,6 +27,13 @@ const toLocalDate = (s: string) => {
   const [y, m, d] = s.slice(0, 10).split("-").map(Number);
   return new Date(y, m - 1, d);
 };
+
+// A leave can only be cancelled while it's still active (not already
+// rejected/cancelled) and at least 48 hours before it's due to start —
+// any closer and there's no time left for HR/the roster to react.
+const canCancelLeave = (leave: LeaveRecord) =>
+  (leave.status === "pending" || leave.status === "approved") &&
+  toLocalDate(leave.fromDate).getTime() - Date.now() >= HOURS_48_MS;
 
 interface Props {
   // Optional — when rendered inside the staff portal a back button is shown.
@@ -280,6 +290,7 @@ export function StaffLeavesView({ onBack }: Props) {
                       <span className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase ${
                         leave.status === "approved" ? "bg-green-100 text-green-700" :
                         leave.status === "pending" ? "bg-amber-100 text-amber-700" :
+                        leave.status === "cancelled" ? "bg-slate-100 text-slate-600" :
                         "bg-red-100 text-red-700"
                       }`}>
                         {leave.status}
@@ -295,8 +306,25 @@ export function StaffLeavesView({ onBack }: Props) {
                       {leave.fromDate ? format(new Date(leave.fromDate), "d MMM") : "—"} – {leave.toDate ? format(new Date(leave.toDate), "d MMM yyyy") : "—"} · {days} day{days !== 1 ? "s" : ""}
                     </p>
                     <p className="text-xs text-muted-foreground mt-1 line-clamp-1">{leave.reason}</p>
+                    {leave.status === "cancelled" && leave.cancelledAt && (
+                      <p className="text-[11px] text-slate-500 mt-1">
+                        Cancelled on {format(new Date(leave.cancelledAt), "d MMM yyyy")}
+                      </p>
+                    )}
+                    {(leave.status === "pending" || leave.status === "approved") && (
+                      canCancelLeave(leave) ? (
+                        <p className="text-[10px] text-muted-foreground mt-1">
+                          Can be cancelled up to 48 hours before it starts.
+                        </p>
+                      ) : (
+                        <p className="text-[11px] text-amber-600 mt-1 flex items-center gap-1">
+                          <AlertCircle className="w-3 h-3 shrink-0" />
+                          Can't be cancelled — less than 48 hours to the start date.
+                        </p>
+                      )
+                    )}
                   </div>
-                  {leave.status === "pending" && (
+                  {canCancelLeave(leave) && (
                     <button
                       onClick={() => setCancelId(leave._id)}
                       className="text-xs font-bold text-red-500 hover:underline shrink-0 ml-3"
@@ -311,12 +339,13 @@ export function StaffLeavesView({ onBack }: Props) {
         </div>
       )}
 
-      {/* Apply modal */}
-      {showApply && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="bg-background border border-border rounded-2xl shadow-2xl w-full max-w-md">
-            <div className="flex items-center justify-between px-5 py-4 border-b border-border">
-              <h3 className="font-bold">Apply for Leave</h3>
+      {/* Apply modal — portaled to <body> so it always paints above the sticky
+          topbar/sidebar, regardless of any stacking context inside the page. */}
+      {showApply && createPortal(
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+          <div className="bg-background border border-border rounded-2xl shadow-2xl w-full max-w-sm">
+            <div className="flex items-center justify-between px-5 py-3 border-b border-border">
+              <h3 className="font-bold text-base">Apply for Leave</h3>
               <button onClick={() => setShowApply(false)} className="text-muted-foreground hover:text-foreground text-2xl leading-none">×</button>
             </div>
             <form onSubmit={handleApply} className="p-5 space-y-4">
@@ -327,7 +356,7 @@ export function StaffLeavesView({ onBack }: Props) {
                   required
                   value={leaveType}
                   onChange={(e) => handleLeaveTypeChange(e.target.value)}
-                  className="w-full h-10 px-3 rounded-xl border border-border bg-background text-sm outline-none"
+                  className="w-full h-9 px-3 rounded-lg border border-border bg-background text-sm outline-none"
                 >
                   <option value="earned">Earned Leave</option>
                   <option value="sick">Sick Leave</option>
@@ -347,14 +376,12 @@ export function StaffLeavesView({ onBack }: Props) {
                   {fromDate && (
                     <span className="text-[11px] font-semibold text-foreground">
                       {format(toLocalDate(fromDate), "d MMM")}
-                      {toDate && ` – ${format(toLocalDate(toDate), "d MMM yyyy")}`}
-                      {toDate && ` · ${differenceInDays(toLocalDate(toDate), toLocalDate(fromDate)) + 1} day${
-                        differenceInDays(toLocalDate(toDate), toLocalDate(fromDate)) + 1 !== 1 ? "s" : ""
-                      }`}
+                      {toDate && ` – ${format(toLocalDate(toDate), "d MMM")}`}
+                      {toDate && ` · ${differenceInDays(toLocalDate(toDate), toLocalDate(fromDate)) + 1}d`}
                     </span>
                   )}
                 </div>
-                <div className="rounded-xl border border-border flex justify-center">
+                <div className="rounded-lg border border-border flex justify-center">
                   <Calendar
                     mode="range"
                     selected={selectedRange}
@@ -364,17 +391,29 @@ export function StaffLeavesView({ onBack }: Props) {
                     fromDate={today}
                     modifiers={{ booked: bookedRanges }}
                     modifiersClassNames={{ booked: "!bg-red-100 !text-red-500 line-through rounded-none" }}
+                    className="p-2.5"
+                    classNames={{
+                      month: "space-y-2",
+                      caption_label: "text-sm font-medium",
+                      nav_button:
+                        "inline-flex items-center justify-center h-6 w-6 rounded-md border border-input bg-transparent p-0 opacity-50 hover:opacity-100 hover:bg-accent transition-colors",
+                      table: "w-full border-collapse space-y-1",
+                      head_cell: "text-muted-foreground rounded-md w-8 font-normal text-[0.7rem]",
+                      row: "flex w-full mt-1",
+                      cell: "h-8 w-8 text-center text-xs p-0 relative [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
+                      day: "h-8 w-8 p-0 font-normal text-xs aria-selected:opacity-100 inline-flex items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground transition-colors",
+                    }}
                   />
                 </div>
                 <div className="flex items-center gap-1.5 mt-2 text-[10px] text-muted-foreground">
                   <span className="w-3 h-3 rounded bg-red-100 border border-red-200 inline-block shrink-0" />
-                  Dates already on leave are blocked and can't be selected.
+                  Dates already on leave are blocked.
                 </div>
               </div>
 
               {/* Half day — costs 0.5 from the balance and covers one date */}
-              <div className="rounded-xl border border-border bg-muted/20 p-3">
-                <label className="flex items-center gap-2.5 cursor-pointer">
+              <div className="space-y-2">
+                <label className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={isHalfDay}
@@ -382,26 +421,21 @@ export function StaffLeavesView({ onBack }: Props) {
                     className="w-4 h-4 rounded border-border accent-primary"
                   />
                   <span className="text-sm font-semibold text-foreground">Half day</span>
-                  <span className="text-[11px] text-muted-foreground">
-                    Counts as 0.5 day
-                  </span>
+                  <span className="text-[11px] text-muted-foreground">— counts as 0.5 day</span>
                 </label>
 
                 {isHalfDay && (
-                  <div className="mt-2.5">
-                    <label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest block mb-1.5">
-                      Which half
-                    </label>
+                  <div className="pl-6">
                     <div className="grid grid-cols-2 gap-2">
                       {([
-                        { value: "first_half", label: "First half (morning)" },
-                        { value: "second_half", label: "Second half (afternoon)" },
+                        { value: "first_half", label: "Morning" },
+                        { value: "second_half", label: "Afternoon" },
                       ] as const).map((option) => (
                         <button
                           key={option.value}
                           type="button"
                           onClick={() => setHalfDaySession(option.value)}
-                          className={`h-9 rounded-lg text-xs font-semibold border transition-colors ${
+                          className={`h-8 rounded-md text-xs font-semibold border transition-colors ${
                             halfDaySession === option.value
                               ? "border-primary bg-primary text-primary-foreground"
                               : "border-border bg-card text-muted-foreground hover:bg-muted"
@@ -411,35 +445,33 @@ export function StaffLeavesView({ onBack }: Props) {
                         </button>
                       ))}
                     </div>
-                    <p className="text-[10px] text-muted-foreground mt-1.5">
-                      Pick a single date on the calendar above.
-                    </p>
                   </div>
                 )}
               </div>
 
               <div>
                 <label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest block mb-1.5">Reason</label>
-                <textarea
+                <input
+                  type="text"
                   name="reason"
                   required
-                  rows={3}
                   value={reason}
                   onChange={(e) => setReason(e.target.value)}
-                  className="w-full p-3 rounded-xl border border-border bg-background text-sm outline-none resize-none"
+                  className="w-full h-9 px-3 rounded-lg border border-border bg-background text-sm outline-none"
                 />
               </div>
               <div className="flex gap-3 pt-1">
-                <button type="button" onClick={() => setShowApply(false)} className="flex-1 h-10 border border-border rounded-xl text-sm font-bold hover:bg-muted transition-colors">
+                <button type="button" onClick={() => setShowApply(false)} className="flex-1 h-9 border border-border rounded-lg text-sm font-bold hover:bg-muted transition-colors">
                   Discard
                 </button>
-                <button type="submit" disabled={applyMutation.isPending} className="flex-1 h-10 bg-primary text-primary-foreground rounded-xl text-sm font-bold hover:bg-primary/90 transition-colors disabled:opacity-50">
+                <button type="submit" disabled={applyMutation.isPending} className="flex-1 h-9 bg-primary text-primary-foreground rounded-lg text-sm font-bold hover:bg-primary/90 transition-colors disabled:opacity-50">
                   Submit
                 </button>
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       <AlertDialog open={!!cancelId} onOpenChange={(open) => !open && setCancelId(null)}>
@@ -447,7 +479,9 @@ export function StaffLeavesView({ onBack }: Props) {
           <AlertDialogHeader>
             <AlertDialogTitle>Cancel Leave Request?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action will remove your pending leave request. This cannot be undone.
+              This cancels your leave request and, if it had already been approved, restores those
+              days to your balance. You'll be expected to work as normal on those dates. This cannot
+              be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

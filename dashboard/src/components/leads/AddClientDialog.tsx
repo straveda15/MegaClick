@@ -45,6 +45,11 @@ const NOTE_MAX = 100;
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+/** A client name is letters only — no digits or symbols. Spaces stay allowed
+ *  between words so multi-word names are still typable. */
+const NAME_TEXT_PATTERN = /^[a-zA-Z][a-zA-Z ]*$/;
+const sanitizeNameInput = (raw: string) => raw.replace(/[^a-zA-Z ]/g, '');
+
 /* ── Form shape ─────────────────────────────────────────────────────────────── */
 
 /** A service on the form, with the dates and status captured alongside it. */
@@ -173,6 +178,10 @@ export function AddClientDialog({ open, onOpenChange }: AddClientDialogProps) {
       toast.error('Client name is required.');
       return;
     }
+    if (!NAME_TEXT_PATTERN.test(client)) {
+      toast.error('Client name can only contain letters.');
+      return;
+    }
     if (phoneDigits.length !== 10) {
       toast.error('Enter a valid 10-digit phone number.');
       return;
@@ -284,7 +293,9 @@ export function AddClientDialog({ open, onOpenChange }: AddClientDialogProps) {
                   <Input
                     id="lead-client"
                     value={form.client}
-                    onChange={(e) => update('client', e.target.value)}
+                    onChange={(e) => update('client', sanitizeNameInput(e.target.value))}
+                    pattern="^[a-zA-Z][a-zA-Z ]*$"
+                    title="Letters only"
                     placeholder="Full name of the client"
                   />
                 </div>
@@ -525,6 +536,7 @@ export function AddClientDialog({ open, onOpenChange }: AddClientDialogProps) {
               disabled={
                 createLead.isPending ||
                 !form.client.trim() ||
+                !NAME_TEXT_PATTERN.test(form.client.trim()) ||
                 form.phone.replace(/^\+91/, '').length !== 10 ||
                 !EMAIL_PATTERN.test(form.email.trim()) ||
                 !services.some((service) => service.slug) ||

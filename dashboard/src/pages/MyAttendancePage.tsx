@@ -190,8 +190,16 @@ const MyAttendancePage = () => {
             ) : todayRecord ? (
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-full bg-green-500/10 flex items-center justify-center text-green-600">
-                    <CheckCircle2 className="w-6 h-6" />
+                  <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                    todayRecord.status === "absent"
+                      ? "bg-red-500/10 text-red-600"
+                      : todayRecord.status === "on-leave"
+                      ? "bg-blue-500/10 text-blue-600"
+                      : "bg-green-500/10 text-green-600"
+                  }`}>
+                    {todayRecord.status === "absent"
+                      ? <AlertCircle className="w-6 h-6" />
+                      : <CheckCircle2 className="w-6 h-6" />}
                   </div>
                   <div>
                     <p className="text-2xl font-bold text-foreground capitalize">{todayRecord.status}</p>
@@ -259,7 +267,9 @@ const MyAttendancePage = () => {
                   </div>
                 )}
 
-                {!todayRecord.punchOut ? (
+                {/* An HR override to absent/on-leave clears punchIn, so there is no
+                    live session to punch out of even though punchOut is still empty. */}
+                {todayRecord.punchIn && !todayRecord.punchOut ? (
                   showEarlyReason ? (
                     <div className="p-4 rounded-xl border border-red-200 bg-red-50 space-y-3">
                       <div className="flex items-center gap-2 text-red-700">
@@ -322,9 +332,13 @@ const MyAttendancePage = () => {
                       </div>
                     </div>
                   )
-                ) : (
+                ) : todayRecord.punchOut ? (
                   <div className="p-3 bg-muted/50 rounded-lg text-center text-xs text-muted-foreground border border-dashed border-border">
                     Day completed. Great work!
+                  </div>
+                ) : (
+                  <div className="p-3 bg-muted/50 rounded-lg text-center text-xs text-muted-foreground border border-dashed border-border">
+                    Marked <span className="font-semibold capitalize">{todayRecord.status}</span> for today.
                   </div>
                 )}
               </div>

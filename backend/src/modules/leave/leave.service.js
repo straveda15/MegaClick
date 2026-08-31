@@ -250,13 +250,23 @@ class LeaveService {
   }
 
   /**
-   * Cancel own pending leave — restores balance.
+   * Cancel own pending or approved leave — restores balance if it had been
+   * deducted, and keeps the record around (status: "cancelled") rather than
+   * soft-deleting it, so HR still sees it in the leave log.
+   *
+   * Only allowed 48+ hours before the leave's start date — cancelling closer
+   * to (or after) the start would leave HR/the roster no time to react.
    */
   async cancelMyLeave(leaveId, userId) {
     const leave = await Leave.findOne({ _id: leaveId, userId, isDeleted: { $ne: true } });
     if (!leave) throw new Error("Leave request not found");
-    if (leave.status !== "pending") {
-      throw new Error(`Only pending leave requests can be cancelled (current status: ${leave.status})`);
+    if (!["pending", "approved"].includes(leave.status)) {
+      throw new Error(`Only pending or approved leave requests can be cancelled (current status: ${leave.status})`);
+    }
+
+    const HOURS_48_MS = 48 * 60 * 60 * 1000;
+    if (new Date(leave.fromDate).getTime() - Date.now() < HOURS_48_MS) {
+      throw new Error("Leave can only be cancelled at least 48 hours before it starts.");
     }
 
     // Restore balance — only if this leave deducted from it.
@@ -268,8 +278,8 @@ class LeaveService {
       leave.balanceDeducted = false;
     }
 
-    leave.isDeleted = true;
-    leave.deletedAt = new Date();
+    leave.status = "cancelled";
+    leave.cancelledAt = new Date();
     await leave.save();
 
     return leave;

@@ -2,7 +2,7 @@ import { useState } from "react";
 import GenericPage from "@/components/GenericPage";
 import { CalendarCheck, UserCheck, XCircle, CheckCircle, Clock } from "lucide-react";
 import { useTodayAttendance, useApproveEarlyPunchOut, usePendingAttendance } from "@/hooks/useAttendance";
-import { usePendingLeaves, useApproveLeave, useRejectLeave } from "@/hooks/useLeave";
+import { useAllLeaves, useApproveLeave, useRejectLeave } from "@/hooks/useLeave";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
 
@@ -13,7 +13,7 @@ const HrLeavePage = () => {
 
   const { data: attendanceList = [], isLoading: loadingAttendance } = useTodayAttendance();
   const { data: allPending = [] } = usePendingAttendance();
-  const { data: leaveList = [], isLoading: loadingLeaves } = usePendingLeaves();
+  const { data: leaveList = [], isLoading: loadingLeaves } = useAllLeaves();
   const { user: currentUser } = useAuth();
 
   const approveLeave = useApproveLeave();
@@ -178,28 +178,28 @@ const HrLeavePage = () => {
       {tab === 1 && (
         <div className="flex flex-col gap-4">
           <div className="flex items-center justify-between mb-2">
-            <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Pending Leave Requests Queue</h3>
+            <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Leave Requests Log</h3>
           </div>
           <div className="bg-card border border-border rounded-2xl shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-border bg-muted/5">
-                    {["Employee", "Type", "Timeframe", "Reason", "Actions"].map((h) => (
+                    {["Employee", "Type", "Timeframe", "Status", "Reason", "Actions"].map((h) => (
                       <th key={h} className="text-left py-4 px-5 text-[11px] font-bold uppercase text-muted-foreground tracking-widest">{h}</th>
                     ))}
                   </tr>
                 </thead>
               <tbody>
                 {loadingLeaves ? (
-                  <tr><td colSpan={5} className="py-10 text-center text-muted-foreground italic">Fetching leave requests...</td></tr>
+                  <tr><td colSpan={6} className="py-10 text-center text-muted-foreground italic">Fetching leave requests...</td></tr>
                 ) : leaveList.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="py-10">
+                    <td colSpan={6} className="py-10">
                       <div className="flex flex-col items-center justify-center gap-3 text-muted-foreground">
                         <CalendarCheck className="w-12 h-12 opacity-25" />
                         <p className="text-sm font-medium">Clear queue!</p>
-                        <p className="text-xs">No pending leave requests require action.</p>
+                        <p className="text-xs">No leave requests to show yet.</p>
                       </div>
                     </td>
                   </tr>
@@ -207,15 +207,15 @@ const HrLeavePage = () => {
                   const user = leave.userId;
                   return (
                     <tr key={leave._id} className="border-b border-border/50 hover:bg-muted/30">
-                      <td className="py-3 font-medium">
+                      <td className="py-3 px-5 font-medium">
                         {user?.name} {user?.lastName}
                       </td>
-                      <td className="py-3 capitalize">
+                      <td className="py-3 px-5 capitalize">
                         <span className="status-badge bg-primary/10 text-primary">
                           {leave.leaveType}
                         </span>
                       </td>
-                      <td className="py-3 text-xs">
+                      <td className="py-3 px-5 text-xs">
                         <div className="text-foreground">{new Date(leave.fromDate).toLocaleDateString()}</div>
                         {/* A half day covers one date, so a "to" line would just repeat it. */}
                         {leave.isHalfDay ? (
@@ -229,24 +229,43 @@ const HrLeavePage = () => {
                           {leave.days} day{leave.days === 1 ? "" : "s"}
                         </div>
                       </td>
-                      <td className="py-3 text-muted-foreground text-xs max-w-xs truncate">{leave.reason}</td>
+                      <td className="py-3 px-5">
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase ${
+                          leave.status === "approved" ? "bg-green-100 text-green-700" :
+                          leave.status === "pending" ? "bg-amber-100 text-amber-700" :
+                          leave.status === "cancelled" ? "bg-slate-100 text-slate-600" :
+                          "bg-red-100 text-red-700"
+                        }`}>
+                          {leave.status}
+                        </span>
+                      </td>
+                      <td className="py-3 px-5 text-muted-foreground text-xs max-w-xs truncate">{leave.reason}</td>
                         <td className="py-4 px-5">
-                          <div className="flex items-center gap-2">
-                             <button 
-                               onClick={() => handleApprove(leave._id)}
-                               className="text-green-600 hover:bg-green-50 p-2 rounded-lg transition-colors"
-                               title="Approve"
-                             >
-                               <CheckCircle className="w-5 h-5" />
-                             </button>
-                             <button 
-                               onClick={() => handleReject(leave._id)}
-                               className="text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors"
-                               title="Reject"
-                             >
-                               <XCircle className="w-5 h-5" />
-                             </button>
-                          </div>
+                          {leave.status === "pending" ? (
+                            <div className="flex items-center gap-2">
+                               <button
+                                 onClick={() => handleApprove(leave._id)}
+                                 className="text-green-600 hover:bg-green-50 p-2 rounded-lg transition-colors"
+                                 title="Approve"
+                               >
+                                 <CheckCircle className="w-5 h-5" />
+                               </button>
+                               <button
+                                 onClick={() => handleReject(leave._id)}
+                                 className="text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors"
+                                 title="Reject"
+                               >
+                                 <XCircle className="w-5 h-5" />
+                               </button>
+                            </div>
+                          ) : leave.status === "cancelled" ? (
+                            <span className="text-xs font-semibold text-slate-500">
+                              Leave cancelled by employee
+                              {leave.cancelledAt && ` · ${new Date(leave.cancelledAt).toLocaleDateString()}`}
+                            </span>
+                          ) : (
+                            <span className="text-xs text-muted-foreground capitalize">{leave.status}</span>
+                          )}
                         </td>
                       </tr>
                     )

@@ -4,6 +4,7 @@ import { CalendarPlus, User, Check, Search, X, CalendarClock, AlertCircle, Bell,
 import { toast } from "sonner";
 import { useTeam } from "@/hooks/useTeam";
 import { useUsers } from "@/hooks/useUsers";
+import { useAbsentTodayUserIds } from "@/hooks/useAttendance";
 import { useAuth } from "@/context/AuthContext";
 import { useCreateManualTask, type TaskServiceRequest } from "@/hooks/useTasks";
 import { useClients, type Client, type ClientService } from "@/hooks/useClients";
@@ -66,6 +67,7 @@ export function CreateTaskModal({ onClose }: { onClose: () => void }) {
   const [steps, setSteps] = useState<StepState[]>([]);
 
   const { data: team = [] }  = useTeam();
+  const absentToday          = useAbsentTodayUserIds();
   const { user }             = useAuth();
   const createTask           = useCreateManualTask();
   const { data: clients = [] } = useClients();
@@ -177,14 +179,16 @@ export function CreateTaskModal({ onClose }: { onClose: () => void }) {
   const filteredStaff = useMemo(() => {
     const q = search.trim().toLowerCase();
     return assignableStaff
-      // Never allow assigning work to deactivated staff/team members.
+      // Never allow assigning work to deactivated staff/team members, or to
+      // anyone marked absent today (manual attendance override).
       .filter((emp) => emp.status !== "inactive" && emp.userId?.isActive !== false)
+      .filter((emp) => !absentToday.has(String(emp.userId?._id)))
       .filter((emp) => {
         if (!q) return true;
         const name = [emp.userId?.name, emp.userId?.lastName].filter(Boolean).join(" ").toLowerCase();
         return name.includes(q) || (emp.designation ?? "").toLowerCase().includes(q);
       });
-  }, [assignableStaff, search]);
+  }, [assignableStaff, search, absentToday]);
 
   // Map of selected userId -> display name, for the summary chips.
   const selectedStaff = useMemo(() => {

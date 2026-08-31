@@ -280,6 +280,32 @@ class AttendanceService {
     return attendance;
   }
 
+  /**
+   * Force-punches-out anyone still clocked in 8+ hours after their punch-in.
+   * The punch-out timestamp is set to exactly punchIn + 8h (not "now"), so
+   * totalHours always reads 8 regardless of how long the record sat overdue
+   * before this scheduler tick caught it.
+   */
+  async autoPunchOutOverdue() {
+    const EIGHT_HOURS_MS = 8 * 60 * 60 * 1000;
+    const cutoff = new Date(Date.now() - EIGHT_HOURS_MS);
+
+    const overdue = await Attendance.find({
+      punchOut: null,
+      punchIn: { $ne: null, $lte: cutoff },
+      isDeleted: { $ne: true },
+    });
+
+    for (const attendance of overdue) {
+      attendance.punchOut = new Date(attendance.punchIn.getTime() + EIGHT_HOURS_MS);
+      attendance.totalHours = 8;
+      attendance.autoPunchedOut = true;
+      await attendance.save();
+    }
+
+    return overdue.length;
+  }
+
   async approveEarlyPunchOut(attendanceId, approverId, status, approverRole, approverDeptRole) {
     const attendance = await Attendance.findById(attendanceId).populate("userId");
     if (!attendance) {
@@ -414,6 +440,33 @@ class AttendanceService {
         throw new AppError("Punch Out must be after Punch In.", 400);
       }
 
+      // Absent/on-leave days don't work at all — an override to either status
+      // must wipe every trace of a prior punch (work mode, GPS, half-day and
+      // early-exit requests). Otherwise the employee's own attendance page
+      // keeps showing "working from home" or a live punch-out button for a
+      // day HR just marked as not worked.
+      const isNonWorkingStatus = updateData.status === "absent" || updateData.status === "on-leave";
+      if (isNonWorkingStatus) {
+        Object.assign(updateData, {
+          punchIn: null,
+          punchOut: null,
+          workMode: "office",
+          site: undefined,
+          gpsLocation: undefined,
+          gpsVerified: false,
+          punchOutGpsLocation: undefined,
+          punchOutGpsVerified: false,
+          locationId: null,
+          confirmedPunchOut: false,
+          autoPunchedOut: false,
+          isHalfDay: false,
+          halfDayReason: undefined,
+          halfDayStatus: "none",
+          earlyPunchOutReason: undefined,
+          earlyPunchOutStatus: "none",
+        });
+      }
+
       let attendance = await Attendance.findOne({ userId, date });
       
       if (attendance) {
@@ -459,4 +512,23 @@ class AttendanceService {
   }
 }
 
-export default new AttendanceService();
+const attendanceService = new AttendanceService();
+
+// Catches anyone who forgot to punch out — runs every 10 minutes so a missed
+// 8-hour mark is closed out promptly without hammering the database.
+export const startAutoPunchOutScheduler = (intervalMs = 10 * 60 * 1000) => {
+  const run = async () => {
+    try {
+      const count = await attendanceService.autoPunchOutOverdue();
+      if (count > 0) {
+        console.log(`[Attendance] Auto punched-out ${count} overdue record(s).`);
+      }
+    } catch (err) {
+      console.error("[Attendance] Auto punch-out scheduler failed:", err);
+    }
+  };
+  run();
+  setInterval(run, intervalMs);
+};
+
+export default attendanceService;
