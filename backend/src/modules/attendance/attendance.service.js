@@ -85,21 +85,35 @@ class AttendanceService {
       throw new AppError("Employee is inactive and cannot punch in.", 403);
     }
 
+    // A soft-deleted record still occupies this (userId, date) slot in the
+    // unique index — block on a live one, but revive a deleted one in place
+    // rather than either wrongly blocking forever or crashing on insert.
     const existing = await Attendance.findOne({ userId, date });
-    if (existing) {
+    if (existing && !existing.isDeleted) {
       throw new AppError("Already punched in for today.", 409);
     }
 
-    const attendance = await Attendance.create({
+    const attendanceData = {
       userId,
       employeeProfileId: profile._id,
       date,
       punchIn: new Date(),
+      punchOut: null,
+      totalHours: 0,
       gpsLocation,
       source,
       status: "present",
-    });
+      isDeleted: false,
+      deletedAt: undefined,
+    };
 
+    if (existing) {
+      Object.assign(existing, attendanceData);
+      await existing.save();
+      return existing;
+    }
+
+    const attendance = await Attendance.create(attendanceData);
     return attendance;
   }
 
@@ -152,8 +166,13 @@ class AttendanceService {
     const date = new Date().toISOString().split("T")[0];
 
     // ── Criterion 2: one punch-in per calendar day ────────────────────────────
-    const existing = await Attendance.findOne({ userId, date, isDeleted: { $ne: true } });
-    if (existing) {
+    // Look up ANY record for the date — deleted or not. The unique index on
+    // (userId, date) doesn't know about isDeleted, so ignoring soft-deleted
+    // records here (as before) let Attendance.create() collide with one and
+    // throw a raw duplicate-key error instead of a clean message. A
+    // soft-deleted record is revived below rather than left blocking the slot.
+    const existing = await Attendance.findOne({ userId, date });
+    if (existing && !existing.isDeleted) {
       throw new AppError("Already punched in for today.", 409);
     }
 
@@ -186,13 +205,17 @@ class AttendanceService {
 
     const profile = await EmployeeProfile.findOne({ userId }).lean();
 
-    const attendance = await Attendance.create({
+    const attendanceData = {
       userId,
       ...(profile && { employeeProfileId: profile._id }),
       date,
       punchIn: new Date(),
+      punchOut: null,
+      totalHours: 0,
       gpsLocation: gpsLocation || undefined,
       gpsVerified,
+      punchOutGpsLocation: undefined,
+      punchOutGpsVerified: false,
       locationId: workLocation?._id ?? null,
       workMode: mode,
       site: declaredSite,
@@ -201,8 +224,23 @@ class AttendanceService {
       halfDayReason: isHalfDay ? halfDayReason.trim() : undefined,
       halfDayStatus: isHalfDay ? "pending" : "none",
       status: "present", // Shift initially counted as 'present' until half-day request is approved
-    });
+      confirmedPunchOut: false,
+      autoPunchedOut: false,
+      earlyPunchOutReason: undefined,
+      earlyPunchOutStatus: "none",
+      isDeleted: false,
+      deletedAt: undefined,
+    };
 
+    if (existing) {
+      // Revive the soft-deleted record for today in place, rather than
+      // inserting a second document that would collide with the unique index.
+      Object.assign(existing, attendanceData);
+      await existing.save();
+      return existing;
+    }
+
+    const attendance = await Attendance.create(attendanceData);
     return attendance;
   }
 
