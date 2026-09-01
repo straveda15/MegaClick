@@ -177,7 +177,10 @@ export const listClients = async (user, filters = {}) => {
 
   // Ownership scoping mirrors the Leads board: admins and the sales manager see
   // everyone; everyone else sees the clients they are actually working for.
-  const isManagerView = user.role === "admin" || user.isSalesManager === true;
+  // `filters.unscoped` is never taken from a request query string — only the
+  // dedicated task-picker route (getClientsForPicker) sets it, so a client
+  // requesting /clients directly still gets the ownership-scoped list.
+  const isManagerView = user.role === "admin" || user.isSalesManager === true || filters.unscoped === true;
   if (!isManagerView) {
     query.$or = [{ assignedTo: user._id }, { "services.assignedTo": user._id }];
   }

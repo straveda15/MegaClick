@@ -7,7 +7,7 @@ import { useUsers } from "@/hooks/useUsers";
 import { useAbsentTodayUserIds } from "@/hooks/useAttendance";
 import { useAuth } from "@/context/AuthContext";
 import { useCreateManualTask, type TaskServiceRequest } from "@/hooks/useTasks";
-import { useClients, type Client, type ClientService } from "@/hooks/useClients";
+import { useClientsForTaskPicker, type Client, type ClientService } from "@/hooks/useClients";
 import { useServiceStepTemplate } from "@/hooks/useServiceSteps";
 import { TEMPERATURE_LABELS, TEMPERATURE_STYLES } from "@/data/leadTemperature";
 import type { AssignableStaff } from "@/components/tasks/roleFilter";
@@ -70,7 +70,7 @@ export function CreateTaskModal({ onClose }: { onClose: () => void }) {
   const absentToday          = useAbsentTodayUserIds();
   const { user }             = useAuth();
   const createTask           = useCreateManualTask();
-  const { data: clients = [] } = useClients();
+  const { data: clients = [] } = useClientsForTaskPicker();
   const { data: template, isFetching: templateLoading } = useServiceStepTemplate(service?.slug);
 
   useEffect(() => {

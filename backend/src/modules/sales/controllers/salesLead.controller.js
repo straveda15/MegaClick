@@ -344,6 +344,27 @@ export const getClients = async (req, res, next) => {
     }
 };
 
+/**
+ * Every confirmed client, for the "pick a client" search inside Create &
+ * Assign Task — deliberately unscoped (unlike getClients) because delegating
+ * a new task about a client shouldn't require already owning that client.
+ * `unscoped: true` is hardcoded here, never taken from the request, so this
+ * bypass can't be reached through the regular /clients route.
+ */
+export const getClientsForPicker = async (req, res, next) => {
+    try {
+        const clients = await salesClientService.listClients(req.user, { unscoped: true });
+
+        res.status(200).json({
+            success: true,
+            message: "Clients retrieved successfully",
+            data: clients
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 export const getClientById = async (req, res, next) => {
     try {
         const client = await salesClientService.getClient(req.user, req.params.id);

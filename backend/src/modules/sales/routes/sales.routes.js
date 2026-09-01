@@ -59,6 +59,9 @@ router.post("/leads/:id/follow-ups", salesLeadController.logFollowUp);
 // A lead becomes a client once one of its services is assigned. Registered
 // before the /leads/:id wildcard below so "backlog"/"my" keep resolving first.
 router.get("/clients", salesLeadController.getClients);
+// Unscoped list for the task-delegation client picker — must stay above the
+// /clients/:id wildcard below so "picker" doesn't get swallowed as an id.
+router.get("/clients/picker", salesLeadController.getClientsForPicker);
 router.get("/clients/:id", salesLeadController.getClientById);
 
 // Full lead record for the details popup — must stay last of the /leads GETs so
