@@ -4,6 +4,7 @@ import SalesLead from "../sales/models/salesLead.model.js";
 import Attendance from "../attendance/attendance.model.js";
 import AppError from "../../shared/utils/appError.js";
 import taskEventEmitter, { TASK_EVENTS } from "./events/taskEventEmitter.js";
+import eventBus, { EVENTS } from "../../shared/events/eventBus.js";
 
 /**
  * Reject task assignment to deactivated accounts. Inactive staff/team members
@@ -55,6 +56,15 @@ export const createTask = async (data, session = null) => {
     title: task.title,
     assignedUserId: task.assignedTo,
     assignedRole: task.assignedRole
+  });
+  // The socket bridge (shared/websocket/socketServer.js) listens on THIS bus
+  // and pushes straight to the assignee's own `user:<id>` room — that's what
+  // actually puts the new task on their board live, without a page refresh.
+  eventBus.emit(EVENTS.TASK.CREATED, {
+    taskId: task._id,
+    title: task.title,
+    assignedTo: task.assignedTo,
+    assignedUserId: task.assignedTo,
   });
   return task;
 };
@@ -847,6 +857,12 @@ export const reassignTask = async (taskId, actorId, newAssignee) => {
   if (ids.length > 1) task.taskGroup = groupId;
   reviveTaskFields(task);
   await task.save();
+  eventBus.emit(EVENTS.TASK.CREATED, {
+    taskId: task._id,
+    title: task.title,
+    assignedTo: task.assignedTo,
+    assignedUserId: task.assignedTo,
+  });
 
   if (rest.length > 0) {
     await Promise.all(
@@ -862,6 +878,12 @@ export const reassignTask = async (taskId, actorId, newAssignee) => {
         });
         reviveTaskFields(copy);
         await copy.save();
+        eventBus.emit(EVENTS.TASK.CREATED, {
+          taskId: copy._id,
+          title: copy.title,
+          assignedTo: copy.assignedTo,
+          assignedUserId: copy.assignedTo,
+        });
       })
     );
   }
@@ -881,6 +903,12 @@ export const assignMore = async (taskId, actorId, assigneeIds) => {
   return await Promise.all(assigneeIds.map(async (userId) => {
     const newTask = new Task({ ...task.toObject(), _id: undefined, assignedTo: userId, assignedBy: actorId, taskGroup: groupId, status: "pending" });
     await newTask.save();
+    eventBus.emit(EVENTS.TASK.CREATED, {
+      taskId: newTask._id,
+      title: newTask.title,
+      assignedTo: newTask.assignedTo,
+      assignedUserId: newTask.assignedTo,
+    });
     return newTask;
   }));
 };
