@@ -123,3 +123,22 @@ export function useClients() {
     },
   });
 }
+
+/**
+ * Every confirmed client, unfiltered by who owns them — for the "pick a
+ * client" search inside Create & Assign Task. `useClients()` only shows
+ * clients already assigned to the current employee, which works for the
+ * Clients/Accounts boards but makes it impossible to delegate a task about
+ * a client nobody has touched yet.
+ */
+export function useClientsForTaskPicker() {
+  return useQuery({
+    queryKey: ["clients", "picker"],
+    queryFn: async (): Promise<Client[]> => {
+      const res = await fetch(`${BASE_URL}/clients/picker`, { headers: authHeaders() });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.message || "Failed to fetch clients");
+      return data.data || [];
+    },
+  });
+}
