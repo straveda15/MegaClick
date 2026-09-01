@@ -11,80 +11,38 @@ const HeroSection = () => {
            CONTAINER
         ───────────────────────────────────────────── */
         .about-hero-container {
-          max-width: 1500px;
+          width: 100%;
+          max-width: 1380px;
           margin-left: auto;
           margin-right: auto;
-          padding-left: 1.25rem;
-          padding-right: 1.25rem;
+          padding-left: 1rem;
+          padding-right: 1rem;
           position: relative;
           z-index: 20;
         }
 
         @media (min-width: 640px) {
           .about-hero-container {
-            padding-left: 2rem;
-            padding-right: 2rem;
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
           }
         }
 
-        @media (min-width: 1024px) {
-          .about-hero-container {
-            padding-left: 4rem;
-            padding-right: 4rem;
-          }
-        }
-
-        @media (min-width: 1280px) {
-          .about-hero-container {
-            padding-left: 6rem;
-            padding-right: 6rem;
-          }
-        }
-
-        /* ─────────────────────────────────────────────
-           BLUE LEFT PANEL
-           Creates the < shaped edge
-        ───────────────────────────────────────────── */
-        .about-blue-panel {
-          position: absolute;
-          left: 0;
-          top: 0;
-          width: 58%;
-          height: 100%;
-          background: #0B4EA2;
-
-          /*
-             Straight left edge
-             Angled < shaped right edge
-          */
-          clip-path: polygon(
-            0 0,
-            100% 0,
-            86% 50%,
-            100% 100%,
-            0 100%
-          );
-
-          z-index: 5;
-        }
-
-        /* ─────────────────────────────────────────────
-           1440px
-        ───────────────────────────────────────────── */
+        /* ── Standard Desktop 1440px ── */
         @media (min-width: 1440px) {
           .about-hero-container {
-            max-width: 1440px !important;
-            padding-left: 4rem !important;
-            padding-right: 4rem !important;
+            max-width: 1380px !important;
+            padding-left: 2.5rem !important;  /* px-10 (40px) */
+            padding-right: 2.5rem !important; /* px-10 (40px) */
           }
 
           .about-hero-wrap {
-            min-height: 500px !important;
+            min-height: 520px !important;
           }
 
           .about-hero-h1 {
-            font-size: 3.2rem !important;
-            line-height: 1.16 !important;
+            font-size: 3.1rem !important;
+            line-height: 1.15 !important;
           }
 
           .about-hero-sub {
@@ -97,28 +55,32 @@ const HeroSection = () => {
           }
         }
 
-        /* ─────────────────────────────────────────────
-           1920px
-        ───────────────────────────────────────────── */
+        /* ── Large Desktop 1920px ── */
         @media (min-width: 1920px) {
           .about-hero-container {
             max-width: 1800px !important;
-            padding-left: 5rem !important;
-            padding-right: 5rem !important;
+            padding-left: 4rem !important;   /* px-16 (64px) */
+            padding-right: 4rem !important;  /* px-16 (64px) */
           }
 
           .about-hero-wrap {
-            min-height: 620px !important;
+            min-height: 640px !important;
+          }
+
+          .about-hero-tag {
+            font-size: 1rem !important;
+            letter-spacing: 0.3em !important;
+            margin-bottom: 1.75rem !important;
           }
 
           .about-hero-h1 {
             font-size: 4rem !important;
-            line-height: 1.13 !important;
+            line-height: 1.15 !important;
           }
 
           .about-hero-sub {
             font-size: 2.6rem !important;
-            margin-top: 1.5rem !important;
+            margin-top: 1.75rem !important;
           }
 
           .about-blue-panel {
@@ -126,57 +88,32 @@ const HeroSection = () => {
           }
         }
 
-        /* ─────────────────────────────────────────────
-           2560px
-        ───────────────────────────────────────────── */
-        @media (min-width: 2560px) {
-          .about-hero-container {
-            max-width: 2300px !important;
-            padding-left: 6rem !important;
-            padding-right: 6rem !important;
-          }
-
-          .about-hero-wrap {
-            min-height: 780px !important;
-          }
-
-          .about-hero-h1 {
-            font-size: 5rem !important;
-            line-height: 1.1 !important;
-          }
-
-          .about-hero-sub {
-            font-size: 3.2rem !important;
-            margin-top: 1.75rem !important;
-          }
-
-          .about-blue-panel {
-            width: 59%;
-          }
-        }
-
-        /* ─────────────────────────────────────────────
-           4K
-        ───────────────────────────────────────────── */
+        /* ── 4K Ultra-Wide Desktop 3840px ── */
         @media (min-width: 3840px) {
           .about-hero-container {
-            max-width: 3400px !important;
-            padding-left: 8rem !important;
-            padding-right: 8rem !important;
+            max-width: 3200px !important;
+            padding-left: 6rem !important;   /* px-24 (96px) */
+            padding-right: 6rem !important;  /* px-24 (96px) */
           }
 
           .about-hero-wrap {
             min-height: 1080px !important;
           }
 
+          .about-hero-tag {
+            font-size: 1.75rem !important;
+            letter-spacing: 0.35em !important;
+            margin-bottom: 2.5rem !important;
+          }
+
           .about-hero-h1 {
-            font-size: 7rem !important;
-            line-height: 1.08 !important;
+            font-size: 6.8rem !important;
+            line-height: 1.1 !important;
           }
 
           .about-hero-sub {
             font-size: 4.5rem !important;
-            margin-top: 2rem !important;
+            margin-top: 3rem !important;
           }
 
           .about-blue-panel {
@@ -185,9 +122,25 @@ const HeroSection = () => {
         }
 
         /* ─────────────────────────────────────────────
-           MOBILE
-           No angled panel — image stays below
+           BLUE LEFT PANEL (< shaped edge)
         ───────────────────────────────────────────── */
+        .about-blue-panel {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 58%;
+          height: 100%;
+          background: #0B4EA2;
+          clip-path: polygon(
+            0 0,
+            100% 0,
+            86% 50%,
+            100% 100%,
+            0 100%
+          );
+          z-index: 5;
+        }
+
         @media (max-width: 1023px) {
           .about-blue-panel {
             display: none;
@@ -195,9 +148,7 @@ const HeroSection = () => {
         }
       `}</style>
 
-      {/* ─────────────────────────────────────────────
-          MOBILE IMAGE
-      ───────────────────────────────────────────── */}
+      {/* MOBILE IMAGE */}
       <div className="relative w-full h-[260px] sm:h-[320px] lg:hidden">
         <img
           src={teamImg}
@@ -206,10 +157,7 @@ const HeroSection = () => {
         />
       </div>
 
-      {/* ─────────────────────────────────────────────
-          DESKTOP IMAGE
-          ORIGINAL IMAGE — NO OVERLAY
-        ───────────────────────────────────────────── */}
+      {/* DESKTOP IMAGE */}
       <div className="hidden lg:block absolute right-0 top-0 w-[55%] h-full z-0">
         <img
           src={teamImg}
@@ -218,74 +166,38 @@ const HeroSection = () => {
         />
       </div>
 
-      {/* ─────────────────────────────────────────────
-          BLUE < SHAPED PANEL
-      ───────────────────────────────────────────── */}
+      {/* BLUE < SHAPED PANEL */}
       <div className="about-blue-panel hidden lg:block" />
 
-      {/* ─────────────────────────────────────────────
-          CONTENT
-      ───────────────────────────────────────────── */}
+      {/* CONTENT */}
       <div className="about-hero-container">
         <div className="about-hero-wrap flex items-center min-h-[400px] sm:min-h-[450px] lg:min-h-[520px] py-12 sm:py-14 lg:py-0">
-
-          {/* LEFT TEXT */}
-        <div className="relative z-30 w-full lg:w-[50%] xl:w-[52%] lg:pl-0 xl:pl-4 2xl:pl-8">
-            {/* WHO WE ARE */}
-            <p className="text-white/80 text-xs sm:text-sm font-semibold tracking-[0.25em] uppercase mb-5">
+          <div className="relative z-30 w-full lg:w-[50%] xl:w-[52%]">
+            <p className="about-hero-tag text-white/80 text-xs sm:text-sm font-semibold tracking-[0.25em] uppercase mb-4 sm:mb-5">
               Who We Are
             </p>
 
-            {/* HEADING */}
-<h1
-  style={{
-    fontFamily: "'Hedvig Letters Serif', serif",
-    letterSpacing: "0.01em",
-    wordSpacing: "0.12em",
-  }}
-  className="
-    about-hero-h1
-    text-4xl
-    sm:text-5xl
-    md:text-5xl
-    lg:text-[48px]
-    xl:text-[52px]
-    font-extrabold
-    leading-[1.15]
-    tracking-normal
-    text-green-300
-  "
->
-  Simplifying Needs and
-  <br />
-  Problems  For 
- 
-   Businesses
-  <br />
-  & Individuals
-</h1>
+            <h1
+              style={{
+                fontFamily: "'Hedvig Letters Serif', serif",
+              }}
+              className="about-hero-h1 text-4xl sm:text-5xl lg:text-[48px] xl:text-[52px] font-extrabold leading-[1.15] text-green-300"
+            >
+              Simplifying Needs and
+              <br />
+              Problems For Businesses
+              <br />
+              &amp; Individuals
+            </h1>
 
-{/* SEPARATE SUBTEXT */}
-<p
-  style={{
-    fontFamily: "'Hedvig Letters Serif', serif",
-  }}
-  className="
-    about-hero-sub
-    text-white
-    font-semibold
-    mt-6
-    text-2xl
-    sm:text-3xl
-    md:text-3xl
-    lg:text-[36px]
-    xl:text-[40px]
-    leading-tight
-  "
->
-  All Under One Roof
-</p>
-
+            <p
+              style={{
+                fontFamily: "'Hedvig Letters Serif', serif",
+              }}
+              className="about-hero-sub text-white font-semibold mt-5 sm:mt-6 text-2xl sm:text-3xl lg:text-[36px] xl:text-[40px] leading-tight"
+            >
+              All Under One Roof
+            </p>
           </div>
         </div>
       </div>

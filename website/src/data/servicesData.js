@@ -1,223 +1,257 @@
+// =====================================================
+// 1. LEGAL SERVICES ICONS (All 12 Images Imported)
+// =====================================================
+import marriageRegImg from "../assets/marriage-registration.png";
+import rentAgreementImg from "../assets/rent-agreement.png";
+import tenantVerificationImg from "../assets/tenant-police-verification.png";
+import govtGazetteImg from "../assets/govt-gazette.png";
+import partnershipDeedImg from "../assets/partnership-deed.png";
+import saleWillGiftImg from "../assets/sale-will-gift-deed.png";
+import mortgageDeedImg from "../assets/mortgage-release-deed.png";
+import titleSearchImg from "../assets/title-search-report.png";
+import trademarkImg from "../assets/trademark-registration.png";
+import patentCopyrightImg from "../assets/patent-copyright.png";
+import digital712Img from "../assets/digital.webp";
+import characterCertificateImg from "../assets/character-certificate.png";
+
+// =====================================================
+// 2. BUSINESS & FINANCIAL SERVICES ICONS (12 PNGs)
+// =====================================================
+import incomeTaxImg from "../assets/income-tax.png";
+import gstRegistrationImg from "../assets/gst-registration.jpg";
+import bankLoanImg from "../assets/bank-loan.png";
+import govtLiaisoningImg from "../assets/govt-liaisoning.png";
+import tenderConsultancyImg from "../assets/tender-consultancy.png";
+import companyRegImg from "../assets/company-registration.png";
+import llpRegImg from "../assets/llp-registration.png";
+import accountingAuditImg from "../assets/accounting-audit.png";
+import projectReportImg from "../assets/project-report.png";
+import trustRegImg from "../assets/trust-registration.png";
+import iecCodeImg from "../assets/growth.jpg";
+import dscImg from "../assets/digital.webp";
+
+// =====================================================
+// 3. OTHER SERVICES ICONS (12 PNGs)
+// =====================================================
+import realEstateImg from "../assets/real-estate-services.png";
+import lightBillTransferImg from "../assets/light-bill-transfer.png";
+import propertyTaxTransferImg from "../assets/property-water-tax.png";
+import insuranceImg from "../assets/insurance-services.png";
+import startupServicesImg from "../assets/startup-services.png";
+import digitalMarketingImg from "../assets/digital-marketing.png";
+import msmeUdyamImg from "../assets/msme.png";
+import shopActImg from "../assets/shop-act-license.png";
+import fssaiImg from "../assets/fssai-license.png";
+import passportImg from "../assets/passport-services.png";
+import voterPanTanImg from "../assets/hero2.jpg";
+import liquorLicenseImg from "../assets/liquor-license.png";
+
 const serviceCategories = [
   {
     id: 1,
     title: "Legal Services",
-    emoji: "⚖️",
-    description:
-      "Complete legal solutions for individuals and businesses",
+    description: "Complete legal solutions for individuals and businesses",
     slug: "legal-services",
 
     services: [
       {
         title: "Marriage Registration",
-        emoji: "💍",
         slug: "marriage-registration",
+        image: marriageRegImg,
       },
       {
         title: "Leave & Licence / Rent Agreement",
-        emoji: "🏠",
         slug: "leave-licence-rent-agreement",
+        image: rentAgreementImg,
       },
       {
         title: "Tenant Police Verification",
-        emoji: "👮",
         slug: "tenant-police-verification",
+        image: tenantVerificationImg,
       },
       {
         title: "Govt. Gazette – Name / DOB / Religion Change",
-        emoji: "📜",
         slug: "govt-gazette-change",
+        image: govtGazetteImg,
       },
       {
         title: "Partnership Deed (Notary & Registration of Firm)",
-        emoji: "🤝",
         slug: "partnership-deed",
+        image: partnershipDeedImg,
       },
       {
         title: "Sale Deed / Will / Gift Deed",
-        emoji: "📄",
         slug: "sale-will-gift-deed",
+        image: saleWillGiftImg,
       },
       {
         title: "Mortgage Deed / Release Deed",
-        emoji: "🏦",
         slug: "mortgage-release-deed",
+        image: mortgageDeedImg,
       },
       {
         title: "Title Search Report",
-        emoji: "🔍",
         slug: "title-search-report",
+        image: titleSearchImg,
       },
       {
         title: "Trademark Registration",
-        emoji: "™️",
         slug: "trademark-registration",
+        image: trademarkImg,
       },
       {
         title: "Patent / Copyright Registration",
-        emoji: "©️",
         slug: "patent-copyright-registration",
+        image: patentCopyrightImg,
       },
       {
         title: "Digital 7/12 & Mutation Entries",
-        emoji: "📑",
         slug: "digital-7-12-mutation",
+        image: digital712Img,
       },
       {
         title: "Character Certificate by Police",
-        emoji: "🪪",
         slug: "character-certificate",
+        image: characterCertificateImg,
       },
     ],
   },
 
   {
     id: 2,
-    title: "Other Services",
-    emoji: "🏢",
-    description:
-      "Additional professional and government services",
-    slug: "other-services",
-
+    title: "Business & Financial Services",
+    description: "Business setup, taxation and financial solutions",
+    slug: "business-financial-services",
     services: [
       {
-        title: "Real Estate Services (Sell / Purchase / Rent / Lease)",
-        emoji: "🏠",
-        slug: "real-estate-services",
+        title: "Income Tax Services",
+        slug: "income-tax-services",
+        image: incomeTaxImg,
       },
       {
-        title: "Name Transfer & Address Update in Light Bill",
-        emoji: "💡",
-        slug: "light-bill-name-transfer",
+        title: "GST Registration & Filing",
+        slug: "gst-registration-filing",
+        image: gstRegistrationImg,
       },
       {
-        title:
-          "Name Transfer in Property / Water Tax Bill / NMC Services",
-        emoji: "🏛️",
-        slug: "property-water-tax-transfer",
+        title: "Bank Loan / Financing Consultancy",
+        slug: "bank-loan-consultancy",
+        image: bankLoanImg,
       },
       {
-        title: "All Types of Insurance",
-        emoji: "🛡️",
-        slug: "insurance-services",
+        title: "Liaisoning with Govt. Offices",
+        slug: "government-liaisoning",
+        image: govtLiaisoningImg,
       },
       {
-        title: "Services for Start-Ups",
-        emoji: "🚀",
-        slug: "startup-services",
+        title: "Tender Consultancy",
+        slug: "tender-consultancy",
+        image: tenderConsultancyImg,
       },
       {
-        title: "Digital Marketing",
-        emoji: "📢",
-        slug: "digital-marketing",
+        title: "Company Registration & Annual Compliance",
+        slug: "company-registration-compliance",
+        image: companyRegImg,
       },
       {
-        title: "MSME / UDYAM Registration",
-        emoji: "🏭",
-        slug: "msme-registration",
+        title: "LLP Registration & Related Compliance",
+        slug: "llp-registration",
+        image: llpRegImg,
       },
       {
-        title: "Shop Act License",
-        emoji: "🏪",
-        slug: "shop-act-license",
+        title: "Accounting / Audit Services",
+        slug: "accounting-audit-services",
+        image: accountingAuditImg,
       },
       {
-        title: "FSSAI / Food License",
-        emoji: "🍴",
-        slug: "fssai-license",
+        title: "Project Report & Financing",
+        slug: "project-report-financing",
+        image: projectReportImg,
       },
       {
-        title: "Passport Services",
-        emoji: "🛂",
-        slug: "passport-services",
+        title: "Trust Registration & Audit",
+        slug: "trust-registration",
+        image: trustRegImg,
       },
       {
-        title: "Voter ID / PAN / TAN Services",
-        emoji: "🪪",
-        slug: "voter-pan-tan-services",
+        title: "Import Export Code (IEC)",
+        slug: "import-export-code",
+        image: iecCodeImg,
       },
       {
-        title: "Liquor Consumption License",
-        emoji: "📃",
-        slug: "liquor-license",
+        title: "Digital Signature Certificate (DSC)",
+        slug: "digital-signature-certificate",
+        image: dscImg,
       },
     ],
   },
 
   {
     id: 3,
-
-    // IMPORTANT:
-    // Same title as Home Services.jsx
-    title: "Business & Financial Services",
-
-    emoji: "💼",
-
-    description:
-      "Business setup, taxation and financial solutions",
-
-    slug: "business-financial-services",
+    title: "Other Services",
+    description: "Additional professional and government services",
+    slug: "other-services",
 
     services: [
       {
-        title: "Income Tax Services",
-        emoji: "💰",
-        slug: "income-tax-services",
+        title: "Real Estate Services (Sell / Purchase / Rent / Lease)",
+        slug: "real-estate-services",
+        image: realEstateImg,
       },
       {
-        title: "GST Registration & Filing",
-        emoji: "🧾",
-        slug: "gst-registration-filing",
+        title: "Name Transfer & Address Update in Light Bill",
+        slug: "light-bill-name-transfer",
+        image: lightBillTransferImg,
       },
       {
-        title: "Bank Loan / Financing Consultancy",
-        emoji: "🏦",
-        slug: "bank-loan-consultancy",
+        title: "Name Transfer in Property / Water Tax Bill / NMC Services",
+        slug: "property-water-tax-transfer",
+        image: propertyTaxTransferImg,
       },
       {
-        title: "Liaisoning with Govt. Offices",
-        emoji: "🏛️",
-        slug: "government-liaisoning",
+        title: "All Types of Insurance",
+        slug: "insurance-services",
+        image: insuranceImg,
       },
       {
-        title: "Tender Consultancy",
-        emoji: "📋",
-        slug: "tender-consultancy",
+        title: "Services for Start-Ups",
+        slug: "startup-services",
+        image: startupServicesImg,
       },
       {
-        title: "Company Registration & Annual Compliance",
-        emoji: "🏢",
-        slug: "company-registration-compliance",
+        title: "Digital Marketing",
+        slug: "digital-marketing",
+        image: digitalMarketingImg,
       },
       {
-        title: "LLP Registration & Related Compliance",
-        emoji: "📑",
-        slug: "llp-registration",
+        title: "MSME / UDYAM Registration",
+        slug: "msme-registration",
+        image: msmeUdyamImg,
       },
       {
-        title: "Accounting / Audit Services",
-        emoji: "📊",
-        slug: "accounting-audit-services",
+        title: "Shop Act License",
+        slug: "shop-act-license",
+        image: shopActImg,
       },
       {
-        title: "Project Report & Financing",
-        emoji: "📈",
-        slug: "project-report-financing",
+        title: "FSSAI / Food License",
+        slug: "fssai-license",
+        image: fssaiImg,
       },
       {
-        title: "Trust Registration & Audit",
-        emoji: "🤝",
-        slug: "trust-registration",
+        title: "Passport Services",
+        slug: "passport-services",
+        image: passportImg,
       },
       {
-        title: "Import Export Code (IEC)",
-        emoji: "🌍",
-        slug: "import-export-code",
+        title: "Voter ID / PAN / TAN Services",
+        slug: "voter-pan-tan-services",
+        image: voterPanTanImg,
       },
       {
-        title: "Digital Signature Certificate (DSC)",
-        emoji: "🔐",
-        slug: "digital-signature-certificate",
+        title: "Liquor Consumption License",
+        slug: "liquor-license",
+        image: liquorLicenseImg,
       },
     ],
   },
@@ -226,194 +260,12 @@ const serviceCategories = [
 export default serviceCategories;
 
 // =====================================================
-// ALL SERVICES
+// ALL SERVICES FLAT LIST
 // =====================================================
-
-export const allServices = [
-  // LEGAL SERVICES
-  {
-    title: "Marriage Registration",
-    category: "Legal Services",
-    emoji: "💍",
-  },
-  {
-    title: "Leave & Licence / Rent Agreement",
-    category: "Legal Services",
-    emoji: "🏠",
-  },
-  {
-    title: "Tenant Police Verification",
-    category: "Legal Services",
-    emoji: "👮‍♂️",
-  },
-  {
-    title: "Govt. Gazette – Name / DOB / Religion Change",
-    category: "Legal Services",
-    emoji: "📜",
-  },
-  {
-    title: "Partnership Deed (Notary & Registration of Firm)",
-    category: "Legal Services",
-    emoji: "🤝",
-  },
-  {
-    title: "Sale Deed / Will / Gift Deed",
-    category: "Legal Services",
-    emoji: "📑",
-  },
-  {
-    title: "Mortgage Deed / Release Deed",
-    category: "Legal Services",
-    emoji: "🏦",
-  },
-  {
-    title: "Title Search Report",
-    category: "Legal Services",
-    emoji: "🔍",
-  },
-  {
-    title: "Trademark Registration",
-    category: "Legal Services",
-    emoji: "™️",
-  },
-  {
-    title: "Patent / Copyright Registration",
-    category: "Legal Services",
-    emoji: "⚖️",
-  },
-  {
-    title: "Digital 7/12 & Mutation Entries",
-    category: "Legal Services",
-    emoji: "🚜",
-  },
-  {
-    title: "Character Certificate by Police",
-    category: "Legal Services",
-    emoji: "🛡️",
-  },
-
-  // OTHER SERVICES
-  {
-    title: "Real Estate Services (Sell / Purchase / Rent / Lease)",
-    category: "Other Services",
-    emoji: "🏙️",
-  },
-  {
-    title: "Name Transfer & Address Update in Light Bill",
-    category: "Other Services",
-    emoji: "⚡",
-  },
-  {
-    title:
-      "Name Transfer in Property / Water Tax Bill / NMC Services",
-    category: "Other Services",
-    emoji: "💧",
-  },
-  {
-    title: "All Types of Insurance",
-    category: "Other Services",
-    emoji: "☂️",
-  },
-  {
-    title: "Services for Start-Ups",
-    category: "Other Services",
-    emoji: "🚀",
-  },
-  {
-    title: "Digital Marketing",
-    category: "Other Services",
-    emoji: "📢",
-  },
-  {
-    title: "MSME / UDYAM Registration",
-    category: "Other Services",
-    emoji: "🏭",
-  },
-  {
-    title: "Shop Act License",
-    category: "Other Services",
-    emoji: "🏪",
-  },
-  {
-    title: "FSSAI / Food License",
-    category: "Other Services",
-    emoji: "🥗",
-  },
-  {
-    title: "Passport Services",
-    category: "Other Services",
-    emoji: "✈️",
-  },
-  {
-    title: "Voter ID / PAN / TAN Services",
-    category: "Other Services",
-    emoji: "🪪",
-  },
-  {
-    title: "Liquor Consumption License",
-    category: "Other Services",
-    emoji: "🍷",
-  },
-
-  // BUSINESS / FINANCIAL SERVICES
-  {
-    title: "Income Tax Services",
-    category: "Business & Financial Services",
-    emoji: "💰",
-  },
-  {
-    title: "GST Registration & Filing",
-    category: "Business & Financial Services",
-    emoji: "🧾",
-  },
-  {
-    title: "Bank Loan / Financing Consultancy",
-    category: "Business & Financial Services",
-    emoji: "💳",
-  },
-  {
-    title: "Liaisoning with Govt. Offices",
-    category: "Business & Financial Services",
-    emoji: "🏛️",
-  },
-  {
-    title: "Tender Consultancy",
-    category: "Business & Financial Services",
-    emoji: "📊",
-  },
-  {
-    title: "Company Registration & Annual Compliance",
-    category: "Business & Financial Services",
-    emoji: "🏢",
-  },
-  {
-    title: "LLP Registration & Related Compliance",
-    category: "Business & Financial Services",
-    emoji: "💼",
-  },
-  {
-    title: "Accounting / Audit Services",
-    category: "Business & Financial Services",
-    emoji: "📈",
-  },
-  {
-    title: "Project Report & Financing",
-    category: "Business & Financial Services",
-    emoji: "📁",
-  },
-  {
-    title: "Trust Registration & Audit",
-    category: "Business & Financial Services",
-    emoji: "⚖️",
-  },
-  {
-    title: "Import Export Code (IEC)",
-    category: "Business & Financial Services",
-    emoji: "🚢",
-  },
-  {
-    title: "Digital Signature Certificate (DSC)",
-    category: "Business & Financial Services",
-    emoji: "🔑",
-  },
-];
+export const allServices = serviceCategories.flatMap((cat) =>
+  cat.services.map((service) => ({
+    ...service,
+    category: cat.title,
+    categorySlug: cat.slug,
+  }))
+);

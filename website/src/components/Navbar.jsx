@@ -78,7 +78,7 @@ function Navbar({ showTopBar = false }) {
           /* Standard Desktop (1440px x 900px) */
           @media (min-width: 1440px) {
             .nav-container {
-              max-width: 1440px !important;
+              max-width: 1490px !important;
               padding-left: 4rem !important;
               padding-right: 4rem !important;
             }

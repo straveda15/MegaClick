@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   ArrowRight,
@@ -13,6 +13,51 @@ import hero1 from "../assets/hero1.jpg";
 import hero2 from "../assets/hero2.jpg";
 import hero4 from "../assets/hero4.png";
 import hero3 from "../assets/hero3.webp";
+
+// =========================================================
+// SECTION-TRIGGERED COUNT UP COMPONENT
+// =========================================================
+const SectionCountUp = ({ end, duration = 1800, suffix = "", isTriggered }) => {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    let animationFrameId;
+    let startTime = null;
+
+    if (isTriggered) {
+      setCount(0);
+      startTime = null;
+
+      const animate = (currentTime) => {
+        if (!startTime) startTime = currentTime;
+        const progress = Math.min((currentTime - startTime) / duration, 1);
+        const easeOutQuad = 1 - Math.pow(1 - progress, 3);
+        setCount(Math.floor(easeOutQuad * end));
+
+        if (progress < 1) {
+          animationFrameId = requestAnimationFrame(animate);
+        } else {
+          setCount(end);
+        }
+      };
+
+      animationFrameId = requestAnimationFrame(animate);
+    } else {
+      setCount(0);
+    }
+
+    return () => {
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+    };
+  }, [isTriggered, end, duration]);
+
+  return (
+    <span>
+      {count}
+      {suffix}
+    </span>
+  );
+};
 
 const services = [
   {
@@ -58,12 +103,33 @@ const services = [
 ];
 
 const Hero = () => {
+  const heroSectionRef = useRef(null);
+  const [isHeroInView, setIsHeroInView] = useState(true);
+
   let navigate;
   try {
     navigate = useNavigate();
   } catch (e) {
     navigate = null;
   }
+
+  // =========================================================
+  // RE-TRIGGER WHENEVER USER SCROLLS ONTO HERO SECTION
+  // =========================================================
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsHeroInView(entry.isIntersecting);
+      },
+      { threshold: 0.15 }
+    );
+
+    if (heroSectionRef.current) {
+      observer.observe(heroSectionRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     const fontId = "google-fonts-hedvig-inter";
@@ -102,243 +168,18 @@ const Hero = () => {
   return (
     <section
       id="home"
+      ref={heroSectionRef}
       className="relative overflow-hidden bg-white font-['Inter',sans-serif]"
     >
-      {/* DIRECT DESKTOP MEDIA QUERIES TO GUARANTEE 100% RESPONSIVENESS AT 1440px, 1920px, 2560px & 3840px (4K) */}
-      <style>{`
-        /* Standard Desktop (1440px x 900px) */
-        @media (min-width: 1440px) {
-          .hero-container {
-            max-width: 1440px !important;
-            padding-left: 4rem !important;
-            padding-right: 4rem !important;
-            padding-top: 3.5rem !important;
-            padding-bottom: 3.5rem !important;
-          }
-          .hero-grid {
-            gap: 4rem !important;
-          }
-          .hero-title {
-            font-size: 3.25rem !important;
-            line-height: 1.15 !important;
-          }
-          .hero-desc {
-            font-size: 1.125rem !important;
-            max-width: 36rem !important;
-            line-height: 1.75rem !important;
-          }
-          .hero-stat-num {
-            font-size: 2.25rem !important;
-          }
-          .hero-stat-label {
-            font-size: 0.95rem !important;
-          }
-          .hero-cards-grid {
-            max-width: 680px !important;
-            gap: 1.25rem !important;
-          }
-          .hero-card {
-            min-height: 240px !important;
-            padding: 1.5rem !important;
-          }
-          .hero-card-title {
-            font-size: 1.15rem !important;
-          }
-          .hero-card-desc {
-            font-size: 0.85rem !important;
-          }
-        }
-
-        /* Large Desktop (1920px x 1080px Full HD) */
-        @media (min-width: 1920px) {
-          .hero-container {
-            max-width: 1800px !important;
-            padding-left: 5rem !important;
-            padding-right: 5rem !important;
-            padding-top: 4.5rem !important;
-            padding-bottom: 4.5rem !important;
-          }
-          .hero-grid {
-            gap: 5rem !important;
-          }
-          .hero-badge-text {
-            font-size: 1.1rem !important;
-          }
-          .hero-title {
-            font-size: 4.25rem !important;
-            line-height: 1.12 !important;
-          }
-          .hero-desc {
-            font-size: 1.35rem !important;
-            max-width: 44rem !important;
-            line-height: 2.1rem !important;
-          }
-          .hero-stat-num {
-            font-size: 3rem !important;
-          }
-          .hero-stat-label {
-            font-size: 1.05rem !important;
-          }
-          .hero-btn {
-            padding: 1rem 2.5rem !important;
-            font-size: 1.15rem !important;
-          }
-          .hero-cards-grid {
-            max-width: 800px !important;
-            gap: 1.5rem !important;
-          }
-          .hero-card {
-            min-height: 280px !important;
-            padding: 2rem !important;
-            border-radius: 1.75rem !important;
-          }
-          .hero-card-img-box {
-            height: 5.5rem !important;
-            margin-bottom: 1.25rem !important;
-          }
-          .hero-card-title {
-            font-size: 1.35rem !important;
-            margin-bottom: 0.6rem !important;
-          }
-          .hero-card-desc {
-            font-size: 0.98rem !important;
-            line-height: 1.6 !important;
-          }
-        }
-
-        /* QHD / 2K Ultra-Wide (2560px Desktop) */
-        @media (min-width: 2560px) {
-          .hero-container {
-            max-width: 2300px !important;
-            padding-left: 6rem !important;
-            padding-right: 6rem !important;
-            padding-top: 6rem !important;
-            padding-bottom: 6rem !important;
-          }
-          .hero-grid {
-            gap: 6rem !important;
-          }
-          .hero-badge-text {
-            font-size: 1.35rem !important;
-          }
-          .hero-title {
-            font-size: 5.5rem !important;
-            line-height: 1.1 !important;
-          }
-          .hero-desc {
-            font-size: 1.75rem !important;
-            max-width: 56rem !important;
-            line-height: 2.6rem !important;
-          }
-          .hero-stat-num {
-            font-size: 4rem !important;
-          }
-          .hero-stat-label {
-            font-size: 1.3rem !important;
-          }
-          .hero-btn {
-            padding: 1.25rem 3.25rem !important;
-            font-size: 1.4rem !important;
-          }
-          .hero-cards-grid {
-            max-width: 1000px !important;
-            gap: 2rem !important;
-          }
-          .hero-card {
-            min-height: 350px !important;
-            padding: 2.5rem !important;
-            border-radius: 2.25rem !important;
-          }
-          .hero-card-img-box {
-            height: 7rem !important;
-            margin-bottom: 1.5rem !important;
-          }
-          .hero-card-title {
-            font-size: 1.75rem !important;
-            margin-bottom: 0.75rem !important;
-          }
-          .hero-card-desc {
-            font-size: 1.2rem !important;
-            line-height: 1.65 !important;
-          }
-        }
-
-        /* 4K Ultra-Wide Desktop (3840px x 2160px) */
-        @media (min-width: 3840px) {
-          .hero-container {
-            max-width: 3400px !important;
-            padding-left: 8rem !important;
-            padding-right: 8rem !important;
-            padding-top: 8rem !important;
-            padding-bottom: 8rem !important;
-          }
-          .hero-grid {
-            gap: 8rem !important;
-          }
-          .hero-badge-text {
-            font-size: 2rem !important;
-          }
-          .hero-badge-icon {
-            width: 2.5rem !important;
-            height: 2.5rem !important;
-          }
-          .hero-title {
-            font-size: 7.5rem !important;
-            line-height: 1.08 !important;
-          }
-          .hero-desc {
-            font-size: 2.5rem !important;
-            max-width: 78rem !important;
-            line-height: 3.75rem !important;
-          }
-          .hero-stat-num {
-            font-size: 5.5rem !important;
-          }
-          .hero-stat-label {
-            font-size: 1.75rem !important;
-          }
-          .hero-btn {
-            padding: 1.75rem 4.5rem !important;
-            font-size: 2rem !important;
-            border-radius: 9999px !important;
-          }
-          .hero-btn-icon {
-            width: 2rem !important;
-            height: 2rem !important;
-          }
-          .hero-cards-grid {
-            max-width: 1500px !important;
-            gap: 3rem !important;
-          }
-          .hero-card {
-            min-height: 480px !important;
-            padding: 3.5rem !important;
-            border-radius: 3rem !important;
-          }
-          .hero-card-img-box {
-            height: 10rem !important;
-            margin-bottom: 2rem !important;
-          }
-          .hero-card-title {
-            font-size: 2.5rem !important;
-            margin-bottom: 1.25rem !important;
-          }
-          .hero-card-desc {
-            font-size: 1.6rem !important;
-            line-height: 1.8 !important;
-          }
-        }
-      `}</style>
-
       <div
         className="
           hero-container
-          max-w-[1500px]
+          w-full
+          max-w-[1380px]
           mx-auto
-          px-5
-          sm:px-8
-          lg:px-16
-          xl:px-24
+          px-4
+          sm:px-6
+          min-[1440px]:px-10
           py-6
           sm:py-10
           lg:py-12
@@ -353,13 +194,10 @@ const Hero = () => {
             gap-8
             sm:gap-10
             lg:gap-12
-            xl:gap-16
             items-start
           "
         >
-          {/* =====================================================
-              LEFT CONTENT (PERFECT HORIZONTAL ALIGNMENT AT TOP)
-          ====================================================== */}
+          {/* LEFT CONTENT */}
           <div
             className="
               space-y-4
@@ -372,7 +210,7 @@ const Hero = () => {
               text-left
             "
           >
-            {/* TRUSTED BUSINESS SOLUTIONS TEXT (TOP HORIZONTAL LINE WITH CARDS) */}
+            {/* BADGE */}
             <div
               className="
                 hero-badge-text
@@ -391,14 +229,13 @@ const Hero = () => {
               <span>Trusted Business Solutions</span>
             </div>
 
-            {/* HEADING (Hedvig Letters Serif) */}
+            {/* HEADING */}
             <h1
               style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
               className="
                 hero-title
                 text-3xl
-                sm:text-3xl
-                md:text-4xl
+                sm:text-4xl
                 lg:text-4xl
                 xl:text-5xl
                 font-bold
@@ -428,74 +265,76 @@ const Hero = () => {
                 text-justify
                 sm:text-left
                 [text-align-last:left]
-                [text-wrap:pretty]
               "
             >
               Complete business solutions to simplify your registrations, tax
               compliance, and financial growth with trusted expert guidance.
             </p>
 
-            {/* STATS */}
+            {/* =====================================================
+                STATS (CONTROLLED BY SECTION VIEWPORT TRIGGER)
+            ====================================================== */}
             <div
               className="
                 flex
-                gap-5
+                gap-6
                 sm:gap-8
                 md:gap-10
                 flex-wrap
                 justify-start
                 w-full
+                pt-1
               "
             >
-              <div className="text-left">
-                <h3
-                  className="
-                    hero-stat-num
-                    text-2xl
-                    sm:text-3xl
-                    font-bold
-                    text-[#0B4EA2]
-                  "
-                >
-                  15000+
-                </h3>
-                <p className="hero-stat-label text-black text-xs sm:text-sm whitespace-nowrap">
-                  Happy Clients
-                </p>
+              {/* STAT 1: 15k+ */}
+              <div className="si flex flex-col items-start text-left">
+                <div className="sn">
+                  <h3 className="hero-stat-num text-2xl sm:text-3xl font-bold text-[#0B4EA2] tracking-tight leading-none">
+                    <SectionCountUp
+                      end={15}
+                      suffix="k+"
+                      duration={1800}
+                      isTriggered={isHeroInView}
+                    />
+                  </h3>
+                </div>
+                <div className="sl text-xs sm:text-sm font-medium text-slate-700 mt-1 sm:mt-1.5 whitespace-nowrap hero-stat-label">
+                  Happy customers
+                </div>
               </div>
 
-              <div className="text-left">
-                <h3
-                  className="
-                    hero-stat-num
-                    text-2xl
-                    sm:text-3xl
-                    font-bold
-                    text-[#0B4EA2]
-                  "
-                >
-                  25+
-                </h3>
-                <p className="hero-stat-label text-black text-xs sm:text-sm whitespace-nowrap">
+              {/* STAT 2: 25+ */}
+              <div className="si flex flex-col items-start text-left">
+                <div className="sn">
+                  <h3 className="hero-stat-num text-2xl sm:text-3xl font-bold text-[#0B4EA2] tracking-tight leading-none">
+                    <SectionCountUp
+                      end={25}
+                      suffix="+"
+                      duration={1500}
+                      isTriggered={isHeroInView}
+                    />
+                  </h3>
+                </div>
+                <div className="sl text-xs sm:text-sm font-medium text-slate-700 mt-1 sm:mt-1.5 whitespace-nowrap hero-stat-label">
                   Services
-                </p>
+                </div>
               </div>
 
-              <div className="text-left">
-                <h3
-                  className="
-                    hero-stat-num
-                    text-2xl
-                    sm:text-3xl
-                    font-bold
-                    text-[#0B4EA2]
-                  "
-                >
-                  10+
-                </h3>
-                <p className="hero-stat-label text-black text-xs sm:text-sm whitespace-nowrap">
+              {/* STAT 3: 10+ */}
+              <div className="si flex flex-col items-start text-left">
+                <div className="sn">
+                  <h3 className="hero-stat-num text-2xl sm:text-3xl font-bold text-[#0B4EA2] tracking-tight leading-none">
+                    <SectionCountUp
+                      end={10}
+                      suffix="+"
+                      duration={1400}
+                      isTriggered={isHeroInView}
+                    />
+                  </h3>
+                </div>
+                <div className="sl text-xs sm:text-sm font-medium text-slate-700 mt-1 sm:mt-1.5 whitespace-nowrap hero-stat-label">
                   Years Experience
-                </p>
+                </div>
               </div>
             </div>
 
@@ -506,7 +345,7 @@ const Hero = () => {
                 flex-row
                 gap-3
                 sm:gap-4
-                pt-2
+                pt-3
                 w-full
                 sm:w-auto
                 justify-start
@@ -528,7 +367,7 @@ const Hero = () => {
                   hover:bg-green-700
                   active:bg-green-800
                   text-white
-                  px-5
+                  px-6
                   sm:px-8
                   py-3
                   sm:py-3.5
@@ -542,7 +381,6 @@ const Hero = () => {
                   duration-200
                   transform
                   hover:-translate-y-0.5
-                  active:translate-y-0
                   cursor-pointer
                   text-center
                   whitespace-nowrap
@@ -568,7 +406,7 @@ const Hero = () => {
                   hover:bg-blue-700
                   active:bg-blue-800
                   text-white
-                  px-5
+                  px-6
                   sm:px-8
                   py-3
                   sm:py-3.5
@@ -582,7 +420,6 @@ const Hero = () => {
                   duration-200
                   transform
                   hover:-translate-y-0.5
-                  active:translate-y-0
                   cursor-pointer
                   text-center
                   whitespace-nowrap
@@ -593,9 +430,7 @@ const Hero = () => {
             </div>
           </div>
 
-          {/* =====================================================
-              RIGHT 4 CARDS GRID
-          ====================================================== */}
+          {/* RIGHT 4 CARDS */}
           <div className="w-full flex justify-center lg:justify-end items-center">
             <div className="hero-cards-grid grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-5 w-full max-w-[620px]">
               {services.map((service) => (
@@ -622,10 +457,9 @@ const Hero = () => {
                     duration-300
                     overflow-hidden
                     min-h-[210px]
-                    sm:min-h-[225px]
+                    sm:min-h-[220px]
                   `}
                 >
-                  {/* Card Image Container */}
                   <div className="hero-card-img-box h-14 sm:h-16 w-full flex items-center justify-center mb-3">
                     {service.image ? (
                       <img
@@ -644,7 +478,6 @@ const Hero = () => {
                     </div>
                   </div>
 
-                  {/* Card Text Content */}
                   <div className="flex flex-col flex-grow text-left">
                     <h3
                       style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
@@ -683,36 +516,6 @@ const Hero = () => {
           </div>
         </div>
       </div>
-
-      {/* =====================================================
-          BACKGROUND BLUR ACCENTS
-      ====================================================== */}
-      <div
-        className="
-          absolute
-          -top-32
-          -left-32
-          w-72
-          h-72
-          rounded-full
-          bg-blue-100/50
-          blur-3xl
-          -z-10
-        "
-      />
-      <div
-        className="
-          absolute
-          -bottom-40
-          -right-40
-          w-96
-          h-96
-          rounded-full
-          bg-green-100/40
-          blur-3xl
-          -z-10
-        "
-      />
     </section>
   );
 };

@@ -73,7 +73,7 @@ const CategoriesSidebar = ({
   setSelectedService,
   selectedService,
 }) => {
-  const [openCategory, setOpenCategory] = useState("Legal Services");
+  const [openCategory, setOpenCategory] = useState("All Services");
 
   return (
     <aside className="cat-sidebar sticky top-24 bg-white rounded-3xl border border-slate-100 shadow-xl shadow-slate-200/40 p-4 sm:p-5 w-full font-['Inter',sans-serif]">
@@ -103,6 +103,10 @@ const CategoriesSidebar = ({
           .cat-badge {
             font-size: 0.85rem !important;
             padding: 0.2rem 0.75rem !important;
+          }
+          .cat-group-header {
+            font-size: 0.95rem !important;
+            padding: 0.6rem 0.85rem !important;
           }
           .cat-sub-btn {
             font-size: 0.85rem !important;
@@ -135,6 +139,11 @@ const CategoriesSidebar = ({
             font-size: 1.25rem !important;
             padding: 0.35rem 1.25rem !important;
           }
+          .cat-group-header {
+            font-size: 1.35rem !important;
+            padding: 0.85rem 1.25rem !important;
+            border-radius: 1.25rem !important;
+          }
           .cat-sub-btn {
             font-size: 1.25rem !important;
             padding: 0.85rem 1.35rem !important;
@@ -165,6 +174,7 @@ const CategoriesSidebar = ({
 
           return (
             <div key={category.name} className="w-full">
+              {/* CATEGORY MAIN BUTTON */}
               <button
                 type="button"
                 onClick={() => {
@@ -224,20 +234,39 @@ const CategoriesSidebar = ({
                 </span>
               </button>
 
-              {/* SUB-SERVICES */}
+              {/* =========================================================
+                  SUB-SERVICES UNDER "ALL SERVICES" (WITH HIGHLIGHTED HEADERS)
+                  ========================================================= */}
               {isAllServices && isOpen && (
-                <div className="my-2 ml-4 pl-3 border-l-2 border-emerald-300 space-y-4 transition-all">
+                <div className="my-3 ml-3 pl-3 border-l-2 border-emerald-300/70 space-y-5 transition-all">
                   {serviceCategories.map((group) => (
-                    <div key={group.name}>
-                      <p
-                        style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
-                        className="text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5 flex items-center gap-1.5"
+                    <div key={group.name} className="space-y-2">
+                      
+                      {/* 🌟 PROMINENT HIGHLIGHTED GROUP HEADER 🌟 */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelectedCategory(group.name);
+                          setSelectedService(null);
+                        }}
+                        className="cat-group-header w-full flex items-center justify-between bg-gradient-to-r from-emerald-50 to-blue-50/60 hover:from-emerald-100 hover:to-blue-100/70 border border-emerald-200/90 text-emerald-950 px-3 py-2 rounded-xl text-left transition-all duration-200 shadow-xs cursor-pointer group/hdr"
                       >
-                        <span>{group.icon}</span>
-                        {group.name}
-                      </p>
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm shrink-0">{group.icon}</span>
+                          <span
+                            style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+                            className="font-bold text-xs sm:text-[13px] text-emerald-950 tracking-wide"
+                          >
+                            {group.name}
+                          </span>
+                        </div>
+                        <span className="text-[10px] font-extrabold bg-white text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full shadow-2xs">
+                          {group.count}
+                        </span>
+                      </button>
 
-                      <div className="space-y-1">
+                      {/* SUB-SERVICES LIST */}
+                      <div className="space-y-1 pl-1">
                         {group.services.map((service) => {
                           const isServiceSelected = selectedService === service;
 
@@ -253,9 +282,9 @@ const CategoriesSidebar = ({
                                 cat-sub-btn
                                 w-full
                                 text-left
-                                px-3
-                                py-2
-                                rounded-xl
+                                px-2.5
+                                py-1.5
+                                rounded-lg
                                 text-xs
                                 font-medium
                                 transition-all
@@ -266,17 +295,17 @@ const CategoriesSidebar = ({
                                 cursor-pointer
                                 ${
                                   isServiceSelected
-                                    ? "bg-emerald-100/70 text-emerald-900 font-bold"
-                                    : "text-slate-600 hover:text-emerald-700 hover:bg-emerald-50/60"
+                                    ? "bg-emerald-100 text-emerald-950 font-bold"
+                                    : "text-slate-600 hover:text-emerald-800 hover:bg-slate-50"
                                 }
                               `}
                             >
                               <span
                                 className={`w-1.5 h-1.5 rounded-full shrink-0 ${
-                                  isServiceSelected ? "bg-emerald-600" : "bg-slate-300"
+                                  isServiceSelected ? "bg-emerald-600 ring-2 ring-emerald-200" : "bg-slate-300"
                                 }`}
                               />
-                              <span>{service}</span>
+                              <span className="truncate">{service}</span>
                             </button>
                           );
                         })}
@@ -286,6 +315,7 @@ const CategoriesSidebar = ({
                 </div>
               )}
 
+              {/* SUB-SERVICES UNDER SPECIFIC CATEGORY */}
               {!isAllServices && isOpen && (
                 <div className="my-2 ml-4 pl-3 border-l-2 border-emerald-300 space-y-1 transition-all">
                   {category.services.map((service) => {
