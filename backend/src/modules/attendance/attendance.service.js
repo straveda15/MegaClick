@@ -5,6 +5,20 @@ import { haversineDistanceMeters } from "../../shared/utils/geo.js";
 import { findLocationForEmployee } from "./workLocation.service.js";
 
 /**
+ * "Today" as the staff's own Asia/Kolkata calendar day — never UTC.
+ *
+ * `new Date().toISOString()` is always UTC, which silently rolls any punch
+ * made between 12:00am and 5:29am IST onto the PREVIOUS day's attendance
+ * record. That record is then invisible in the employee's own "this month"
+ * history, since the frontend's month picker uses the browser's local date.
+ * Anchoring explicitly to Asia/Kolkata sidesteps that regardless of what
+ * timezone the server process itself happens to run in (Vercel's serverless
+ * functions default to UTC).
+ */
+const todayDateString = () =>
+  new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" });
+
+/**
  * Validates the site an employee declared for off-site work.
  *
  * Client-site work has no configured geofence, so there is nothing to check
@@ -74,7 +88,7 @@ class AttendanceService {
 
   async punchIn(data) {
     const { userId, gpsLocation, source } = data;
-    const date = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+    const date = todayDateString(); // YYYY-MM-DD, Asia/Kolkata
 
     const profile = await EmployeeProfile.findOne({ userId });
     if (!profile) {
@@ -118,7 +132,7 @@ class AttendanceService {
   }
 
   async punchOut(userId) {
-    const date = new Date().toISOString().split("T")[0];
+    const date = todayDateString();
 
     const attendance = await Attendance.findOne({ userId, date });
     if (!attendance) {
@@ -154,7 +168,7 @@ class AttendanceService {
   }
 
   async getTodayAttendance() {
-    const date = new Date().toISOString().split("T")[0];
+    const date = todayDateString();
     return await Attendance.find({ date, isDeleted: { $ne: true } })
       .populate("userId", "name lastName email")
       .populate("employeeProfileId", "employeeId designation department");
@@ -163,7 +177,7 @@ class AttendanceService {
   // ── Self-service methods ──────────────────────────────────────────────────────
 
   async selfPunchIn(userId, gpsLocation, source, isHalfDay = false, halfDayReason = "", workMode = "office", site = null) {
-    const date = new Date().toISOString().split("T")[0];
+    const date = todayDateString();
 
     // ── Criterion 2: one punch-in per calendar day ────────────────────────────
     // Look up ANY record for the date — deleted or not. The unique index on
@@ -259,7 +273,7 @@ class AttendanceService {
     earlyPunchOutConfirmed = false,
     gpsLocation = null
   ) {
-    const date = new Date().toISOString().split("T")[0];
+    const date = todayDateString();
 
     const attendance = await Attendance.findOne({ userId, date, isDeleted: { $ne: true } });
     if (!attendance) {
@@ -445,7 +459,7 @@ class AttendanceService {
   }
 
   async getMyTodayAttendance(userId) {
-    const date = new Date().toISOString().split("T")[0];
+    const date = todayDateString();
     const record = await Attendance.findOne({ userId, date, isDeleted: { $ne: true } });
     return record || null;
   }

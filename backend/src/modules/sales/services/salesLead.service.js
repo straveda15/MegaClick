@@ -9,6 +9,7 @@ import Order from "../../order/order.model.js";
 import Product from "../../product/product.model.js";
 import Leave from "../../leave/leave.model.js";
 import salesEventBus from "../events/salesEventBus.js";
+import eventBus, { EVENTS } from "../../../shared/events/eventBus.js";
 import { validateTransition } from "../utils/stateMachine.js";
 import * as baseOrderService from "../../order/order.service.js"; // to create orders
 import * as workLog from "../../worklog/worklog.service.js"; // day-wise activity logs
@@ -1145,6 +1146,17 @@ export const assignLeadService = async (leadId, serviceId, actorId, { assignedTo
     } else {
         task = await Task.create({ ...taskFields, type: "manual", source: "manual", status: "pending" });
     }
+
+    // This is created via Task.create()/save() directly rather than the shared
+    // task.service.js createTask() helper, so it has to fire this itself — the
+    // employee's dashboard listens for exactly this event to push the new task
+    // onto their board live, without needing a manual refresh.
+    eventBus.emit(EVENTS.TASK.CREATED, {
+        taskId: task._id,
+        title: task.title,
+        assignedTo: task.assignedTo,
+        assignedUserId: task.assignedTo,
+    });
 
     target.taskId = task._id;
     target.assignedTo = assignedTo;
