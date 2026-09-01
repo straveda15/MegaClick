@@ -49,33 +49,31 @@ const About = () => {
   }, [selectedImage]);
 
   return (
-    <section className="relative overflow-hidden bg-white py-6 sm:py-10 lg:py-12">
+    <section className="relative overflow-hidden bg-white py-8 sm:py-12 min-[1440px]:py-16 min-[1920px]:py-20 min-[3840px]:py-32 font-['Inter',sans-serif]">
       {/* MAIN CONTAINER */}
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-8 lg:px-16 xl:px-20">
+      <div className="w-full max-w-[1380px] min-[1920px]:max-w-[1800px] min-[3840px]:max-w-[3200px] mx-auto px-4 sm:px-6 min-[1440px]:px-10 min-[1920px]:px-16 min-[3840px]:px-24">
+        
+        {/* RESPONSIVE FLOW: ORDER 1 (INFO) -> ORDER 2 (IMAGES) -> ORDER 3 (BUTTON ON MOBILE) */}
+        <div className="flex flex-col lg:grid lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-14 min-[1920px]:gap-16 min-[3840px]:gap-24 items-center">
 
-        {/* MAIN GRID — Content LEFT, Images RIGHT */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-14 items-start">
-
-          {/* ======= LEFT — TEXT CONTENT ======= */}
-          <div className="w-full pt-1 lg:pt-2 order-2 lg:order-1">
-
+          {/* ======= 1. TEXT INFO (COMES 1ST ON MOBILE & LEFT ON DESKTOP) ======= */}
+          <div className="w-full order-1">
             {/* TOP TAGLINE */}
-            <p className="text-xs font-semibold tracking-[0.25em] uppercase text-[#0B4EA2] mb-3.5 text-left">
+            <p className="text-xs sm:text-sm font-semibold tracking-[0.25em] uppercase text-[#0B4EA2] mb-3 text-left min-[3840px]:text-2xl">
               ABOUT US
             </p>
 
             {/* HEADING */}
             <h2
-              className="text-2xl sm:text-3xl lg:text-[38px] font-normal text-slate-900 leading-tight"
-              style={{ fontFamily: '"Hedvig Letters Serif", Georgia, serif', fontWeight: 400 }}
+              className="text-2xl sm:text-3xl lg:text-4xl min-[1920px]:text-5xl min-[3840px]:text-7xl font-normal text-slate-900 leading-tight text-left"
+              style={{ fontFamily: '"Hedvig Letters Serif", Georgia, serif' }}
             >
-              Helping Businesses
-              <br />
+              Helping Businesses <br />
               <span className="text-[#0B4EA2]">With Smart Solutions</span>
             </h2>
 
-            {/* PARAGRAPH — justified */}
-            <p className="mt-4 sm:mt-5 text-slate-600 text-sm sm:text-base leading-relaxed font-normal text-justify">
+            {/* PARAGRAPH */}
+            <p className="mt-3.5 sm:mt-5 text-slate-600 text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl leading-relaxed text-justify">
               MegaClick provides professional business services that simplify
               registrations, compliance, taxation and financial management. We
               help startups, entrepreneurs and established businesses with
@@ -84,95 +82,107 @@ const About = () => {
             </p>
 
             {/* HIGHLIGHTS LIST */}
-            <ul className="mt-5 sm:mt-6 flex flex-col gap-2.5">
+            <ul className="mt-4 sm:mt-6 min-[3840px]:mt-10 flex flex-col gap-2.5 min-[3840px]:gap-5">
               {highlights.map((point, i) => (
-                <li key={i} className="flex items-start gap-2.5">
+                <li key={i} className="flex items-start gap-2.5 min-[3840px]:gap-4">
                   <CheckCircle2
                     size={18}
-                    className="text-[#0B4EA2] flex-shrink-0 mt-0.5"
+                    className="text-[#0B4EA2] flex-shrink-0 mt-0.5 min-[3840px]:w-8 min-[3840px]:h-8"
                   />
-                  <span className="text-sm sm:text-base text-slate-600 leading-snug">
+                  <span className="text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl text-slate-600 leading-snug">
                     {point}
                   </span>
                 </li>
               ))}
             </ul>
 
-            {/* LEARN MORE BUTTON */}
-            <div className="mt-6 sm:mt-8 flex justify-start">
+            {/* DESKTOP LEARN MORE BUTTON (HIDDEN ON MOBILE) */}
+            <div className="hidden lg:flex mt-6 sm:mt-8 min-[3840px]:mt-12 justify-start">
               <button
                 onClick={() => navigate("/about")}
-                className="inline-flex items-center justify-center gap-2.5 bg-[#0B4EA2] hover:bg-blue-700 text-white px-7 sm:px-8 py-3 rounded-full font-medium text-sm sm:text-base transition-all duration-300 hover:scale-[1.02] shadow-md hover:shadow-lg cursor-pointer"
+                className="inline-flex items-center justify-center gap-2.5 bg-[#0B4EA2] hover:bg-blue-700 text-white px-7 sm:px-8 min-[3840px]:px-14 py-3 min-[3840px]:py-5 rounded-full font-medium text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl transition-all duration-300 hover:scale-[1.02] shadow-md cursor-pointer"
               >
                 <span>Learn More</span>
-                <ArrowRight size={18} />
+                <ArrowRight size={18} className="min-[3840px]:w-7 min-[3840px]:h-7" />
               </button>
             </div>
           </div>
 
-          {/* ======= RIGHT — PHOTO GRID ======= */}
-          <div className="relative grid grid-cols-2 gap-3 sm:gap-4 md:gap-5 w-full order-1 lg:order-2">
+          {/* ======= 2. PHOTO GRID (COMES 2ND ON MOBILE & RIGHT ON DESKTOP) ======= */}
+          <div className="w-full order-2">
+            <div className="relative grid grid-cols-2 gap-3 sm:gap-4 md:gap-5 min-[3840px]:gap-8 w-full">
 
-            {/* IMAGE 1 */}
-            <div
-              onClick={() => setSelectedImage(img1)}
-              className="h-[170px] sm:h-[210px] md:h-[240px] lg:h-[220px] xl:h-[250px] rounded-2xl sm:rounded-[24px] overflow-hidden shadow-md group cursor-pointer"
-            >
-              <img
-                src={img1}
-                alt="MegaClick business"
-                className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110"
-              />
-            </div>
-
-            {/* IMAGE 2 */}
-            <div
-              onClick={() => setSelectedImage(img2)}
-              className="h-[170px] sm:h-[210px] md:h-[240px] lg:h-[220px] xl:h-[250px] rounded-2xl sm:rounded-[24px] overflow-hidden shadow-md group cursor-pointer"
-            >
-              <img
-                src={img2}
-                alt="MegaClick services"
-                className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110"
-              />
-            </div>
-
-            {/* IMAGE 3 */}
-            <div
-              onClick={() => setSelectedImage(img3)}
-              className="h-[170px] sm:h-[210px] md:h-[240px] lg:h-[220px] xl:h-[250px] rounded-2xl sm:rounded-[24px] overflow-hidden shadow-md group cursor-pointer"
-            >
-              <img
-                src={img3}
-                alt="MegaClick team"
-                className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110"
-              />
-            </div>
-
-            {/* IMAGE 4 + EXPERIENCE OVERLAY */}
-            <div
-              onClick={() => setSelectedImage(img4)}
-              className="relative h-[170px] sm:h-[210px] md:h-[240px] lg:h-[220px] xl:h-[250px] rounded-2xl sm:rounded-[24px] overflow-hidden shadow-md group cursor-pointer"
-            >
-              <img
-                src={img4}
-                alt="MegaClick experience"
-                className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110"
-              />
-              {/* OVERLAY */}
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-700/80 to-green-500/80" />
-              {/* EXPERIENCE TEXT */}
-              <div className="absolute inset-0 flex flex-col justify-center items-center text-white text-center px-2 pointer-events-none">
-                <h3 className="text-3xl sm:text-5xl lg:text-5xl xl:text-6xl font-bold">
-                  10+
-                </h3>
-                <p className="text-xs sm:text-base lg:text-lg xl:text-xl font-semibold mt-1 sm:mt-2">
-                  Years Experience
-                </p>
+              {/* IMAGE 1 */}
+              <div
+                onClick={() => setSelectedImage(img1)}
+                className="h-[150px] sm:h-[210px] md:h-[240px] lg:h-[220px] min-[1920px]:h-[280px] min-[3840px]:h-[480px] rounded-2xl min-[3840px]:rounded-3xl overflow-hidden shadow-md group cursor-pointer"
+              >
+                <img
+                  src={img1}
+                  alt="MegaClick business"
+                  className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110"
+                />
               </div>
-            </div>
 
+              {/* IMAGE 2 */}
+              <div
+                onClick={() => setSelectedImage(img2)}
+                className="h-[150px] sm:h-[210px] md:h-[240px] lg:h-[220px] min-[1920px]:h-[280px] min-[3840px]:h-[480px] rounded-2xl min-[3840px]:rounded-3xl overflow-hidden shadow-md group cursor-pointer"
+              >
+                <img
+                  src={img2}
+                  alt="MegaClick services"
+                  className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110"
+                />
+              </div>
+
+              {/* IMAGE 3 */}
+              <div
+                onClick={() => setSelectedImage(img3)}
+                className="h-[150px] sm:h-[210px] md:h-[240px] lg:h-[220px] min-[1920px]:h-[280px] min-[3840px]:h-[480px] rounded-2xl min-[3840px]:rounded-3xl overflow-hidden shadow-md group cursor-pointer"
+              >
+                <img
+                  src={img3}
+                  alt="MegaClick team"
+                  className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110"
+                />
+              </div>
+
+              {/* IMAGE 4 + EXPERIENCE OVERLAY */}
+              <div
+                onClick={() => setSelectedImage(img4)}
+                className="relative h-[150px] sm:h-[210px] md:h-[240px] lg:h-[220px] min-[1920px]:h-[280px] min-[3840px]:h-[480px] rounded-2xl min-[3840px]:rounded-3xl overflow-hidden shadow-md group cursor-pointer"
+              >
+                <img
+                  src={img4}
+                  alt="MegaClick experience"
+                  className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-700/80 to-green-500/80" />
+                <div className="absolute inset-0 flex flex-col justify-center items-center text-white text-center px-2 pointer-events-none">
+                  <h3 className="text-2xl sm:text-5xl min-[1920px]:text-6xl min-[3840px]:text-8xl font-bold">
+                    10+
+                  </h3>
+                  <p className="text-[11px] sm:text-base min-[1920px]:text-xl min-[3840px]:text-3xl font-semibold mt-1">
+                    Years Experience
+                  </p>
+                </div>
+              </div>
+
+            </div>
           </div>
+
+          {/* ======= 3. MOBILE LEARN MORE BUTTON (COMES 3RD ON MOBILE UNDER IMAGES) ======= */}
+          <div className="w-full flex lg:hidden order-3 justify-start">
+            <button
+              onClick={() => navigate("/about")}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 bg-[#0B4EA2] hover:bg-blue-700 text-white px-7 py-3 rounded-full font-medium text-sm sm:text-base transition-all duration-300 shadow-md cursor-pointer"
+            >
+              <span>Learn More</span>
+              <ArrowRight size={18} />
+            </button>
+          </div>
+
         </div>
       </div>
 
