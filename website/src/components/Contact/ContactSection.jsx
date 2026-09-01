@@ -42,6 +42,12 @@ const totalServiceCount = serviceOptions.reduce(
   0
 );
 
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+/**
+ * Matches on the service name AND its category, so typing "legal" surfaces
+ * every legal service and "gst" finds GST wherever it sits.
+ */
 const filterServiceOption = (option, rawInput) => {
   const input = rawInput.trim().toLowerCase();
   if (!input) return true;
@@ -68,9 +74,19 @@ const benefits = [
 ];
 
 const ContactSection = () => {
-  const [selectedService, setSelectedService] = useState(null);
+  // A visitor can ask about several services at once — each becomes its own
+  // piece of work on the dashboard, assigned to whoever handles that service.
+  const [selectedServices, setSelectedServices] = useState([]);
+  // Digits only — the "+91" country code is fixed and shown alongside the field.
+  const [phone, setPhone] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitState, setSubmitState] = useState(null);
+
+  // =====================================================
+  // FORM SUBMIT
+  // =====================================================
+  // Creates an unassigned lead on the dashboard's Leads board, carrying the
+  // visitor's details and every service they picked.
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -79,10 +95,46 @@ const ContactSection = () => {
     const form = e.currentTarget;
     const data = new FormData(form);
 
-    if (!selectedService) {
+    const name = String(data.get("name") || "").trim();
+    const email = String(data.get("email") || "").trim();
+    const message = String(data.get("message") || "").trim();
+
+    if (name.length < 2) {
       setSubmitState({
         type: "error",
-        message: "Please select the service you're interested in.",
+        message: "Please enter your full name.",
+      });
+      return;
+    }
+
+    if (phone.length !== 10) {
+      setSubmitState({
+        type: "error",
+        message: "Enter a valid 10-digit phone number.",
+      });
+      return;
+    }
+
+    if (email && !EMAIL_PATTERN.test(email)) {
+      setSubmitState({
+        type: "error",
+        message: "Enter a valid email address, or leave it blank.",
+      });
+      return;
+    }
+
+    if (!message) {
+      setSubmitState({
+        type: "error",
+        message: "Tell us a little about your requirements.",
+      });
+      return;
+    }
+
+    if (selectedServices.length === 0) {
+      setSubmitState({
+        type: "error",
+        message: "Please select at least one service you're interested in.",
       });
       return;
     }
@@ -91,14 +143,23 @@ const ContactSection = () => {
     setSubmitState(null);
 
     try {
+      const [primary] = selectedServices;
+
       await submitContactForm({
-        name: String(data.get("name") || "").trim(),
-        phone: String(data.get("phone") || "").trim(),
-        email: String(data.get("email") || "").trim(),
-        message: String(data.get("message") || "").trim(),
-        service: selectedService.title,
-        serviceSlug: selectedService.slug,
-        serviceCategory: selectedService.category,
+        name,
+        phone: `+91${phone}`,
+        email,
+        message,
+        services: selectedServices.map((option) => ({
+          title: option.title,
+          slug: option.slug,
+          category: option.category,
+          categorySlug: option.categorySlug,
+        })),
+        // The flat fields mirror the first pick, for anything still reading them.
+        service: primary.title,
+        serviceSlug: primary.slug,
+        serviceCategory: primary.category,
       });
 
       setSubmitState({
@@ -107,7 +168,8 @@ const ContactSection = () => {
           "Thank you! Your request has been received — our team will contact you shortly.",
       });
       form.reset();
-      setSelectedService(null);
+      setSelectedServices([]);
+      setPhone("");
     } catch (err) {
       setSubmitState({ type: "error", message: err.message });
     } finally {
@@ -169,13 +231,64 @@ const ContactSection = () => {
 
                 {/* PHONE */}
                 <div className="relative min-w-0">
-                  <Phone size={18} className="pointer-events-none absolute left-4 min-[3840px]:left-6 top-1/2 -translate-y-1/2 z-10 text-gray-400 min-[3840px]:w-8 min-[3840px]:h-8" />
+                  <div
+                    className="
+                      pointer-events-none
+                      absolute
+                      left-0
+                      top-0
+                      z-10
+                      flex
+                      h-14
+                      items-center
+                      gap-1.5
+                      border-r
+                      border-gray-200
+                      pl-4
+                      pr-2
+                      text-sm
+                      font-medium
+                      text-gray-500
+                      sm:pl-4.5
+                    "
+                  >
+                    <Phone size={18} className="text-gray-400" />
+                    +91
+                  </div>
+
                   <input
                     type="tel"
                     name="phone"
+                    inputMode="numeric"
                     required
+                    value={phone}
+                    onChange={(e) =>
+                      setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))
+                    }
+                    maxLength={10}
                     placeholder="Phone Number *"
-                    className="h-12 sm:h-14 min-[1920px]:h-16 min-[3840px]:h-24 w-full min-w-0 rounded-xl min-[3840px]:rounded-2xl border border-gray-200 min-[3840px]:border-2 bg-gray-50 pl-11 sm:pl-12 min-[3840px]:pl-16 pr-4 min-[3840px]:pr-8 text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#0B4EA2] focus:bg-white focus:ring-4 min-[3840px]:focus:ring-8 focus:ring-blue-100"
+                    className="
+                      h-14
+                      w-full
+                      min-w-0
+                      rounded-xl
+                      border
+                      border-gray-200
+                      bg-gray-50
+                      pl-24
+                      pr-4
+                      text-sm
+                      text-gray-900
+                      outline-none
+                      transition
+                      placeholder:text-gray-400
+                      focus:border-[#0B4EA2]
+                      focus:bg-white
+                      focus:ring-4
+                      focus:ring-blue-100
+                      sm:pl-24
+                      sm:text-base
+                    "
                   />
                 </div>
               </div>
@@ -198,15 +311,20 @@ const ContactSection = () => {
                   <Briefcase size={18} className="pointer-events-none absolute left-4 min-[3840px]:left-6 top-1/2 -translate-y-1/2 z-20 text-gray-400 min-[3840px]:w-8 min-[3840px]:h-8" />
                   <Select
                     options={serviceOptions}
-                    value={selectedService}
-                    onChange={(option) => {
-                      setSelectedService(option);
+                    value={selectedServices}
+                    onChange={(options) => {
+                      setSelectedServices(options ? [...options] : []);
                       setSubmitState(null);
                     }}
+                    isMulti
+                    // The menu stays open between picks so choosing three
+                    // services doesn't mean reopening it three times.
+                    closeMenuOnSelect={false}
+                    hideSelectedOptions={false}
                     isSearchable
                     filterOption={filterServiceOption}
                     maxMenuHeight={320}
-                    placeholder={`Search ${totalServiceCount} services *`}
+                    placeholder={`Search ${totalServiceCount} services * — pick one or more`}
                     noOptionsMessage={() => "No service matches that search."}
                     className="w-full text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl"
                     classNamePrefix="service-select"
@@ -251,6 +369,9 @@ const ContactSection = () => {
                         minWidth: 0,
                         paddingLeft: "4px",
                         paddingRight: "8px",
+                        paddingTop: "6px",
+                        paddingBottom: "6px",
+                        gap: "4px",
                       }),
                       singleValue: (base) => ({
                         ...base,

@@ -28,6 +28,17 @@ const leaveSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    // A half day is a single date worked in part. Kept as its own flag rather
+    // than inferred from `days === 0.5`, so the session (morning/afternoon) has
+    // somewhere to live and rounding can never turn a half day into a full one.
+    isHalfDay: {
+      type: Boolean,
+      default: false,
+    },
+    halfDaySession: {
+      type: String,
+      enum: ["first_half", "second_half"],
+    },
     reason: {
       type: String,
       required: true,
@@ -35,7 +46,7 @@ const leaveSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["pending", "approved", "rejected"],
+      enum: ["pending", "approved", "rejected", "cancelled"],
       default: "pending",
     },
     requestedBy: {
@@ -52,6 +63,10 @@ const leaveSchema = new mongoose.Schema(
     },
     rejectionReason: {
       type: String,
+    },
+    // Set when the employee cancels their own leave (status becomes "cancelled").
+    cancelledAt: {
+      type: Date,
     },
     // True when this leave deducted from the user's LeaveBalance (self-service apply).
     // Gates balance restoration on cancel/reject so admin-created leaves aren't refunded.

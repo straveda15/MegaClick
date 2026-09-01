@@ -5,17 +5,14 @@ import { Eye, EyeOff, LogIn, ShieldCheck, Briefcase } from "lucide-react";
 
 type LoginMode = "admin" | "employee";
 
-// Per-country phone constraints — used to cap input length, drive the
-// placeholder hint, and validate at submit time.
-const PHONE_RULES: Record<string, { length: number; hint: string; placeholder: string }> = {
-  IN: { length: 10, hint: "10-digit mobile number", placeholder: "9876543210" },
-  US: { length: 10, hint: "10-digit number", placeholder: "5551234567" },
-  GB: { length: 10, hint: "10-digit number", placeholder: "7912345678" },
-  AE: { length: 9,  hint: "9-digit mobile number", placeholder: "501234567" },
-};
+// Phone logins are Indian mobile numbers — the only country this tool serves,
+// so there's nothing for the user to pick.
+const PHONE_COUNTRY = "IN";
+const PHONE_LENGTH = 10;
 
-const sanitizeDigits = (raw: string, max: number) =>
-  raw.replace(/\D/g, "").slice(0, max);
+const looksLikeEmail = (value: string) => value.includes("@");
+
+const sanitizeDigits = (raw: string) => raw.replace(/\D/g, "");
 
 const LoginPage = () => {
   const { login } = useAuth();
@@ -29,17 +26,10 @@ const LoginPage = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Admin-specific (can login via phone OR email)
-  const [adminIdentifierType, setAdminIdentifierType] = useState<"phone" | "email">("phone");
-  const [phone, setPhone] = useState("");
-  const [countryCode, setCountryCode] = useState("IN");
-  const [adminEmail, setAdminEmail] = useState("");
-
-  // Employee-specific (can login via phone OR email)
-  const [employeeIdentifierType, setEmployeeIdentifierType] = useState<"phone" | "email">("phone");
-  const [employeePhone, setEmployeePhone] = useState("");
-  const [employeeCountryCode, setEmployeeCountryCode] = useState("IN");
-  const [employeeEmail, setEmployeeEmail] = useState("");
+  // One field per mode, holding either a phone number or an email address —
+  // which it is gets sniffed out at submit time by whether it contains "@".
+  const [adminIdentifier, setAdminIdentifier] = useState("");
+  const [employeeIdentifier, setEmployeeIdentifier] = useState("");
 
   const handleModeSwitch = (next: LoginMode) => {
     setMode(next);
@@ -47,44 +37,39 @@ const LoginPage = () => {
     setPassword("");
   };
 
+  const handleIdentifierChange = (setter: (v: string) => void) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value;
+    // Only constrain digit-only input to a sane phone length; anything with an
+    // "@" (or other letters, mid-typing) passes through untouched so email
+    // entry never fights the input.
+    setter(looksLikeEmail(raw) || /[a-zA-Z]/.test(raw) ? raw : sanitizeDigits(raw).slice(0, PHONE_LENGTH));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
-    // Pre-flight phone length check (admin always, employee only when using
-    // phone). Strict format rules (IN prefix 6-9, no all-same-digit) are
-    // intentionally NOT enforced at login — they belong on account creation,
-    // not on the sign-in path where legacy/test accounts may differ.
-    const usingPhone =
-      (mode === "admin" && adminIdentifierType === "phone") ||
-      (mode === "employee" && employeeIdentifierType === "phone");
-    if (usingPhone) {
-      const activePhone = mode === "admin" ? phone : employeePhone;
-      const activeCountry = mode === "admin" ? countryCode : employeeCountryCode;
-      const expected = PHONE_RULES[activeCountry]?.length ?? 10;
+    const identifier = (mode === "admin" ? adminIdentifier : employeeIdentifier).trim();
+    if (!identifier) {
+      setError("Enter your phone number or email address");
+      return;
+    }
 
-      if (activePhone.length !== expected) {
-        setError(`Phone number must be exactly ${expected} digits`);
-        return;
-      }
+    const isEmail = looksLikeEmail(identifier);
+    const digits = sanitizeDigits(identifier);
+
+    if (!isEmail && digits.length !== PHONE_LENGTH) {
+      setError(`Phone number must be exactly ${PHONE_LENGTH} digits`);
+      return;
     }
 
     setLoading(true);
 
     try {
-      if (mode === "admin") {
-        const credentials =
-          adminIdentifierType === "email"
-            ? { email: adminEmail, password }
-            : { phone, countryCode, password };
-        await login(credentials, "admin");
-      } else {
-        const credentials =
-          employeeIdentifierType === "email"
-            ? { email: employeeEmail, password }
-            : { phone: employeePhone, countryCode: employeeCountryCode, password };
-        await login(credentials, "employee");
-      }
+      const credentials = isEmail
+        ? { email: identifier, password }
+        : { phone: digits, countryCode: PHONE_COUNTRY, password };
+      await login(credentials, mode);
       navigate("/", { replace: true });
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Login failed. Please try again.");
@@ -92,6 +77,9 @@ const LoginPage = () => {
       setLoading(false);
     }
   };
+
+  const identifier = mode === "admin" ? adminIdentifier : employeeIdentifier;
+  const setIdentifier = mode === "admin" ? setAdminIdentifier : setEmployeeIdentifier;
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-muted/30 px-4">
@@ -136,157 +124,23 @@ const LoginPage = () => {
         <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
 
-            {/* ── Admin Fields ── */}
-            {mode === "admin" && (
-              <>
-                {/* Identifier sub-toggle */}
-                <div className="flex rounded-md border border-border overflow-hidden text-sm">
-                  <button
-                    type="button"
-                    onClick={() => setAdminIdentifierType("phone")}
-                    className={`flex-1 h-8 font-medium transition-colors ${adminIdentifierType === "phone"
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted/40 text-muted-foreground hover:text-foreground"
-                      }`}
-                  >
-                    Phone
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setAdminIdentifierType("email")}
-                    className={`flex-1 h-8 font-medium transition-colors ${adminIdentifierType === "email"
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted/40 text-muted-foreground hover:text-foreground"
-                      }`}
-                  >
-                    Email
-                  </button>
-                </div>
-
-                {adminIdentifierType === "phone" ? (
-                  <>
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-sm font-medium text-foreground">Country</label>
-                      <select
-                        value={countryCode}
-                        onChange={(e) => setCountryCode(e.target.value)}
-                        className="h-9 rounded-md border border-border bg-muted/50 px-3 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
-                      >
-                        <option value="IN">🇮🇳 India (+91)</option>
-                        <option value="US">🇺🇸 United States (+1)</option>
-                        <option value="GB">🇬🇧 United Kingdom (+44)</option>
-                        <option value="AE">🇦🇪 UAE (+971)</option>
-                      </select>
-                    </div>
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-sm font-medium text-foreground">Phone Number</label>
-                      <input
-                        type="tel"
-                        inputMode="numeric"
-                        autoComplete="tel"
-                        maxLength={PHONE_RULES[countryCode]?.length ?? 15}
-                        value={phone}
-                        onChange={(e) => setPhone(sanitizeDigits(e.target.value, PHONE_RULES[countryCode]?.length ?? 15))}
-                        placeholder={PHONE_RULES[countryCode]?.placeholder ?? "e.g. 9876543210"}
-                        required
-                        className="h-9 rounded-md border border-border bg-muted/50 px-3 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
-                      />
-                      <p className="text-[11px] text-muted-foreground">
-                        {PHONE_RULES[countryCode]?.hint ?? "Digits only"}
-                      </p>
-                    </div>
-                  </>
-                ) : (
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-sm font-medium text-foreground">Email Address</label>
-                    <input
-                      type="email"
-                      value={adminEmail}
-                      onChange={(e) => setAdminEmail(e.target.value)}
-                      placeholder="you@company.com"
-                      required
-                      className="h-9 rounded-md border border-border bg-muted/50 px-3 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
-                    />
-                  </div>
-                )}
-              </>
-            )}
-
-            {/* ── Employee Fields ── */}
-            {mode === "employee" && (
-              <>
-                {/* Identifier sub-toggle */}
-                <div className="flex rounded-md border border-border overflow-hidden text-sm">
-                  <button
-                    type="button"
-                    onClick={() => setEmployeeIdentifierType("phone")}
-                    className={`flex-1 h-8 font-medium transition-colors ${employeeIdentifierType === "phone"
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted/40 text-muted-foreground hover:text-foreground"
-                      }`}
-                  >
-                    Phone
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setEmployeeIdentifierType("email")}
-                    className={`flex-1 h-8 font-medium transition-colors ${employeeIdentifierType === "email"
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted/40 text-muted-foreground hover:text-foreground"
-                      }`}
-                  >
-                    Email
-                  </button>
-                </div>
-
-                {employeeIdentifierType === "phone" ? (
-                  <>
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-sm font-medium text-foreground">Country</label>
-                      <select
-                        value={employeeCountryCode}
-                        onChange={(e) => setEmployeeCountryCode(e.target.value)}
-                        className="h-9 rounded-md border border-border bg-muted/50 px-3 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
-                      >
-                        <option value="IN">🇮🇳 India (+91)</option>
-                        <option value="US">🇺🇸 United States (+1)</option>
-                        <option value="GB">🇬🇧 United Kingdom (+44)</option>
-                        <option value="AE">🇦🇪 UAE (+971)</option>
-                      </select>
-                    </div>
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-sm font-medium text-foreground">Phone Number</label>
-                      <input
-                        type="tel"
-                        inputMode="numeric"
-                        autoComplete="tel"
-                        maxLength={PHONE_RULES[employeeCountryCode]?.length ?? 15}
-                        value={employeePhone}
-                        onChange={(e) => setEmployeePhone(sanitizeDigits(e.target.value, PHONE_RULES[employeeCountryCode]?.length ?? 15))}
-                        placeholder={PHONE_RULES[employeeCountryCode]?.placeholder ?? "e.g. 9876543210"}
-                        required
-                        className="h-9 rounded-md border border-border bg-muted/50 px-3 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
-                      />
-                      <p className="text-[11px] text-muted-foreground">
-                        {PHONE_RULES[employeeCountryCode]?.hint ?? "Digits only"}
-                      </p>
-                    </div>
-                  </>
-                ) : (
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-sm font-medium text-foreground">Email Address</label>
-                    <input
-                      type="email"
-                      value={employeeEmail}
-                      onChange={(e) => setEmployeeEmail(e.target.value)}
-                      placeholder="you@company.com"
-                      required
-                      className="h-9 rounded-md border border-border bg-muted/50 px-3 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
-                    />
-                  </div>
-                )}
-              </>
-            )}
+            {/* Phone or email — one field, auto-detected */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-sm font-medium text-foreground">Phone or Email</label>
+              <input
+                type="text"
+                inputMode="text"
+                autoComplete="username"
+                value={identifier}
+                onChange={handleIdentifierChange(setIdentifier)}
+                placeholder="9876543210 or you@company.com"
+                required
+                className="h-9 rounded-md border border-border bg-muted/50 px-3 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+              />
+              <p className="text-[11px] text-muted-foreground">
+                10-digit mobile number or your email address
+              </p>
+            </div>
 
             {/* Password (shared) */}
             <div className="flex flex-col gap-1.5">

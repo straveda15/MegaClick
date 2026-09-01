@@ -15,10 +15,15 @@ export interface LeaveRecord {
   fromDate: string;
   toDate: string;
   days: number;
+  /** True when the request covers half of a single day (0.5 days). */
+  isHalfDay?: boolean;
+  halfDaySession?: "first_half" | "second_half";
   reason: string;
-  status: "pending" | "approved" | "rejected";
+  status: "pending" | "approved" | "rejected" | "cancelled";
   approvedBy?: any;
   rejectionReason?: string;
+  /** Set when the employee cancelled this leave themselves. */
+  cancelledAt?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -141,7 +146,16 @@ async function fetchMyLeaveBalance(): Promise<LeaveBalance> {
   return data.data;
 }
 
-async function applyLeaveSelf(body: any): Promise<LeaveRecord> {
+export interface SelfLeaveInput {
+  leaveType: string;
+  fromDate: string;
+  toDate: string;
+  reason: string;
+  isHalfDay?: boolean;
+  halfDaySession?: "first_half" | "second_half";
+}
+
+async function applyLeaveSelf(body: SelfLeaveInput): Promise<LeaveRecord> {
   const res = await fetch(`${BASE}/me/apply`, {
     method: "POST",
     headers: { "Content-Type": "application/json", ...authHeaders() },
@@ -189,6 +203,9 @@ export function useCancelMyLeave() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["my-leaves"] });
       qc.invalidateQueries({ queryKey: ["my-leave-balance"] });
+      // HR's leave log carries this same record — keep it in sync too.
+      qc.invalidateQueries({ queryKey: ["pending-leaves"] });
+      qc.invalidateQueries({ queryKey: ["all-leaves"] });
     },
   });
 }

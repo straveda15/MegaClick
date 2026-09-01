@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import GenericPage from "@/components/GenericPage";
 import { useCreateUser, useUpdateUser, useDeleteUser } from "@/hooks/useUsers";
+import { useMyTasks } from "@/hooks/useTasks";
 import {
   useTeam,
   useCreateEmployee,
@@ -683,6 +684,32 @@ const EmployeeModal = ({
 
 const TeamManagementPage = () => {
   const { data: employees = [], isLoading } = useTeam();
+  const { data: tasks = [] } = useMyTasks({ view: "all" });
+
+  /**
+   * Assigned / completed / pending per person, off the task board itself.
+   * Cancelled work is left out of all three — it was called off, so counting it
+   * as assigned would permanently depress everyone's completion figures.
+   */
+  const taskCounts = useMemo(() => {
+    const counts = new Map<string, { assigned: number; completed: number; pending: number }>();
+
+    for (const task of tasks) {
+      if (task.status === "cancelled") continue;
+
+      const id = String(task.assignedTo?._id ?? "");
+      if (!id) continue;
+
+      const entry = counts.get(id) ?? { assigned: 0, completed: 0, pending: 0 };
+      entry.assigned += 1;
+      if (task.status === "completed") entry.completed += 1;
+      else entry.pending += 1;
+      counts.set(id, entry);
+    }
+
+    return counts;
+  }, [tasks]);
+
   const createUser = useCreateUser();
   const updateUser = useUpdateUser();
   const deleteUser = useDeleteUser();
@@ -864,29 +891,25 @@ const TeamManagementPage = () => {
                 <th className="px-4 py-3 text-center text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground whitespace-nowrap">Assigned</th>
                 <th className="px-4 py-3 text-center text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground whitespace-nowrap">Completed</th>
                 <th className="px-4 py-3 text-center text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground whitespace-nowrap">Pending</th>
-                <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground whitespace-nowrap min-w-[120px]">Performance</th>
                 <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground whitespace-nowrap">Status</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
               {isLoading ? (
                 <tr>
-                  <td colSpan={11} className="py-10 text-center text-muted-foreground italic">Fetching employee data…</td>
+                  <td colSpan={10} className="py-10 text-center text-muted-foreground italic">Fetching employee data…</td>
                 </tr>
               ) : team.length === 0 ? (
                 <tr>
-                  <td colSpan={11} className="py-10 text-center text-muted-foreground italic">No employees found.</td>
+                  <td colSpan={10} className="py-10 text-center text-muted-foreground italic">No employees found.</td>
                 </tr>
               ) : (
-                team.map((e, index) => {
+                team.map((e) => {
                   const u = e.userId;
                   if (!u) return null;
                   
-                  // Mocking performance/task stats to match design since they aren't in standard API yet
-                  const assigned = 22 + (index * 8);
-                  const completed = 20 + (index * 7);
-                  const pending = assigned - completed;
-                  const performance = Math.round((completed / assigned) * 100);
+                  // Their real task counts, off the same board the Tasks page reads.
+                  const counts = taskCounts.get(String(u._id)) ?? { assigned: 0, completed: 0, pending: 0 };
                   const initial = `${u.name?.[0] ?? ''}${u.lastName?.[0] ?? ''}`.toUpperCase();
 
                   return (
@@ -909,17 +932,9 @@ const TeamManagementPage = () => {
                       <td className="px-4 py-3 whitespace-nowrap text-sm text-foreground">
                         {e.joiningDate ? e.joiningDate.split('T')[0] : "—"}
                       </td>
-                      <td className="px-4 py-3 text-center whitespace-nowrap font-medium text-blue-600">{assigned}</td>
-                      <td className="px-4 py-3 text-center whitespace-nowrap font-medium text-emerald-600">{completed}</td>
-                      <td className="px-4 py-3 text-center whitespace-nowrap font-medium text-amber-600">{pending}</td>
-                      <td className="px-4 py-3 whitespace-nowrap min-w-[120px]">
-                        <div className="flex items-center gap-2">
-                          <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
-                            <div className="h-full bg-blue-600 rounded-full" style={{ width: `${performance}%` }} />
-                          </div>
-                          <span className="text-xs text-muted-foreground w-8 shrink-0">{performance}%</span>
-                        </div>
-                      </td>
+                      <td className="px-4 py-3 text-center whitespace-nowrap font-medium text-blue-600">{counts.assigned}</td>
+                      <td className="px-4 py-3 text-center whitespace-nowrap font-medium text-emerald-600">{counts.completed}</td>
+                      <td className="px-4 py-3 text-center whitespace-nowrap font-medium text-amber-600">{counts.pending}</td>
                       <td className="px-4 py-3 whitespace-nowrap">
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-medium ${e.status === 'active' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-amber-50 text-amber-700 border border-amber-200'}`}>
                           {e.status === 'active' ? 'Active' : 'On Leave'}

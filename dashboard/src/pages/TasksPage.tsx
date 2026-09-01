@@ -1,18 +1,20 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { createPortal } from "react-dom";
 import GenericPage from "@/components/GenericPage";
-import { useMyTasks, useUpdateTaskStatus, useCreateManualTask, useCancelTask, Task, useAdminRespondToFlag, useExtendTaskDue, useReassignTask, useAssignMoreToTask, useAcknowledgeCancelAlert, useAddFollowUp, useUpdateFollowers } from "@/hooks/useTasks";
-import { CreateTaskModal, ROLE_CATEGORIES } from "@/components/tasks/CreateTaskModal";
+import { useMyTasks, useUpdateTaskStatus, useCreateManualTask, useCancelTask, Task, useAdminRespondToFlag, useExtendTaskDue, useReassignTask, useAssignMoreToTask, useAcknowledgeCancelAlert, useAddFollowUp, useUpdateFollowers, useDeleteTask } from "@/hooks/useTasks";
+import { CreateTaskModal } from "@/components/tasks/CreateTaskModal";
+import { ROLE_CATEGORIES } from "@/components/tasks/roleFilter";
 import { ReassignTaskModal } from "@/components/tasks/ReassignTaskModal";
 import { TaskCard } from "@/components/tasks/TaskCard";
 import ServiceRequestPanel from "@/components/tasks/ServiceRequestPanel";
 import { WorkLogsPanel } from "@/components/tasks/WorkLogsPanel";
 import { useTeam, EmployeeProfile } from "@/hooks/useTeam";
+import { useAbsentTodayUserIds } from "@/hooks/useAttendance";
 import { useAuth } from "@/context/AuthContext";
 import {
   CheckCircle, Clock, AlertCircle, Plus, CalendarPlus,
   User, UserCheck, Calendar, ChevronDown, XCircle, X,
-  FileText, Tag, Info, MessageSquareWarning, Send, AlertTriangle, CalendarRange, UserPlus, Eye, Bell, MessageSquare, ClipboardList
+  Tag, Info, MessageSquareWarning, Send, AlertTriangle, CalendarRange, UserPlus, Eye, Bell, MessageSquare, ClipboardList, Trash2
 } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
@@ -227,7 +229,10 @@ export default function TasksPage() {
 
   const updateStatus = useUpdateTaskStatus();
   const cancelTask = useCancelTask();
+  const deleteTask = useDeleteTask();
+  const [taskToDelete, setTaskToDelete] = useState<Task | null>(null);
   const { data: team = [] } = useTeam();
+  const absentTodayIds = useAbsentTodayUserIds();
 
   // Compute all tasks in the same group as the selected task
   const relatedTasks = useMemo(() => {
@@ -554,7 +559,7 @@ export default function TasksPage() {
         <WorkLogsPanel />
       ) : (
         /* Task list */
-        <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-5 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 items-start">
           {isLoading ? (
             <div className="text-center py-12 text-sm text-muted-foreground">Loading tasks…</div>
           ) : tasks.length === 0 ? (
@@ -575,6 +580,7 @@ export default function TasksPage() {
                 task={task}
                 myId={myId}
                 oversight={oversight}
+                assigneeAbsentToday={absentTodayIds.has(String(task.assignedTo?._id))}
                 onComplete={handleComplete}
                 onStart={handleStart}
                 onCancel={handleCancel}
@@ -596,8 +602,10 @@ export default function TasksPage() {
           onStart={handleStart}
           onComplete={handleComplete}
           onCancel={handleCancel}
+          onDelete={(task) => setTaskToDelete(task)}
           onSelectTask={setSelectedTask}
           team={team}
+          absentTodayIds={absentTodayIds}
           relatedTasks={relatedTasks}
           alreadyAssignedIds={alreadyAssignedIds}
           onRespond={(id, flagId, response) => {
@@ -682,6 +690,42 @@ export default function TasksPage() {
         />
       )}
 
+      <AlertDialog open={!!taskToDelete} onOpenChange={(open) => !open && setTaskToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Task</AlertDialogTitle>
+            <AlertDialogDescription>
+              {taskToDelete?.taskGroup
+                ? `"${taskToDelete?.title}" was assigned to several people. Deleting removes every copy from all boards.`
+                : `"${taskToDelete?.title}" will be removed from all boards. This can't be undone from here.`}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleteTask.isPending}>Keep Task</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => {
+                e.preventDefault();
+                if (!taskToDelete) return;
+                deleteTask.mutate(
+                  { id: taskToDelete._id, scope: "all" },
+                  {
+                    onSuccess: () => {
+                      toast.success("Task deleted");
+                      setTaskToDelete(null);
+                    },
+                    onError: (err: Error) => toast.error(err.message || "Failed to delete task"),
+                  }
+                );
+              }}
+              disabled={deleteTask.isPending}
+              className="bg-red-600 text-white hover:bg-red-700"
+            >
+              {deleteTask.isPending ? "Deleting..." : "Delete Task"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       <AlertDialog open={!!taskToCancel} onOpenChange={(open) => !open && setTaskToCancel(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -727,6 +771,7 @@ interface TaskDetailModalProps {
   onStart: (task: Task) => void;
   onComplete: (task: Task) => void;
   onCancel: (task: Task) => void;
+  onDelete?: (task: Task) => void;
   onRespond?: (taskId: string, flagId: string, response: string) => void;
   onExtendDue?: (taskId: string, dueAt: string) => void;
   onReassign?: (taskId: string, assignedTo: string) => void;
@@ -737,6 +782,7 @@ interface TaskDetailModalProps {
   onUpdateFollowers?: (taskId: string, followerIds: string[]) => void;
   onSelectTask?: (task: Task) => void;
   team?: EmployeeProfile[];
+  absentTodayIds?: Set<string>;
   relatedTasks?: Task[];
   alreadyAssignedIds?: Set<string>;
 }
@@ -750,9 +796,9 @@ const PRIORITY_LABELS: Record<string, { label: string; bg: string; text: string;
 };
 
 function TaskDetailModal({
-  task, myId, oversight, onClose, onStart, onComplete, onCancel,
+  task, myId, oversight, onClose, onStart, onComplete, onCancel, onDelete,
   onRespond, onExtendDue, onReassign, onAssignMore, onOpenReassign, onAckCancel,
-  onAddFollowUp, onUpdateFollowers, onSelectTask, team = [],
+  onAddFollowUp, onUpdateFollowers, onSelectTask, team = [], absentTodayIds = new Set(),
   relatedTasks = [], alreadyAssignedIds = new Set()
 }: TaskDetailModalProps) {
   useEffect(() => {
@@ -784,6 +830,13 @@ function TaskDetailModal({
   const isOverdue = task.status === "overdue";
   const isProgress = task.status === "in_progress";
   const isPending = task.status === "pending";
+
+  // A service request is finished by working its checklist, not by declaring it
+  // done — so while steps remain, the footer's complete button stays shut and
+  // the panel's own step buttons are the way through.
+  const checklist = task.serviceRequest?.steps ?? [];
+  const stepsLeft = checklist.filter((step) => !step.done).length;
+  const blockedByChecklist = checklist.length > 0 && stepsLeft > 0;
   const pastDue = !isCompleted && !isCancelled && task.dueAt && isPastDue(task.dueAt, task.status);
 
   // The assignee (doer) can start/complete; the assigner manages (cancel, extend,
@@ -867,7 +920,7 @@ function TaskDetailModal({
 
           {/* ── Assignee deactivated — auto-cancelled task ── */}
           {canHandleInactive && (
-            <div className="rounded-xl border border-amber-300 bg-amber-50 p-4 space-y-3">
+            <div className="border-l-2 border-amber-400 pl-3 space-y-3">
               <div className="flex items-start gap-2">
                 <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
                 <div>
@@ -901,118 +954,53 @@ function TaskDetailModal({
             </div>
           )}
 
-          {/* Assigned Team — show all members who share this task */}
-          {relatedTasks.length > 0 ? (
-            <div className="rounded-xl border border-border bg-muted/20 p-4 space-y-3">
-              <p className="text-[9px] uppercase tracking-wider font-bold text-muted-foreground flex items-center gap-1">
-                <User className="w-3 h-3" /> Assigned Team ({relatedTasks.length})
-              </p>
-              <div className="space-y-2">
-                {relatedTasks.map(rt => {
-                  const name = [rt.assignedTo?.name, rt.assignedTo?.lastName].filter(Boolean).join(" ") || "Unknown";
-                  const statusDot: Record<string, string> = {
-                    pending: "bg-amber-400", in_progress: "bg-blue-500", completed: "bg-green-500",
-                    overdue: "bg-red-500", cancelled: "bg-gray-400",
-                  };
-                  const dot = statusDot[rt.status] ?? "bg-gray-400";
-                  const openFlags = rt.flags?.filter(f => !f.resolvedAt) ?? [];
-                  const isCurrentTask = rt._id === task._id;
-                  return (
-                    <button
-                      key={rt._id}
-                      type="button"
-                      onClick={() => onSelectTask?.(rt)}
-                      className={`w-full text-left p-3 rounded-lg border transition-colors ${isCurrentTask
-                        ? "bg-primary/5 border-primary/30"
-                        : "bg-background border-border hover:bg-muted/40"
-                        }`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div className={`w-2 h-2 rounded-full ${dot} ${rt.status === 'in_progress' ? 'animate-pulse' : ''}`} />
-                          <span className="text-xs font-semibold">{name}</span>
-                          {isCurrentTask && <span className="text-[9px] text-muted-foreground">(selected)</span>}
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                          {openFlags.length > 0 && (
-                            <span className="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded bg-amber-100 text-amber-700 border border-amber-200">
-                              {openFlags.length} issue{openFlags.length !== 1 ? "s" : ""}
-                            </span>
-                          )}
-                          <span className={`text-[9px] font-bold uppercase px-1.5 py-0.5 rounded ${STATUS_COLORS[rt.status] ?? "bg-gray-100 text-gray-600"}`}>
-                            {rt.status.replace("_", " ")}
-                          </span>
-                        </div>
-                      </div>
-                    </button>
-                  );
-                })}
+          {/* Who and when — written down rather than boxed up */}
+          <div className="flex flex-col">
+            {[
+              { label: "From", value: assignedByName },
+              { label: "To", value: assignedToName },
+              { label: "Assigned", value: fmtDate(task.createdAt) },
+              {
+                label: "Deadline",
+                value: task.dueAt ? fmtDate(task.dueAt) : "—",
+                tone: pastDue ? "text-red-500" : undefined,
+              },
+              ...(isCompleted
+                ? [{
+                    label: "Completed",
+                    value: `${task.completedAt ? fmtDate(task.completedAt) : "—"}${
+                      task.timeTakenMinutes != null ? ` · took ${fmtTimeTaken(task.timeTakenMinutes)}` : ""
+                    }`,
+                    tone: "text-green-700",
+                  }]
+                : []),
+            ].map((row) => (
+              <div key={row.label} className="flex items-start justify-between gap-3 py-1.5 border-b border-border/50">
+                <span className="text-[11px] text-muted-foreground uppercase tracking-wide shrink-0">
+                  {row.label}
+                </span>
+                <span className={`text-[13px] font-semibold text-right min-w-0 ${row.tone ?? "text-foreground"}`}>
+                  {row.value}
+                </span>
               </div>
-            </div>
-          ) : (
-            /* Fallback: simple assigned to/by grid */
-            <div className="grid grid-cols-2 gap-3">
-              <div className="rounded-xl border border-border bg-muted/30 p-3.5">
-                <p className="text-[9px] uppercase tracking-wider font-bold text-muted-foreground mb-1.5 flex items-center gap-1">
-                  <UserCheck className="w-3 h-3" /> Assigned By
-                </p>
-                <p className="text-sm font-semibold text-foreground">{assignedByName}</p>
-              </div>
-              <div className="rounded-xl border border-border bg-muted/30 p-3.5">
-                <p className="text-[9px] uppercase tracking-wider font-bold text-muted-foreground mb-1.5 flex items-center gap-1">
-                  <User className="w-3 h-3" /> Assigned To
-                </p>
-                <p className="text-sm font-semibold text-foreground">{assignedToName}</p>
-              </div>
-            </div>
-          )}
-
-          {/* Date info */}
-          <div className="grid grid-cols-2 gap-3">
-            <div className="rounded-xl border border-border bg-muted/30 p-3.5">
-              <p className="text-[9px] uppercase tracking-wider font-bold text-muted-foreground mb-1.5 flex items-center gap-1">
-                <Calendar className="w-3 h-3" /> Assigned Date
-              </p>
-              <p className="text-sm font-semibold text-foreground">{fmtDate(task.createdAt)}</p>
-            </div>
-            <div className="rounded-xl border border-border bg-muted/30 p-3.5">
-              <p className="text-[9px] uppercase tracking-wider font-bold text-muted-foreground mb-1.5 flex items-center gap-1">
-                <Clock className="w-3 h-3" /> Due Date & Time
-              </p>
-              <p className={`text-sm font-semibold ${pastDue ? "text-red-500" : "text-foreground"}`}>
-                {task.dueAt ? fmtDate(task.dueAt) : "—"}
-              </p>
-            </div>
+            ))}
           </div>
-
-          {/* Completed — show exact date/time and duration */}
-          {isCompleted && (
-            <div className="flex items-start gap-3 px-3.5 py-3 rounded-xl bg-green-50 border border-green-200">
-              <CheckCircle className="w-4 h-4 text-green-600 shrink-0 mt-0.5" />
-              <div>
-                <p className="text-xs font-bold text-green-700">
-                  Completed on {task.completedAt ? fmtDate(task.completedAt) : "—"}
-                </p>
-                {task.timeTakenMinutes != null && (
-                  <p className="text-[10px] text-green-600 mt-0.5">
-                    Time taken: {fmtTimeTaken(task.timeTakenMinutes)}
-                  </p>
-                )}
-              </div>
-            </div>
-          )}
 
           {/* Service request — the client and service this task is actually for */}
           {task.serviceRequest?.clientName && (
-            <ServiceRequestPanel request={task.serviceRequest} />
+            <ServiceRequestPanel
+              request={task.serviceRequest}
+              taskId={task._id}
+              locked={isCompleted || isCancelled || !canAct}
+            />
           )}
 
           {/* Description — skipped for service requests, where the panel above
               already carries the same client/service details in full. */}
           {!task.serviceRequest?.clientName && (
-            <div className="rounded-xl border border-border bg-muted/20 p-4">
-              <p className="text-[9px] uppercase tracking-wider font-bold text-muted-foreground mb-2 flex items-center gap-1">
-                <FileText className="w-3 h-3" /> Description
+            <div>
+              <p className="text-[11px] uppercase tracking-wide font-semibold text-muted-foreground mb-0.5">
+                Description
               </p>
               {task.description ? (
                 <p className="text-sm text-foreground leading-relaxed">{task.description}</p>
@@ -1028,9 +1016,9 @@ function TaskDetailModal({
               <p className="text-[10px] font-bold text-amber-600 uppercase tracking-tighter flex items-center gap-1">
                 <AlertTriangle className="w-3 h-3" /> Reported Issues
               </p>
-              <div className="grid grid-cols-1 gap-3">
+              <div className="flex flex-col">
                 {task.flags.map((flag) => (
-                  <div key={flag._id} className={`p-4 rounded-xl border ${flag.resolvedAt || flag.adminResponse ? "bg-slate-50 border-slate-200" : "bg-amber-50 border-amber-200"} space-y-3`}>
+                  <div key={flag._id} className="py-3 border-b border-border/40 last:border-b-0 space-y-2">
                     <div className="flex justify-between items-start">
                       <div>
                         <p className="text-[9px] font-bold text-muted-foreground uppercase">{flag.raisedBy?.name} Raised:</p>
@@ -1081,9 +1069,9 @@ function TaskDetailModal({
           )}
 
           {/* ── Follow-up: tagged followers + notes ── */}
-          <div className="rounded-xl border border-border bg-muted/20 p-4 space-y-3">
+          <div className="pt-4 border-t border-border space-y-3">
             <div className="flex items-center justify-between">
-              <p className="text-[9px] uppercase tracking-wider font-bold text-muted-foreground flex items-center gap-1">
+              <p className="text-[11px] uppercase tracking-wide font-semibold text-muted-foreground flex items-center gap-1">
                 <Bell className="w-3 h-3" /> Follow-up {followers.length > 0 && `(${followers.length} tagged)`}
               </p>
               {canManageFollowers && onUpdateFollowers && (
@@ -1155,7 +1143,7 @@ function TaskDetailModal({
             {(task.followUps?.length ?? 0) > 0 && (
               <div className="space-y-2 pt-1">
                 {task.followUps!.map((note) => (
-                  <div key={note._id} className="p-3 rounded-lg bg-background border border-border/60">
+                  <div key={note._id} className="py-2 border-b border-border/40 last:border-b-0">
                     <div className="flex items-center justify-between gap-2 mb-1">
                       <span className="text-[10px] font-bold text-foreground flex items-center gap-1">
                         <MessageSquare className="w-3 h-3 text-muted-foreground" />
@@ -1197,26 +1185,18 @@ function TaskDetailModal({
             )}
           </div>
 
-          {/* Info tip */}
-          <div className="flex items-start gap-2 text-[10px] text-muted-foreground">
-            <Info className="w-3 h-3 shrink-0 mt-0.5" />
-            <span>Click outside or press × to close this panel.</span>
-          </div>
-
           {/* ── View-only notice (oversight) ── */}
           {oversight && (
-            <div className="flex items-start gap-2 px-3.5 py-3 rounded-xl bg-muted/40 border border-border">
-              <Eye className="w-4 h-4 text-muted-foreground shrink-0 mt-0.5" />
-              <p className="text-[11px] text-muted-foreground">
-                Oversight view — task actions stay with the assigner and assignee, but you can respond to any reported issues above.
-              </p>
-            </div>
+            <p className="flex items-start gap-2 text-[11px] text-muted-foreground">
+              <Eye className="w-3.5 h-3.5 shrink-0 mt-0.5" />
+              Oversight view — task actions stay with the assigner and assignee, but you can respond to any reported issues above.
+            </p>
           )}
 
           {/* ── Assigner Management Panel ── */}
           {canManage && !inactiveCancelled && (
             <div className="pt-4 border-t border-border space-y-4">
-              <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+              <p className="text-[11px] uppercase tracking-wide font-semibold text-muted-foreground flex items-center gap-2">
                 <UserCheck className="w-3.5 h-3.5" /> Manage Task
               </p>
 
@@ -1300,6 +1280,7 @@ function TaskDetailModal({
                       <option value="">Select Staff to Reassign to...</option>
                       {team
                         .filter(emp => emp.status !== "inactive" && emp.userId?.isActive !== false)
+                        .filter(emp => !absentTodayIds.has(String(emp.userId?._id)))
                         .filter(emp => String(emp.userId?._id) !== String(task.assignedTo?._id))
                         .map(emp => (
                           <option key={emp.userId?._id} value={emp.userId?._id}>
@@ -1330,6 +1311,7 @@ function TaskDetailModal({
                     <div className="max-h-40 overflow-y-auto bg-background border border-border rounded p-2 space-y-1">
                       {team
                         .filter(emp => emp.status !== "inactive" && emp.userId?.isActive !== false)
+                        .filter(emp => !absentTodayIds.has(String(emp.userId?._id)))
                         .filter(emp => !alreadyAssignedIds.has(String(emp.userId?._id)))
                         .map(emp => {
                           const empName = [emp.userId?.name, emp.userId?.lastName].filter(Boolean).join(" ");
@@ -1354,7 +1336,10 @@ function TaskDetailModal({
                           );
                         })
                       }
-                      {team.filter(emp => emp.status !== "inactive" && emp.userId?.isActive !== false).filter(emp => !alreadyAssignedIds.has(String(emp.userId?._id))).length === 0 && (
+                      {team
+                        .filter(emp => emp.status !== "inactive" && emp.userId?.isActive !== false)
+                        .filter(emp => !absentTodayIds.has(String(emp.userId?._id)))
+                        .filter(emp => !alreadyAssignedIds.has(String(emp.userId?._id))).length === 0 && (
                         <p className="text-[10px] text-muted-foreground text-center italic py-2">All active team members already have this task.</p>
                       )}
                     </div>
@@ -1386,9 +1371,14 @@ function TaskDetailModal({
             {canAct && isProgress && (
               <button
                 onClick={() => { onComplete(task); onClose(); }}
-                className="flex items-center gap-1.5 px-4 py-2 bg-green-600 text-white text-xs font-bold uppercase tracking-wider rounded-lg shadow-sm hover:bg-green-700 transition-colors"
+                disabled={blockedByChecklist}
+                title={blockedByChecklist
+                  ? `Tick off the remaining ${stepsLeft} step${stepsLeft === 1 ? "" : "s"} first`
+                  : undefined}
+                className="flex items-center gap-1.5 px-4 py-2 bg-green-600 text-white text-xs font-bold uppercase tracking-wider rounded-lg shadow-sm hover:bg-green-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-green-600"
               >
-                <CheckCircle className="w-3.5 h-3.5" /> Mark Complete
+                <CheckCircle className="w-3.5 h-3.5" />
+                {blockedByChecklist ? `${stepsLeft} Steps Left` : "Mark Complete"}
               </button>
             )}
             {canManage && (isPending || isProgress || isOverdue) && (
@@ -1397,6 +1387,16 @@ function TaskDetailModal({
                 className="flex items-center gap-1.5 px-4 py-2 bg-red-50 text-red-600 text-xs font-bold uppercase tracking-wider rounded-lg shadow-sm hover:bg-red-100 transition-colors border border-red-200"
               >
                 <XCircle className="w-3.5 h-3.5" /> Cancel Task
+              </button>
+            )}
+            {/* Delete removes the task from every board, whatever its status —
+                cancelling only marks it cancelled and leaves it listed. */}
+            {(canManage || oversight) && onDelete && (
+              <button
+                onClick={() => { onDelete(task); onClose(); }}
+                className="flex items-center gap-1.5 px-4 py-2 bg-red-600 text-white text-xs font-bold uppercase tracking-wider rounded-lg shadow-sm hover:bg-red-700 transition-colors"
+              >
+                <Trash2 className="w-3.5 h-3.5" /> Delete
               </button>
             )}
             <button

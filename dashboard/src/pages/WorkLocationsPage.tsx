@@ -39,6 +39,27 @@ const emptyForm: WorkLocationInput = {
   assignedDepartments: [],
 };
 
+/** A location name is letters only — no digits, symbols or punctuation. Spaces
+ *  are allowed between words so multi-word names stay typable. */
+const NAME_PATTERN = /^[a-zA-Z][a-zA-Z ]*$/;
+
+/** Strips anything that isn't a letter or a space, filtered on the way in. */
+function sanitizeNameInput(raw: string): string {
+  return raw.replace(/[^a-zA-Z ]/g, '');
+}
+
+/**
+ * Keeps a coordinate field to digits and a single decimal point.
+ * `type="number"` still lets `e`/`+`/`-` through and blanks the field on
+ * anything it can't parse — a text input filtered on the way in never does.
+ */
+function sanitizeCoordinateInput(raw: string): string {
+  const cleaned = raw.replace(/[^\d.]/g, '');
+  const [whole, ...rest] = cleaned.split('.');
+  if (rest.length === 0) return whole;
+  return `${whole}.${rest.join('')}`;
+}
+
 export default function WorkLocationsPage() {
   const { data: locations = [], isLoading } = useWorkLocations();
   const { data: teamData } = useTeam();
@@ -51,6 +72,11 @@ export default function WorkLocationsPage() {
   const deleteMutation = useDeleteWorkLocation();
 
   const [form, setForm] = useState<WorkLocationInput>(emptyForm);
+  // Raw text for the coordinate inputs — kept separate from form.lat/lng (numbers)
+  // so a trailing "." or a still-empty field doesn't get silently reformatted
+  // away while the admin is mid-keystroke.
+  const [latText, setLatText] = useState("");
+  const [lngText, setLngText] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [selectedLocation, setSelectedLocation] = useState<WorkLocation | null>(null);
   const [showForm, setShowForm] = useState(false);
@@ -89,6 +115,8 @@ export default function WorkLocationsPage() {
 
   function openCreate() {
     setForm(emptyForm);
+    setLatText("");
+    setLngText("");
     setEditingId(null);
     setDeptInput("");
     setShowForm(true);
@@ -103,6 +131,8 @@ export default function WorkLocationsPage() {
       isActive: loc.isActive,
       assignedDepartments: loc.assignedDepartments,
     });
+    setLatText(String(loc.lat));
+    setLngText(String(loc.lng));
     setEditingId(loc._id);
     setDeptInput(loc.assignedDepartments.join(", "));
     setShowForm(true);
@@ -111,6 +141,19 @@ export default function WorkLocationsPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
+    const trimmedName = form.name.trim();
+    if (!trimmedName) {
+      toast({ title: "Name required", description: "Enter a name for this location.", variant: "destructive" });
+      return;
+    }
+    if (trimmedName.length < 2 || !NAME_PATTERN.test(trimmedName)) {
+      toast({
+        title: "Invalid name",
+        description: "Letters only — at least 2 characters.",
+        variant: "destructive",
+      });
+      return;
+    }
     // Coordinate range validation — lat ∈ [-90, 90], lng ∈ [-180, 180]. HTML min/max
     // is bypassable, and out-of-range coords silently break GPS geofencing (no punch
     // ever matches), so guard here before hitting the API. Reject the 0,0 fallback
@@ -130,6 +173,7 @@ export default function WorkLocationsPage() {
 
     const payload = {
       ...form,
+      name: trimmedName,
       assignedDepartments: deptInput
         .split(",")
         .map((s) => s.trim())
@@ -146,6 +190,8 @@ export default function WorkLocationsPage() {
       setShowForm(false);
       setEditingId(null);
       setForm(emptyForm);
+      setLatText("");
+      setLngText("");
     } catch (err: any) {
       toast({ title: "Error", description: err.message, variant: "destructive" });
     }
@@ -299,36 +345,43 @@ export default function WorkLocationsPage() {
                   <label className="text-xs font-medium text-muted-foreground mb-1 block">Name</label>
                   <Input
                     required
+                    minLength={2}
+                    pattern="^[a-zA-Z][a-zA-Z ]*$"
+                    title="Letters only"
                     placeholder="e.g. MegaClick HQ"
                     value={form.name}
-                    onChange={(e) => setForm({ ...form, name: e.target.value })}
+                    onChange={(e) => setForm({ ...form, name: sanitizeNameInput(e.target.value) })}
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   <div>
                     <label className="text-xs font-medium text-muted-foreground mb-1 block">Latitude</label>
                     <Input
-                      type="number"
-                      step="any"
+                      type="text"
+                      inputMode="decimal"
                       required
-                      min={-90}
-                      max={90}
                       placeholder="19.0760"
-                      value={form.lat || ""}
-                      onChange={(e) => setForm({ ...form, lat: e.target.value === "" ? 0 : parseFloat(e.target.value) })}
+                      value={latText}
+                      onChange={(e) => {
+                        const cleaned = sanitizeCoordinateInput(e.target.value);
+                        setLatText(cleaned);
+                        setForm({ ...form, lat: cleaned === "" ? 0 : parseFloat(cleaned) });
+                      }}
                     />
                   </div>
                   <div>
                     <label className="text-xs font-medium text-muted-foreground mb-1 block">Longitude</label>
                     <Input
-                      type="number"
-                      step="any"
+                      type="text"
+                      inputMode="decimal"
                       required
-                      min={-180}
-                      max={180}
                       placeholder="72.8777"
-                      value={form.lng || ""}
-                      onChange={(e) => setForm({ ...form, lng: e.target.value === "" ? 0 : parseFloat(e.target.value) })}
+                      value={lngText}
+                      onChange={(e) => {
+                        const cleaned = sanitizeCoordinateInput(e.target.value);
+                        setLngText(cleaned);
+                        setForm({ ...form, lng: cleaned === "" ? 0 : parseFloat(cleaned) });
+                      }}
                     />
                   </div>
                 </div>
@@ -340,14 +393,6 @@ export default function WorkLocationsPage() {
                     required
                     value={form.radiusMeters || ""}
                     onChange={(e) => setForm({ ...form, radiusMeters: e.target.value === "" ? 0 : parseInt(e.target.value) })}
-                  />
-                </div>
-                <div>
-                  <label className="text-xs font-medium text-muted-foreground mb-1 block">Departments (comma-separated, optional)</label>
-                  <Input
-                    placeholder="e.g. warehouse, dispatch"
-                    value={deptInput}
-                    onChange={(e) => setDeptInput(e.target.value)}
                   />
                 </div>
                 <div className="flex items-center justify-between py-2 border-t border-border/50">

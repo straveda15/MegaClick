@@ -390,14 +390,17 @@ export const employeeLogin = async (req, res) => {
 };
 export const adminLogin = async (req, res) => {
   try {
-    const { phone, countryCode, email, password } = req.body;
+    const { phone, email, password } = req.body;
+    // The login form no longer asks for a country — every phone login is
+    // assumed Indian unless a caller explicitly passes one.
+    const countryCode = req.body.countryCode || "IN";
 
     // Admins can sign in with either an email (founders/co-founders) or a
     // phone number (legacy admin accounts). Either identifier is acceptable.
-    if ((!email && (!phone || !countryCode)) || !password) {
+    if ((!email && !phone) || !password) {
       return res.status(400).json({
         success: false,
-        message: "email or phone (with countryCode), and password are required.",
+        message: "email or phone, and password are required.",
       });
     }
 

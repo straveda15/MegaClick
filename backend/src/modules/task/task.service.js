@@ -1,7 +1,10 @@
 import Task from "./task.model.js";
 import User from "../user/user.model.js";
+import SalesLead from "../sales/models/salesLead.model.js";
+import Attendance from "../attendance/attendance.model.js";
 import AppError from "../../shared/utils/appError.js";
 import taskEventEmitter, { TASK_EVENTS } from "./events/taskEventEmitter.js";
+import eventBus, { EVENTS } from "../../shared/events/eventBus.js";
 
 /**
  * Reject task assignment to deactivated accounts. Inactive staff/team members
@@ -23,6 +26,28 @@ const assertAssigneesActive = async (assigneeIds) => {
   }
 };
 
+/**
+ * Reject task assignment to staff marked absent today — whether by a manual
+ * HR override or their own attendance record. Mirrors assertAssigneesActive.
+ */
+const assertAssigneesNotAbsentToday = async (assigneeIds) => {
+  const ids = (Array.isArray(assigneeIds) ? assigneeIds : [assigneeIds]).filter(Boolean);
+  if (ids.length === 0) return;
+
+  const date = new Date().toISOString().split("T")[0];
+  const absent = await Attendance.find({ userId: { $in: ids }, date, status: "absent" })
+    .populate("userId", "name lastName");
+  if (absent.length > 0) {
+    const names = absent
+      .map((r) => [r.userId?.name, r.userId?.lastName].filter(Boolean).join(" ") || "a staff member")
+      .join(", ");
+    throw new AppError(
+      `Cannot assign tasks to staff marked absent today: ${names}.`,
+      400
+    );
+  }
+};
+
 export const createTask = async (data, session = null) => {
   const task = new Task(data);
   await task.save(session ? { session } : undefined);
@@ -31,6 +56,15 @@ export const createTask = async (data, session = null) => {
     title: task.title,
     assignedUserId: task.assignedTo,
     assignedRole: task.assignedRole
+  });
+  // The socket bridge (shared/websocket/socketServer.js) listens on THIS bus
+  // and pushes straight to the assignee's own `user:<id>` room — that's what
+  // actually puts the new task on their board live, without a page refresh.
+  eventBus.emit(EVENTS.TASK.CREATED, {
+    taskId: task._id,
+    title: task.title,
+    assignedTo: task.assignedTo,
+    assignedUserId: task.assignedTo,
   });
   return task;
 };
@@ -60,14 +94,15 @@ export const getMyTasks = async (userId, filters = {}) => {
     query.assignedBy = userId;
     query.type = "manual";
   } else if (view === "assigned_to_me") {
+    // Also surface tasks the user held before being reassigned off them — that
+    // single card keeps showing on their board (read-only, "Transferred to X")
+    // instead of vanishing the moment someone else takes it over.
+    const everHeld = [{ assignedTo: userId }, { previousAssignees: { $elemMatch: { user: userId } } }];
     if (isProduction) {
-      // My own tasks OR any production_stage task (the shared floor queue).
-      query.$or = [
-        { assignedTo: userId },
-        { type: "production_stage" },
-      ];
+      // My own / past tasks OR any production_stage task (the shared floor queue).
+      query.$or = [...everHeld, { type: "production_stage" }];
     } else {
-      query.assignedTo = userId;
+      query.$or = everHeld;
     }
   } else if (view === "following") {
     // "Follow Up" view = tasks where the user is tagged as a follower (not the
@@ -93,13 +128,22 @@ export const getMyTasks = async (userId, filters = {}) => {
     query.$and = [...(query.$and || []), ...typeConditions];
   }
 
+  // A deleted task is gone from every board, whichever view asked for it.
+  query.isDeleted = { $ne: true };
+
   const tasks = await Task.find(query)
     .populate("assignedTo", "name lastName email isActive")
     .populate("assignedBy", "name lastName email")
+    .populate("previousAssignees.user", "name lastName email")
+    .populate("previousAssignees.transferredTo", "name lastName email")
     .populate("flags.raisedBy", "name lastName email")
     .populate("followers", "name lastName email")
     .populate("followUps.author", "name lastName email")
-    .sort({ createdAt: -1 });
+    // Newest activity first — a reassignment now updates the same task
+    // document rather than creating a new one, so createdAt alone would leave
+    // it stuck wherever it was originally created instead of rising to the
+    // top for its new assignee.
+    .sort({ updatedAt: -1 });
 
   // Enrich with a human-readable reference for the related entity (batch number /
   // order number) so the UI can show e.g. "BATCH #1023" instead of a raw ObjectId.
@@ -262,11 +306,34 @@ export const updateTaskStatus = async (taskId, userId, newStatus, options = {}) 
     if (task.startedAt) {
       task.timeTakenMinutes = Math.round((task.completedAt.getTime() - new Date(task.startedAt).getTime()) / 60000);
     }
+
+    // A finished task has a finished checklist. Without this the Clients board —
+    // which measures progress by steps ticked — would keep reading 2 of 6 on
+    // work everyone else considers done.
+    const steps = task.serviceRequest?.steps;
+    if (steps?.length) {
+      for (const step of steps) {
+        if (step.done) continue;
+        step.done = true;
+        step.completedAt = task.completedAt;
+        step.completedBy = userId;
+      }
+      task.serviceRequest.stage = "completed";
+    }
   } else {
     task.completedAt = null;
   }
 
   await task.save();
+
+  // Mirror the service's stage onto the lead, the same way ticking a single
+  // step does — so the Leads and Clients boards agree with the task board.
+  if (newStatus === "completed" && task.serviceRequest?.leadId && task.serviceRequest?.leadServiceId) {
+    await SalesLead.updateOne(
+      { _id: task.serviceRequest.leadId, "services._id": task.serviceRequest.leadServiceId },
+      { $set: { "services.$.stage": task.serviceRequest.stage } }
+    );
+  }
 
   // ── WORK LOG ───────────────────────────────────────────────────────────────
   // A completed task becomes a day-wise activity log entry for whoever did it,
@@ -327,6 +394,7 @@ export const createManualTask = async (data, actorId) => {
 
   await assertAssigneesActive(assignees);
   await assertAssigneesActive(followerIds);
+  await assertAssigneesNotAbsentToday(assignees);
 
   const groupId = assignees.length > 1 ? new (await import("mongoose")).default.Types.ObjectId() : null;
 
@@ -504,6 +572,41 @@ export const cancelTask = async (taskId, actorId, scope = "all") => {
   return await Task.find(query).populate("assignedTo").populate("assignedBy");
 };
 
+/**
+ * Removes a task from every board.
+ *
+ * Soft delete rather than a hard one: work logs, follow-up notes and history
+ * all point at this id, and destroying the row would leave those dangling.
+ *
+ * Only the person who assigned the task or an admin can remove it — an
+ * assignee who could delete their own work could quietly make it disappear.
+ */
+export const deleteTask = async (taskId, actorId, scope = "all") => {
+  const task = await Task.findById(taskId);
+  if (!task) throw new AppError("Task not found.", 404);
+  if (task.isDeleted) throw new AppError("This task has already been deleted.", 409);
+
+  const actor = await User.findById(actorId).select("role");
+  const isAdmin = actor?.role === "admin";
+  const isAssigner = String(task.assignedBy) === String(actorId);
+  if (!isAdmin && !isAssigner) {
+    throw new AppError("Only the person who assigned this task, or an admin, can delete it.", 403);
+  }
+
+  // "single" removes just this copy; "all" removes every copy created when the
+  // same task was assigned to several people at once.
+  const query =
+    scope === "single" || !task.taskGroup
+      ? { _id: task._id }
+      : { taskGroup: task.taskGroup };
+
+  const result = await Task.updateMany(query, {
+    $set: { isDeleted: true, deletedAt: new Date(), deletedBy: actorId },
+  });
+
+  return { deleted: result.modifiedCount ?? 0 };
+};
+
 export const autoFlagOverdueTasks = async () => {
     try {
         const now = new Date();
@@ -566,6 +669,61 @@ export const addFollowUp = async (taskId, userId, message) => {
 
   task.followUps.push({ message: text, author: userId, createdAt: new Date() });
   await task.save();
+  return await populateTask(task._id);
+};
+
+/**
+ * Ticks (or un-ticks) one step of a service request's checklist.
+ *
+ * The checklist is how progress on a service is actually measured, so the lead
+ * this task came off is nudged along with it: finishing every step marks the
+ * service complete, and the first tick moves it out of "documents pending".
+ */
+export const updateServiceStep = async (taskId, stepId, actorId, done) => {
+  const task = await Task.findById(taskId);
+  if (!task) throw new AppError("Task not found.", 404);
+
+  const step = task.serviceRequest?.steps?.id(stepId);
+  if (!step) throw new AppError("That step is not on this task.", 404);
+
+  const actor = await User.findById(actorId).select("role");
+  const isAdmin = actor?.role === "admin";
+  const isStakeholder =
+    String(task.assignedTo) === String(actorId) ||
+    String(task.assignedBy) === String(actorId);
+  if (!isAdmin && !isStakeholder) {
+    throw new AppError("You don't have access to update this checklist.", 403);
+  }
+
+  step.done = Boolean(done);
+  step.completedAt = step.done ? new Date() : undefined;
+  step.completedBy = step.done ? actorId : undefined;
+
+  const steps = task.serviceRequest.steps;
+  const allDone = steps.length > 0 && steps.every((s) => s.done);
+
+  if (allDone) {
+    task.serviceRequest.stage = "completed";
+  } else if (task.serviceRequest.stage === "completed") {
+    // Re-opening a step means the service is no longer finished.
+    task.serviceRequest.stage = "certificate_ready";
+  } else if (steps.some((s) => s.done) && task.serviceRequest.stage === "documents_pending") {
+    task.serviceRequest.stage = "documents_received";
+  }
+
+  await task.save();
+
+  // Mirror the stage back onto the lead's service so the Leads and Clients
+  // boards agree with the task board without a second write path.
+  const leadId = task.serviceRequest?.leadId;
+  const leadServiceId = task.serviceRequest?.leadServiceId;
+  if (leadId && leadServiceId) {
+    await SalesLead.updateOne(
+      { _id: leadId, "services._id": leadServiceId },
+      { $set: { "services.$.stage": task.serviceRequest.stage } }
+    );
+  }
+
   return await populateTask(task._id);
 };
 
@@ -674,6 +832,7 @@ export const reassignTask = async (taskId, actorId, newAssignee) => {
   const ids = (Array.isArray(newAssignee) ? newAssignee : [newAssignee]).filter(Boolean);
   if (ids.length === 0) throw new AppError("Select at least one staff member to reassign to.", 400);
   await assertAssigneesActive(ids);
+  await assertAssigneesNotAbsentToday(ids);
 
   const task = await Task.findById(taskId);
   if (!task) throw new AppError("Task not found.", 404);
@@ -681,11 +840,29 @@ export const reassignTask = async (taskId, actorId, newAssignee) => {
   const [first, ...rest] = ids;
   const groupId = ids.length > 1 ? task.taskGroup || task._id : task.taskGroup;
 
+  // Same task document handed on, not a new one — a former holder's board
+  // still shows this one card (read-only, via previousAssignees) instead of
+  // it just disappearing.
+  const previousAssigneeId = task.assignedTo ? String(task.assignedTo) : null;
+  if (previousAssigneeId && previousAssigneeId !== String(first)) {
+    task.previousAssignees.push({
+      user: task.assignedTo,
+      transferredTo: first,
+      transferredAt: new Date(),
+    });
+  }
+
   task.assignedTo = first;
   task.assignedBy = actorId;
   if (ids.length > 1) task.taskGroup = groupId;
   reviveTaskFields(task);
   await task.save();
+  eventBus.emit(EVENTS.TASK.CREATED, {
+    taskId: task._id,
+    title: task.title,
+    assignedTo: task.assignedTo,
+    assignedUserId: task.assignedTo,
+  });
 
   if (rest.length > 0) {
     await Promise.all(
@@ -701,6 +878,12 @@ export const reassignTask = async (taskId, actorId, newAssignee) => {
         });
         reviveTaskFields(copy);
         await copy.save();
+        eventBus.emit(EVENTS.TASK.CREATED, {
+          taskId: copy._id,
+          title: copy.title,
+          assignedTo: copy.assignedTo,
+          assignedUserId: copy.assignedTo,
+        });
       })
     );
   }
@@ -710,6 +893,7 @@ export const reassignTask = async (taskId, actorId, newAssignee) => {
 
 export const assignMore = async (taskId, actorId, assigneeIds) => {
   await assertAssigneesActive(assigneeIds);
+  await assertAssigneesNotAbsentToday(assigneeIds);
   const task = await Task.findById(taskId);
   if (!task.taskGroup) {
     task.taskGroup = task._id;
@@ -719,6 +903,12 @@ export const assignMore = async (taskId, actorId, assigneeIds) => {
   return await Promise.all(assigneeIds.map(async (userId) => {
     const newTask = new Task({ ...task.toObject(), _id: undefined, assignedTo: userId, assignedBy: actorId, taskGroup: groupId, status: "pending" });
     await newTask.save();
+    eventBus.emit(EVENTS.TASK.CREATED, {
+      taskId: newTask._id,
+      title: newTask.title,
+      assignedTo: newTask.assignedTo,
+      assignedUserId: newTask.assignedTo,
+    });
     return newTask;
   }));
 };

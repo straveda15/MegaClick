@@ -51,6 +51,19 @@ const taskSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
+    // Reassigning a service's task hands the SAME task document to the new
+    // assignee (rather than spinning up a second one) so there is only ever one
+    // card for the work — this is the running log of who held it before. A
+    // former holder's board still shows the task (read-only, "Transferred to
+    // X") by matching on this array instead of losing it the moment assignedTo
+    // changes.
+    previousAssignees: [
+      {
+        user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        transferredTo: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        transferredAt: { type: Date, default: Date.now },
+      },
+    ],
     relatedEntity: {
       entityType: {
         type: String,
@@ -77,6 +90,24 @@ const taskSchema = new mongoose.Schema(
       clientCompany: { type: String, trim: true },
       clientAddress: { type: String, trim: true },
       notes: { type: String, trim: true },
+      // Back-links to the lead this service came off, so the Clients board can
+      // roll several tasks up under one client, and ticking a step here can
+      // push the matching lead service forward.
+      leadId: { type: mongoose.Schema.Types.ObjectId, ref: "SalesLead" },
+      leadServiceId: { type: mongoose.Schema.Types.ObjectId },
+      // The checklist for this service, copied from its step template at
+      // assignment time. Copied rather than referenced so editing a template
+      // later never rewrites the history of work already assigned.
+      steps: [
+        {
+          title: { type: String, required: true, trim: true },
+          description: { type: String, trim: true },
+          order: { type: Number, default: 0 },
+          done: { type: Boolean, default: false },
+          completedAt: { type: Date },
+          completedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        },
+      ],
       // Where the request sits in the government/filing pipeline. Tracked
       // separately from `status` (which is about the employee's own progress).
       stage: {
@@ -134,6 +165,19 @@ const taskSchema = new mongoose.Schema(
       ref: "Task",
       default: null,
     },
+    // Soft delete: a removed task is hidden everywhere but survives in the
+    // database, so work logs and history that reference it don't dangle.
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
+    deletedAt: {
+      type: Date,
+    },
+    deletedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
     // Employees tagged for follow-up. They are NOT assignees — they can't start
     // or complete the task, but they get visibility of it (via the "Follow Up"
     // view) and can post follow-up notes below.
@@ -164,6 +208,7 @@ taskSchema.index({ dueAt: 1, status: 1 });
 taskSchema.index({ "relatedEntity.entityType": 1, "relatedEntity.entityId": 1 });
 taskSchema.index({ taskGroup: 1 });
 taskSchema.index({ followers: 1, status: 1 });
+taskSchema.index({ "previousAssignees.user": 1 });
 
 const Task = mongoose.model("Task", taskSchema);
 

@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { API_BASE } from "./api-config";
 
@@ -28,9 +29,13 @@ export interface AttendanceRecord {
   source?: string;
   isHalfDay: boolean;
   halfDayReason?: string;
+  workMode?: "office" | "site" | "home";
+  site?: { name?: string; lat?: number; lng?: number };
   halfDayStatus?: "none" | "pending" | "approved" | "rejected";
   halfDayApprovedBy?: any;
   confirmedPunchOut: boolean;
+  /** Set by the server when the 8-hour scheduler closed this out, not the employee. */
+  autoPunchedOut?: boolean;
   earlyPunchOutReason?: string;
   earlyPunchOutStatus: "none" | "pending" | "approved" | "rejected";
   earlyPunchOutApprovedBy?: any;
@@ -49,6 +54,12 @@ export interface SelfPunchInInput {
   source?: string;
   isHalfDay?: boolean;
   halfDayReason?: string;
+  /**
+   * "office" is gated on the assigned geofence; "site" is declared instead;
+   * "home" is remote work, which has no location to check at all.
+   */
+  workMode?: "office" | "site" | "home";
+  site?: { name: string; lat: number; lng: number };
 }
 
 type PunchOutResult =
@@ -154,6 +165,20 @@ async function overrideAttendance(body: any): Promise<AttendanceRecord> {
 
 export function useTodayAttendance() {
   return useQuery({ queryKey: ["today-attendance"], queryFn: fetchTodayAttendance });
+}
+
+/**
+ * User ids marked absent today — whether by a manual HR override or the
+ * employee's own record. Work should never be handed to someone in this set;
+ * checked wherever an assignee gets picked.
+ */
+export function useAbsentTodayUserIds() {
+  const { data = [] } = useTodayAttendance();
+  return useMemo(() => new Set(
+    data
+      .filter((r) => r.status === "absent")
+      .map((r) => String((r.userId as any)?._id ?? r.userId))
+  ), [data]);
 }
 
 export function useUserAttendance(userId: string) {

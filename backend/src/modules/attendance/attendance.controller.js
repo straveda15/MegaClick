@@ -82,14 +82,16 @@ export const selfPunchIn = catchAsync(async (req, res, next) => {
   const { error, value } = selfPunchInSchema.validate(req.body);
   if (error) return next(new AppError(error.details[0].message, 400));
 
-  const { gpsLocation, source, isHalfDay, halfDayReason } = value;
+  const { gpsLocation, source, isHalfDay, halfDayReason, workMode, site } = value;
 
   const attendance = await attendanceService.selfPunchIn(
     req.user._id,
     gpsLocation,
     source,
     isHalfDay,
-    halfDayReason
+    halfDayReason,
+    workMode,
+    site
   );
 
   return res.status(201).json({ success: true, data: { attendance } });

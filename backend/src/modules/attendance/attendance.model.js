@@ -48,6 +48,22 @@ const attendanceSchema = new mongoose.Schema(
       ref: "WorkLocation",
       default: null,
     },
+    // Where the shift is being worked from. "office" is gated on the assigned
+    // work location's radius; "site" is client-site work where there is no
+    // configured geofence, so the employee declares where they are instead;
+    // "home" is remote work, which has no location to check at all.
+    workMode: {
+      type: String,
+      enum: ["office", "site", "home"],
+      default: "office",
+    },
+    // Only set for workMode "site" — what the employee typed in, kept alongside
+    // their device GPS so the two can be compared later.
+    site: {
+      name: { type: String, trim: true },
+      lat: Number,
+      lng: Number,
+    },
     isHalfDay: {
       type: Boolean,
       default: false,
@@ -67,6 +83,12 @@ const attendanceSchema = new mongoose.Schema(
     },
     // True once punch-out is committed with explicit confirmed: true from client
     confirmedPunchOut: {
+      type: Boolean,
+      default: false,
+    },
+    // True when the 8-hour scheduler punched this out because the employee
+    // never pressed punch-out themselves.
+    autoPunchedOut: {
       type: Boolean,
       default: false,
     },

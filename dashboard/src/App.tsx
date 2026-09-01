@@ -14,10 +14,9 @@ import LoginPage from '@/pages/LoginPage';
 import DashboardPage from '@/pages/DashboardPage';
 import LeadsPage from '@/pages/LeadsPage';
 import ClientsPage from '@/pages/ClientsPage';
-import DepartmentsPage from '@/pages/DepartmentsPage';
-import ReportsPage from '@/pages/ReportsPage';
-import NotificationsPage from '@/pages/NotificationsPage';
-import SettingsPage from '@/pages/SettingsPage';
+import FollowUpsPage from '@/pages/FollowUpsPage';
+import ServiceStepsPage from '@/pages/ServiceStepsPage';
+import AccountsPage from '@/pages/AccountsPage'; // Added AccountsPage
 
 // ── People: employees, attendance, leave ─────────────────────────────────────
 import TeamManagementPage from '@/pages/TeamManagementPage';
@@ -78,21 +77,20 @@ const App = () => (
                         path="/clients"
                         element={<RoleGuard><ClientsPage /></RoleGuard>}
                       />
+                      {/* Everything owed a call back, across leads and clients. */}
                       <Route
-                        path="/departments"
-                        element={<RoleGuard><DepartmentsPage /></RoleGuard>}
+                        path="/follow-ups"
+                        element={<RoleGuard><FollowUpsPage /></RoleGuard>}
+                      />
+                      {/* Where each service's step checklist is defined —
+                          preloaded into the assign screen on the Leads page. */}
+                      <Route
+                        path="/service-steps"
+                        element={<RoleGuard><ServiceStepsPage /></RoleGuard>}
                       />
                       <Route
-                        path="/reports"
-                        element={<RoleGuard><ReportsPage /></RoleGuard>}
-                      />
-                      <Route
-                        path="/notifications"
-                        element={<RoleGuard><NotificationsPage /></RoleGuard>}
-                      />
-                      <Route
-                        path="/settings"
-                        element={<RoleGuard><SettingsPage /></RoleGuard>}
+                        path="/accounts"
+                        element={<RoleGuard><AccountsPage /></RoleGuard>}
                       />
 
                       {/* ── Tasks ──────────────────────────────────────── */}

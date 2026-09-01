@@ -1,47 +1,44 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { CalendarPlus, User, Check, Search, X, CalendarClock, AlertCircle, Bell, Briefcase } from "lucide-react";
+import { CalendarPlus, User, Check, Search, X, CalendarClock, AlertCircle, Bell, Briefcase, Circle, Loader2, ListChecks } from "lucide-react";
 import { toast } from "sonner";
 import { useTeam } from "@/hooks/useTeam";
 import { useUsers } from "@/hooks/useUsers";
+import { useAbsentTodayUserIds } from "@/hooks/useAttendance";
 import { useAuth } from "@/context/AuthContext";
 import { useCreateManualTask, type TaskServiceRequest } from "@/hooks/useTasks";
-import { useLeads, type SalesLead } from "@/hooks/useLeads";
-import type { CatalogService } from "@/hooks/useServiceCatalog";
-import ServiceCatalogPicker from "@/components/ServiceCatalogPicker";
+import { useClientsForTaskPicker, type Client, type ClientService } from "@/hooks/useClients";
+import { useServiceStepTemplate } from "@/hooks/useServiceSteps";
+import { TEMPERATURE_LABELS, TEMPERATURE_STYLES } from "@/data/leadTemperature";
+import type { AssignableStaff } from "@/components/tasks/roleFilter";
 
-export const ROLE_CATEGORIES = [
-  { label: "All Staff", value: "all" },
-  { label: "Ops Staff", value: "ops" },
-  { label: "Production Staff", value: "production" },
-  { label: "Dispatch Staff", value: "dispatch" },
-  { label: "HR Staff", value: "hr" },
-  { label: "Sales", value: "sales" },
-  { label: "BA", value: "business analyst" },
-  { label: "Accountant", value: "accountant" },
-  { label: "Manager", value: "manager" },
-];
-
-const PRIORITIES = [
-  { value: "low",    label: "Low",    dot: "bg-slate-400", sel: "border-slate-400 bg-slate-50 text-slate-700" },
-  { value: "medium", label: "Medium", dot: "bg-blue-500",  sel: "border-blue-400 bg-blue-50 text-blue-700" },
-  { value: "high",   label: "High",   dot: "bg-amber-500", sel: "border-amber-400 bg-amber-50 text-amber-700" },
-  { value: "urgent", label: "Urgent", dot: "bg-red-500",   sel: "border-red-400 bg-red-50 text-red-700" },
-];
-
-export function matchesRoleFilter(emp: any, roles: string | string[]): boolean {
-  const roleList = Array.isArray(roles) ? roles : [roles];
-  if (roleList.length === 0 || roleList.includes("all")) return true;
-  const dept  = (emp.department  ?? "").toLowerCase();
-  const desig = (emp.designation ?? "").toLowerCase();
-  const uRole = (emp.userId?.role ?? "").toLowerCase();
-  return roleList.some(r => dept.includes(r) || desig.includes(r) || uRole.includes(r));
+/** A step as shown in the stepper — the template's text plus a done flag. */
+interface StepState {
+  title: string;
+  description?: string;
+  order: number;
+  done: boolean;
 }
 
-// Format a Date as the local string a <input type="datetime-local"> expects.
+/** Format a Date as the local string a <input type="datetime-local"> expects. */
 const toLocalInput = (d: Date) => {
   const pad = (n: number) => String(n).padStart(2, "0");
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+};
+
+/**
+ * Priority is not asked for — it follows the service's own hot/warm/cold, which
+ * is the judgement the team already made when the client booked it. Two places
+ * to set the same thing would only let them drift apart.
+ */
+const PRIORITY_FROM_TEMPERATURE: Record<string, string> = {
+  HOT: "high",
+  WARM: "medium",
+  COLD: "low",
+};
+
+const PRIORITY_LABELS: Record<string, string> = {
+  low: "Low", medium: "Medium", high: "High", urgent: "Urgent",
 };
 
 export function CreateTaskModal({ onClose }: { onClose: () => void }) {
@@ -53,67 +50,99 @@ export function CreateTaskModal({ onClose }: { onClose: () => void }) {
     };
   }, []);
 
+  // Client first, then the service — everything below is filled in from those.
+  const [client, setClient] = useState<Client | null>(null);
+  const [clientSearch, setClientSearch] = useState("");
+  const [service, setService] = useState<ClientService | null>(null);
+
   const [title, setTitle]           = useState("");
   const [description, setDescription] = useState("");
-  const [priority, setPriority]     = useState("");
   const [dueAt, setDueAt]           = useState("");
-  const [roleFilters, setRoleFilters] = useState<string[]>([]);
   const [assignedToIds, setAssignedToIds] = useState<string[]>([]);
   const [search, setSearch]         = useState("");
   // People tagged for follow-up (not assignees). They get visibility of the task
   // in their "Follow Up" tab and can post follow-up notes, but can't act on it.
   const [followerIds, setFollowerIds] = useState<string[]>([]);
   const [followerSearch, setFollowerSearch] = useState("");
-
-  // A task can be created straight from the service catalog, optionally tied to
-  // an existing lead so the client's contact details ride along on the task.
-  const [selectedService, setSelectedService] = useState<CatalogService | null>(null);
-  const [attachedLead, setAttachedLead] = useState<SalesLead | null>(null);
-  const [showServicePicker, setShowServicePicker] = useState(false);
-  const [leadSearch, setLeadSearch] = useState("");
+  const [steps, setSteps] = useState<StepState[]>([]);
 
   const { data: team = [] }  = useTeam();
+  const absentToday          = useAbsentTodayUserIds();
   const { user }             = useAuth();
   const createTask           = useCreateManualTask();
-  const { data: leads = [] } = useLeads();
+  const { data: clients = [] } = useClientsForTaskPicker();
+  const { data: template, isFetching: templateLoading } = useServiceStepTemplate(service?.slug);
 
-  const leadClientName = (lead: SalesLead) =>
-    lead.customer?.name?.trim() || lead.customer?.phone || "Unnamed lead";
+  useEffect(() => {
+    if (!service) {
+      setSteps([]);
+      return;
+    }
+    if (templateLoading) return;
 
-  const matchingLeads = useMemo(() => {
-    const q = leadSearch.trim().toLowerCase();
-    if (!q) return leads.slice(0, 8);
-    return leads.filter((l) =>
-      leadClientName(l).toLowerCase().includes(q) ||
-      (l.productInterest ?? "").toLowerCase().includes(q) ||
-      (l.customer?.phone ?? "").includes(q) ||
-      (l.customer?.company ?? "").toLowerCase().includes(q)
-    ).slice(0, 8);
-  }, [leads, leadSearch]);
+    setSteps(
+      (template?.steps ?? []).map((step, index) => ({
+        title: step.title,
+        description: step.description,
+        order: Number.isFinite(step.order) ? step.order : index,
+        done: false,
+      }))
+    );
+  }, [service?._id, template, templateLoading]);
 
-  /** Picking a service names the task after it. */
-  const chooseService = (service: CatalogService | null) => {
-    setSelectedService(service);
-    if (service) {
-      setTitle(service.title);
-      setShowServicePicker(false);
+  const doneCount = steps.filter((s) => s.done).length;
+  const progress = steps.length ? Math.round((doneCount / steps.length) * 100) : 0;
+
+  const toggleStep = (index: number) => {
+    setSteps((current) => current.map((step, i) => (i === index ? { ...step, done: !step.done } : step)));
+  };
+
+  const markThrough = (index: number) => {
+    setSteps((current) => current.map((step, i) => ({ ...step, done: i <= index })));
+  };
+
+  // A client with nothing left to do has no service a new task could attach
+  // to — leave them off the picker entirely.
+  const assignableClients = useMemo(
+    () => clients.filter((c) => c.services.some((s) => s.stage !== 'completed')),
+    [clients]
+  );
+
+  const matchingClients = useMemo(() => {
+    const q = clientSearch.trim().toLowerCase();
+    if (!q) return assignableClients;
+    return assignableClients.filter((c) =>
+      c.name.toLowerCase().includes(q) ||
+      c.phone.includes(q) ||
+      c.company.toLowerCase().includes(q) ||
+      c.clientId.toLowerCase().includes(q) ||
+      c.services.some((s) => s.title.toLowerCase().includes(q))
+    );
+  }, [assignableClients, clientSearch]);
+
+  /** Picking a service names the task after it and pulls in its own target date. */
+  const chooseService = (next: ClientService) => {
+    setService(next);
+    setTitle(next.title);
+    if (next.dueAt) {
+      const target = new Date(next.dueAt);
+      if (!Number.isNaN(target.getTime())) setDueAt(toLocalInput(target));
     }
   };
 
-  /** Attaching a lead pulls its service across too, when it has one. */
-  const chooseLead = (lead: SalesLead | null) => {
-    setAttachedLead(lead);
-    setLeadSearch("");
-    if (lead?.productInterest && !selectedService) {
-      setTitle(lead.productInterest);
-      setSelectedService({
-        title: lead.productInterest,
-        slug: lead.serviceSlug ?? "",
-        category: lead.serviceCategory ?? "",
-        categorySlug: "",
-      });
-    }
+  const chooseClient = (next: Client | null) => {
+    setClient(next);
+    setService(null);
+    setClientSearch("");
+    setTitle("");
+    // With a single service there is nothing to choose — fill it straight in,
+    // unless it's already spoken for.
+    const only = next?.services.length === 1 ? next.services[0] : null;
+    const onlyIsTaken = only && (only.stage === "completed" || (Boolean(only.assignedTo) && only.taskStatus !== "unassigned"));
+    if (only && !onlyIsTaken) chooseService(only);
   };
+
+  const priority = service ? PRIORITY_FROM_TEMPERATURE[service.temperature] ?? "medium" : "medium";
 
   // Founders / co-founders / admins are seeded with role "admin" and usually
   // don't have an EmployeeProfile, so they're absent from the team list. When
@@ -122,25 +151,26 @@ export function CreateTaskModal({ onClose }: { onClose: () => void }) {
   const isAdmin = user?.role === "admin";
   const { data: adminUsers = [] } = useUsers("admin");
   const assignableStaff = useMemo(() => {
-    if (!isAdmin) return team;
-    const inTeam = new Set(team.map((emp) => String(emp.userId?._id)));
-    const adminProfiles = adminUsers
-      .filter((au) => au._id && !inTeam.has(String(au._id)))
-      .map((au) => ({
-        _id: `admin-${au._id}`,
-        userId: au,
-        designation: "Founder / Admin",
-        department: "management",
-        status: au.isActive === false ? "inactive" : "active",
-      })) as any[];
-    return [...adminProfiles, ...team];
-  }, [isAdmin, adminUsers, team]);
+    const combined = isAdmin
+      ? (() => {
+          const inTeam = new Set(team.map((emp) => String(emp.userId?._id)));
+          const adminProfiles = adminUsers
+            .filter((au) => au._id && !inTeam.has(String(au._id)))
+            .map((au) => ({
+              _id: `admin-${au._id}`,
+              userId: au,
+              designation: "Founder / Admin",
+              department: "management",
+              status: au.isActive === false ? "inactive" : "active",
+            }));
+          return [...adminProfiles, ...team] as AssignableStaff[];
+        })()
+      : team;
 
-  // Admins get an extra "Founders" filter chip for the admin/founder pool.
-  const roleCategories = useMemo(
-    () => (isAdmin ? [...ROLE_CATEGORIES, { label: "Founders", value: "admin" }] : ROLE_CATEGORIES),
-    [isAdmin]
-  );
+    // Never list the signed-in user themselves — a task can't be assigned to
+    // (or a follow-up tagged on) whoever is creating it.
+    return combined.filter((emp) => String(emp.userId?._id) !== String(user?._id));
+  }, [isAdmin, adminUsers, team, user?._id]);
 
   // Earliest selectable deadline = now. Computed once on open.
   const minDateTime = useMemo(() => toLocalInput(new Date()), []);
@@ -149,15 +179,16 @@ export function CreateTaskModal({ onClose }: { onClose: () => void }) {
   const filteredStaff = useMemo(() => {
     const q = search.trim().toLowerCase();
     return assignableStaff
-      // Never allow assigning work to deactivated staff/team members.
+      // Never allow assigning work to deactivated staff/team members, or to
+      // anyone marked absent today (manual attendance override).
       .filter((emp) => emp.status !== "inactive" && emp.userId?.isActive !== false)
-      .filter((emp) => matchesRoleFilter(emp, roleFilters))
+      .filter((emp) => !absentToday.has(String(emp.userId?._id)))
       .filter((emp) => {
         if (!q) return true;
         const name = [emp.userId?.name, emp.userId?.lastName].filter(Boolean).join(" ").toLowerCase();
         return name.includes(q) || (emp.designation ?? "").toLowerCase().includes(q);
       });
-  }, [assignableStaff, roleFilters, search]);
+  }, [assignableStaff, search, absentToday]);
 
   // Map of selected userId -> display name, for the summary chips.
   const selectedStaff = useMemo(() => {
@@ -170,13 +201,6 @@ export function CreateTaskModal({ onClose }: { onClose: () => void }) {
     });
     return map;
   }, [assignableStaff, assignedToIds]);
-
-  const toggleRoleFilter = (role: string) => {
-    if (role === "all") { setRoleFilters([]); return; }
-    setRoleFilters(prev =>
-      prev.includes(role) ? prev.filter(r => r !== role) : [...prev, role]
-    );
-  };
 
   const toggleStaffSelection = (id: string) => {
     setAssignedToIds((prev) =>
@@ -227,35 +251,37 @@ export function CreateTaskModal({ onClose }: { onClose: () => void }) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!client) return toast.error("Select a client");
+    if (!service) return toast.error("Select a service for this client");
     if (!title.trim()) return toast.error("Task Title is required");
-    // Catalog service names legitimately carry punctuation ("Govt. Gazette –
-    // Name / DOB Change"), so the letters-and-numbers rule only applies to
-    // titles the user typed themselves.
-    if (!selectedService && !/^[A-Za-z0-9\s]+$/.test(title.trim()))
-      return toast.error("Title can only contain letters, numbers and spaces");
     if (!dueAt) return toast.error("Deadline is required");
     if (new Date(dueAt).getTime() < Date.now()) {
       return toast.error("Deadline can't be in the past — pick a future date and time");
     }
-    if (!priority) return toast.error("Priority is required");
     if (assignedToIds.length === 0) return toast.error("Please select at least one staff member to assign this task");
 
     // Stamp the task with the service + client details so the assignee sees the
-    // same "Client Service Request" panel as a lead assigned from the Leads page.
+    // same "Client Service Request" panel as a service assigned from the
+    // Clients board.
     const serviceRequest: TaskServiceRequest | undefined =
-      selectedService || attachedLead
+      client || service
         ? {
-            serviceTitle: selectedService?.title || attachedLead?.productInterest || title,
-            serviceSlug: selectedService?.slug || attachedLead?.serviceSlug,
-            serviceCategory: selectedService?.category || attachedLead?.serviceCategory,
-            serviceCategorySlug: selectedService?.categorySlug,
-            clientName: attachedLead ? leadClientName(attachedLead) : undefined,
-            clientEmail: attachedLead?.customer?.email,
-            clientPhone: attachedLead?.customer?.phone,
-            clientCompany: attachedLead?.customer?.company,
-            clientAddress: attachedLead?.customer?.city,
+            serviceTitle: service?.title || title,
+            serviceSlug: service?.slug,
+            serviceCategory: service?.category,
+            clientName: client?.name,
+            clientEmail: client?.email,
+            clientPhone: client?.phone,
+            clientCompany: client?.company,
+            clientAddress: client?.address,
             notes: description.trim() || undefined,
-            stage: attachedLead?.serviceStage ?? "documents_pending",
+            stage: service?.stage ?? "documents_pending",
+            steps: steps.length > 0 ? steps.map((step, index) => ({
+              title: step.title,
+              description: step.description,
+              order: index,
+              done: step.done,
+            })) : undefined,
           }
         : undefined;
 
@@ -275,8 +301,50 @@ export function CreateTaskModal({ onClose }: { onClose: () => void }) {
           toast.success("Task created and assigned");
           onClose();
         },
-        onError: (e: any) => toast.error(e.message || "Failed to create task"),
+        onError: (e: Error) => toast.error(e.message || "Failed to create task"),
       }
+    );
+  };
+
+  /** One selectable person. Deliberately plain — name, role, tick. */
+  const staffRow = (
+    emp: AssignableStaff,
+    isSelected: boolean,
+    onToggle: (id: string) => void,
+    tone: "primary" | "amber"
+  ) => {
+    const uid = emp.userId?._id;
+    if (!uid) return null;
+    const name = [emp.userId?.name, emp.userId?.lastName].filter(Boolean).join(" ") || "Unknown";
+    const selectedClasses = tone === "primary"
+      ? "bg-primary/10 border-primary/20 text-primary"
+      : "bg-amber-50 border-amber-200 text-amber-700";
+    const boxClasses = tone === "primary"
+      ? "bg-primary border-primary"
+      : "bg-amber-500 border-amber-500";
+
+    return (
+      <div
+        key={uid}
+        onClick={() => onToggle(uid)}
+        className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-md cursor-pointer transition-colors border ${
+          isSelected ? selectedClasses : "hover:bg-muted/50 border-transparent"
+        }`}
+      >
+        <div className="flex flex-col min-w-0 flex-1">
+          <span className={`text-xs font-medium truncate ${isSelected ? "" : "text-foreground"}`}>
+            {name}
+          </span>
+          <span className="text-[9px] text-muted-foreground truncate">
+            {emp.designation || emp.department || "Staff"}
+          </span>
+        </div>
+        <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors shrink-0 ${
+          isSelected ? boxClasses : "border-muted-foreground/30"
+        }`}>
+          {isSelected && <Check className="w-3 h-3 text-white" />}
+        </div>
+      </div>
     );
   };
 
@@ -306,76 +374,25 @@ export function CreateTaskModal({ onClose }: { onClose: () => void }) {
         <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
           <div className="p-6 space-y-5 overflow-y-auto flex-1 custom-scrollbar">
 
-          {/* Service — create the task straight from the website catalog */}
+          {/* Client — everything below is filled in from whoever is picked here */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
-              <Briefcase className="w-3.5 h-3.5" />
-              Service <span className="text-muted-foreground font-normal normal-case">(optional)</span>
+            <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+              <User className="w-3.5 h-3.5" /> Client
             </label>
 
-            {selectedService ? (
+            {client ? (
               <div className="rounded-lg border border-blue-200 bg-blue-50/60 px-3 py-2.5 flex items-start justify-between gap-3">
                 <div className="min-w-0">
-                  <p className="text-sm font-semibold text-foreground truncate">{selectedService.title}</p>
-                  {selectedService.category && (
-                    <p className="text-[11px] text-muted-foreground truncate">{selectedService.category}</p>
-                  )}
-                </div>
-                <button
-                  type="button"
-                  onClick={() => { chooseService(null); setShowServicePicker(false); }}
-                  className="shrink-0 p-1 rounded-md hover:bg-blue-100 text-muted-foreground"
-                  title="Clear service"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-            ) : showServicePicker ? (
-              <div className="rounded-lg border border-border p-3">
-                <ServiceCatalogPicker
-                  selectedSlug=""
-                  onSelect={chooseService}
-                  height="h-[220px]"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowServicePicker(false)}
-                  className="mt-2 text-[11px] text-muted-foreground hover:text-foreground"
-                >
-                  Cancel
-                </button>
-              </div>
-            ) : (
-              <button
-                type="button"
-                onClick={() => setShowServicePicker(true)}
-                className="w-full h-10 px-3 rounded-lg border border-dashed border-border bg-background text-sm text-muted-foreground hover:border-blue-400 hover:bg-blue-50/40 transition-colors text-left"
-              >
-                Pick a service from the catalog…
-              </button>
-            )}
-          </div>
-
-          {/* Lead — attach a client so their details ride along on the task */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
-              <User className="w-3.5 h-3.5" />
-              Client Lead <span className="text-muted-foreground font-normal normal-case">(optional)</span>
-            </label>
-
-            {attachedLead ? (
-              <div className="rounded-lg border border-blue-200 bg-blue-50/60 px-3 py-2.5 flex items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <p className="text-sm font-semibold text-foreground truncate">{leadClientName(attachedLead)}</p>
+                  <p className="text-sm font-semibold text-foreground truncate">{client.name}</p>
                   <p className="text-[11px] text-muted-foreground truncate">
-                    {[attachedLead.customer?.phone, attachedLead.customer?.company].filter(Boolean).join(' · ') || 'No contact details'}
+                    {[client.clientId, client.phone, client.company].filter(Boolean).join(" · ")}
                   </p>
                 </div>
                 <button
                   type="button"
-                  onClick={() => chooseLead(null)}
+                  onClick={() => chooseClient(null)}
                   className="shrink-0 p-1 rounded-md hover:bg-blue-100 text-muted-foreground"
-                  title="Detach lead"
+                  title="Change client"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -385,24 +402,26 @@ export function CreateTaskModal({ onClose }: { onClose: () => void }) {
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
                   <input
+                    autoFocus
                     className="w-full h-10 pl-9 pr-3 rounded-lg border border-border bg-background text-sm focus:ring-2 focus:ring-primary/40 focus:border-primary outline-none transition-shadow"
-                    value={leadSearch}
-                    onChange={(e) => setLeadSearch(e.target.value)}
-                    placeholder="Search leads by client, phone or service…"
+                    value={clientSearch}
+                    onChange={(e) => setClientSearch(e.target.value)}
+                    placeholder="Search clients by name, phone or service…"
                   />
                 </div>
-                {matchingLeads.length > 0 && (
-                  <div className="mt-1.5 border border-border rounded-lg divide-y divide-border max-h-[176px] overflow-y-auto">
-                    {matchingLeads.map((lead) => (
+                {matchingClients.length > 0 && (
+                  <div className="mt-1.5 border border-border rounded-lg divide-y divide-border max-h-[110px] overflow-y-auto">
+                    {matchingClients.map((c) => (
                       <button
-                        key={lead._id}
+                        key={c._id}
                         type="button"
-                        onClick={() => chooseLead(lead)}
+                        onClick={() => chooseClient(c)}
                         className="w-full text-left px-3 py-2 hover:bg-muted/50 transition-colors"
                       >
-                        <p className="text-sm font-medium text-foreground truncate">{leadClientName(lead)}</p>
+                        <p className="text-sm font-medium text-foreground truncate">{c.name}</p>
                         <p className="text-[11px] text-muted-foreground truncate">
-                          {[lead.productInterest, lead.customer?.phone].filter(Boolean).join(' · ') || 'No service selected'}
+                          {[c.phone, `${c.totalServices} service${c.totalServices === 1 ? "" : "s"}`]
+                            .filter(Boolean).join(" · ")}
                         </p>
                       </button>
                     ))}
@@ -412,33 +431,92 @@ export function CreateTaskModal({ onClose }: { onClose: () => void }) {
             )}
           </div>
 
-          {/* Title */}
+          {/* Service — the client's own services, filled in from their record */}
+          {client && (
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+                <Briefcase className="w-3.5 h-3.5" /> Service <span className="text-red-500">*</span>
+              </label>
+
+              {client.services.length === 0 ? (
+                <p className="text-xs text-muted-foreground rounded-lg border border-dashed border-border px-3 py-4 text-center">
+                  This client has no services on their record yet.
+                </p>
+              ) : (
+                <div className="space-y-1.5">
+                  {client.services.map((s) => {
+                    const active = service?._id === s._id;
+                    const tempStyle = TEMPERATURE_STYLES[s.temperature];
+                    // A service already handed off has its own task in flight (or
+                    // done) — creating a second one here would just collide with it.
+                    const isCompleted = s.taskStatus === "completed" || s.stage === "completed";
+                    const isTaken = isCompleted || (Boolean(s.assignedTo) && s.taskStatus !== "unassigned");
+                    const takenLabel = isCompleted
+                      ? `Completed by ${s.assignedTo?.name ?? "someone"}`
+                      : isTaken
+                      ? `Assigned to ${s.assignedTo?.name ?? "someone"}`
+                      : null;
+
+                    return (
+                      <button
+                        key={s._id}
+                        type="button"
+                        disabled={isTaken}
+                        onClick={() => chooseService(s)}
+                        className={`w-full text-left rounded-lg border px-3 py-2 transition-colors ${
+                          isTaken
+                            ? "border-border bg-muted/40 opacity-60 cursor-not-allowed"
+                            : active
+                            ? "border-blue-400 bg-blue-50"
+                            : "border-border bg-card hover:bg-muted/50"
+                        }`}
+                      >
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-sm font-medium text-foreground truncate">{s.title}</span>
+                          {takenLabel ? (
+                            <span className={`shrink-0 px-1.5 py-0.5 rounded text-[10px] font-medium ${
+                              isCompleted ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"
+                            }`}>
+                              {takenLabel}
+                            </span>
+                          ) : (
+                            <span className={`shrink-0 px-1.5 py-0.5 rounded text-[10px] font-medium ${tempStyle.bg} ${tempStyle.text}`}>
+                              {TEMPERATURE_LABELS[s.temperature]}
+                            </span>
+                          )}
+                        </div>
+                        {s.category && (
+                          <span className="block text-[11px] text-muted-foreground truncate">{s.category}</span>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Title — named after the service, still editable */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+            <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
               Task Title <span className="text-red-500">*</span>
             </label>
             <input
               required
-              autoFocus
               className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm focus:ring-2 focus:ring-primary/40 focus:border-primary outline-none transition-shadow"
               value={title}
-              // Free-typed titles stay letters/numbers only; a title that came
-              // from the catalog keeps its punctuation intact.
-              onChange={(e) => {
-                setSelectedService(null);
-                setTitle(e.target.value.replace(/[^A-Za-z0-9\s]/g, ""));
-              }}
-              placeholder="E.g., Prepare batch for production"
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Pick a service above to fill this in, or adjust it here"
             />
           </div>
 
           {/* Description */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+            <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
               Description <span className="text-muted-foreground font-normal normal-case">(optional)</span>
             </label>
             <textarea
-              className="w-full p-3 rounded-lg border border-border bg-background text-sm focus:ring-2 focus:ring-primary/40 focus:border-primary outline-none resize-none h-20 transition-shadow"
+              className="w-full p-2.5 rounded-lg border border-border bg-background text-sm focus:ring-2 focus:ring-primary/40 focus:border-primary outline-none resize-none h-14 transition-shadow"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Add context or instructions…"
@@ -447,7 +525,7 @@ export function CreateTaskModal({ onClose }: { onClose: () => void }) {
 
           {/* Deadline */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+            <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
               <CalendarClock className="w-3.5 h-3.5" /> Deadline <span className="text-red-500">*</span>
             </label>
             <input
@@ -482,68 +560,31 @@ export function CreateTaskModal({ onClose }: { onClose: () => void }) {
             )}
           </div>
 
-          {/* Priority */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              Priority <span className="text-red-500">*</span>
-            </label>
-            <div className="grid grid-cols-4 gap-2">
-              {PRIORITIES.map((p) => {
-                const active = priority === p.value;
-                return (
-                  <button
-                    key={p.value}
-                    type="button"
-                    onClick={() => setPriority(p.value)}
-                    className={`flex items-center justify-center gap-1.5 h-9 rounded-lg border text-xs font-semibold transition-colors ${
-                      active ? p.sel : "border-border bg-card text-muted-foreground hover:bg-muted"
-                    }`}
-                  >
-                    <span className={`w-2 h-2 rounded-full ${p.dot}`} />
-                    {p.label}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Assignment section */}
-          <div className="rounded-xl border border-border bg-muted/30 p-4 space-y-3">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
-              <User className="w-3.5 h-3.5" /> Assign To <span className="text-red-500">*</span>
+          {/* Priority follows the service's status — shown, not asked for */}
+          {service && (
+            <p className="text-[11px] text-muted-foreground">
+              Priority <span className="font-semibold text-foreground">{PRIORITY_LABELS[priority]}</span>,
+              from this service's {TEMPERATURE_LABELS[service.temperature].toLowerCase()} status.
             </p>
+          )}
 
-            {/* Role filter — multi-select chips */}
-            <div className="space-y-1.5">
-              <label className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">
-                Filter by Role {roleFilters.length > 0 && <span className="text-primary">({roleFilters.length} selected)</span>}
-              </label>
-              <div className="flex flex-wrap gap-1.5">
+          {/* Assign to */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+                <User className="w-3.5 h-3.5" /> Assign To <span className="text-red-500">*</span>
+              </p>
+              {assignedToIds.length > 0 && (
                 <button
                   type="button"
-                  onClick={() => toggleRoleFilter("all")}
-                  className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider transition-colors border ${
-                    roleFilters.length === 0 ? "bg-primary text-primary-foreground border-primary" : "bg-card text-muted-foreground border-border hover:bg-muted"
-                  }`}
+                  onClick={() => setAssignedToIds([])}
+                  className="text-[10px] text-primary hover:underline font-medium"
                 >
-                  All
+                  Clear All
                 </button>
-                {roleCategories.filter(r => r.value !== "all").map(r => (
-                  <button
-                    key={r.value}
-                    type="button"
-                    onClick={() => toggleRoleFilter(r.value)}
-                    className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider transition-colors border ${
-                      roleFilters.includes(r.value) ? "bg-primary text-primary-foreground border-primary" : "bg-card text-muted-foreground border-border hover:bg-muted"
-                    }`}
-                  >
-                    {r.label.replace(" Staff", "")}
-                  </button>
-                ))}
-              </div>
+              )}
             </div>
 
-            {/* Selected staff chips */}
             {assignedToIds.length > 0 && (
               <div className="flex flex-wrap gap-1.5">
                 {[...selectedStaff.entries()].map(([uid, name]) => (
@@ -564,96 +605,47 @@ export function CreateTaskModal({ onClose }: { onClose: () => void }) {
               </div>
             )}
 
-            {/* Search + person picker */}
-            <div className="space-y-1.5">
-              <div className="flex items-center justify-between">
-                <label className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">
-                  Select Staff ({assignedToIds.length} selected)
-                </label>
-                {assignedToIds.length > 0 && (
-                  <button
-                    type="button"
-                    onClick={() => setAssignedToIds([])}
-                    className="text-[10px] text-primary hover:underline font-medium"
-                  >
-                    Clear All
-                  </button>
-                )}
-              </div>
+            <div className="relative">
+              <Search className="w-3.5 h-3.5 text-muted-foreground absolute left-2.5 top-1/2 -translate-y-1/2" />
+              <input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search staff by name…"
+                className="w-full h-8 pl-8 pr-3 rounded-md border border-border bg-background text-xs focus:ring-2 focus:ring-primary/40 focus:border-primary outline-none"
+              />
+            </div>
 
-              <div className="relative">
-                <Search className="w-3.5 h-3.5 text-muted-foreground absolute left-2.5 top-1/2 -translate-y-1/2" />
-                <input
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Search staff by name…"
-                  className="w-full h-8 pl-8 pr-3 rounded-md border border-border bg-background text-xs focus:ring-2 focus:ring-primary/40 focus:border-primary outline-none"
-                />
-              </div>
-
-              <div className="bg-background border border-border rounded-lg max-h-44 overflow-y-auto p-1.5 space-y-1">
-                {filteredStaff.length === 0 ? (
-                  <p className="text-[10px] text-muted-foreground p-3 text-center italic">
-                    {search ? "No staff match your search" : "No staff found for this role"}
-                  </p>
-                ) : (
-                  filteredStaff.map((emp) => {
-                    const uid  = emp.userId?._id;
-                    if (!uid) return null;
-                    const name = [emp.userId?.name, emp.userId?.lastName].filter(Boolean).join(" ") || "Unknown";
-                    const isSelected = assignedToIds.includes(uid);
-                    const initials = name.split(" ").map((n: string) => n[0]).filter(Boolean).slice(0, 2).join("").toUpperCase();
-
-                    return (
-                      <div
-                        key={uid}
-                        onClick={() => toggleStaffSelection(uid)}
-                        className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-md cursor-pointer transition-colors border ${
-                          isSelected ? "bg-primary/10 border-primary/20" : "hover:bg-muted/50 border-transparent"
-                        }`}
-                      >
-                        <div className={`w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 ${
-                          isSelected ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
-                        }`}>
-                          {initials || "?"}
-                        </div>
-                        <div className="flex flex-col min-w-0 flex-1">
-                          <span className={`text-xs font-medium truncate ${isSelected ? "text-primary" : "text-foreground"}`}>
-                            {name}
-                          </span>
-                          <span className="text-[9px] text-muted-foreground truncate uppercase tracking-tighter">
-                            {emp.designation || emp.department || "Staff"}
-                          </span>
-                        </div>
-                        <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors shrink-0 ${
-                          isSelected ? "bg-primary border-primary" : "border-muted-foreground/30"
-                        }`}>
-                          {isSelected && <Check className="w-3 h-3 text-primary-foreground" />}
-                        </div>
-                      </div>
-                    );
-                  })
-                )}
-              </div>
-              <p className="text-[9px] text-muted-foreground italic">
-                * At least one staff member must be selected.
-              </p>
+            {/* Two rows tall — search to reach anyone further down the list. */}
+            <div className="max-h-[88px] overflow-y-auto space-y-1">
+              {filteredStaff.length === 0 ? (
+                <p className="text-[10px] text-muted-foreground p-3 text-center italic">
+                  {search ? "No staff match your search" : "No staff found"}
+                </p>
+              ) : (
+                filteredStaff.map((emp) =>
+                  staffRow(emp, assignedToIds.includes(emp.userId?._id), toggleStaffSelection, "primary")
+                )
+              )}
             </div>
           </div>
 
-          {/* Follow-up tagging section (optional) */}
-          <div className="rounded-xl border border-border bg-muted/30 p-4 space-y-3">
-            <div>
+          {/* Follow-up tagging (optional) */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
               <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
                 <Bell className="w-3.5 h-3.5" /> Tag for Follow-up
-                <span className="text-muted-foreground font-normal normal-case">(optional)</span>
               </p>
-              <p className="text-[10px] text-muted-foreground mt-1">
-                Tagged people can track this task and add follow-up notes, but can't start or complete it.
-              </p>
+              {followerIds.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setFollowerIds([])}
+                  className="text-[10px] text-primary hover:underline font-medium"
+                >
+                  Clear All
+                </button>
+              )}
             </div>
 
-            {/* Selected follower chips */}
             {followerIds.length > 0 && (
               <div className="flex flex-wrap gap-1.5">
                 {[...selectedFollowers.entries()].map(([uid, name]) => (
@@ -674,78 +666,124 @@ export function CreateTaskModal({ onClose }: { onClose: () => void }) {
               </div>
             )}
 
-            <div className="space-y-1.5">
-              <div className="flex items-center justify-between">
-                <label className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">
-                  Followers ({followerIds.length} tagged)
-                </label>
-                {followerIds.length > 0 && (
-                  <button
-                    type="button"
-                    onClick={() => setFollowerIds([])}
-                    className="text-[10px] text-primary hover:underline font-medium"
-                  >
-                    Clear All
-                  </button>
-                )}
-              </div>
+            <div className="relative">
+              <Search className="w-3.5 h-3.5 text-muted-foreground absolute left-2.5 top-1/2 -translate-y-1/2" />
+              <input
+                value={followerSearch}
+                onChange={(e) => setFollowerSearch(e.target.value)}
+                placeholder="Search staff to tag…"
+                className="w-full h-8 pl-8 pr-3 rounded-md border border-border bg-background text-xs focus:ring-2 focus:ring-primary/40 focus:border-primary outline-none"
+              />
+            </div>
 
-              <div className="relative">
-                <Search className="w-3.5 h-3.5 text-muted-foreground absolute left-2.5 top-1/2 -translate-y-1/2" />
-                <input
-                  value={followerSearch}
-                  onChange={(e) => setFollowerSearch(e.target.value)}
-                  placeholder="Search staff to tag…"
-                  className="w-full h-8 pl-8 pr-3 rounded-md border border-border bg-background text-xs focus:ring-2 focus:ring-primary/40 focus:border-primary outline-none"
-                />
-              </div>
-
-              <div className="bg-background border border-border rounded-lg max-h-36 overflow-y-auto p-1.5 space-y-1">
-                {followerStaff.length === 0 ? (
-                  <p className="text-[10px] text-muted-foreground p-3 text-center italic">
-                    {followerSearch ? "No staff match your search" : "No staff available to tag"}
-                  </p>
-                ) : (
-                  followerStaff.map((emp) => {
-                    const uid  = emp.userId?._id;
-                    if (!uid) return null;
-                    const name = [emp.userId?.name, emp.userId?.lastName].filter(Boolean).join(" ") || "Unknown";
-                    const isSelected = followerIds.includes(uid);
-                    const initials = name.split(" ").map((n: string) => n[0]).filter(Boolean).slice(0, 2).join("").toUpperCase();
-
-                    return (
-                      <div
-                        key={uid}
-                        onClick={() => toggleFollowerSelection(uid)}
-                        className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-md cursor-pointer transition-colors border ${
-                          isSelected ? "bg-amber-50 border-amber-200" : "hover:bg-muted/50 border-transparent"
-                        }`}
-                      >
-                        <div className={`w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 ${
-                          isSelected ? "bg-amber-500 text-white" : "bg-muted text-muted-foreground"
-                        }`}>
-                          {initials || "?"}
-                        </div>
-                        <div className="flex flex-col min-w-0 flex-1">
-                          <span className={`text-xs font-medium truncate ${isSelected ? "text-amber-700" : "text-foreground"}`}>
-                            {name}
-                          </span>
-                          <span className="text-[9px] text-muted-foreground truncate uppercase tracking-tighter">
-                            {emp.designation || emp.department || "Staff"}
-                          </span>
-                        </div>
-                        <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors shrink-0 ${
-                          isSelected ? "bg-amber-500 border-amber-500" : "border-muted-foreground/30"
-                        }`}>
-                          {isSelected && <Check className="w-3 h-3 text-white" />}
-                        </div>
-                      </div>
-                    );
-                  })
-                )}
-              </div>
+            <div className="max-h-[88px] overflow-y-auto space-y-1">
+              {followerStaff.length === 0 ? (
+                <p className="text-[10px] text-muted-foreground p-3 text-center italic">
+                  {followerSearch ? "No staff match your search" : "No staff available to tag"}
+                </p>
+              ) : (
+                followerStaff.map((emp) =>
+                  staffRow(emp, followerIds.includes(emp.userId?._id), toggleFollowerSelection, "amber")
+                )
+              )}
             </div>
           </div>
+
+          {/* ── The stepper ─────────────────────────────────────────────────── */}
+          {service && (
+          <div className="space-y-2 pt-2 border-t border-border">
+            <div className="flex items-center justify-between gap-2 mb-3">
+              <div className="flex items-center gap-1.5">
+                <ListChecks className="w-3.5 h-3.5 text-muted-foreground" />
+                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">Steps</label>
+              </div>
+              {steps.length > 0 && (
+                <span className="text-[11px] text-muted-foreground">
+                  {doneCount} of {steps.length} done · {progress}%
+                </span>
+              )}
+            </div>
+
+            {templateLoading ? (
+              <div className="py-8 text-center text-sm text-muted-foreground">
+                <Loader2 className="w-4 h-4 animate-spin inline mr-2" />
+                Loading steps…
+              </div>
+            ) : steps.length === 0 ? (
+              <div className="rounded-md border border-dashed border-border px-4 py-6 text-center">
+                <p className="text-sm text-muted-foreground">No steps set up for this service yet.</p>
+                <p className="text-[11px] text-muted-foreground mt-1">
+                  Add them on the Service Steps page and they'll preload here next time.
+                </p>
+              </div>
+            ) : (
+              <>
+                <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden mb-3">
+                  <div
+                    className="h-full bg-blue-600 rounded-full transition-all"
+                    style={{ width: `${progress}%` }}
+                  />
+                </div>
+
+                <p className="text-[11px] text-muted-foreground mb-2">
+                  Tick anything already done. Tap the number to mark everything up to that step.
+                </p>
+
+                <div className="space-y-1.5 max-h-[300px] overflow-y-auto pr-1 custom-scrollbar">
+                  {steps.map((step, index) => (
+                    <div
+                      key={`${step.title}-${index}`}
+                      className={`rounded-md border px-2.5 py-2 flex items-start gap-2.5 transition-colors ${
+                        step.done ? 'border-emerald-200 bg-emerald-50' : 'border-border bg-card'
+                      }`}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => markThrough(index)}
+                        title={`Mark steps 1–${index + 1} as done`}
+                        className={`shrink-0 w-6 h-6 rounded-full border flex items-center justify-center text-[10px] font-bold transition-colors ${
+                          step.done
+                            ? 'border-emerald-500 bg-emerald-500 text-white'
+                            : 'border-border bg-muted text-muted-foreground hover:border-blue-400'
+                        }`}
+                      >
+                        {step.done ? <Check className="w-3.5 h-3.5" /> : index + 1}
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => toggleStep(index)}
+                        className="flex-1 min-w-0 text-left"
+                      >
+                        <span className={`block text-[13px] font-medium leading-snug ${
+                          step.done ? 'text-emerald-900 line-through' : 'text-foreground'
+                        }`}>
+                          {step.title}
+                        </span>
+                        {step.description && (
+                          <span className="block text-[11px] text-muted-foreground mt-0.5">
+                            {step.description}
+                          </span>
+                        )}
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => toggleStep(index)}
+                        title={step.done ? 'Mark as not done' : 'Mark as done'}
+                        className="shrink-0 mt-0.5 text-muted-foreground hover:text-foreground"
+                      >
+                        {step.done
+                          ? <Check className="w-4 h-4 text-emerald-600" />
+                          : <Circle className="w-4 h-4" />}
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+          )}
 
           </div>
           {/* Actions */}
@@ -759,7 +797,7 @@ export function CreateTaskModal({ onClose }: { onClose: () => void }) {
             </button>
             <button
               type="submit"
-              disabled={createTask.isPending}
+              disabled={createTask.isPending || !client || !service || !dueAt || assignedToIds.length === 0}
               className="h-9 px-5 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 disabled:opacity-50 transition-colors"
             >
               {createTask.isPending ? "Creating…" : "Assign Task"}

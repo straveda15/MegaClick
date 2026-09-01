@@ -3,19 +3,34 @@ import LeaveBalance from "./leave-balance.model.js";
 import EmployeeProfile from "../team/team.model.js";
 import eventBus, { EVENTS } from "../../shared/events/eventBus.js";
 
+/**
+ * How many days a request actually costs.
+ *
+ * A half day is always a single date worth 0.5; anything else is the inclusive
+ * span between the two dates. Kept in one place so the apply paths, the balance
+ * check and the approval deduction can never disagree about the number.
+ */
+const calculateLeaveDays = (start, end, isHalfDay) => {
+  if (isHalfDay) {
+    if (start.toDateString() !== end.toDateString()) {
+      throw new Error("A half-day leave must start and end on the same date.");
+    }
+    return 0.5;
+  }
+  return Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1; // inclusive
+};
+
 class LeaveService {
   async applyLeave(data, requesterId) {
-    const { userId, fromDate, toDate, leaveType, reason } = data;
+    const { userId, fromDate, toDate, leaveType, reason, isHalfDay = false, halfDaySession } = data;
 
     // Verify employee profile exists
     const profile = await EmployeeProfile.findOne({ userId });
     if (!profile) throw new Error("Employee profile not found.");
 
-    // Calculate days
     const start = new Date(fromDate);
     const end = new Date(toDate);
-    const diffMs = end - start;
-    const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24)) + 1; // inclusive
+    const days = calculateLeaveDays(start, end, isHalfDay);
 
     const leave = await Leave.create({
       userId,
@@ -23,7 +38,9 @@ class LeaveService {
       leaveType,
       fromDate: start,
       toDate: end,
-      days: diffDays,
+      days,
+      isHalfDay,
+      halfDaySession: isHalfDay ? halfDaySession : undefined,
       reason,
       requestedBy: requesterId,
       status: "pending",
@@ -161,7 +178,7 @@ class LeaveService {
    * Validates and deducts from LeaveBalance.
    */
   async applyLeaveForSelf(userId, data) {
-    const { leaveType, fromDate, toDate, reason } = data;
+    const { leaveType, fromDate, toDate, reason, isHalfDay = false, halfDaySession } = data;
 
     const allowedTypes = ["sick", "casual", "earned"];
     if (!allowedTypes.includes(leaveType)) {
@@ -176,7 +193,11 @@ class LeaveService {
     startOfToday.setHours(0, 0, 0, 0);
     if (start < startOfToday) throw new Error("Cannot apply leave for past dates");
 
-    const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
+    if (isHalfDay && !["first_half", "second_half"].includes(halfDaySession)) {
+      throw new Error("Pick which half of the day the leave covers.");
+    }
+
+    const days = calculateLeaveDays(start, end, isHalfDay);
 
     // Prevent overlapping leave: a person can't hold two leaves on the same
     // dates, regardless of type. Two ranges overlap when each starts on or
@@ -217,6 +238,8 @@ class LeaveService {
       fromDate: start,
       toDate: end,
       days,
+      isHalfDay,
+      halfDaySession: isHalfDay ? halfDaySession : undefined,
       reason,
       requestedBy: userId,
       status: "pending",
@@ -227,13 +250,23 @@ class LeaveService {
   }
 
   /**
-   * Cancel own pending leave — restores balance.
+   * Cancel own pending or approved leave — restores balance if it had been
+   * deducted, and keeps the record around (status: "cancelled") rather than
+   * soft-deleting it, so HR still sees it in the leave log.
+   *
+   * Only allowed 48+ hours before the leave's start date — cancelling closer
+   * to (or after) the start would leave HR/the roster no time to react.
    */
   async cancelMyLeave(leaveId, userId) {
     const leave = await Leave.findOne({ _id: leaveId, userId, isDeleted: { $ne: true } });
     if (!leave) throw new Error("Leave request not found");
-    if (leave.status !== "pending") {
-      throw new Error(`Only pending leave requests can be cancelled (current status: ${leave.status})`);
+    if (!["pending", "approved"].includes(leave.status)) {
+      throw new Error(`Only pending or approved leave requests can be cancelled (current status: ${leave.status})`);
+    }
+
+    const HOURS_48_MS = 48 * 60 * 60 * 1000;
+    if (new Date(leave.fromDate).getTime() - Date.now() < HOURS_48_MS) {
+      throw new Error("Leave can only be cancelled at least 48 hours before it starts.");
     }
 
     // Restore balance — only if this leave deducted from it.
@@ -245,8 +278,8 @@ class LeaveService {
       leave.balanceDeducted = false;
     }
 
-    leave.isDeleted = true;
-    leave.deletedAt = new Date();
+    leave.status = "cancelled";
+    leave.cancelledAt = new Date();
     await leave.save();
 
     return leave;

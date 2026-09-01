@@ -1,4 +1,5 @@
 import * as salesLeadService from "../services/salesLead.service.js";
+import * as salesClientService from "../services/salesClient.service.js";
 import * as websiteLeadsService from "../services/websiteLeads.service.js";
 import { contactUsSchema } from "../validation/sales.validation.js";
 
@@ -59,6 +60,81 @@ export const updateLeadStatus = async (req, res, next) => {
     }
 };
 
+export const updateServiceQuotation = async (req, res, next) => {
+    try {
+        const leadId = req.params.id;
+        const serviceId = req.params.serviceId;
+        const { quotation } = req.body;
+        const actorId = req.user._id;
+
+        if (quotation === undefined) throw new Error("Quotation is required");
+
+        const lead = await salesLeadService.updateLeadServiceQuotation(leadId, serviceId, Number(quotation), actorId);
+
+        res.status(200).json({
+            success: true,
+            message: "Quotation updated successfully",
+            data: lead
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * Confirms the whole engagement from the Leads board: the line items and final
+ * quotation for each service, plus the one advance payment covering them all.
+ */
+export const confirmLeadQuotation = async (req, res, next) => {
+    try {
+        const lead = await salesLeadService.confirmLeadQuotation(
+            req.params.id,
+            req.body,
+            req.user._id
+        );
+
+        res.status(200).json({
+            success: true,
+            message: "Quotation confirmed successfully",
+            data: lead
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const addLeadPayment = async (req, res, next) => {
+    try {
+        const lead = await salesLeadService.addLeadPayment(req.params.id, req.body, req.user._id);
+
+        res.status(201).json({
+            success: true,
+            message: "Payment recorded",
+            data: lead
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const deleteLeadPayment = async (req, res, next) => {
+    try {
+        const lead = await salesLeadService.deleteLeadPayment(
+            req.params.id,
+            req.params.paymentId,
+            req.user._id
+        );
+
+        res.status(200).json({
+            success: true,
+            message: "Payment removed",
+            data: lead
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 export const convertLead = async (req, res, next) => {
     try {
         const leadId = req.params.id;
@@ -71,6 +147,20 @@ export const convertLead = async (req, res, next) => {
             success: true,
             message: "Lead converted successfully",
             data: result
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const deleteLead = async (req, res, next) => {
+    try {
+        const lead = await salesLeadService.deleteLead(req.params.id, req.user._id);
+
+        res.status(200).json({
+            success: true,
+            message: "Lead deleted",
+            data: lead
         });
     } catch (error) {
         next(error);
@@ -170,16 +260,119 @@ export const importLeads = async (req, res, next) => {
 
 export const assignLeadAsTask = async (req, res, next) => {
     try {
-        const { assignedTo, dueAt, priority, notes } = req.body;
+        const { assignedTo, dueAt, priority, notes, steps, stage, serviceId } = req.body;
 
         const lead = await salesLeadService.assignLeadAsTask(req.params.id, req.user._id, {
-            assignedTo, dueAt, priority, notes
+            assignedTo, dueAt, priority, notes, steps, stage, serviceId
         });
 
         res.status(201).json({
             success: true,
             message: "Lead assigned as a task",
             data: lead
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+/** Hands one of the client's services to an employee, with its step checklist. */
+export const assignLeadService = async (req, res, next) => {
+    try {
+        const { assignedTo, dueAt, priority, notes, steps, stage } = req.body;
+
+        const lead = await salesLeadService.assignLeadService(
+            req.params.id,
+            req.params.serviceId,
+            req.user._id,
+            { assignedTo, dueAt, priority, notes, steps, stage }
+        );
+
+        res.status(201).json({
+            success: true,
+            message: "Service assigned",
+            data: lead
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getLeadDetail = async (req, res, next) => {
+    try {
+        const lead = await salesLeadService.getLeadDetail(req.params.id);
+
+        res.status(200).json({
+            success: true,
+            message: "Lead retrieved successfully",
+            data: lead
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const setLeadTemperature = async (req, res, next) => {
+    try {
+        const lead = await salesLeadService.setLeadTemperature(
+            req.params.id,
+            req.body?.temperature,
+            req.user._id
+        );
+
+        res.status(200).json({
+            success: true,
+            message: "Lead temperature updated",
+            data: lead
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getClients = async (req, res, next) => {
+    try {
+        const clients = await salesClientService.listClients(req.user, req.query);
+
+        res.status(200).json({
+            success: true,
+            message: "Clients retrieved successfully",
+            data: clients
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * Every confirmed client, for the "pick a client" search inside Create &
+ * Assign Task — deliberately unscoped (unlike getClients) because delegating
+ * a new task about a client shouldn't require already owning that client.
+ * `unscoped: true` is hardcoded here, never taken from the request, so this
+ * bypass can't be reached through the regular /clients route.
+ */
+export const getClientsForPicker = async (req, res, next) => {
+    try {
+        const clients = await salesClientService.listClients(req.user, { unscoped: true });
+
+        res.status(200).json({
+            success: true,
+            message: "Clients retrieved successfully",
+            data: clients
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getClientById = async (req, res, next) => {
+    try {
+        const client = await salesClientService.getClient(req.user, req.params.id);
+
+        res.status(200).json({
+            success: true,
+            message: "Client retrieved successfully",
+            data: client
         });
     } catch (error) {
         next(error);
@@ -195,6 +388,23 @@ export const updateLeadCustomer = async (req, res, next) => {
         res.status(200).json({
             success: true,
             message: "Customer details updated successfully",
+            data: lead
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * Full edit of an unconfirmed lead — the same "Add Lead" shape, pre-filled and
+ * resaved. Used by the Leads board's edit dialog.
+ */
+export const updateLead = async (req, res, next) => {
+    try {
+        const lead = await salesLeadService.updateManualLead(req.params.id, req.body, req.user._id);
+        res.status(200).json({
+            success: true,
+            message: "Lead updated successfully",
             data: lead
         });
     } catch (error) {
@@ -291,6 +501,38 @@ export const getSalesNotices = async (req, res, next) => {
     try {
         const data = await salesLeadService.getSalesNotices();
         res.status(200).json({ success: true, message: "Notices retrieved", data });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getFollowUps = async (req, res, next) => {
+    try {
+        const rows = await salesLeadService.listFollowUps(req.user, req.query);
+
+        res.status(200).json({
+            success: true,
+            message: "Follow-ups retrieved successfully",
+            data: rows
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const logFollowUp = async (req, res, next) => {
+    try {
+        const { note, outcome, nextFollowUpAt } = req.body;
+
+        const lead = await salesLeadService.logFollowUp(req.params.id, req.user._id, {
+            note, outcome, nextFollowUpAt
+        });
+
+        res.status(201).json({
+            success: true,
+            message: "Follow-up logged",
+            data: lead
+        });
     } catch (error) {
         next(error);
     }

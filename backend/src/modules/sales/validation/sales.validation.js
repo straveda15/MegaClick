@@ -35,6 +35,19 @@ export const contactUsSchema = Joi.object({
   service:         Joi.string().trim().max(200).optional().allow(""),
   serviceSlug:     Joi.string().trim().max(200).optional().allow(""),
   serviceCategory: Joi.string().trim().max(200).optional().allow(""),
+  // A visitor can ask about several services at once. The flat fields above
+  // stay for older clients and mirror the first entry.
+  services: Joi.array()
+    .items(
+      Joi.object({
+        title:        Joi.string().trim().max(200).required(),
+        slug:         Joi.string().trim().max(200).optional().allow(""),
+        category:     Joi.string().trim().max(200).optional().allow(""),
+        categorySlug: Joi.string().trim().max(200).optional().allow(""),
+      })
+    )
+    .max(20)
+    .optional(),
 });
 
 export const orderCSVSchema = Joi.object({

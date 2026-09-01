@@ -1,10 +1,8 @@
-import { Search, Bell, Menu, LogOut, ChevronDown, AlertCircle, CheckCircle2, Plus, FileText, FileSpreadsheet } from "lucide-react";
+import { Menu, LogOut, ChevronDown, AlertCircle, CheckCircle2, Plus } from "lucide-react";
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { toast } from "sonner";
 import { useSidebarStore } from "@/store/sidebarStore";
 import { useAuth } from "@/context/AuthContext";
-import { MOCK_NOTIFICATIONS } from "@/data/mockNotifications";
 
 const Topbar = () => {
   const { toggleSidebar, toggleMobileSidebar } = useSidebarStore();
@@ -15,8 +13,6 @@ const Topbar = () => {
   const [roleMenuOpen, setRoleMenuOpen] = useState(false);
   const [switchingRole, setSwitchingRole] = useState<string | null>(null);
   const [roleError, setRoleError] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const hasUnreadNotifications = MOCK_NOTIFICATIONS.some((n) => !n.read);
 
   const initials = user
     ? `${user.name?.[0] ?? ""}${user.lastName?.[0] ?? ""}`.toUpperCase()
@@ -47,13 +43,12 @@ const Topbar = () => {
       '/clients': 'Clients',
       '/leads': 'Leads',
       '/tasks': 'Tasks',
+      '/tasks/team-logs': 'Team Logs',
       '/employees': 'Employees',
-      '/departments': 'Departments',
-      '/reports': 'Reports',
-      '/notifications': 'Notifications',
-      '/settings': 'Settings',
       '/attendance': 'Attendance',
       '/leave': 'Leave',
+      '/people/attendance': 'Attendance Management',
+      '/people/hr': 'HR & Leave',
     };
     const exact = routeMap[location.pathname];
     if (exact) return exact;
@@ -81,48 +76,10 @@ const Topbar = () => {
         <h1 className="text-xl font-bold text-foreground hidden sm:block shrink-0">{getPageTitle()}</h1>
       </div>
 
-      {/* Search — UI-only stub; no unified search API exists yet */}
-      <div className="flex-1 max-w-xl hidden sm:block ml-4">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search leads, clients, tasks, employees..."
-            className="w-full h-9 pl-9 pr-4 rounded-md border border-border bg-muted/50 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
-          />
-        </div>
-      </div>
-
-      {/* Mobile Search — stub, matches desktop */}
-      <button
-        onClick={() => toast.info("Search is coming soon.")}
-        className="sm:hidden p-2 rounded-md hover:bg-muted transition-colors ml-auto"
-      >
-        <Search className="w-5 h-5 text-muted-foreground" />
-      </button>
 
       {/* Context-aware CTA button */}
       <div className="hidden sm:flex items-center gap-2">
-        {location.pathname === '/leads' && (
-          <button
-            onClick={() => window.dispatchEvent(new CustomEvent('openAddLeadModal'))}
-            className="flex items-center gap-1.5 h-9 px-4 rounded-full bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors shadow-sm"
-          >
-            <Plus className="w-4 h-4" />
-            Add Lead
-          </button>
-        )}
-        {location.pathname === '/clients' && (
-          <button
-            onClick={() => toast.info('Add Client is coming soon.')}
-            className="flex items-center gap-1.5 h-9 px-4 rounded-full bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors shadow-sm"
-          >
-            <Plus className="w-4 h-4" />
-            New Client
-          </button>
-        )}
+
         {location.pathname === '/employees' && (
           <button
             onClick={() => window.dispatchEvent(new CustomEvent('openAddEmployeeModal'))}
@@ -131,24 +88,6 @@ const Topbar = () => {
             <Plus className="w-4 h-4" />
             Add Employee
           </button>
-        )}
-        {location.pathname === '/reports' && (
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => toast.info('Export PDF coming soon.')}
-              className="flex items-center gap-1.5 h-9 px-4 rounded-full border border-border bg-card text-foreground text-sm font-medium hover:bg-muted transition-colors shadow-sm"
-            >
-              <FileText className="w-4 h-4" />
-              Export PDF
-            </button>
-            <button
-              onClick={() => toast.info('Export Excel coming soon.')}
-              className="flex items-center gap-1.5 h-9 px-4 rounded-full bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors shadow-sm"
-            >
-              <FileSpreadsheet className="w-4 h-4" />
-              Export Excel
-            </button>
-          </div>
         )}
       </div>
 
@@ -236,16 +175,26 @@ const Topbar = () => {
           </div>
         )}
 
-        {/* Notifications */}
-        <button
-          onClick={() => navigate("/notifications")}
-          className="relative p-2 rounded-md hover:bg-muted transition-colors"
-        >
-          <Bell className="w-5 h-5 text-muted-foreground" />
-          {hasUnreadNotifications && (
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500" />
-          )}
-        </button>
+        {/* Add Lead / Client — shown on respective pages, right next to the bell */}
+        {location.pathname === '/leads' && (
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent('openAddLeadModal'))}
+            className="flex items-center gap-1.5 h-9 px-4 rounded-full bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors shadow-sm"
+          >
+            <Plus className="w-4 h-4" />
+            Add Lead
+          </button>
+        )}
+
+        {location.pathname === '/clients' && (
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent('openAddClientModal'))}
+            className="flex items-center gap-1.5 h-9 px-4 rounded-full bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors shadow-sm"
+          >
+            <Plus className="w-4 h-4" />
+            Add Client
+          </button>
+        )}
 
         {/* User Menu */}
         <div className="relative">

@@ -4,6 +4,49 @@ import AppError from "../../shared/utils/appError.js";
 import { haversineDistanceMeters } from "../../shared/utils/geo.js";
 import { findLocationForEmployee } from "./workLocation.service.js";
 
+/**
+ * "Today" as the staff's own Asia/Kolkata calendar day — never UTC.
+ *
+ * `new Date().toISOString()` is always UTC, which silently rolls any punch
+ * made between 12:00am and 5:29am IST onto the PREVIOUS day's attendance
+ * record. That record is then invisible in the employee's own "this month"
+ * history, since the frontend's month picker uses the browser's local date.
+ * Anchoring explicitly to Asia/Kolkata sidesteps that regardless of what
+ * timezone the server process itself happens to run in (Vercel's serverless
+ * functions default to UTC).
+ */
+const todayDateString = () =>
+  new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" });
+
+/**
+ * Validates the site an employee declared for off-site work.
+ *
+ * Client-site work has no configured geofence, so there is nothing to check
+ * them against — instead they say where they are, and that is recorded. The
+ * coordinates still have to be real ones, so a typo can't be filed as a
+ * location.
+ */
+const validateSite = (site) => {
+  const name = String(site?.name ?? "").trim();
+  if (!name) {
+    throw new AppError("Enter the name of the site you are working from.", 400);
+  }
+
+  const lat = Number(site?.lat);
+  const lng = Number(site?.lng);
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+    throw new AppError("Enter the site's latitude and longitude.", 400);
+  }
+  if (lat < -90 || lat > 90) {
+    throw new AppError("Latitude must be between -90 and 90.", 400);
+  }
+  if (lng < -180 || lng > 180) {
+    throw new AppError("Longitude must be between -180 and 180.", 400);
+  }
+
+  return { name, lat, lng };
+};
+
 class AttendanceService {
   async verifyWorkLocationGate(userId, gpsLocation, action) {
     const workLocation = await findLocationForEmployee(userId);
@@ -45,7 +88,7 @@ class AttendanceService {
 
   async punchIn(data) {
     const { userId, gpsLocation, source } = data;
-    const date = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+    const date = todayDateString(); // YYYY-MM-DD, Asia/Kolkata
 
     const profile = await EmployeeProfile.findOne({ userId });
     if (!profile) {
@@ -56,26 +99,40 @@ class AttendanceService {
       throw new AppError("Employee is inactive and cannot punch in.", 403);
     }
 
+    // A soft-deleted record still occupies this (userId, date) slot in the
+    // unique index — block on a live one, but revive a deleted one in place
+    // rather than either wrongly blocking forever or crashing on insert.
     const existing = await Attendance.findOne({ userId, date });
-    if (existing) {
+    if (existing && !existing.isDeleted) {
       throw new AppError("Already punched in for today.", 409);
     }
 
-    const attendance = await Attendance.create({
+    const attendanceData = {
       userId,
       employeeProfileId: profile._id,
       date,
       punchIn: new Date(),
+      punchOut: null,
+      totalHours: 0,
       gpsLocation,
       source,
       status: "present",
-    });
+      isDeleted: false,
+      deletedAt: undefined,
+    };
 
+    if (existing) {
+      Object.assign(existing, attendanceData);
+      await existing.save();
+      return existing;
+    }
+
+    const attendance = await Attendance.create(attendanceData);
     return attendance;
   }
 
   async punchOut(userId) {
-    const date = new Date().toISOString().split("T")[0];
+    const date = todayDateString();
 
     const attendance = await Attendance.findOne({ userId, date });
     if (!attendance) {
@@ -111,7 +168,7 @@ class AttendanceService {
   }
 
   async getTodayAttendance() {
-    const date = new Date().toISOString().split("T")[0];
+    const date = todayDateString();
     return await Attendance.find({ date, isDeleted: { $ne: true } })
       .populate("userId", "name lastName email")
       .populate("employeeProfileId", "employeeId designation department");
@@ -119,12 +176,17 @@ class AttendanceService {
 
   // ── Self-service methods ──────────────────────────────────────────────────────
 
-  async selfPunchIn(userId, gpsLocation, source, isHalfDay = false, halfDayReason = "") {
-    const date = new Date().toISOString().split("T")[0];
+  async selfPunchIn(userId, gpsLocation, source, isHalfDay = false, halfDayReason = "", workMode = "office", site = null) {
+    const date = todayDateString();
 
     // ── Criterion 2: one punch-in per calendar day ────────────────────────────
-    const existing = await Attendance.findOne({ userId, date, isDeleted: { $ne: true } });
-    if (existing) {
+    // Look up ANY record for the date — deleted or not. The unique index on
+    // (userId, date) doesn't know about isDeleted, so ignoring soft-deleted
+    // records here (as before) let Attendance.create() collide with one and
+    // throw a raw duplicate-key error instead of a clean message. A
+    // soft-deleted record is revived below rather than left blocking the slot.
+    const existing = await Attendance.findOne({ userId, date });
+    if (existing && !existing.isDeleted) {
       throw new AppError("Already punched in for today.", 409);
     }
 
@@ -133,30 +195,66 @@ class AttendanceService {
       throw new AppError("halfDayReason is required when isHalfDay is true.", 400);
     }
 
+    const mode = ["site", "home"].includes(workMode) ? workMode : "office";
+
     // ── Criterion 1: location gate ────────────────────────────────────────────
-    const { workLocation, gpsVerified } = await this.verifyWorkLocationGate(
-      userId,
-      gpsLocation,
-      "punch in"
-    );
+    // Office work is checked against the assigned geofence. Site work has no
+    // geofence to check, so the declared site stands in its place. Work from
+    // home has neither — there is nowhere to be, so nothing is verified.
+    let workLocation = null;
+    let gpsVerified = false;
+    let declaredSite;
+
+    if (mode === "site") {
+      declaredSite = validateSite(site);
+    } else if (mode === "home") {
+      // Nothing to verify: remote work is taken at its word.
+    } else {
+      ({ workLocation, gpsVerified } = await this.verifyWorkLocationGate(
+        userId,
+        gpsLocation,
+        "punch in"
+      ));
+    }
 
     const profile = await EmployeeProfile.findOne({ userId }).lean();
 
-    const attendance = await Attendance.create({
+    const attendanceData = {
       userId,
       ...(profile && { employeeProfileId: profile._id }),
       date,
       punchIn: new Date(),
+      punchOut: null,
+      totalHours: 0,
       gpsLocation: gpsLocation || undefined,
       gpsVerified,
+      punchOutGpsLocation: undefined,
+      punchOutGpsVerified: false,
       locationId: workLocation?._id ?? null,
+      workMode: mode,
+      site: declaredSite,
       source: source || "mobile",
       isHalfDay,
       halfDayReason: isHalfDay ? halfDayReason.trim() : undefined,
       halfDayStatus: isHalfDay ? "pending" : "none",
       status: "present", // Shift initially counted as 'present' until half-day request is approved
-    });
+      confirmedPunchOut: false,
+      autoPunchedOut: false,
+      earlyPunchOutReason: undefined,
+      earlyPunchOutStatus: "none",
+      isDeleted: false,
+      deletedAt: undefined,
+    };
 
+    if (existing) {
+      // Revive the soft-deleted record for today in place, rather than
+      // inserting a second document that would collide with the unique index.
+      Object.assign(existing, attendanceData);
+      await existing.save();
+      return existing;
+    }
+
+    const attendance = await Attendance.create(attendanceData);
     return attendance;
   }
 
@@ -175,7 +273,7 @@ class AttendanceService {
     earlyPunchOutConfirmed = false,
     gpsLocation = null
   ) {
-    const date = new Date().toISOString().split("T")[0];
+    const date = todayDateString();
 
     const attendance = await Attendance.findOne({ userId, date, isDeleted: { $ne: true } });
     if (!attendance) {
@@ -190,11 +288,18 @@ class AttendanceService {
       return { requiresConfirmation: true, message: "Please confirm punch-out." };
     }
 
-    const { workLocation, gpsVerified } = await this.verifyWorkLocationGate(
-      userId,
-      gpsLocation,
-      "punch out"
-    );
+    // Punching out of a site or work-from-home shift is gated the same way it
+    // was punched in — never on an office geofence the employee was never
+    // expected to be inside.
+    let workLocation = null;
+    let gpsVerified = false;
+    if (!["site", "home"].includes(attendance.workMode)) {
+      ({ workLocation, gpsVerified } = await this.verifyWorkLocationGate(
+        userId,
+        gpsLocation,
+        "punch out"
+      ));
+    }
 
     const punchOutTime = new Date();
     const diffMs = punchOutTime - attendance.punchIn;
@@ -225,6 +330,32 @@ class AttendanceService {
 
     await attendance.save();
     return attendance;
+  }
+
+  /**
+   * Force-punches-out anyone still clocked in 8+ hours after their punch-in.
+   * The punch-out timestamp is set to exactly punchIn + 8h (not "now"), so
+   * totalHours always reads 8 regardless of how long the record sat overdue
+   * before this scheduler tick caught it.
+   */
+  async autoPunchOutOverdue() {
+    const EIGHT_HOURS_MS = 8 * 60 * 60 * 1000;
+    const cutoff = new Date(Date.now() - EIGHT_HOURS_MS);
+
+    const overdue = await Attendance.find({
+      punchOut: null,
+      punchIn: { $ne: null, $lte: cutoff },
+      isDeleted: { $ne: true },
+    });
+
+    for (const attendance of overdue) {
+      attendance.punchOut = new Date(attendance.punchIn.getTime() + EIGHT_HOURS_MS);
+      attendance.totalHours = 8;
+      attendance.autoPunchedOut = true;
+      await attendance.save();
+    }
+
+    return overdue.length;
   }
 
   async approveEarlyPunchOut(attendanceId, approverId, status, approverRole, approverDeptRole) {
@@ -328,7 +459,7 @@ class AttendanceService {
   }
 
   async getMyTodayAttendance(userId) {
-    const date = new Date().toISOString().split("T")[0];
+    const date = todayDateString();
     const record = await Attendance.findOne({ userId, date, isDeleted: { $ne: true } });
     return record || null;
   }
@@ -361,6 +492,33 @@ class AttendanceService {
         throw new AppError("Punch Out must be after Punch In.", 400);
       }
 
+      // Absent/on-leave days don't work at all — an override to either status
+      // must wipe every trace of a prior punch (work mode, GPS, half-day and
+      // early-exit requests). Otherwise the employee's own attendance page
+      // keeps showing "working from home" or a live punch-out button for a
+      // day HR just marked as not worked.
+      const isNonWorkingStatus = updateData.status === "absent" || updateData.status === "on-leave";
+      if (isNonWorkingStatus) {
+        Object.assign(updateData, {
+          punchIn: null,
+          punchOut: null,
+          workMode: "office",
+          site: undefined,
+          gpsLocation: undefined,
+          gpsVerified: false,
+          punchOutGpsLocation: undefined,
+          punchOutGpsVerified: false,
+          locationId: null,
+          confirmedPunchOut: false,
+          autoPunchedOut: false,
+          isHalfDay: false,
+          halfDayReason: undefined,
+          halfDayStatus: "none",
+          earlyPunchOutReason: undefined,
+          earlyPunchOutStatus: "none",
+        });
+      }
+
       let attendance = await Attendance.findOne({ userId, date });
       
       if (attendance) {
@@ -371,8 +529,10 @@ class AttendanceService {
         if (attendance.punchIn && attendance.punchOut) {
           const diffMs = new Date(attendance.punchOut).getTime() - new Date(attendance.punchIn).getTime();
           attendance.totalHours = Math.round((diffMs / (1000 * 60 * 60)) * 100) / 100;
+        } else {
+          attendance.totalHours = 0;
         }
-        
+
         await attendance.save();
       } else {
         // Create new override
@@ -404,4 +564,23 @@ class AttendanceService {
   }
 }
 
-export default new AttendanceService();
+const attendanceService = new AttendanceService();
+
+// Catches anyone who forgot to punch out — runs every 10 minutes so a missed
+// 8-hour mark is closed out promptly without hammering the database.
+export const startAutoPunchOutScheduler = (intervalMs = 10 * 60 * 1000) => {
+  const run = async () => {
+    try {
+      const count = await attendanceService.autoPunchOutOverdue();
+      if (count > 0) {
+        console.log(`[Attendance] Auto punched-out ${count} overdue record(s).`);
+      }
+    } catch (err) {
+      console.error("[Attendance] Auto punch-out scheduler failed:", err);
+    }
+  };
+  run();
+  setInterval(run, intervalMs);
+};
+
+export default attendanceService;

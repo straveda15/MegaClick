@@ -1,8 +1,9 @@
 import { useState } from "react";
 import GenericPage from "@/components/GenericPage";
 import {
-  Calendar, Search, User, Clock, CheckCircle2, XCircle,
-  AlertCircle, Edit, Trash2, History, Users, Timer, ShieldAlert, AlertTriangle
+  Search, User, Clock, CheckCircle2, XCircle,
+  AlertCircle, Edit, Trash2, History, Users, Timer, ShieldAlert, AlertTriangle,
+  Home, MapPin, Building2
 } from "lucide-react";
 import {
   useAttendanceByDate,
@@ -12,9 +13,11 @@ import {
   useApproveHalfDay,
   AttendanceRecord
 } from "@/hooks/useAttendance";
+import { SingleDateFilter } from "@/components/DateRangeFilter";
 import { useTeam } from "@/hooks/useTeam";
 import { useAuth } from "@/context/AuthContext";
 import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
+import ModalPortal from "@/components/ui/ModalPortal";
 import { toast } from "sonner";
 import {
   AlertDialog,
@@ -31,12 +34,49 @@ import {
 
 type Tab = "all" | "pending";
 
+/**
+ * Where an employee is working from today. A site punch has no geofence behind
+ * it, so the site the employee declared is named here — it is the only record
+ * of where they actually were.
+ */
+const WorkModeCell = ({ record }: { record: AttendanceRecord }) => {
+  const mode = record.workMode ?? "office";
+
+  const style =
+    mode === "home" ? "bg-violet-50 text-violet-700 border-violet-200"
+    : mode === "site" ? "bg-blue-50 text-blue-700 border-blue-200"
+    : "bg-slate-50 text-slate-700 border-slate-200";
+
+  const label = mode === "home" ? "Work From Home" : mode === "site" ? "Site" : "Office";
+  const Icon = mode === "home" ? Home : mode === "site" ? MapPin : Building2;
+
+  return (
+    <div className="min-w-0">
+      <span className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase border ${style}`}>
+        <Icon className="w-3 h-3" />
+        {label}
+      </span>
+      {mode === "site" && (
+        <p
+          className="text-[11px] text-muted-foreground mt-1 truncate max-w-[160px]"
+          title={record.site?.name || "Unnamed site"}
+        >
+          {record.site?.name || "Unnamed site"}
+        </p>
+      )}
+    </div>
+  );
+};
+
 const HrAttendancePage = () => {
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0]);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState<Tab>("all");
   const [isOverrideModalOpen, setIsOverrideModalOpen] = useState(false);
   const [editingRecord, setEditingRecord] = useState<Partial<AttendanceRecord> | null>(null);
+  const [overrideStatus, setOverrideStatus] = useState<string>("present");
+  const [overridePunchIn, setOverridePunchIn] = useState("");
+  const [overridePunchOut, setOverridePunchOut] = useState("");
 
   // Lock background scroll while the Manual Override modal is open.
   useBodyScrollLock(isOverrideModalOpen);
@@ -112,8 +152,14 @@ const HrAttendancePage = () => {
     } catch (err: any) { toast.error(err.message, { id: t }); }
   };
 
+  const toTimeInput = (iso?: string) =>
+    iso ? new Date(iso).toLocaleTimeString([], { hour12: false, hour: "2-digit", minute: "2-digit" }) : "";
+
   const openOverride = (record?: AttendanceRecord) => {
     setEditingRecord(record || { date: selectedDate });
+    setOverrideStatus(record?.status || "present");
+    setOverridePunchIn(toTimeInput(record?.punchIn));
+    setOverridePunchOut(toTimeInput(record?.punchOut));
     setIsOverrideModalOpen(true);
   };
 
@@ -131,7 +177,8 @@ const HrAttendancePage = () => {
     const todayISO = new Date().toLocaleDateString("en-CA");
     if (date > todayISO) { toast.error("Date cannot be in the future"); return; }
 
-    if (status === "present" || status === "half-day") {
+    const worksToday = status === "present" || status === "half-day";
+    if (worksToday) {
       if (!punchIn || !punchOut) { toast.error("Punch In and Punch Out are required"); return; }
       if (punchOut <= punchIn) { toast.error("Punch Out must be after Punch In"); return; }
     }
@@ -141,8 +188,10 @@ const HrAttendancePage = () => {
         await overrideMutation.mutateAsync({
         userId,
         date,
-        punchIn: punchIn ? new Date(`${date}T${punchIn}`).toISOString() : undefined,
-        punchOut: punchOut ? new Date(`${date}T${punchOut}`).toISOString() : undefined,
+        // Absent/on-leave carry no punch times — clear any stale ones rather
+        // than leaving a prior present/half-day's times on the record.
+        punchIn: worksToday && punchIn ? new Date(`${date}T${punchIn}`).toISOString() : null,
+        punchOut: worksToday && punchOut ? new Date(`${date}T${punchOut}`).toISOString() : null,
         status,
       });
       toast.success("Updated", { id: t });
@@ -157,7 +206,7 @@ const HrAttendancePage = () => {
     "bg-red-100 text-red-700";
 
   return (
-    <GenericPage title="Attendance Management" subtitle="Monitor and manage team attendance records and early exit requests.">
+    <GenericPage>
       {/* HR Pending Alert Banner — Only for Admins */}
       {currentUser?.role === "admin" && stats.hrPending > 0 && (
         <div className="mb-5 p-4 rounded-xl bg-amber-50 border border-amber-200 flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
@@ -225,16 +274,12 @@ const HrAttendancePage = () => {
               className="h-9 pl-9 pr-3 rounded-lg border border-border bg-background text-sm focus:ring-2 focus:ring-primary/20 outline-none w-48"
             />
           </div>
-          {/* Date picker */}
-          <div className="flex items-center gap-2 border border-border rounded-lg px-3 h-9 bg-background">
-            <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
-            <input
-              type="date"
-              className="bg-transparent text-sm outline-none"
-              value={selectedDate}
-              onChange={e => setSelectedDate(e.target.value)}
-            />
-          </div>
+          {/* Date picker — the same control the Leads and Accounts boards use. */}
+          <SingleDateFilter
+            value={selectedDate}
+            onChange={setSelectedDate}
+            label="Pick a date"
+          />
         </div>
 
         <button
@@ -251,17 +296,17 @@ const HrAttendancePage = () => {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border bg-muted/5">
-                {["Employee", "Status", "Punch In / Out", "Total Hours", "Requests", "Actions"].map(h => (
+                {["Employee", "Status", "Working From", "Punch In / Out", "Total Hours", "Requests", "Actions"].map(h => (
                   <th key={h} className="text-left py-4 px-4 text-[11px] font-bold uppercase text-muted-foreground tracking-widest whitespace-nowrap">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody className="divide-y divide-border/50">
               {isLoading ? (
-                <tr><td colSpan={7} className="py-20 text-center text-muted-foreground italic">Loading attendance...</td></tr>
+                <tr><td colSpan={8} className="py-20 text-center text-muted-foreground italic">Loading attendance...</td></tr>
               ) : filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="py-20 text-center text-muted-foreground">
+                  <td colSpan={8} className="py-20 text-center text-muted-foreground">
                     <History className="w-10 h-10 mx-auto mb-2 opacity-20" />
                     <p>{activeTab === "pending" ? "No pending approval requests." : "No records for this date."}</p>
                   </td>
@@ -288,6 +333,10 @@ const HrAttendancePage = () => {
                       <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${statusColor(record.status)}`}>
                         {record.status}
                       </span>
+                    </td>
+                    {/* Where the shift is being worked from — a site names itself. */}
+                    <td className="py-3.5 px-4">
+                      <WorkModeCell record={record} />
                     </td>
                     <td className="py-4 px-4 font-mono text-[11px] text-muted-foreground whitespace-nowrap">
                       <div className="flex flex-col">
@@ -386,9 +435,11 @@ const HrAttendancePage = () => {
         </div>
       </div>
 
-      {/* Override Modal */}
+      {/* Override Modal — portalled to <body> so the backdrop escapes the page's
+          own stacking context and actually covers the topbar/sidebar. */}
       {isOverrideModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+        <ModalPortal>
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-background border border-border rounded-2xl shadow-2xl w-full max-w-lg animate-in fade-in zoom-in duration-200">
             <div className="flex items-center justify-between px-6 py-4 border-b border-border">
               <h2 className="text-base font-bold">Manual Override</h2>
@@ -411,26 +462,44 @@ const HrAttendancePage = () => {
                 <input name="date" type="date" required defaultValue={editingRecord?.date || selectedDate}
                   className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm outline-none" />
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-muted-foreground uppercase">Punch In</label>
-                  <input name="punchIn" type="time"
-                    defaultValue={editingRecord?.punchIn ? new Date(editingRecord.punchIn).toLocaleTimeString([], { hour12: false, hour: "2-digit", minute: "2-digit" }) : ""}
-                    className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm outline-none" />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-muted-foreground uppercase">Punch Out</label>
-                  <input name="punchOut" type="time"
-                    defaultValue={editingRecord?.punchOut ? new Date(editingRecord.punchOut).toLocaleTimeString([], { hour12: false, hour: "2-digit", minute: "2-digit" }) : ""}
-                    className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm outline-none" />
-                </div>
-              </div>
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-muted-foreground uppercase">Status</label>
-                <select name="status" defaultValue={editingRecord?.status || "present"}
+                <select name="status" value={overrideStatus}
+                  onChange={(e) => {
+                    const next = e.target.value;
+                    setOverrideStatus(next);
+                    // Absent/on-leave don't carry punch times — drop whatever was there.
+                    if (next !== "present" && next !== "half-day") {
+                      setOverridePunchIn("");
+                      setOverridePunchOut("");
+                    }
+                  }}
                   className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm outline-none">
                   {["present", "half-day", "absent", "on-leave"].map(s => <option key={s} value={s}>{s}</option>)}
                 </select>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                {(() => {
+                  const worksToday = overrideStatus === "present" || overrideStatus === "half-day";
+                  return (
+                    <>
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-bold text-muted-foreground uppercase">Punch In</label>
+                        <input name="punchIn" type="time" disabled={!worksToday}
+                          value={overridePunchIn}
+                          onChange={(e) => setOverridePunchIn(e.target.value)}
+                          className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm outline-none disabled:opacity-50 disabled:cursor-not-allowed" />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-bold text-muted-foreground uppercase">Punch Out</label>
+                        <input name="punchOut" type="time" disabled={!worksToday}
+                          value={overridePunchOut}
+                          onChange={(e) => setOverridePunchOut(e.target.value)}
+                          className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm outline-none disabled:opacity-50 disabled:cursor-not-allowed" />
+                      </div>
+                    </>
+                  );
+                })()}
               </div>
               <div className="flex gap-3 pt-2">
                 <button type="button" onClick={() => setIsOverrideModalOpen(false)}
@@ -443,6 +512,7 @@ const HrAttendancePage = () => {
             </form>
           </div>
         </div>
+        </ModalPortal>
       )}
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={!!deleteId} onOpenChange={(open) => !open && setDeleteId(null)}>

@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import {
-  LayoutDashboard, Target, Users, ListTodo, ClipboardList,
-  UsersRound, CalendarCheck, MapPin, Building2, BarChart3, Bell, Settings,
+  LayoutDashboard, Target, Users, ListTodo, ClipboardList, ListChecks, PhoneCall,
+  UsersRound, CalendarCheck, MapPin, Wallet,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -30,17 +30,16 @@ export const ALL_SECTIONS: NavSection[] = [
       { title: 'Dashboard',       path: '/dashboard',             icon: LayoutDashboard },
       { title: 'Leads',           path: '/leads',                  icon: Target },
       { title: 'Clients',         path: '/clients',                icon: Users },
+      { title: 'Follow Ups',      path: '/follow-ups',             icon: PhoneCall },
       { title: 'Tasks',           path: '/tasks',                  icon: ListTodo },
+      { title: 'Service Steps',   path: '/service-steps',          icon: ListChecks },
       // Admin/founder/cofounder only — stripped for other roles in getSectionsForRole.
       { title: 'Team Logs',       path: '/tasks/team-logs',        icon: ClipboardList },
       { title: 'Employees',       path: '/employees',              icon: UsersRound },
       { title: 'HR & Leave',      path: '/people/hr',              icon: UsersRound },
-      { title: 'Attendance',      path: '/people/attendance',      icon: CalendarCheck },
+      { title: 'Attendance Management', path: '/people/attendance', icon: CalendarCheck },
       { title: 'Work Locations',  path: '/people/work-locations',  icon: MapPin },
-      { title: 'Departments',     path: '/departments',            icon: Building2 },
-      { title: 'Reports',         path: '/reports',                icon: BarChart3 },
-      { title: 'Notifications',   path: '/notifications',          icon: Bell },
-      { title: 'Settings',        path: '/settings',               icon: Settings },
+      { title: 'Accounts',        path: '/accounts',               icon: Wallet },
     ],
   },
   {
@@ -67,15 +66,14 @@ export const DASHBOARD_PAGES: PagePermission[] = [
   { section: 'Business Ops', label: 'Dashboard',        path: '/dashboard' },
   { section: 'Business Ops', label: 'Leads',            path: '/leads' },
   { section: 'Business Ops', label: 'Clients',          path: '/clients' },
-  { section: 'Business Ops', label: 'Departments',      path: '/departments' },
-  { section: 'Business Ops', label: 'Reports',          path: '/reports' },
-  { section: 'Business Ops', label: 'Notifications',    path: '/notifications' },
-  { section: 'Business Ops', label: 'Settings',         path: '/settings' },
+  { section: 'Business Ops', label: 'Follow Ups',       path: '/follow-ups' },
+  { section: 'Business Ops', label: 'Service Steps',    path: '/service-steps' },
+  { section: 'Business Ops', label: 'Accounts',         path: '/accounts' },
   { section: 'Tasks',        label: 'Tasks',            path: '/tasks' },
   { section: 'Tasks',        label: 'Team Logs',        path: '/tasks/team-logs' },
   { section: 'People',       label: 'Employees',        path: '/employees' },
   { section: 'People',       label: 'HR & Leave',       path: '/people/hr' },
-  { section: 'People',       label: 'Attendance',       path: '/people/attendance' },
+  { section: 'People',       label: 'Attendance Management', path: '/people/attendance' },
   { section: 'People',       label: 'Work Locations',   path: '/people/work-locations' },
   { section: 'Self Service', label: 'My Attendance',    path: '/self/attendance' },
   { section: 'Self Service', label: 'My Leaves',        path: '/self/leaves' },
@@ -135,7 +133,7 @@ export const ROLE_ALLOWED_PATHS: Record<string, string[]> = {
   ],
 
   // ── Roles with self-service + task board only ───────────────────────────────
-  accountant:       ['/', '/dashboard', '/self/attendance', '/self/leaves', '/tasks'],
+  accountant:       ['/', '/dashboard', '/self/attendance', '/self/leaves', '/tasks', '/accounts'],
   business_analyst: ['/', '/dashboard', '/self/attendance', '/self/leaves', '/tasks'],
   ops_staff:        ['/', '/dashboard', '/self/attendance', '/self/leaves', '/tasks'],
   production:       ['/', '/dashboard', '/self/attendance', '/self/leaves', '/tasks'],

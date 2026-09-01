@@ -49,13 +49,44 @@ router.get("/leads/my", salesLeadController.getMyLeads);
 router.get("/leads/my/stats", salesLeadController.getMyLeadStats);
 router.get("/notices", salesLeadController.getSalesNotices);
 router.get("/leads/backlog", salesLeadController.getBacklogLeads);
+
+// --- Follow-ups ---
+// Registered before the /leads/:id wildcard so the board route resolves first.
+router.get("/follow-ups", salesLeadController.getFollowUps);
+router.post("/leads/:id/follow-ups", salesLeadController.logFollowUp);
+
+// --- Clients ---
+// A lead becomes a client once one of its services is assigned. Registered
+// before the /leads/:id wildcard below so "backlog"/"my" keep resolving first.
+router.get("/clients", salesLeadController.getClients);
+// Unscoped list for the task-delegation client picker — must stay above the
+// /clients/:id wildcard below so "picker" doesn't get swallowed as an id.
+router.get("/clients/picker", salesLeadController.getClientsForPicker);
+router.get("/clients/:id", salesLeadController.getClientById);
+
+// Full lead record for the details popup — must stay last of the /leads GETs so
+// it doesn't swallow /leads/my, /leads/backlog, etc.
+router.get("/leads/:id", salesLeadController.getLeadDetail);
 router.patch("/leads/:id/assign", requireSalesManager, salesLeadController.assignLead);
 // Turn a lead into assigned work: creates the task and links it to the lead.
 router.post("/leads/:id/assign-task", salesLeadController.assignLeadAsTask);
+// Hand ONE of the client's services to an employee, carrying its step checklist.
+router.post("/leads/:id/services/:serviceId/assign", salesLeadController.assignLeadService);
+router.patch("/leads/:id/temperature", salesLeadController.setLeadTemperature);
 router.patch("/leads/:id/status", salesLeadController.updateLeadStatus);
 router.patch("/leads/:id/customer", salesLeadController.updateLeadCustomer);
+// Full "Add Lead"-shaped edit — customer, services, dates, quotation — while
+// the lead is still unconfirmed.
+router.patch("/leads/:id", salesLeadController.updateLead);
+router.patch("/leads/:id/services/:serviceId/quotation", salesLeadController.updateServiceQuotation);
+// Confirm every service's quotation at once, with the shared advance payment.
+router.post("/leads/:id/confirm-quotation", salesLeadController.confirmLeadQuotation);
+// The customer ledger on the Accounts page — one per client, not per service.
+router.post("/leads/:id/payments", salesLeadController.addLeadPayment);
+router.delete("/leads/:id/payments/:paymentId", salesLeadController.deleteLeadPayment);
 router.patch("/leads/:id/convert", salesLeadController.convertLead);
 router.patch("/leads/:id/drop", salesLeadController.dropLead);
+router.delete("/leads/:id", salesLeadController.deleteLead);
 
 // --- Returns ---
 router.post("/returns", salesReturnController.createReturn);
