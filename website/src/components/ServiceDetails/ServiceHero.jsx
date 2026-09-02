@@ -1,297 +1,159 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Star, ShieldCheck, ChevronLeft } from "lucide-react";
+import { ChevronLeft, Star } from "lucide-react";
 
 const ServiceHero = ({ service }) => {
   const navigate = useNavigate();
 
+  if (!service) return null;
+
+  const title = service.heroTitle || service.title || "Service Details";
+
   return (
-    <section className="w-full bg-slate-50 py-4 sm:py-6 lg:py-8">
-      <div
-        className="
-          max-w-[1500px]
-          mx-auto
-          px-4
-          sm:px-8
-          lg:px-16
-          xl:px-24
-        "
-      >
-        {/* =========================================
-            BACK BUTTON
-        ========================================== */}
+    <section className="w-full bg-slate-50 py-4 sm:py-6 lg:py-8 font-['Inter',sans-serif]">
+      <style>{`
+        @media (min-width: 1920px) {
+          .service-hero-container {
+            max-width: 1800px !important;
+            padding-left: 4rem !important;
+            padding-right: 4rem !important;
+          }
+          .service-hero-title { font-size: 3rem !important; }
+          .service-hero-desc  { font-size: 1.2rem !important; }
+          .service-hero-img-wrap { width: 20rem !important; }
+        }
+        @media (min-width: 3840px) {
+          .service-hero-container {
+            max-width: 3200px !important;
+            padding-left: 6rem !important;
+            padding-right: 6rem !important;
+          }
+          .service-hero-title { font-size: 5rem !important; }
+          .service-hero-desc  { font-size: 2rem !important; line-height: 3rem !important; }
+          .service-hero-img-wrap { width: 34rem !important; }
+        }
+      `}</style>
+
+      <div className="service-hero-container max-w-[1380px] mx-auto px-4 sm:px-6 min-[1440px]:px-10">
+
+        {/* BACK BUTTON */}
         <button
           type="button"
           onClick={() => navigate(-1)}
           aria-label="Go back"
           className="
-            mb-4
-            sm:mb-6
-            w-11
-            h-11
-            sm:w-12
-            sm:h-12
-            flex
-            items-center
-            justify-center
+            mb-4 sm:mb-6
+            w-10 h-10 sm:w-11 sm:h-11
+            flex items-center justify-center
             rounded-full
-            border-2
-            border-[#0B4EA2]
-            text-[#0B4EA2]
-            bg-white
-            transition-all
-            duration-200
-            hover:bg-[#0B4EA2]
-            hover:text-white
-            hover:shadow-md
+            border-2 border-[#0B4EA2]
+            text-[#0B4EA2] bg-white
+            transition-all duration-200
+            hover:bg-[#0B4EA2] hover:text-white hover:shadow-md
             cursor-pointer
           "
         >
-          <ChevronLeft size={22} strokeWidth={2.5} />
+          <ChevronLeft size={20} strokeWidth={2.5} />
         </button>
 
-        {/* =========================================
-            HERO CONTAINER (RICH GRADIENT & GLOWS)
-        ========================================== */}
+        {/* HERO CARD */}
         <div
           className="
-            relative
-            overflow-hidden
-            rounded-3xl
-            bg-gradient-to-r
-            from-[#0B4EA2]
-            via-[#093e82]
-            to-[#0A8F55]
-            px-6
-            sm:px-10
-            lg:px-12
-            py-8
-            sm:py-12
-            lg:py-14
-            shadow-xl
-            border
-            border-blue-900/40
+            relative overflow-hidden
+            rounded-2xl sm:rounded-3xl
+            bg-gradient-to-r from-[#0B4EA2] via-[#093e82] to-[#0A8F55]
+            px-6 sm:px-10 lg:px-12
+            py-8 sm:py-12 lg:py-14
+            shadow-xl border border-blue-900/40
           "
         >
-          {/* Glowing Background Blobs */}
-          <div
-            className="
-              absolute
-              -right-16
-              -top-16
-              w-72
-              h-72
-              rounded-full
-              bg-white/10
-              blur-3xl
-              pointer-events-none
-            "
-          />
-          <div
-            className="
-              absolute
-              right-1/4
-              -bottom-20
-              w-64
-              h-64
-              rounded-full
-              bg-emerald-500/20
-              blur-3xl
-              pointer-events-none
-            "
-          />
+          {/* Background Blobs */}
+          <div className="absolute -left-20 -top-20 w-72 h-72 rounded-full bg-white/5 blur-3xl pointer-events-none" />
+          <div className="absolute left-1/3 bottom-0 w-64 h-64 rounded-full bg-emerald-400/10 blur-3xl pointer-events-none" />
 
-          {/* CONTENT GRID */}
-          <div
-            className="
-              relative
-              z-10
-              flex
-              flex-col
-              lg:flex-row
-              lg:items-center
-              gap-6
-              lg:gap-10
-            "
-          >
-            {/* =========================================
-                ICON (WITH PREMIUM GLOW & SCALE)
-            ========================================== */}
-            <div
-              className="
-                w-16
-                h-16
-                sm:w-20
-                sm:h-20
-                shrink-0
-                rounded-2xl
-                bg-white
-                flex
-                items-center
-                justify-center
-                text-3xl
-                sm:text-4xl
-                shadow-[0_12px_30px_rgba(0,0,0,0.15)]
-                ring-4
-                ring-white/10
-                transition-all
-                duration-300
-                hover:scale-105
-                hover:rotate-3
-              "
-            >
-              {service.emoji}
-            </div>
+          {/* CONTENT ROW */}
+          <div className="relative z-10 flex flex-col lg:flex-row lg:items-center gap-8 lg:gap-10">
 
-            {/* =========================================
-                TEXT CONTENT
-            ========================================== */}
+            {/* LEFT — TEXT */}
             <div className="flex-1 min-w-0">
-              {/* TITLE */}
+
               <h1
+                style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
                 className="
-                  text-2xl
-                  sm:text-3xl
-                  lg:text-4xl
-                  font-extrabold
-                  text-white
-                  leading-tight
-                  tracking-tight
+                  service-hero-title
+                  text-xl sm:text-3xl lg:text-4xl
+                  font-bold text-white
+                  leading-tight tracking-tight
                 "
               >
-                {service.heroTitle}
+                {title}
               </h1>
 
-              {/* DESCRIPTION */}
               <p
+                style={{ fontFamily: "'Inter', sans-serif" }}
                 className="
-                  mt-3
-                  max-w-4xl
-                  text-sm
-                  sm:text-base
-                  lg:text-lg
-                  text-blue-50/90
-                  font-medium
-                  leading-relaxed
+                  service-hero-desc
+                  mt-3 sm:mt-4
+                  text-sm sm:text-base lg:text-lg
+                  text-blue-50/90 font-medium leading-relaxed
+                  max-w-xl
                 "
               >
                 {service.description}
               </p>
 
-              {/* =========================================
-                  GLASSMORPHIC RATING BADGE
-              ========================================== */}
+              {/* GOOGLE RATING BADGE */}
               <div
                 className="
-                  mt-6
-                  inline-flex
-                  items-center
-                  gap-3.5
-                  bg-white/10
-                  backdrop-blur-md
-                  border
-                  border-white/15
-                  rounded-xl
-                  px-4
-                  py-2.5
-                  shadow-lg
+                  mt-5 sm:mt-7
+                  inline-flex items-center gap-3
+                  bg-white/10 backdrop-blur-md
+                  border border-white/15
+                  rounded-xl px-3 py-2 sm:px-4 sm:py-2.5
+                  shadow-md
                 "
               >
-                {/* Google "G" Icon Badge */}
-                <div
-                  className="
-                    w-8
-                    h-8
-                    rounded-lg
-                    bg-white
-                    flex
-                    items-center
-                    justify-center
-                    shrink-0
-                    shadow-xs
-                  "
-                >
-                  <span className="text-base font-extrabold text-blue-800">G</span>
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-md bg-white flex items-center justify-center shrink-0">
+                  <span style={{ fontFamily: "'Inter', sans-serif" }} className="text-sm font-extrabold text-blue-800">G</span>
                 </div>
-
-                {/* Rating Content */}
                 <div>
-                  <div className="flex items-center gap-2">
-                    <span
-                      className="
-                        text-sm
-                        font-extrabold
-                        text-white
-                      "
-                    >
-                      4.9
-                    </span>
-
+                  <div className="flex items-center gap-1.5">
+                    <span style={{ fontFamily: "'Inter', sans-serif" }} className="text-sm font-extrabold text-white">4.9</span>
                     <div className="flex items-center gap-0.5">
                       {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          size={12}
-                          className="
-                            fill-yellow-400
-                            text-yellow-400
-                          "
-                        />
+                        <Star key={i} size={11} className="fill-yellow-400 text-yellow-400" />
                       ))}
                     </div>
                   </div>
-
-                  <p
-                    className="
-                      text-[10px]
-                      sm:text-xs
-                      text-blue-200/90
-                      font-semibold
-                      mt-0.5
-                    "
-                  >
+                  <p style={{ fontFamily: "'Inter', sans-serif" }} className="text-[10px] sm:text-xs text-blue-200/90 font-semibold mt-0.5">
                     Google Rating
                   </p>
                 </div>
               </div>
             </div>
 
-            {/* =========================================
-                TRUST BADGE (RESPONSIVE ALIGNMENT)
-            ========================================== */}
+            {/* RIGHT — FLOATING IMAGE (no card, no bg, no hover) */}
             <div
               className="
-                flex
-                items-center
-                gap-2.5
+                service-hero-img-wrap
+                hidden lg:flex
+                items-center justify-center
                 shrink-0
-                self-start
-                lg:self-center
-                bg-white/10
-                border
-                border-white/15
-                rounded-xl
-                px-4
-                py-3
-                text-white
-                shadow-xs
-                transition-all
-                duration-300
-                hover:bg-white/15
+                w-56 xl:w-64
               "
             >
-              <ShieldCheck size={20} className="text-emerald-400" />
-
-              <div>
-                <p className="text-xs font-bold tracking-wide uppercase">
-                  Trusted Service
-                </p>
-
-                <p className="text-[10px] text-blue-100/80 mt-0.5 font-medium">
-                  Professional Support
-                </p>
-              </div>
+              {service.image ? (
+                <img
+                  src={service.image}
+                  alt={title}
+                  loading="lazy"
+                  className="w-full h-auto object-contain drop-shadow-2xl"
+                />
+              ) : (
+                <span className="text-8xl select-none">{service.emoji || "📋"}</span>
+              )}
             </div>
+
           </div>
         </div>
       </div>

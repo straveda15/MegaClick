@@ -1,16 +1,60 @@
 import React from "react";
 
+// =====================================================
+// EXACT IMAGE IMPORTS MATCHING YOUR ASSETS
+// =====================================================
+import marriageRegImg from "../../assets/marriage-registration.png";
+import gstRegistrationImg from "../../assets/gst-registration.jpg";
+import trademarkImg from "../../assets/trademark-registration.png";
+import companyRegImg from "../../assets/company-registration.png";
+import incomeTaxImg from "../../assets/income-tax.png";
+import msmeUdyamImg from "../../assets/msme.png";
+import rentAgreementImg from "../../assets/rent-agreement.png";
+import digitalMarketingImg from "../../assets/digital-marketing.png";
+import passportImg from "../../assets/passport-services.png";
+import accountingAuditImg from "../../assets/accounting-audit.png";
+
 const popularServices = [
-  { title: "Marriage Registration", icon: "💍" },
-  { title: "GST Registration & Filing", icon: "🧾" },
-  { title: "Trademark Registration", icon: "™️" },
-  { title: "Company Registration & Annual Compliance", icon: "🏢" },
-  { title: "Income Tax Services", icon: "💰" },
-  { title: "MSME / UDYAM Registration", icon: "🏭" },
-  { title: "Leave & Licence / Rent Agreement", icon: "🏠" },
-  { title: "Digital Marketing", icon: "📢" },
-  { title: "Passport Services", icon: "✈️" },
-  { title: "Accounting / Audit Services", icon: "📊" },
+  {
+    title: "Marriage Registration",
+    image: marriageRegImg,
+  },
+  {
+    title: "GST Registration & Filing",
+    image: gstRegistrationImg,
+  },
+  {
+    title: "Trademark Registration",
+    image: trademarkImg,
+  },
+  {
+    title: "Company Registration & Annual Compliance",
+    image: companyRegImg,
+  },
+  {
+    title: "Income Tax Services",
+    image: incomeTaxImg,
+  },
+  {
+    title: "MSME / UDYAM Registration",
+    image: msmeUdyamImg,
+  },
+  {
+    title: "Leave & Licence / Rent Agreement",
+    image: rentAgreementImg,
+  },
+  {
+    title: "Digital Marketing",
+    image: digitalMarketingImg,
+  },
+  {
+    title: "Passport Services",
+    image: passportImg,
+  },
+  {
+    title: "Accounting / Audit Services",
+    image: accountingAuditImg,
+  },
 ];
 
 const PopularServices = ({ onSelectService }) => {
@@ -43,7 +87,6 @@ const PopularServices = ({ onSelectService }) => {
           .popular-icon-box {
             width: 4.25rem !important;
             height: 4.25rem !important;
-            font-size: 2rem !important;
             border-radius: 1.15rem !important;
           }
           .popular-card-title {
@@ -68,7 +111,6 @@ const PopularServices = ({ onSelectService }) => {
           .popular-icon-box {
             width: 7.5rem !important;
             height: 7.5rem !important;
-            font-size: 3.5rem !important;
             border-radius: 1.85rem !important;
           }
           .popular-card-title {
@@ -96,10 +138,22 @@ const PopularServices = ({ onSelectService }) => {
               onClick={() => handleServiceClick(service.title)}
               className="group flex flex-col items-center cursor-pointer py-1"
             >
-              <div className="popular-icon-box w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-white border border-gray-200/80 shadow-xs flex items-center justify-center text-xl sm:text-2xl transition-all duration-300 group-hover:scale-105 group-hover:shadow-md">
-                <span className="transition-transform duration-300">{service.icon}</span>
+              {/* SMALL CARD IMAGE CONTAINER */}
+              <div className="popular-icon-box w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-white border border-gray-200/80 shadow-xs flex items-center justify-center p-2 transition-all duration-300 group-hover:scale-105 group-hover:shadow-md overflow-hidden">
+                {service.image ? (
+                  <img
+                    src={service.image}
+                    alt={service.title}
+                    loading="lazy"
+                    className="w-full h-full object-contain transition-transform duration-300"
+                  />
+                ) : (
+                  <span className="text-xl sm:text-2xl">📋</span>
+                )}
               </div>
-              <h3 className="popular-card-title mt-2 text-xs font-medium text-gray-700 text-center leading-tight">
+
+              {/* CARD TITLE */}
+              <h3 className="popular-card-title mt-2 text-xs font-medium text-gray-700 text-center leading-tight line-clamp-2">
                 {service.title}
               </h3>
             </div>

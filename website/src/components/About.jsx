@@ -49,31 +49,151 @@ const About = () => {
   }, [selectedImage]);
 
   return (
-    <section className="relative overflow-hidden bg-white py-8 sm:py-12 min-[1440px]:py-16 min-[1920px]:py-20 min-[3840px]:py-32 font-['Inter',sans-serif]">
-      {/* MAIN CONTAINER */}
-      <div className="w-full max-w-[1380px] min-[1920px]:max-w-[1800px] min-[3840px]:max-w-[3200px] mx-auto px-4 sm:px-6 min-[1440px]:px-10 min-[1920px]:px-16 min-[3840px]:px-24">
-        
-        {/* RESPONSIVE FLOW: ORDER 1 (INFO) -> ORDER 2 (IMAGES) -> ORDER 3 (BUTTON ON MOBILE) */}
-        <div className="flex flex-col lg:grid lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-14 min-[1920px]:gap-16 min-[3840px]:gap-24 items-center">
+    <section className="relative overflow-hidden bg-white py-10 sm:py-14 lg:py-16 min-[1920px]:py-24 min-[3840px]:py-36 font-['Inter',sans-serif]">
+      {/* DIRECT RESPONSIVE CSS BREAKPOINTS */}
+      <style>{`
+        /* 1920px Full HD */
+        @media (min-width: 1920px) {
+          .about-container {
+            max-width: 1800px !important;
+            padding-left: 4rem !important;
+            padding-right: 4rem !important;
+          }
+          .about-tagline {
+            font-size: 1rem !important;
+            letter-spacing: 0.25em !important;
+          }
+          .about-heading {
+            font-size: 3.25rem !important;
+            line-height: 1.2 !important;
+          }
+          .about-desc {
+            font-size: 1.15rem !important;
+            line-height: 2rem !important;
+          }
+          .about-highlight-text {
+            font-size: 1.15rem !important;
+          }
+          .about-img-box {
+            height: 300px !important;
+          }
+          .about-btn {
+            font-size: 1.15rem !important;
+            padding: 1rem 2.25rem !important;
+          }
+          .about-exp-num {
+            font-size: 4rem !important;
+          }
+          .about-exp-text {
+            font-size: 1.25rem !important;
+          }
+        }
 
-          {/* ======= 1. TEXT INFO (COMES 1ST ON MOBILE & LEFT ON DESKTOP) ======= */}
+        /* 3840px 4K Ultra-Wide */
+        @media (min-width: 3840px) {
+          .about-container {
+            max-width: 3200px !important;
+            padding-left: 6rem !important;
+            padding-right: 6rem !important;
+          }
+          .about-tagline {
+            font-size: 1.75rem !important;
+            letter-spacing: 0.3em !important;
+            margin-bottom: 1.5rem !important;
+          }
+          .about-heading {
+            font-size: 5.5rem !important;
+            line-height: 1.2 !important;
+          }
+          .about-desc {
+            font-size: 2rem !important;
+            line-height: 3.25rem !important;
+            margin-top: 2rem !important;
+          }
+          .about-highlight-list {
+            margin-top: 2.5rem !important;
+            gap: 1.75rem !important;
+          }
+          .about-highlight-text {
+            font-size: 2rem !important;
+            line-height: 2.5rem !important;
+          }
+          .about-highlight-icon {
+            width: 2.25rem !important;
+            height: 2.25rem !important;
+            margin-top: 0.25rem !important;
+          }
+          .about-img-box {
+            height: 520px !important;
+            border-radius: 2rem !important;
+          }
+          .about-img-grid {
+            gap: 2rem !important;
+          }
+          .about-btn {
+            font-size: 2rem !important;
+            padding: 1.5rem 3.5rem !important;
+            border-radius: 9999px !important;
+            margin-top: 3.5rem !important;
+          }
+          .about-btn svg {
+            width: 2rem !important;
+            height: 2rem !important;
+          }
+          .about-exp-num {
+            font-size: 7rem !important;
+          }
+          .about-exp-text {
+            font-size: 2.25rem !important;
+          }
+        }
+      `}</style>
+
+      {/* MAIN CONTAINER */}
+      <div className="about-container w-full max-w-[1380px] mx-auto px-4 sm:px-6 min-[1440px]:px-10">
+        
+        {/* RESPONSIVE FLOW: INFO LEFT / TOP, IMAGES RIGHT / BOTTOM */}
+        <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-12 min-[1920px]:gap-16 min-[3840px]:gap-24 items-center">
+
+          {/* ======= 1. TEXT INFO (LEFT ON DESKTOP) ======= */}
           <div className="w-full order-1">
             {/* TOP TAGLINE */}
-            <p className="text-xs sm:text-sm font-semibold tracking-[0.25em] uppercase text-[#0B4EA2] mb-3 text-left min-[3840px]:text-2xl">
+            <p
+              style={{ fontFamily: "'Inter', sans-serif" }}
+              className="about-tagline text-xs sm:text-sm font-semibold tracking-[0.2em] uppercase text-[#0B4EA2] mb-2 sm:mb-3 text-left"
+            >
               ABOUT US
             </p>
 
-            {/* HEADING */}
-            <h2
-              className="text-2xl sm:text-3xl lg:text-4xl min-[1920px]:text-5xl min-[3840px]:text-7xl font-normal text-slate-900 leading-tight text-left"
-              style={{ fontFamily: '"Hedvig Letters Serif", Georgia, serif' }}
-            >
-              Helping Businesses <br />
-              <span className="text-[#0B4EA2]">With Smart Solutions</span>
-            </h2>
+            {/* HEADING (Hedvig Letters Serif) */}
+             <h2
+            style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+            className="
+              team-title
+              text-2xl
+              sm:text-3xl
+              md:text-3xl
+              lg:text-4xl
+              font-bold
+              leading-[1.18]
+              text-black
+              text-left
+              mb-2.5
+              sm:mb-4
+            "
+          >
+           Helping Businesses
+           <br/>
+            <span className="text-[#0B4EA2]">
+            With Smart Solutions
+            </span>
+          </h2>
 
             {/* PARAGRAPH */}
-            <p className="mt-3.5 sm:mt-5 text-slate-600 text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl leading-relaxed text-justify">
+            <p
+              style={{ fontFamily: "'Inter', sans-serif" }}
+              className="about-desc mt-3.5 sm:mt-5 text-slate-600 text-sm sm:text-base lg:text-base leading-relaxed text-left sm:text-justify max-w-2xl min-[1920px]:max-w-3xl min-[3840px]:max-w-5xl"
+            >
               MegaClick provides professional business services that simplify
               registrations, compliance, taxation and financial management. We
               help startups, entrepreneurs and established businesses with
@@ -82,14 +202,17 @@ const About = () => {
             </p>
 
             {/* HIGHLIGHTS LIST */}
-            <ul className="mt-4 sm:mt-6 min-[3840px]:mt-10 flex flex-col gap-2.5 min-[3840px]:gap-5">
+            <ul className="about-highlight-list mt-5 sm:mt-6 flex flex-col gap-3 min-[1920px]:gap-4">
               {highlights.map((point, i) => (
-                <li key={i} className="flex items-start gap-2.5 min-[3840px]:gap-4">
+                <li key={i} className="flex items-start gap-2.5 sm:gap-3">
                   <CheckCircle2
-                    size={18}
-                    className="text-[#0B4EA2] flex-shrink-0 mt-0.5 min-[3840px]:w-8 min-[3840px]:h-8"
+                    size={20}
+                    className="about-highlight-icon text-[#0B4EA2] shrink-0 mt-0.5"
                   />
-                  <span className="text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl text-slate-600 leading-snug">
+                  <span
+                    style={{ fontFamily: "'Inter', sans-serif" }}
+                    className="about-highlight-text text-sm sm:text-base text-slate-700 font-medium leading-snug"
+                  >
                     {point}
                   </span>
                 </li>
@@ -97,29 +220,30 @@ const About = () => {
             </ul>
 
             {/* DESKTOP LEARN MORE BUTTON (HIDDEN ON MOBILE) */}
-            <div className="hidden lg:flex mt-6 sm:mt-8 min-[3840px]:mt-12 justify-start">
+            <div className="hidden lg:flex mt-7 sm:mt-9 justify-start">
               <button
                 onClick={() => navigate("/about")}
-                className="inline-flex items-center justify-center gap-2.5 bg-[#0B4EA2] hover:bg-blue-700 text-white px-7 sm:px-8 min-[3840px]:px-14 py-3 min-[3840px]:py-5 rounded-full font-medium text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl transition-all duration-300 hover:scale-[1.02] shadow-md cursor-pointer"
+                className="about-btn inline-flex items-center justify-center gap-2.5 bg-[#0B4EA2] hover:bg-blue-700 text-white px-7 sm:px-8 py-3.5 rounded-full font-semibold text-sm sm:text-base transition-all duration-300 hover:scale-[1.02] shadow-md hover:shadow-lg cursor-pointer"
               >
                 <span>Learn More</span>
-                <ArrowRight size={18} className="min-[3840px]:w-7 min-[3840px]:h-7" />
+                <ArrowRight size={18} />
               </button>
             </div>
           </div>
 
-          {/* ======= 2. PHOTO GRID (COMES 2ND ON MOBILE & RIGHT ON DESKTOP) ======= */}
+          {/* ======= 2. PHOTO GRID (RIGHT ON DESKTOP) ======= */}
           <div className="w-full order-2">
-            <div className="relative grid grid-cols-2 gap-3 sm:gap-4 md:gap-5 min-[3840px]:gap-8 w-full">
+            <div className="about-img-grid grid grid-cols-2 gap-3 sm:gap-4 md:gap-5 w-full">
 
               {/* IMAGE 1 */}
               <div
                 onClick={() => setSelectedImage(img1)}
-                className="h-[150px] sm:h-[210px] md:h-[240px] lg:h-[220px] min-[1920px]:h-[280px] min-[3840px]:h-[480px] rounded-2xl min-[3840px]:rounded-3xl overflow-hidden shadow-md group cursor-pointer"
+                className="about-img-box h-[160px] sm:h-[220px] md:h-[250px] lg:h-[240px] rounded-2xl overflow-hidden shadow-md group cursor-pointer"
               >
                 <img
                   src={img1}
                   alt="MegaClick business"
+                  loading="lazy"
                   className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110"
                 />
               </div>
@@ -127,11 +251,12 @@ const About = () => {
               {/* IMAGE 2 */}
               <div
                 onClick={() => setSelectedImage(img2)}
-                className="h-[150px] sm:h-[210px] md:h-[240px] lg:h-[220px] min-[1920px]:h-[280px] min-[3840px]:h-[480px] rounded-2xl min-[3840px]:rounded-3xl overflow-hidden shadow-md group cursor-pointer"
+                className="about-img-box h-[160px] sm:h-[220px] md:h-[250px] lg:h-[240px] rounded-2xl overflow-hidden shadow-md group cursor-pointer"
               >
                 <img
                   src={img2}
                   alt="MegaClick services"
+                  loading="lazy"
                   className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110"
                 />
               </div>
@@ -139,11 +264,12 @@ const About = () => {
               {/* IMAGE 3 */}
               <div
                 onClick={() => setSelectedImage(img3)}
-                className="h-[150px] sm:h-[210px] md:h-[240px] lg:h-[220px] min-[1920px]:h-[280px] min-[3840px]:h-[480px] rounded-2xl min-[3840px]:rounded-3xl overflow-hidden shadow-md group cursor-pointer"
+                className="about-img-box h-[160px] sm:h-[220px] md:h-[250px] lg:h-[240px] rounded-2xl overflow-hidden shadow-md group cursor-pointer"
               >
                 <img
                   src={img3}
                   alt="MegaClick team"
+                  loading="lazy"
                   className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110"
                 />
               </div>
@@ -151,19 +277,26 @@ const About = () => {
               {/* IMAGE 4 + EXPERIENCE OVERLAY */}
               <div
                 onClick={() => setSelectedImage(img4)}
-                className="relative h-[150px] sm:h-[210px] md:h-[240px] lg:h-[220px] min-[1920px]:h-[280px] min-[3840px]:h-[480px] rounded-2xl min-[3840px]:rounded-3xl overflow-hidden shadow-md group cursor-pointer"
+                className="about-img-box relative h-[160px] sm:h-[220px] md:h-[250px] lg:h-[240px] rounded-2xl overflow-hidden shadow-md group cursor-pointer"
               >
                 <img
                   src={img4}
                   alt="MegaClick experience"
+                  loading="lazy"
                   className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110"
                 />
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-700/80 to-green-500/80" />
-                <div className="absolute inset-0 flex flex-col justify-center items-center text-white text-center px-2 pointer-events-none">
-                  <h3 className="text-2xl sm:text-5xl min-[1920px]:text-6xl min-[3840px]:text-8xl font-bold">
+                <div className="absolute inset-0 bg-gradient-to-br from-[#0B4EA2]/85 to-emerald-600/85 transition-opacity duration-300 group-hover:opacity-95" />
+                <div className="absolute inset-0 flex flex-col justify-center items-center text-white text-center px-2 pointer-events-none select-none">
+                  <h3
+                    style={{ fontFamily: "'Inter', sans-serif" }}
+                    className="about-exp-num text-3xl sm:text-5xl font-extrabold tracking-tight drop-shadow-sm"
+                  >
                     10+
                   </h3>
-                  <p className="text-[11px] sm:text-base min-[1920px]:text-xl min-[3840px]:text-3xl font-semibold mt-1">
+                  <p
+                    style={{ fontFamily: "'Inter', sans-serif" }}
+                    className="about-exp-text text-xs sm:text-base font-semibold mt-1 drop-shadow-xs"
+                  >
                     Years Experience
                   </p>
                 </div>
@@ -172,11 +305,11 @@ const About = () => {
             </div>
           </div>
 
-          {/* ======= 3. MOBILE LEARN MORE BUTTON (COMES 3RD ON MOBILE UNDER IMAGES) ======= */}
-          <div className="w-full flex lg:hidden order-3 justify-start">
+          {/* ======= 3. MOBILE LEARN MORE BUTTON (UNDER IMAGES) ======= */}
+          <div className="w-full flex lg:hidden order-3 justify-start mt-2">
             <button
               onClick={() => navigate("/about")}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 bg-[#0B4EA2] hover:bg-blue-700 text-white px-7 py-3 rounded-full font-medium text-sm sm:text-base transition-all duration-300 shadow-md cursor-pointer"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 bg-[#0B4EA2] hover:bg-blue-700 text-white px-7 py-3.5 rounded-full font-semibold text-sm sm:text-base transition-all duration-300 shadow-md cursor-pointer active:scale-95"
             >
               <span>Learn More</span>
               <ArrowRight size={18} />
@@ -195,7 +328,7 @@ const About = () => {
           <button
             type="button"
             onClick={() => setSelectedImage(null)}
-            className="absolute top-4 right-4 sm:top-6 sm:right-6 z-20 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/90 hover:bg-white text-gray-900 flex items-center justify-center text-2xl sm:text-3xl font-bold shadow-lg transition-all duration-200 hover:scale-105"
+            className="absolute top-4 right-4 sm:top-6 sm:right-6 z-20 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/90 hover:bg-white text-gray-900 flex items-center justify-center text-2xl sm:text-3xl font-bold shadow-lg transition-all duration-200 hover:scale-105 cursor-pointer"
             aria-label="Close image"
           >
             ×

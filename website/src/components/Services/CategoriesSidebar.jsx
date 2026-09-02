@@ -73,7 +73,8 @@ const CategoriesSidebar = ({
   setSelectedService,
   selectedService,
 }) => {
-  const [openCategory, setOpenCategory] = useState("All Services");
+  // Initialized to "" so All Services list is closed by default
+  const [openCategory, setOpenCategory] = useState("");
 
   return (
     <aside className="cat-sidebar sticky top-24 bg-white rounded-3xl border border-slate-100 shadow-xl shadow-slate-200/40 p-4 sm:p-5 w-full font-['Inter',sans-serif]">
@@ -235,14 +236,14 @@ const CategoriesSidebar = ({
               </button>
 
               {/* =========================================================
-                  SUB-SERVICES UNDER "ALL SERVICES" (WITH HIGHLIGHTED HEADERS)
+                  SUB-SERVICES UNDER "ALL SERVICES" (OPENS ON CLICK ONLY)
                   ========================================================= */}
               {isAllServices && isOpen && (
                 <div className="my-3 ml-3 pl-3 border-l-2 border-emerald-300/70 space-y-5 transition-all">
                   {serviceCategories.map((group) => (
                     <div key={group.name} className="space-y-2">
                       
-                      {/* 🌟 PROMINENT HIGHLIGHTED GROUP HEADER 🌟 */}
+                      {/* PROMINENT HIGHLIGHTED GROUP HEADER */}
                       <button
                         type="button"
                         onClick={() => {
