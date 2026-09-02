@@ -10,11 +10,11 @@ import team6 from "../assets/team6.png";
 
 /* ------------------- Team data ------------------- */
 const teamMembers = [
-  { image: team1, name: "Rahul Sharma",   role: "Founder & CEO" },
+  { image: team1, name: "Rahul Sharma", role: "Founder & CEO" },
   { image: team2, name: "Priya Deshmukh", role: "Legal Consultant" },
-  { image: team3, name: "Amit Patil",     role: "Financial Advisor" },
-  { image: team4, name: "Neha Kulkarni",  role: "Business Consultant" },
-  { image: team5, name: "Vaibhav Verma",  role: "Operations Lead" },
+  { image: team3, name: "Amit Patil", role: "Financial Advisor" },
+  { image: team4, name: "Neha Kulkarni", role: "Business Consultant" },
+  { image: team5, name: "Vaibhav Verma", role: "Operations Lead" },
   { image: team6, name: "Siddharth Rao", role: "Senior Consultant" },
 ];
 
@@ -46,7 +46,6 @@ const Team = () => {
     <>
       {/* ==================== MAIN SECTION ==================== */}
       <section className="w-full py-8 sm:py-12 min-[1440px]:py-16 min-[1920px]:py-20 min-[3840px]:py-32 bg-white team-section font-['Inter',sans-serif]">
-        
         {/* DIRECT CSS RULES FOR 1440px, 1920px & 3840px (4K) */}
         <style>{`
           .app-container {
@@ -184,7 +183,10 @@ const Team = () => {
         {/* ---------- WRAPPER CONTAINER ---------- */}
         <div className="app-container">
           {/* ----- TAGLINE ----- */}
-          <p className="team-tagline text-xs sm:text-sm font-semibold tracking-[0.25em] uppercase text-[#0B4EA2] mb-2 sm:mb-4 text-left">
+          <p
+            style={{ fontFamily: "'Inter', sans-serif" }}
+            className="team-tagline text-xs sm:text-sm font-semibold tracking-[0.25em] uppercase text-[#0B4EA2] mb-2 sm:mb-4 text-left"
+          >
             The People Behind It
           </p>
 
@@ -212,7 +214,10 @@ const Team = () => {
           </h2>
 
           {/* ----- SUB-HEADING ----- */}
-          <p className="team-sub text-slate-600 font-normal text-xs sm:text-base leading-relaxed w-full mb-6 sm:mb-10 lg:mb-14 text-left">
+          <p
+            style={{ fontFamily: "'Inter', sans-serif" }}
+            className="team-sub text-slate-600 font-normal text-xs sm:text-base leading-relaxed w-full mb-6 sm:mb-10 lg:mb-14 text-left"
+          >
             Our experienced professionals are dedicated to providing reliable
             business solutions and expert guidance.
           </p>
@@ -237,10 +242,16 @@ const Team = () => {
 
                 {/* Name & role */}
                 <div className="px-0.5 text-left">
-                  <h3 className="team-name text-xs sm:text-sm font-bold text-[#0B4EA2] leading-snug">
+                  <h3
+                    style={{ fontFamily: "'Inter', sans-serif" }}
+                    className="team-name text-xs sm:text-sm font-bold text-[#0B4EA2] leading-snug"
+                  >
                     {member.name}
                   </h3>
-                  <p className="team-role text-[10px] sm:text-[11px] font-medium text-[#0f172a] mt-0.5">
+                  <p
+                    style={{ fontFamily: "'Inter', sans-serif" }}
+                    className="team-role text-[10px] sm:text-[11px] font-medium text-[#0f172a] mt-0.5"
+                  >
                     {member.role}
                   </p>
                 </div>
@@ -275,10 +286,16 @@ const Team = () => {
               alt={selectedImage.name}
               className="w-full h-[260px] sm:h-[320px] min-[1920px]:h-[380px] min-[3840px]:h-[650px] object-cover rounded-xl min-[3840px]:rounded-2xl mb-3 min-[3840px]:mb-6"
             />
-            <h3 className="text-base sm:text-lg min-[1920px]:text-xl min-[3840px]:text-4xl font-bold text-[#0B4EA2]">
+            <h3
+              style={{ fontFamily: "'Inter', sans-serif" }}
+              className="text-base sm:text-lg min-[1920px]:text-xl min-[3840px]:text-4xl font-bold text-[#0B4EA2]"
+            >
               {selectedImage.name}
             </h3>
-            <p className="text-xs sm:text-sm min-[3840px]:text-2xl font-medium text-[#0f172a] mt-0.5 min-[3840px]:mt-2">
+            <p
+              style={{ fontFamily: "'Inter', sans-serif" }}
+              className="text-xs sm:text-sm min-[3840px]:text-2xl font-medium text-[#0f172a] mt-0.5 min-[3840px]:mt-2"
+            >
               {selectedImage.role}
             </p>
           </div>

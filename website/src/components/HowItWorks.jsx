@@ -17,7 +17,7 @@ const ModernCardIcon = ({ type }) => {
       return (
         <svg
           viewBox="0 0 48 48"
-          className="w-11 h-11 sm:w-12 sm:h-12 lg:w-13 lg:h-13"
+          className="w-11 h-11 sm:w-12 sm:h-12 lg:w-13 lg:h-13 min-[1920px]:w-16 min-[1920px]:h-16 min-[3840px]:w-28 min-[3840px]:h-28"
           fill="none"
         >
           <rect
@@ -59,7 +59,7 @@ const ModernCardIcon = ({ type }) => {
       return (
         <svg
           viewBox="0 0 48 48"
-          className="w-11 h-11 sm:w-12 sm:h-12 lg:w-13 lg:h-13"
+          className="w-11 h-11 sm:w-12 sm:h-12 lg:w-13 lg:h-13 min-[1920px]:w-16 min-[1920px]:h-16 min-[3840px]:w-28 min-[3840px]:h-28"
           fill="none"
         >
           <rect
@@ -92,7 +92,7 @@ const ModernCardIcon = ({ type }) => {
       return (
         <svg
           viewBox="0 0 48 48"
-          className="w-11 h-11 sm:w-12 sm:h-12 lg:w-13 lg:h-13"
+          className="w-11 h-11 sm:w-12 sm:h-12 lg:w-13 lg:h-13 min-[1920px]:w-16 min-[1920px]:h-16 min-[3840px]:w-28 min-[3840px]:h-28"
           fill="none"
         >
           <path
@@ -123,7 +123,7 @@ const ModernCardIcon = ({ type }) => {
       return (
         <svg
           viewBox="0 0 48 48"
-          className="w-11 h-11 sm:w-12 sm:h-12 lg:w-13 lg:h-13"
+          className="w-11 h-11 sm:w-12 sm:h-12 lg:w-13 lg:h-13 min-[1920px]:w-16 min-[1920px]:h-16 min-[3840px]:w-28 min-[3840px]:h-28"
           fill="none"
         >
           <rect
@@ -162,7 +162,7 @@ const ModernCardIcon = ({ type }) => {
       return (
         <svg
           viewBox="0 0 48 48"
-          className="w-11 h-11 sm:w-12 sm:h-12 lg:w-13 lg:h-13"
+          className="w-11 h-11 sm:w-12 sm:h-12 lg:w-13 lg:h-13 min-[1920px]:w-16 min-[1920px]:h-16 min-[3840px]:w-28 min-[3840px]:h-28"
           fill="none"
         >
           <rect
@@ -202,7 +202,7 @@ const ModernCardIcon = ({ type }) => {
       return (
         <svg
           viewBox="0 0 48 48"
-          className="w-11 h-11 sm:w-12 sm:h-12 lg:w-13 lg:h-13"
+          className="w-11 h-11 sm:w-12 sm:h-12 lg:w-13 lg:h-13 min-[1920px]:w-16 min-[1920px]:h-16 min-[3840px]:w-28 min-[3840px]:h-28"
           fill="none"
         >
           <circle
@@ -244,43 +244,43 @@ const ModernCardIcon = ({ type }) => {
 };
 
 // ─────────────────────────────────────────────
-// Solution Cards Data
+// Solution Cards Data (Exact 2 lines per card)
 // ─────────────────────────────────────────────
 const solutionCards = [
   {
     id: 1,
     title: "Needs Assessment",
-    desc: "Expert legal consultation and custom business planning for your fast growth.",
+    desc: "Expert legal consultation and custom business planning for fast growth.",
     iconType: "consultation",
   },
   {
     id: 2,
     title: "100% Digital Upload",
-    desc: "Secure online document upload with zero office visits and zero paperwork.",
+    desc: "Secure online document upload with zero visits and zero paperwork.",
     iconType: "digital",
   },
   {
     id: 3,
     title: "Flawless Verification",
-    desc: "Thorough document audit by legal experts ensuring zero portal rejections.",
+    desc: "Thorough document audit by legal experts ensuring zero rejections.",
     iconType: "verification",
   },
   {
     id: 4,
     title: "Priority Portal Filing",
-    desc: "Fast application filing directly through official government portals safely.",
+    desc: "Fast-track application filing directly through government portals.",
     iconType: "filing",
   },
   {
     id: 5,
     title: "Live Status Tracking",
-    desc: "Real-time milestone alerts and transparent status tracking at every step.",
+    desc: "Real-time milestone alerts and transparent tracking at every step.",
     iconType: "tracking",
   },
   {
     id: 6,
     title: "Certificate Delivery",
-    desc: "Instant digital certificate issuance with complete ongoing legal support.",
+    desc: "Instant digital certificate issuance with complete ongoing support.",
     iconType: "delivery",
   },
 ];
@@ -336,7 +336,24 @@ const SolutionCardItem = ({ item }) => (
           {item.title}
         </h3>
 
-        <p className="hiw-card-desc w-full text-[11px] sm:text-[12px] lg:text-[12.5px] text-slate-600 leading-snug sm:leading-relaxed text-justify [text-align-last:left] [text-wrap:pretty]">
+        {/* 2-LINE CENTERED DESCRIPTION (MATCHED TO SCREENSHOT) */}
+        <p
+          style={{ fontFamily: "'Inter', sans-serif" }}
+          className="
+            hiw-card-desc
+            w-full
+            max-w-[240px]
+            min-[1920px]:max-w-[320px]
+            min-[3840px]:max-w-[500px]
+            text-[11px]
+            sm:text-[12px]
+            lg:text-[12.5px]
+            text-slate-600
+            leading-snug
+            sm:leading-relaxed
+            text-center
+          "
+        >
           {item.desc}
         </p>
       </div>
@@ -854,6 +871,7 @@ const HowItWorks = () => {
                 "
               >
                 <span
+                  style={{ fontFamily: "'Inter', sans-serif" }}
                   className="
                     hiw-featured-btn
                     text-xs
@@ -862,7 +880,7 @@ const HowItWorks = () => {
                     tracking-[0.2em]
                     uppercase
                     text-white/90
-                    hover:text-white
+                    group-hover/link:text-white
                     transition-colors
                     duration-200
                   "

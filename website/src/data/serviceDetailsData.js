@@ -1,15 +1,29 @@
+// =====================================================
+// IMAGE ASSET IMPORTS FROM ../assets/
+// =====================================================
+import marriageRegImg from "../assets/marriage-registration.png";
+import rentAgreementImg from "../assets/rent-agreement.png";
+import tenantVerificationImg from "../assets/tenant-police-verification.png";
+import govtGazetteImg from "../assets/govt-gazette.png";
+import partnershipDeedImg from "../assets/partnership-deed.png";
+import saleWillGiftImg from "../assets/sale-will-gift-deed.png";
+import mortgageDeedImg from "../assets/mortgage-release-deed.png";
+import titleSearchImg from "../assets/title-search-report.png";
+import trademarkImg from "../assets/trademark-registration.png";
+import patentCopyrightImg from "../assets/patent-copyright.png";
+import digital712Img from "../assets/digital.webp";
+import characterCertificateImg from "../assets/character-certificate.png";
+
 const serviceDetailsData = [
   // =========================================================
   // 1. MARRIAGE REGISTRATION
   // =========================================================
-
   {
     slug: "marriage-registration",
     title: "Marriage Registration",
-    emoji: "💍",
+    image: marriageRegImg, // 🖼️ Added Image Property
 
-    heroTitle:
-      "Marriage Registration Online – Complete Legal Assistance",
+    heroTitle: "Marriage Registration Online – Complete Legal Assistance",
 
     description:
       "Get complete assistance for marriage registration with document guidance, application support and hassle-free processing.",
@@ -83,14 +97,12 @@ const serviceDetailsData = [
   // =========================================================
   // 2. LEAVE & LICENCE / RENT AGREEMENT
   // =========================================================
-
   {
     slug: "leave-licence-rent-agreement",
     title: "Leave & Licence / Rent Agreement",
-    emoji: "🏠",
+    image: rentAgreementImg, // 🖼️ Added Image Property
 
-    heroTitle:
-      "Leave & Licence / Rent Agreement Online",
+    heroTitle: "Leave & Licence / Rent Agreement Online",
 
     description:
       "Get assistance with preparing and registering your Leave & Licence or Rent Agreement with proper documentation support.",
@@ -164,14 +176,12 @@ const serviceDetailsData = [
   // =========================================================
   // 3. TENANT POLICE VERIFICATION
   // =========================================================
-
   {
     slug: "tenant-police-verification",
     title: "Tenant Police Verification",
-    emoji: "👮",
+    image: tenantVerificationImg, // 🖼️ Added Image Property
 
-    heroTitle:
-      "Tenant Police Verification Online",
+    heroTitle: "Tenant Police Verification Online",
 
     description:
       "Get assistance with tenant police verification and complete the required documentation conveniently.",
@@ -235,8 +245,7 @@ const serviceDetailsData = [
 
     faq: [
       {
-        question:
-          "Why is tenant police verification required?",
+        question: "Why is tenant police verification required?",
         answer:
           "Tenant verification helps maintain proper records and supports the verification of tenant information.",
       },
@@ -246,14 +255,12 @@ const serviceDetailsData = [
   // =========================================================
   // 4. GOVT GAZETTE
   // =========================================================
-
   {
     slug: "govt-gazette-change",
     title: "Govt. Gazette – Name / DOB / Religion Change",
-    emoji: "📜",
+    image: govtGazetteImg, // 🖼️ Added Image Property
 
-    heroTitle:
-      "Government Gazette Name, DOB & Other Changes",
+    heroTitle: "Government Gazette Name, DOB & Other Changes",
 
     description:
       "Get assistance with Government Gazette publication for eligible changes such as name, date of birth and other personal details.",
@@ -317,8 +324,7 @@ const serviceDetailsData = [
 
     faq: [
       {
-        question:
-          "What changes can be published through Gazette?",
+        question: "What changes can be published through Gazette?",
         answer:
           "Depending on applicable rules, Gazette publication may be used for certain personal changes such as name and other details.",
       },
@@ -328,15 +334,12 @@ const serviceDetailsData = [
   // =========================================================
   // 5. PARTNERSHIP DEED
   // =========================================================
-
   {
     slug: "partnership-deed",
-    title:
-      "Partnership Deed (Notary & Registration of Firm)",
-    emoji: "🤝",
+    title: "Partnership Deed (Notary & Registration of Firm)",
+    image: partnershipDeedImg, // 🖼️ Added Image Property
 
-    heroTitle:
-      "Partnership Deed & Firm Registration",
+    heroTitle: "Partnership Deed & Firm Registration",
 
     description:
       "Get assistance with partnership deed preparation, notarisation and registration of your partnership firm.",
@@ -410,14 +413,12 @@ const serviceDetailsData = [
   // =========================================================
   // 6. SALE DEED / WILL / GIFT DEED
   // =========================================================
-
   {
     slug: "sale-will-gift-deed",
     title: "Sale Deed / Will / Gift Deed",
-    emoji: "📄",
+    image: saleWillGiftImg, // 🖼️ Added Image Property
 
-    heroTitle:
-      "Sale Deed, Will & Gift Deed Assistance",
+    heroTitle: "Sale Deed, Will & Gift Deed Assistance",
 
     description:
       "Get professional documentation assistance for Sale Deed, Will and Gift Deed requirements.",
@@ -491,14 +492,12 @@ const serviceDetailsData = [
   // =========================================================
   // 7. MORTGAGE / RELEASE DEED
   // =========================================================
-
   {
     slug: "mortgage-release-deed",
     title: "Mortgage Deed / Release Deed",
-    emoji: "🏦",
+    image: mortgageDeedImg, // 🖼️ Added Image Property
 
-    heroTitle:
-      "Mortgage Deed & Release Deed Assistance",
+    heroTitle: "Mortgage Deed & Release Deed Assistance",
 
     description:
       "Get assistance with mortgage and release deed documentation for property-related transactions.",
@@ -572,14 +571,12 @@ const serviceDetailsData = [
   // =========================================================
   // 8. TITLE SEARCH REPORT
   // =========================================================
-
   {
     slug: "title-search-report",
     title: "Title Search Report",
-    emoji: "🔍",
+    image: titleSearchImg, // 🖼️ Added Image Property
 
-    heroTitle:
-      "Property Title Search Report",
+    heroTitle: "Property Title Search Report",
 
     description:
       "Get assistance with property title search and documentation review to understand the available property records.",
@@ -653,14 +650,12 @@ const serviceDetailsData = [
   // =========================================================
   // 9. TRADEMARK REGISTRATION
   // =========================================================
-
   {
     slug: "trademark-registration",
     title: "Trademark Registration",
-    emoji: "™️",
+    image: trademarkImg, // 🖼️ Added Image Property
 
-    heroTitle:
-      "Trademark Registration Online",
+    heroTitle: "Trademark Registration Online",
 
     description:
       "Protect your brand name, logo or other eligible marks with trademark registration assistance.",
@@ -734,14 +729,12 @@ const serviceDetailsData = [
   // =========================================================
   // 10. PATENT / COPYRIGHT
   // =========================================================
-
   {
     slug: "patent-copyright-registration",
     title: "Patent / Copyright Registration",
-    emoji: "©️",
+    image: patentCopyrightImg, // 🖼️ Added Image Property
 
-    heroTitle:
-      "Patent & Copyright Registration Assistance",
+    heroTitle: "Patent & Copyright Registration Assistance",
 
     description:
       "Get assistance with patent and copyright registration for eligible inventions, creative works and intellectual property.",
@@ -815,14 +808,12 @@ const serviceDetailsData = [
   // =========================================================
   // 11. DIGITAL 7/12 & MUTATION
   // =========================================================
-
   {
     slug: "digital-7-12-mutation",
     title: "Digital 7/12 & Mutation Entries",
-    emoji: "📑",
+    image: digital712Img, // 🖼️ Added Image Property
 
-    heroTitle:
-      "Digital 7/12 & Mutation Entry Assistance",
+    heroTitle: "Digital 7/12 & Mutation Entry Assistance",
 
     description:
       "Get assistance with Digital 7/12 records and mutation-related documentation for eligible property matters.",
@@ -896,14 +887,12 @@ const serviceDetailsData = [
   // =========================================================
   // 12. CHARACTER CERTIFICATE
   // =========================================================
-
   {
     slug: "character-certificate",
     title: "Character Certificate by Police",
-    emoji: "🪪",
+    image: characterCertificateImg, // 🖼️ Added Image Property
 
-    heroTitle:
-      "Police Character Certificate Assistance",
+    heroTitle: "Police Character Certificate Assistance",
 
     description:
       "Get assistance with the application process and documentation required for obtaining a police character certificate.",
