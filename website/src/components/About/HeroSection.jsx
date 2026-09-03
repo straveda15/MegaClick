@@ -4,12 +4,10 @@ import teamImg from "../../assets/teamimg.png";
 const HeroSection = () => {
   return (
     <section className="about-hero relative w-full overflow-hidden bg-[#0B4EA2] font-['Inter',sans-serif]">
+      {/* GOOGLE FONTS */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif&family=Inter:wght@400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@400;500;600;700;800&display=swap');
 
-        /* ─────────────────────────────────────────────
-           CONTAINER
-        ───────────────────────────────────────────── */
         .about-hero-container {
           width: 100%;
           max-width: 1380px;
@@ -32,24 +30,20 @@ const HeroSection = () => {
         @media (min-width: 1440px) {
           .about-hero-container {
             max-width: 1380px !important;
-            padding-left: 2.5rem !important;  /* px-10 (40px) */
-            padding-right: 2.5rem !important; /* px-10 (40px) */
+            padding-left: 2.5rem !important;
+            padding-right: 2.5rem !important;
           }
-
           .about-hero-wrap {
-            min-height: 520px !important;
+            min-height: 480px !important;
           }
-
           .about-hero-h1 {
             font-size: 3.1rem !important;
-            line-height: 1.15 !important;
+            line-height: 1.18 !important;
           }
-
           .about-hero-sub {
-            font-size: 2rem !important;
+            font-size: 1.85rem !important;
             margin-top: 1.25rem !important;
           }
-
           .about-blue-panel {
             width: 58%;
           }
@@ -59,71 +53,49 @@ const HeroSection = () => {
         @media (min-width: 1920px) {
           .about-hero-container {
             max-width: 1800px !important;
-            padding-left: 4rem !important;   /* px-16 (64px) */
-            padding-right: 4rem !important;  /* px-16 (64px) */
+            padding-left: 4rem !important;
+            padding-right: 4rem !important;
           }
-
           .about-hero-wrap {
-            min-height: 640px !important;
+            min-height: 580px !important;
           }
-
-          .about-hero-tag {
-            font-size: 1rem !important;
-            letter-spacing: 0.3em !important;
-            margin-bottom: 1.75rem !important;
-          }
-
           .about-hero-h1 {
-            font-size: 4rem !important;
-            line-height: 1.15 !important;
+            font-size: 3.75rem !important;
+            line-height: 1.18 !important;
           }
-
           .about-hero-sub {
-            font-size: 2.6rem !important;
-            margin-top: 1.75rem !important;
+            font-size: 2.4rem !important;
+            margin-top: 1.5rem !important;
           }
-
           .about-blue-panel {
             width: 58%;
           }
         }
 
-        /* ── 4K Ultra-Wide Desktop 3840px ── */
+        /* ── 4K Ultra-Wide 3840px ── */
         @media (min-width: 3840px) {
           .about-hero-container {
             max-width: 3200px !important;
-            padding-left: 6rem !important;   /* px-24 (96px) */
-            padding-right: 6rem !important;  /* px-24 (96px) */
+            padding-left: 6rem !important;
+            padding-right: 6rem !important;
           }
-
           .about-hero-wrap {
-            min-height: 1080px !important;
+            min-height: 900px !important;
           }
-
-          .about-hero-tag {
-            font-size: 1.75rem !important;
-            letter-spacing: 0.35em !important;
-            margin-bottom: 2.5rem !important;
-          }
-
           .about-hero-h1 {
-            font-size: 6.8rem !important;
-            line-height: 1.1 !important;
+            font-size: 6rem !important;
+            line-height: 1.15 !important;
           }
-
           .about-hero-sub {
-            font-size: 4.5rem !important;
-            margin-top: 3rem !important;
+            font-size: 4rem !important;
+            margin-top: 2.5rem !important;
           }
-
           .about-blue-panel {
             width: 60%;
           }
         }
 
-        /* ─────────────────────────────────────────────
-           BLUE LEFT PANEL (< shaped edge)
-        ───────────────────────────────────────────── */
+        /* BLUE LEFT PANEL */
         .about-blue-panel {
           position: absolute;
           left: 0;
@@ -166,22 +138,19 @@ const HeroSection = () => {
         />
       </div>
 
-      {/* BLUE < SHAPED PANEL */}
+      {/* BLUE PANEL */}
       <div className="about-blue-panel hidden lg:block" />
 
-      {/* CONTENT */}
+      {/* CONTENT (Shifted Upwards) */}
       <div className="about-hero-container">
-        <div className="about-hero-wrap flex items-center min-h-[400px] sm:min-h-[450px] lg:min-h-[520px] py-12 sm:py-14 lg:py-0">
-          <div className="relative z-30 w-full lg:w-[50%] xl:w-[52%]">
-            <p className="about-hero-tag text-white/80 text-xs sm:text-sm font-semibold tracking-[0.25em] uppercase mb-4 sm:mb-5">
-              Who We Are
-            </p>
-
+        <div className="about-hero-wrap flex items-start pt-8 sm:pt-10 lg:pt-14 pb-8 sm:pb-10 lg:pb-12 min-h-[380px] sm:min-h-[420px] lg:min-h-[480px]">
+          <div className="relative z-30 w-full lg:w-[50%] xl:w-[52%] text-left">
+            {/* MAIN TITLE (Hedvig Letters Serif) */}
             <h1
               style={{
                 fontFamily: "'Hedvig Letters Serif', serif",
               }}
-              className="about-hero-h1 text-4xl sm:text-5xl lg:text-[48px] xl:text-[52px] font-extrabold leading-[1.15] text-green-300"
+              className="about-hero-h1 text-3xl sm:text-4xl lg:text-[44px] xl:text-[48px] font-bold leading-[1.18] text-green-300"
             >
               Simplifying Needs and
               <br />
@@ -190,11 +159,12 @@ const HeroSection = () => {
               &amp; Individuals
             </h1>
 
+            {/* SUBTITLE */}
             <p
               style={{
                 fontFamily: "'Hedvig Letters Serif', serif",
               }}
-              className="about-hero-sub text-white font-semibold mt-5 sm:mt-6 text-2xl sm:text-3xl lg:text-[36px] xl:text-[40px] leading-tight"
+              className="about-hero-sub text-white font-semibold mt-4 sm:mt-5 text-xl sm:text-2xl lg:text-[32px] xl:text-[36px] leading-tight"
             >
               All Under One Roof
             </p>

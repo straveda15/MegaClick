@@ -69,77 +69,56 @@ const PopularServices = ({ onSelectService }) => {
   };
 
   return (
-    <section className="py-5 bg-slate-50/60 popular-section font-['Inter',sans-serif]">
+    <section className="py-6 sm:py-8 bg-slate-50/60 popular-section font-['Inter',sans-serif]">
+      {/* GOOGLE FONTS */}
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@400;500;600;700&display=swap');
+
         /* Large Desktop (1920px Full HD) */
         @media (min-width: 1920px) {
-          .popular-section {
-            padding-top: 1.75rem !important;
-            padding-bottom: 1.75rem !important;
-          }
-          .popular-heading {
-            font-size: 1.15rem !important;
-            margin-bottom: 1.25rem !important;
-          }
-          .popular-grid {
-            gap: 1.5rem !important;
-          }
-          .popular-icon-box {
-            width: 4.25rem !important;
-            height: 4.25rem !important;
-            border-radius: 1.15rem !important;
-          }
-          .popular-card-title {
-            font-size: 0.85rem !important;
-            margin-top: 0.65rem !important;
-          }
+          .popular-section { padding-top: 2rem !important; padding-bottom: 2rem !important; }
+          .popular-heading { font-size: 1.35rem !important; margin-bottom: 1.5rem !important; }
+          .popular-grid { gap: 1.5rem !important; }
+          .popular-icon-box { width: 4.5rem !important; height: 4.5rem !important; border-radius: 1.25rem !important; }
+          .popular-card-title { font-size: 0.95rem !important; margin-top: 0.75rem !important; }
         }
 
         /* 4K Ultra-Wide Desktop (3840px) */
         @media (min-width: 3840px) {
-          .popular-section {
-            padding-top: 3.5rem !important;
-            padding-bottom: 3.5rem !important;
-          }
-          .popular-heading {
-            font-size: 1.85rem !important;
-            margin-bottom: 2.25rem !important;
-          }
-          .popular-grid {
-            gap: 2.75rem !important;
-          }
-          .popular-icon-box {
-            width: 7.5rem !important;
-            height: 7.5rem !important;
-            border-radius: 1.85rem !important;
-          }
-          .popular-card-title {
-            font-size: 1.45rem !important;
-            margin-top: 1.25rem !important;
-          }
+          .popular-section { padding-top: 4rem !important; padding-bottom: 4rem !important; }
+          .popular-heading { font-size: 2.25rem !important; margin-bottom: 2.5rem !important; }
+          .popular-grid { gap: 3rem !important; }
+          .popular-icon-box { width: 8rem !important; height: 8rem !important; border-radius: 2rem !important; }
+          .popular-card-title { font-size: 1.5rem !important; margin-top: 1.5rem !important; }
         }
       `}</style>
 
-      <div className="app-container">
-        <div className="mb-4 flex items-center">
+      <div className="max-w-[1380px] mx-auto px-4 sm:px-6 min-[1440px]:px-10">
+        {/* =========================================
+            CONSISTENT HEADING
+        ========================================== */}
+        <div className="mb-5 sm:mb-6 flex items-center justify-between">
           <h2
             style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
-            className="popular-heading text-sm sm:text-base font-bold text-gray-800 flex items-center gap-1.5 text-left"
+            className="popular-heading text-lg sm:text-xl font-bold text-black flex items-center gap-2 text-left"
           >
-            <span className="text-amber-500 text-base">⚡</span>
-            Popular Services
+            <span className="text-amber-500 text-lg">⚡</span>
+            Popular <span className="text-[#0B4EA2]">Services</span>
           </h2>
         </div>
 
+        {/* =========================================
+            SERVICES ICON GRID
+        ========================================== */}
         <div className="popular-grid grid grid-cols-2 sm:grid-cols-5 md:grid-cols-5 gap-3 sm:gap-5">
           {popularServices.map((service, index) => (
             <div
               key={index}
               onClick={() => handleServiceClick(service.title)}
-              className="group flex flex-col items-center cursor-pointer py-1"
+              className="group flex flex-col items-center cursor-pointer py-1.5 transition-transform duration-200"
             >
-              {/* SMALL CARD IMAGE CONTAINER */}
-              <div className="popular-icon-box w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-white border border-gray-200/80 shadow-xs flex items-center justify-center p-2 transition-all duration-300 group-hover:scale-105 group-hover:shadow-md overflow-hidden">
+              {/* CARD IMAGE CONTAINER */}
+              <div className="popular-icon-box w-13 h-13 sm:w-16 sm:h-16 rounded-2xl bg-white border border-gray-200/80 shadow-xs flex items-center justify-center p-2.5 transition-all duration-300 group-hover:scale-105 group-hover:shadow-md group-hover:border-blue-200 overflow-hidden">
                 {service.image ? (
                   <img
                     src={service.image}
@@ -153,7 +132,10 @@ const PopularServices = ({ onSelectService }) => {
               </div>
 
               {/* CARD TITLE */}
-              <h3 className="popular-card-title mt-2 text-xs font-medium text-gray-700 text-center leading-tight line-clamp-2">
+              <h3
+                style={{ fontFamily: "'Inter', sans-serif" }}
+                className="popular-card-title mt-2.5 text-xs font-semibold text-gray-800 text-center leading-snug line-clamp-2 group-hover:text-[#0B4EA2] transition-colors"
+              >
                 {service.title}
               </h3>
             </div>

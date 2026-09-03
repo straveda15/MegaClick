@@ -14,50 +14,65 @@ import hero4 from "../assets/hero4.png";
 import hero3 from "../assets/hero3.webp";
 
 // =========================================================
-// SECTION-TRIGGERED COUNT UP COMPONENT
+// ✅ PERFECT LINEAR COUNT-UP
+// कोई easing नहीं → 15 तक एकदम सीधा, बिना रुके
 // =========================================================
-const SectionCountUp = ({ end, duration = 1800, suffix = "", isTriggered }) => {
+const LinearCountUp = ({ end, suffix = "", duration = 800 }) => {
   const [count, setCount] = useState(0);
+  const ref = useRef(null);
+  const started = useRef(false);
+  const rafRef = useRef(null);
 
   useEffect(() => {
-    let animationFrameId;
-    let startTime = null;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !started.current) {
+          started.current = true;
+          let startTime = null;
 
-    if (isTriggered) {
-      setCount(0);
-      startTime = null;
+          const tick = (timestamp) => {
+            if (!startTime) startTime = timestamp;
+            // Linear progress: 0 → 1 uniformly over `duration` ms
+            const progress = Math.min((timestamp - startTime) / duration, 1);
+            // Direct linear mapping — no easing, no slowdown at end
+            const current = Math.ceil(progress * end);
+            setCount(current);
 
-      const animate = (currentTime) => {
-        if (!startTime) startTime = currentTime;
-        const progress = Math.min((currentTime - startTime) / duration, 1);
-        const easeOutQuad = 1 - Math.pow(1 - progress, 3);
-        setCount(Math.floor(easeOutQuad * end));
+            if (progress < 1) {
+              rafRef.current = requestAnimationFrame(tick);
+            } else {
+              setCount(end); // guarantee exact final value
+            }
+          };
 
-        if (progress < 1) {
-          animationFrameId = requestAnimationFrame(animate);
-        } else {
-          setCount(end);
+          rafRef.current = requestAnimationFrame(tick);
         }
-      };
+      },
+      { threshold: 0.1 }
+    );
 
-      animationFrameId = requestAnimationFrame(animate);
-    } else {
-      setCount(0);
-    }
+    const el = ref.current;
+    if (el) observer.observe(el);
 
     return () => {
-      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+      observer.disconnect();
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [isTriggered, end, duration]);
+  }, [end, duration]);
 
   return (
-    <span>
-      {count}
-      {suffix}
+    <span
+      ref={ref}
+      style={{ fontVariantNumeric: "tabular-nums", display: "inline-block", minWidth: "2ch" }}
+    >
+      {count}{suffix}
     </span>
   );
 };
 
+// =========================================================
+// SERVICE CARDS DATA
+// =========================================================
 const services = [
   {
     id: 1,
@@ -102,31 +117,12 @@ const services = [
 ];
 
 const Hero = () => {
-  const heroSectionRef = useRef(null);
-  const [isHeroInView, setIsHeroInView] = useState(true);
-
   let navigate;
   try {
     navigate = useNavigate();
   } catch (e) {
     navigate = null;
   }
-
-  // RE-TRIGGER COUNTERS WHEN SCROLLING ONTO HERO SECTION
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsHeroInView(entry.isIntersecting);
-      },
-      { threshold: 0.15 }
-    );
-
-    if (heroSectionRef.current) {
-      observer.observe(heroSectionRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
 
   const scrollToHowItWorks = () => {
     const target =
@@ -153,127 +149,90 @@ const Hero = () => {
   return (
     <section
       id="home"
-      ref={heroSectionRef}
       className="relative overflow-hidden bg-white font-['Inter',sans-serif] py-6 sm:py-10 lg:py-14 min-[1920px]:py-20 min-[3840px]:py-32"
     >
-      {/* DIRECT CSS FOR RESPONSIVE SCALING (LAPTOP, 1440px, 1920px, 3840px) */}
       <style>{`
-        /* 1920px Full HD Desktop */
-        @media (min-width: 1920px) {
-          .hero-container {
-            max-width: 1800px !important;
-            padding-left: 4rem !important;
-            padding-right: 4rem !important;
-          }
-          .hero-title {
-            font-size: 3.75rem !important;
-            line-height: 1.15 !important;
-          }
-          .hero-desc {
-            font-size: 1.25rem !important;
-            line-height: 2rem !important;
-            max-width: 44rem !important;
-          }
-          .hero-stat-num {
-            font-size: 2.75rem !important;
-          }
-          .hero-stat-label {
-            font-size: 1rem !important;
-          }
-          .hero-btn {
-            font-size: 1.125rem !important;
-            padding: 1rem 2.25rem !important;
-          }
-          .hero-card {
-            min-height: 250px !important;
-            padding: 1.75rem !important;
-            border-radius: 1.5rem !important;
-          }
-          .hero-card-img-box {
-            height: 5rem !important;
-          }
-          .hero-card-title {
-            font-size: 1.25rem !important;
-          }
-          .hero-card-desc {
-            font-size: 0.95rem !important;
-            line-height: 1.55 !important;
-          }
+        @import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@400;500;600;700;800&display=swap');
+
+        /* ── 1440px Desktop ── */
+        @media (min-width: 1440px) {
+          .hero-container        { max-width: 1380px !important; padding-left: 2.5rem !important; padding-right: 2.5rem !important; }
+          .hero-title            { font-size: 2.75rem !important; }
+          .hero-desc             { font-size: 1rem !important; }
+          .hero-stat-num         { font-size: 2.25rem !important; }
+          .hero-stat-label       { font-size: 0.875rem !important; }
+          .hero-card             { min-height: 230px !important; padding: 1.35rem !important; border-radius: 1.25rem !important; }
+          .hero-card-img-box     { height: 4.5rem !important; }
+          .hero-card-title       { font-size: 1rem !important; }
+          .hero-card-desc        { font-size: 0.8rem !important; line-height: 1.55 !important; }
         }
 
-        /* 3840px 4K Ultra-Wide Desktop */
+        /* ── 1920px Full HD ── */
+        @media (min-width: 1920px) {
+          .hero-container        { max-width: 1800px !important; padding-left: 4rem !important; padding-right: 4rem !important; }
+          .hero-title            { font-size: 3.75rem !important; line-height: 1.15 !important; }
+          .hero-desc             { font-size: 1.25rem !important; line-height: 2rem !important; max-width: 44rem !important; }
+          .hero-stat-num         { font-size: 2.75rem !important; }
+          .hero-stat-label       { font-size: 1rem !important; }
+          .hero-btn              { font-size: 1.125rem !important; padding: 1rem 2.25rem !important; }
+
+          /* ✅ Card scaling for 1920px */
+          .hero-cards-grid       { max-width: 700px !important; gap: 1.5rem !important; }
+          .hero-card             { min-height: 280px !important; padding: 1.75rem !important; border-radius: 1.5rem !important; }
+          .hero-card-img-box     { height: 5.5rem !important; margin-bottom: 1.25rem !important; }
+          .hero-card-title       { font-size: 1.2rem !important; margin-bottom: 0.75rem !important; }
+          .hero-card-desc        { font-size: 0.95rem !important; line-height: 1.65 !important; }
+        }
+
+        /* ── 2560px QHD ── */
+        @media (min-width: 2560px) {
+          .hero-container        { max-width: 2400px !important; padding-left: 5rem !important; padding-right: 5rem !important; }
+          .hero-title            { font-size: 5rem !important; line-height: 1.15 !important; }
+          .hero-desc             { font-size: 1.75rem !important; line-height: 2.75rem !important; max-width: 60rem !important; }
+          .hero-stat-num         { font-size: 4rem !important; }
+          .hero-stat-label       { font-size: 1.4rem !important; }
+          .hero-btn              { font-size: 1.5rem !important; padding: 1.25rem 3rem !important; }
+
+          /* ✅ Card scaling for 2560px */
+          .hero-cards-grid       { max-width: 1000px !important; gap: 2rem !important; }
+          .hero-card             { min-height: 380px !important; padding: 2.25rem !important; border-radius: 1.75rem !important; }
+          .hero-card-img-box     { height: 7.5rem !important; margin-bottom: 1.5rem !important; }
+          .hero-card-title       { font-size: 1.65rem !important; margin-bottom: 1rem !important; }
+          .hero-card-desc        { font-size: 1.3rem !important; line-height: 1.75 !important; }
+        }
+
+        /* ── 3840px 4K Ultra-Wide ── */
         @media (min-width: 3840px) {
-          .hero-container {
-            max-width: 3200px !important;
-            padding-left: 6rem !important;
-            padding-right: 6rem !important;
-          }
-          .hero-grid {
-            gap: 5rem !important;
-          }
-          .hero-title {
-            font-size: 6.5rem !important;
-            line-height: 1.15 !important;
-          }
-          .hero-desc {
-            font-size: 2.25rem !important;
-            line-height: 3.5rem !important;
-            max-width: 75rem !important;
-          }
-          .hero-stat-num {
-            font-size: 5rem !important;
-          }
-          .hero-stat-label {
-            font-size: 1.75rem !important;
-            margin-top: 0.75rem !important;
-          }
-          .hero-btn {
-            font-size: 2rem !important;
-            padding: 1.5rem 3.5rem !important;
-            border-radius: 9999px !important;
-          }
-          .hero-btn-icon {
-            width: 2rem !important;
-            height: 2rem !important;
-          }
-          .hero-cards-grid {
-            max-width: 1400px !important;
-            gap: 2rem !important;
-          }
-          .hero-card {
-            min-height: 440px !important;
-            padding: 2.5rem !important;
-            border-radius: 2.5rem !important;
-          }
-          .hero-card-img-box {
-            height: 9rem !important;
-            margin-bottom: 1.5rem !important;
-          }
-          .hero-card-title {
-            font-size: 2.25rem !important;
-            line-height: 1.3 !important;
-            margin-bottom: 0.75rem !important;
-          }
-          .hero-card-desc {
-            font-size: 1.6rem !important;
-            line-height: 2.4rem !important;
-          }
+          .hero-container        { max-width: 3200px !important; padding-left: 6rem !important; padding-right: 6rem !important; }
+          .hero-grid             { gap: 5rem !important; }
+          .hero-title            { font-size: 6.5rem !important; line-height: 1.15 !important; }
+          .hero-desc             { font-size: 2.25rem !important; line-height: 3.5rem !important; max-width: 75rem !important; }
+          .hero-stat-num         { font-size: 5rem !important; }
+          .hero-stat-label       { font-size: 1.75rem !important; margin-top: 0.75rem !important; }
+          .hero-btn              { font-size: 2rem !important; padding: 1.5rem 3.5rem !important; border-radius: 9999px !important; }
+
+          /* ✅ Card scaling for 4K */
+          .hero-cards-grid       { max-width: 1400px !important; gap: 2.5rem !important; }
+          .hero-card             { min-height: 520px !important; padding: 3rem !important; border-radius: 2.5rem !important; }
+          .hero-card-img-box     { height: 11rem !important; margin-bottom: 2rem !important; }
+          .hero-card-title       { font-size: 2.5rem !important; margin-bottom: 1.25rem !important; line-height: 1.3 !important; }
+          .hero-card-desc        { font-size: 1.75rem !important; line-height: 2.5rem !important; }
         }
       `}</style>
 
       {/* MAIN CONTAINER */}
       <div className="hero-container w-full max-w-[1380px] mx-auto px-4 sm:px-6 min-[1440px]:px-10">
         <div className="hero-grid grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-12 items-start">
-          
+
           {/* =====================================================
-              LEFT CONTENT (HEADING AT TOP, DESCRIPTION, STATS & BUTTONS)
+              LEFT — Heading, Desc, Stats, Buttons
           ====================================================== */}
-          <div className="space-y-4 sm:space-y-6 md:space-y-7 w-full flex flex-col items-start text-left pt-0 sm:pt-1">
-            
-            {/* HEADING (Hedvig Letters Serif - Aligned to the top) */}
+          <div className="space-y-4 sm:space-y-6 md:space-y-7 w-full flex flex-col items-start text-left">
+
+            {/* HEADING */}
             <h1
               style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
-              className="hero-title text-3xl sm:text-4xl lg:text-4xl xl:text-5xl font-bold leading-[1.18] text-slate-900 text-left mt-0"
+              className="hero-title text-3xl sm:text-4xl xl:text-5xl font-bold leading-[1.18] text-slate-900 text-left"
             >
               Grow Your Business
               <br />
@@ -283,97 +242,66 @@ const Hero = () => {
             {/* DESCRIPTION */}
             <p
               style={{ fontFamily: "'Inter', sans-serif" }}
-              className="hero-desc text-sm sm:text-base md:text-lg text-slate-600 leading-relaxed sm:leading-7 max-w-xl text-left"
+              className="hero-desc text-sm sm:text-base md:text-lg text-slate-600 leading-relaxed sm:leading-7 max-w-xl text-left font-normal"
             >
               Complete business solutions to simplify your registrations, tax
               compliance, and financial growth with trusted expert guidance.
             </p>
 
-            {/* =====================================================
-                STATS (TRIGGERED VIA INTERSECTION OBSERVER)
-            ====================================================== */}
+            {/* STATS */}
             <div className="flex gap-6 sm:gap-8 md:gap-10 flex-wrap justify-start w-full pt-1">
-              
-              {/* STAT 1: 15k+ */}
-              <div className="flex flex-col items-start text-left">
+
+              <div className="flex flex-col items-start text-left" style={{ minWidth: "90px" }}>
                 <h3
                   style={{ fontFamily: "'Inter', sans-serif" }}
                   className="hero-stat-num text-2xl sm:text-3xl font-bold text-[#0B4EA2] tracking-tight leading-none"
                 >
-                  <SectionCountUp
-                    end={15}
-                    suffix="k+"
-                    duration={1800}
-                    isTriggered={isHeroInView}
-                  />
+                  <LinearCountUp end={15} suffix="k+" duration={800} />
                 </h3>
-                <div
-                  style={{ fontFamily: "'Inter', sans-serif" }}
-                  className="hero-stat-label text-xs sm:text-sm font-medium text-slate-600 mt-1 sm:mt-1.5 whitespace-nowrap"
-                >
+                <div className="hero-stat-label text-xs sm:text-sm font-medium text-slate-600 mt-1 sm:mt-1.5 whitespace-nowrap">
                   Happy customers
                 </div>
               </div>
 
-              {/* STAT 2: 25+ */}
-              <div className="flex flex-col items-start text-left">
+              <div className="flex flex-col items-start text-left" style={{ minWidth: "70px" }}>
                 <h3
                   style={{ fontFamily: "'Inter', sans-serif" }}
                   className="hero-stat-num text-2xl sm:text-3xl font-bold text-[#0B4EA2] tracking-tight leading-none"
                 >
-                  <SectionCountUp
-                    end={25}
-                    suffix="+"
-                    duration={1500}
-                    isTriggered={isHeroInView}
-                  />
+                  <LinearCountUp end={25} suffix="+" duration={800} />
                 </h3>
-                <div
-                  style={{ fontFamily: "'Inter', sans-serif" }}
-                  className="hero-stat-label text-xs sm:text-sm font-medium text-slate-600 mt-1 sm:mt-1.5 whitespace-nowrap"
-                >
+                <div className="hero-stat-label text-xs sm:text-sm font-medium text-slate-600 mt-1 sm:mt-1.5 whitespace-nowrap">
                   Services
                 </div>
               </div>
 
-              {/* STAT 3: 10+ */}
-              <div className="flex flex-col items-start text-left">
+              <div className="flex flex-col items-start text-left" style={{ minWidth: "100px" }}>
                 <h3
                   style={{ fontFamily: "'Inter', sans-serif" }}
                   className="hero-stat-num text-2xl sm:text-3xl font-bold text-[#0B4EA2] tracking-tight leading-none"
                 >
-                  <SectionCountUp
-                    end={10}
-                    suffix="+"
-                    duration={1400}
-                    isTriggered={isHeroInView}
-                  />
+                  <LinearCountUp end={10} suffix="+" duration={800} />
                 </h3>
-                <div
-                  style={{ fontFamily: "'Inter', sans-serif" }}
-                  className="hero-stat-label text-xs sm:text-sm font-medium text-slate-600 mt-1 sm:mt-1.5 whitespace-nowrap"
-                >
+                <div className="hero-stat-label text-xs sm:text-sm font-medium text-slate-600 mt-1 sm:mt-1.5 whitespace-nowrap">
                   Years Experience
                 </div>
               </div>
+
             </div>
 
             {/* BUTTONS */}
             <div className="flex flex-row gap-3 sm:gap-4 pt-2 w-full sm:w-auto justify-start items-center">
               <button
                 onClick={scrollToHowItWorks}
-                className="hero-btn group flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 active:bg-emerald-800 text-white px-6 sm:px-8 py-3.5 rounded-full font-semibold text-sm sm:text-base shadow-sm hover:shadow-md transition-all duration-200 transform hover:-translate-y-0.5 cursor-pointer text-center whitespace-nowrap"
+                className="hero-btn group flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white px-6 sm:px-8 py-3.5 rounded-full font-semibold text-sm sm:text-base shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 cursor-pointer whitespace-nowrap"
               >
                 <span>Get Started</span>
-                <ArrowRight
-                  size={17}
-                  className="hero-btn-icon transition-transform duration-200 group-hover:translate-x-1"
-                />
+                <ArrowRight size={17} className="transition-transform duration-200 group-hover:translate-x-1" />
               </button>
 
               <button
                 onClick={handleContactRedirect}
-                className="hero-btn flex-1 sm:flex-initial inline-flex items-center justify-center bg-[#0B4EA2] hover:bg-blue-700 active:bg-blue-800 text-white px-6 sm:px-8 py-3.5 rounded-full font-semibold text-sm sm:text-base shadow-sm hover:shadow-md transition-all duration-200 transform hover:-translate-y-0.5 cursor-pointer text-center whitespace-nowrap"
+                className="hero-btn flex-1 sm:flex-initial inline-flex items-center justify-center bg-[#0B4EA2] hover:bg-blue-700 text-white px-6 sm:px-8 py-3.5 rounded-full font-semibold text-sm sm:text-base shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 cursor-pointer whitespace-nowrap"
               >
                 Contact Us
               </button>
@@ -381,7 +309,7 @@ const Hero = () => {
           </div>
 
           {/* =====================================================
-              RIGHT CONTENT (4 2×2 SERVICE CARDS)
+              RIGHT — 4 Service Cards (properly scaled)
           ====================================================== */}
           <div className="w-full flex justify-center lg:justify-end items-start">
             <div className="hero-cards-grid grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-5 w-full max-w-[620px]">
@@ -390,28 +318,21 @@ const Hero = () => {
                   key={service.id}
                   className={`
                     hero-card
-                    group
-                    relative
+                    group relative
                     bg-gradient-to-b ${service.gradient}
                     border ${service.borderColor}
-                    rounded-2xl
-                    sm:rounded-3xl
-                    p-4.5
-                    sm:p-5
-                    flex
-                    flex-col
-                    justify-between
+                    rounded-2xl sm:rounded-3xl
+                    p-4 sm:p-5
+                    flex flex-col justify-between
                     shadow-[0_2px_12px_-2px_rgba(0,0,0,0.04)]
                     hover:shadow-[0_12px_30px_-4px_rgba(11,78,162,0.15)]
                     hover:-translate-y-1.5
-                    transition-all
-                    duration-300
+                    transition-all duration-300
                     overflow-hidden
-                    min-h-[210px]
-                    sm:min-h-[225px]
+                    min-h-[210px] sm:min-h-[225px]
                   `}
                 >
-                  {/* IMAGE BOX */}
+                  {/* IMAGE */}
                   <div className="hero-card-img-box h-14 sm:h-16 w-full flex items-center justify-center mb-3">
                     {service.image ? (
                       <img
@@ -431,17 +352,17 @@ const Hero = () => {
                     </div>
                   </div>
 
-                  {/* TITLE & DESCRIPTION */}
+                  {/* TEXT */}
                   <div className="flex flex-col flex-grow text-left">
                     <h3
                       style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
-                      className="hero-card-title text-[15px] sm:text-[16.5px] font-bold text-slate-900 mb-1.5 leading-snug text-left"
+                      className="hero-card-title text-[15px] sm:text-[16.5px] font-bold text-slate-900 mb-1.5 leading-snug"
                     >
                       {service.title}
                     </h3>
                     <p
                       style={{ fontFamily: "'Inter', sans-serif" }}
-                      className="hero-card-desc text-xs sm:text-[12.5px] text-slate-600 leading-[1.55] line-clamp-3 text-left"
+                      className="hero-card-desc text-xs sm:text-[12.5px] text-slate-600 leading-[1.55] line-clamp-3 font-normal"
                     >
                       {service.desc}
                     </p>

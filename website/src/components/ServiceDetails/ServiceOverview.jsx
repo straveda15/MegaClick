@@ -9,9 +9,29 @@ const serviceFeatures = [
 const ServiceOverview = ({ service }) => {
   if (!service) return null;
 
+  // Helper to color the first part in black and the last word in blue (#0B4EA2)
+  const renderStyledTitle = (title) => {
+    if (!title) return null;
+    const words = title.trim().split(" ");
+    if (words.length <= 1) {
+      return <span className="text-[#0B4EA2]">{title}</span>;
+    }
+    const lastWord = words.pop();
+    const firstPart = words.join(" ");
+    return (
+      <>
+        <span className="text-black">{firstPart} </span>
+        <span className="text-[#0B4EA2]">{lastWord}</span>
+      </>
+    );
+  };
+
   return (
-    <section className="w-full bg-white font-['Inter',sans-serif]">
+    <section className="w-full bg-white font-['Inter',sans-serif] py-8 sm:py-10 lg:py-12">
+      {/* GOOGLE FONTS */}
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@400;500;600;700&display=swap');
+
         @media (min-width: 1920px) {
           .so-container  { max-width: 1800px !important; padding-left: 4rem !important; padding-right: 4rem !important; }
           .so-heading    { font-size: 3rem !important; }
@@ -35,21 +55,28 @@ const ServiceOverview = ({ service }) => {
           so-container
           max-w-[1380px] mx-auto
           px-4 sm:px-6 min-[1440px]:px-10
-          py-8 sm:py-10 lg:py-12
-          min-[1920px]:py-16 min-[3840px]:py-28
         "
       >
-        {/* OVERVIEW TEXT */}
-        <div className="w-full text-center">
+        {/* =========================================
+            OVERVIEW HEADING & DESCRIPTION (Centered in Middle with Black & Blue text)
+        ========================================== */}
+        <div className="w-full text-center mb-8 sm:mb-10">
           <h2
             style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
             className="
               so-heading
-              text-2xl sm:text-3xl lg:text-4xl
-              font-bold text-[#0B4EA2] leading-tight
+              text-2xl
+              sm:text-3xl
+              md:text-3xl
+              lg:text-4xl
+              font-bold
+              leading-[1.18]
+              text-center
+              mb-2.5
+              sm:mb-4
             "
           >
-            {service.title}
+            {renderStyledTitle(service.title)}
           </h2>
 
           {service.description && (
@@ -57,9 +84,13 @@ const ServiceOverview = ({ service }) => {
               style={{ fontFamily: "'Inter', sans-serif" }}
               className="
                 so-desc
-                mt-4 sm:mt-5 mx-auto max-w-4xl
-                text-sm sm:text-base lg:text-lg
-                text-gray-500 leading-relaxed
+                mt-3 sm:mt-4 mx-auto max-w-4xl
+                text-sm
+                sm:text-base
+                text-gray-500
+                font-normal
+                leading-relaxed
+                text-center
               "
             >
               {service.description}
@@ -67,10 +98,12 @@ const ServiceOverview = ({ service }) => {
           )}
         </div>
 
-        {/* FEATURE CARDS */}
+        {/* =========================================
+            FEATURE CARDS
+        ========================================== */}
         <div
           className="
-            mt-8 sm:mt-10 min-[1920px]:mt-14 min-[3840px]:mt-20
+            mt-6 sm:mt-8 min-[1920px]:mt-14 min-[3840px]:mt-20
             grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3
             gap-4 lg:gap-6 min-[1920px]:gap-8 min-[3840px]:gap-14
           "

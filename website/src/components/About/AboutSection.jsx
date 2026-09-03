@@ -3,14 +3,15 @@ import { Users, Building2, ShieldCheck, BadgeCheck } from "lucide-react";
 
 const About = () => {
   return (
-    <section className="about-section relative overflow-hidden py-8 sm:py-12 min-[1440px]:py-16 min-[1920px]:py-20 min-[3840px]:py-32 bg-white font-['Inter',sans-serif]">
+    <section className="about-section relative overflow-hidden py-10 sm:py-14 min-[1440px]:py-16 min-[1920px]:py-20 min-[3840px]:py-32 bg-white font-['Inter',sans-serif]">
+      {/* GOOGLE FONTS */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif&family=Inter:wght@400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@400;500;600;700;800&display=swap');
 
         /* ── Standard Desktop 1440px ── */
         @media (min-width: 1440px) {
           .about-container        { max-width: 1380px !important; padding-left: 2.5rem !important; padding-right: 2.5rem !important; }
-          .about-heading          { font-size: 2.5rem !important; margin-top: 1rem !important; }
+          .about-heading          { font-size: 2.5rem !important; }
           .about-para             { font-size: 1.15rem !important; line-height: 1.85 !important; }
           .about-stat-icon        { width: 3.5rem !important; height: 3.5rem !important; }
           .about-stat-icon svg    { width: 1.5rem !important; height: 1.5rem !important; }
@@ -22,7 +23,7 @@ const About = () => {
         @media (min-width: 1920px) {
           .about-container        { max-width: 1800px !important; padding-left: 4rem !important; padding-right: 4rem !important; }
           .about-tagline          { font-size: 0.95rem !important; letter-spacing: 0.3em !important; }
-          .about-heading          { font-size: 3.25rem !important; margin-top: 1.25rem !important; }
+          .about-heading          { font-size: 3.25rem !important; }
           .about-para             { font-size: 1.35rem !important; line-height: 1.95 !important; }
           .about-stat-icon        { width: 4.25rem !important; height: 4.25rem !important; margin-bottom: 1rem !important; }
           .about-stat-icon svg    { width: 1.85rem !important; height: 1.85rem !important; }
@@ -35,7 +36,7 @@ const About = () => {
         @media (min-width: 3840px) {
           .about-container        { max-width: 3200px !important; padding-left: 6rem !important; padding-right: 6rem !important; }
           .about-tagline          { font-size: 1.75rem !important; letter-spacing: 0.35em !important; margin-bottom: 1.5rem !important; }
-          .about-heading          { font-size: 5.5rem !important; margin-top: 1.5rem !important; line-height: 1.15 !important; }
+          .about-heading          { font-size: 5.5rem !important; line-height: 1.15 !important; }
           .about-para             { font-size: 2.25rem !important; line-height: 2.1 !important; }
           .about-para-gap         { gap: 3.5rem !important; }
           .about-stats-wrap       { margin-top: 4.5rem !important; border-radius: 2.5rem !important; }
@@ -49,29 +50,45 @@ const About = () => {
 
       <div className="about-container w-full max-w-[1380px] min-[1920px]:max-w-[1800px] min-[3840px]:max-w-[3200px] mx-auto px-4 sm:px-6 min-[1440px]:px-10 min-[1920px]:px-16 min-[3840px]:px-24">
 
-        {/* HEADING */}
-        <div className="mb-6 sm:mb-10 min-[1920px]:mb-12 min-[3840px]:mb-16">
-          <p className="about-tagline text-xs sm:text-sm font-semibold tracking-[0.25em] uppercase text-[#0B4EA2] mb-3 sm:mb-4 text-left">
+        {/* =========================================
+            HEADING (Consistent Typography)
+        ========================================== */}
+        <div className="mb-6 sm:mb-8 min-[1920px]:mb-12 min-[3840px]:mb-16 text-left">
+          <p className="about-tagline text-xs sm:text-sm font-semibold tracking-[0.25em] uppercase text-[#0B4EA2] mb-2 sm:mb-2.5">
             About Us
           </p>
 
           <h2
             style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
-            className="about-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight"
+            className="
+              about-heading
+              text-2xl
+              sm:text-3xl
+              md:text-3xl
+              lg:text-4xl
+              font-bold
+              leading-[1.18]
+              text-black
+              text-left
+              mb-2.5
+              sm:mb-4
+            "
           >
             Your Success <span className="text-[#0B4EA2]">Our Mission</span>
           </h2>
         </div>
 
-        {/* PARAGRAPHS */}
+        {/* =========================================
+            PARAGRAPHS (Inter font)
+        ========================================== */}
         <div className="about-para-gap w-full flex flex-col space-y-4 sm:space-y-6 min-[1920px]:space-y-8">
-          <p className="about-para text-sm sm:text-base lg:text-lg text-gray-700 text-left sm:text-justify leading-relaxed">
+          <p className="about-para text-sm sm:text-base lg:text-lg text-gray-700 text-left sm:text-justify leading-relaxed font-normal">
             <span className="font-bold">
               <span className="text-[#0B4EA2]">Mega</span>
               <span className="text-green-500">Click</span>
             </span>{" "}
             stands as one of India's most dynamic and forward-thinking integrated
-            professional service platforms. It is built to simplify, streamline,
+            professional services. It is built to simplify, streamline,
             and elevate the way individuals and businesses access professional
             services. Founded on a foundation of integrity, professionalism, and
             customer satisfaction, MegaClick is not merely a professional service
@@ -80,7 +97,7 @@ const About = () => {
             unwavering commitment to excellence.
           </p>
 
-          <p className="about-para text-sm sm:text-base lg:text-lg text-gray-700 text-left sm:text-justify leading-relaxed">
+          <p className="about-para text-sm sm:text-base lg:text-lg text-gray-700 text-left sm:text-justify leading-relaxed font-normal">
             By bringing together legal, financial, banking, real estate, and
             business support professional services under one seamlessly
             integrated ecosystem,{" "}
@@ -98,8 +115,10 @@ const About = () => {
           </p>
         </div>
 
-        {/* STATS STRIP */}
-        <div className="about-stats-wrap relative mt-8 sm:mt-12 min-[1920px]:mt-14 min-[3840px]:mt-20 w-full overflow-hidden rounded-xl sm:rounded-2xl min-[3840px]:rounded-[40px] bg-gradient-to-r from-[#0B4EA2] via-blue-600 to-[#0B4EA2] shadow-2xl">
+        {/* =========================================
+            STATS STRIP
+        ========================================== */}
+        <div className="about-stats-wrap relative mt-8 sm:mt-12 min-[1920px]:mt-14 min-[3840px]:mt-20 w-full overflow-hidden rounded-2xl min-[3840px]:rounded-[40px] bg-gradient-to-r from-[#0B4EA2] via-blue-600 to-[#0B4EA2] shadow-xl">
           <div
             className="absolute inset-0 opacity-[0.08] pointer-events-none"
             style={{
@@ -147,7 +166,7 @@ const About = () => {
                 key={i}
                 className={`about-stat-cell flex flex-col items-center justify-center text-center px-4 py-6 sm:py-8 min-[1920px]:py-10 min-[3840px]:py-16 ${stat.borderClass}`}
               >
-                <div className="about-stat-icon w-11 h-11 sm:w-14 sm:h-14 rounded-full bg-white flex items-center justify-center mb-3 sm:mb-4 shadow-lg">
+                <div className="about-stat-icon w-11 h-11 sm:w-14 sm:h-14 rounded-full bg-white flex items-center justify-center mb-3 sm:mb-4 shadow-md">
                   {React.cloneElement(stat.icon, {
                     className: `w-5 h-5 sm:w-7 sm:h-7 ${stat.color}`,
                   })}
@@ -158,7 +177,7 @@ const About = () => {
                 >
                   {stat.num}
                 </h3>
-                <p className="about-stat-label text-xs sm:text-sm text-white/80 mt-1 sm:mt-2 font-medium">
+                <p className="about-stat-label text-xs sm:text-sm text-white/90 mt-1 sm:mt-2 font-medium">
                   {stat.label}
                 </p>
               </div>

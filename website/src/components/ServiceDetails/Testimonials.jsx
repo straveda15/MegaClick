@@ -1,15 +1,13 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
   MapPin,
   Quote,
   Star,
-  Sparkles,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
 
 const testimonials = [
-  // PAGE 1
   {
     name: "Keval Barot",
     service: "GST & Tax Compliance",
@@ -31,7 +29,6 @@ const testimonials = [
     review:
       "MegaClick does a fantastic job of managing complex policies and filings into smooth, accessible solutions for businesses.",
   },
-  // PAGE 2
   {
     name: "Satyam Jha",
     service: "PAN & ROC Filings",
@@ -53,7 +50,6 @@ const testimonials = [
     review:
       "Very fast and professional team. Got my MSME registration done within a day. Highly recommend MegaClick for all legal services.",
   },
-  // PAGE 3
   {
     name: "Aditya Sharma",
     service: "Trademark Registration",
@@ -77,31 +73,36 @@ const testimonials = [
   },
 ];
 
-const TOTAL_PAGES = 3; // 9 testimonials / 3 per page
-
 const TestimonialCard = ({ testimonial }) => (
   <article
     className="
-      relative flex flex-col
+      relative flex flex-col justify-between
       rounded-2xl border border-gray-200
-      bg-blue-50 p-5 sm:p-6
-      shadow-sm h-full
+      bg-blue-50/60
+      p-5 sm:p-6
+      shadow-sm
+      h-full
+      transition-all duration-300
+      hover:shadow-md
     "
   >
     {/* QUOTE ICON */}
     <div className="absolute right-5 top-5 text-blue-400">
-      <Quote size={20} />
+      <Quote size={22} />
     </div>
 
-    {/* TOP */}
+    {/* TOP CONTENT */}
     <div className="flex-1">
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3.5">
         {/* AVATAR */}
         <div
           className="
-            flex h-10 w-10 shrink-0 items-center justify-center
-            rounded-full bg-blue-100 border border-blue-200
-            text-base font-bold text-[#0B4EA2]
+            flex h-11 w-11 shrink-0 items-center justify-center
+            rounded-full
+            bg-blue-100
+            border border-blue-200
+            text-base font-bold
+            text-[#0B4EA2]
           "
           style={{ fontFamily: "'Inter', sans-serif" }}
         >
@@ -110,20 +111,47 @@ const TestimonialCard = ({ testimonial }) => (
 
         {/* NAME / SERVICE / LOCATION */}
         <div className="min-w-0 pr-6">
+          {/* NAME */}
           <h3
             style={{ fontFamily: "'Inter', sans-serif" }}
-            className="truncate text-sm font-bold text-gray-900"
+            className="
+              truncate
+              text-base
+              sm:text-[17px]
+              font-bold
+              text-gray-900
+            "
           >
             {testimonial.name}
           </h3>
+
+          {/* SERVICE */}
           <p
             style={{ fontFamily: "'Inter', sans-serif" }}
-            className="truncate text-xs font-semibold text-[#0B4EA2] mt-0.5"
+            className="
+              truncate
+              text-xs
+              font-semibold
+              text-[#0B4EA2]
+              mt-0.5
+            "
           >
             {testimonial.service}
           </p>
-          <div className="flex items-center gap-1 text-[11px] text-gray-400 mt-0.5">
-            <MapPin size={11} className="shrink-0 text-gray-400" />
+
+          {/* LOCATION (Visible & Clear) */}
+          <div
+            className="
+              flex items-center gap-1.5
+              text-xs text-gray-600
+              font-medium
+              mt-1
+            "
+          >
+            <MapPin
+              size={13}
+              className="shrink-0 text-[#0B4EA2]"
+            />
             <span
               style={{ fontFamily: "'Inter', sans-serif" }}
               className="truncate"
@@ -137,19 +165,33 @@ const TestimonialCard = ({ testimonial }) => (
       {/* REVIEW */}
       <p
         style={{ fontFamily: "'Inter', sans-serif" }}
-        className="mt-4 text-xs sm:text-sm text-gray-600 leading-relaxed"
+        className="
+          mt-4
+          text-xs
+          sm:text-sm
+          text-gray-600
+          leading-relaxed
+          font-normal
+        "
       >
         "{testimonial.review}"
       </p>
     </div>
 
     {/* STARS */}
-    <div className="mt-5 pt-3 border-t border-gray-100 flex items-center">
+    <div
+      className="
+        mt-5
+        pt-3
+        border-t border-gray-200/80
+        flex items-center
+      "
+    >
       <div className="flex shrink-0 gap-0.5">
         {[1, 2, 3, 4, 5].map((star) => (
           <Star
             key={star}
-            size={13}
+            size={14}
             className="fill-green-500 stroke-green-500"
           />
         ))}
@@ -159,182 +201,233 @@ const TestimonialCard = ({ testimonial }) => (
 );
 
 const Testimonials = () => {
-  const [page, setPage]           = useState(0); // 0, 1, 2
-  const [direction, setDirection] = useState("next");
-  const [animKey, setAnimKey]     = useState(0);
-  const isAnimating               = useRef(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [visibleCards, setVisibleCards] = useState(3);
 
-  const goTo = (newPage, dir) => {
-    if (isAnimating.current) return;
-    isAnimating.current = true;
-    setDirection(dir);
-    setAnimKey((k) => k + 1);
-    setPage(newPage);
-    setTimeout(() => { isAnimating.current = false; }, 420);
-  };
+  /* =========================================
+      RESPONSIVE CARDS
+      Desktop: 3
+      Tablet: 2
+      Mobile: 1
+  ========================================== */
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setVisibleCards(3);
+      } else if (window.innerWidth >= 640) {
+        setVisibleCards(2);
+      } else {
+        setVisibleCards(1);
+      }
+    };
 
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  /* =========================================
+      MAXIMUM SLIDE INDEX
+  ========================================== */
+  const maxIndex = Math.max(0, testimonials.length - visibleCards);
+
+  /* =========================================
+      PREVIOUS (1 Card at a time)
+  ========================================== */
   const goPrev = () => {
-    if (page === 0) return;
-    goTo(page - 1, "prev");
+    setCurrentIndex((prev) => Math.max(0, prev - 1));
   };
 
+  /* =========================================
+      NEXT (1 Card at a time)
+  ========================================== */
   const goNext = () => {
-    if (page === TOTAL_PAGES - 1) return;
-    goTo(page + 1, "next");
+    setCurrentIndex((prev) => Math.min(maxIndex, prev + 1));
   };
 
-  // 3 cards for current page
-  const pageCards = testimonials.slice(page * 3, page * 3 + 3);
+  /* =======================================================
+      PER-CARD PERCENTAGE CALCULATION
+      Shift exact 1 card width relative to entire track width
+  ======================================================= */
+  const trackWidthPercent = (testimonials.length / visibleCards) * 100;
+  const singleCardShiftPercent = 100 / testimonials.length;
 
   return (
-    <section className="w-full bg-white font-['Inter',sans-serif] overflow-hidden">
+    <section
+      className="
+        w-full
+        bg-white
+        overflow-hidden
+        py-10
+        sm:py-14
+        lg:py-16
+      "
+    >
+      {/* GOOGLE FONTS */}
       <style>{`
-        @keyframes slideInRight {
-          from { opacity: 0; transform: translateX(70px); }
-          to   { opacity: 1; transform: translateX(0); }
-        }
-        @keyframes slideInLeft {
-          from { opacity: 0; transform: translateX(-70px); }
-          to   { opacity: 1; transform: translateX(0); }
-        }
-        .anim-next { animation: slideInRight 0.40s cubic-bezier(0.25,0.8,0.25,1) both; }
-        .anim-prev { animation: slideInLeft  0.40s cubic-bezier(0.25,0.8,0.25,1) both; }
-
-        @media (min-width: 1920px) {
-          .test-container { max-width: 1800px !important; padding-left: 4rem !important; padding-right: 4rem !important; }
-          .test-heading   { font-size: 3rem !important; }
-          .test-sub       { font-size: 1.1rem !important; }
-        }
-        @media (min-width: 3840px) {
-          .test-container { max-width: 3200px !important; padding-left: 6rem !important; padding-right: 6rem !important; }
-          .test-heading   { font-size: 5rem !important; }
-          .test-sub       { font-size: 2rem !important; }
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@400;500;600;700&display=swap');
       `}</style>
 
       <div
         className="
-          test-container
-          max-w-[1380px] mx-auto
-          px-4 sm:px-6 min-[1440px]:px-10
-          py-10 sm:py-12 lg:py-16
-          min-[1920px]:py-20 min-[3840px]:py-32
+          max-w-[1380px]
+          mx-auto
+          px-4
+          sm:px-6
+          min-[1440px]:px-10
         "
       >
         {/* =========================================
-            HEADING
+            HEADING (Left-aligned)
         ========================================== */}
         <div className="mb-8 sm:mb-10 text-left">
-          
-
-          <br />
-
           <h2
-            style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+            style={{
+              fontFamily: "'Hedvig Letters Serif', serif",
+            }}
             className="
-              test-heading
-              text-2xl sm:text-3xl lg:text-4xl
-              font-bold text-[#0B4EA2] leading-tight mt-2
+              text-2xl
+              sm:text-3xl
+              md:text-3xl
+              lg:text-4xl
+              font-bold
+              leading-[1.18]
+              text-black
+              text-left
+              mb-2.5
+              sm:mb-4
             "
           >
-            What Our Clients Say
+            What Our Clients{" "}
+            <span className="text-[#0B4EA2]">
+              Say
+            </span>
           </h2>
 
           <p
-            style={{ fontFamily: "'Inter', sans-serif" }}
+            style={{
+              fontFamily: "'Inter', sans-serif",
+            }}
             className="
-              test-sub
-              mt-2 max-w-xl
-              text-sm sm:text-base text-gray-500 leading-relaxed
+              text-sm
+              sm:text-base
+              text-gray-500
+              font-normal
+              leading-relaxed
+              max-w-xl
+              text-left
             "
           >
-            Real feedback from businesses trusting MegaClick for their growth.
+            Real feedback from businesses trusting
+            MegaClick for their growth.
           </p>
         </div>
 
         {/* =========================================
-            CARDS — DESKTOP (3 per page)
+            TESTIMONIAL CAROUSEL (1-Card Smooth Movement)
         ========================================== */}
-        <div
-          key={animKey}
-          className={`
-            hidden lg:grid grid-cols-3 gap-5 items-stretch
-            ${direction === "next" ? "anim-next" : "anim-prev"}
-          `}
-        >
-          {pageCards.map((t, i) => (
-            <TestimonialCard key={`${t.name}-${i}`} testimonial={t} />
-          ))}
+        <div className="relative overflow-hidden w-full">
+          <div
+            className="flex transition-transform duration-500 ease-in-out"
+            style={{
+              width: `${trackWidthPercent}%`,
+              transform: `translateX(-${currentIndex * singleCardShiftPercent}%)`,
+            }}
+          >
+            {testimonials.map((testimonial, index) => (
+              <div
+                key={`${testimonial.name}-${index}`}
+                style={{
+                  width: `${100 / testimonials.length}%`,
+                }}
+                className="px-2.5 shrink-0"
+              >
+                {/* UNIFORM CARD HEIGHT */}
+                <div className="w-full h-[275px]">
+                  <TestimonialCard testimonial={testimonial} />
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* =========================================
-            CARDS — TABLET (2 per page)
+            NAVIGATION BUTTONS
         ========================================== */}
         <div
-          key={`tab-${animKey}`}
-          className={`
-            hidden sm:grid lg:hidden grid-cols-2 gap-5 items-stretch
-            ${direction === "next" ? "anim-next" : "anim-prev"}
-          `}
+          className="
+            mt-8
+            flex
+            justify-center
+            items-center
+            gap-4
+          "
         >
-          {pageCards.slice(0, 2).map((t, i) => (
-            <TestimonialCard key={`${t.name}-${i}`} testimonial={t} />
-          ))}
-        </div>
-
-        {/* =========================================
-            CARDS — MOBILE (1 per page)
-        ========================================== */}
-        <div
-          key={`mob-${animKey}`}
-          className={`
-            block sm:hidden
-            ${direction === "next" ? "anim-next" : "anim-prev"}
-          `}
-        >
-          <TestimonialCard testimonial={pageCards[0]} />
-        </div>
-
-        {/* =========================================
-            NAVIGATION — ARROWS ONLY (no dots)
-        ========================================== */}
-        <div className="mt-8 flex justify-center items-center gap-4">
+          {/* PREVIOUS BUTTON */}
           <button
             type="button"
             onClick={goPrev}
-            disabled={page === 0}
-            aria-label="Previous testimonials"
+            disabled={currentIndex === 0}
+            aria-label="Previous testimonial"
             className="
-              flex items-center justify-center
-              w-10 h-10 rounded-full
-              border-2 border-[#0B4EA2]
-              text-[#0B4EA2] bg-white
-              hover:bg-[#0B4EA2] hover:text-white
-              transition-all duration-200 cursor-pointer shadow-sm
-              disabled:opacity-30 disabled:cursor-not-allowed
-              disabled:hover:bg-white disabled:hover:text-[#0B4EA2]
+              flex
+              items-center
+              justify-center
+              w-11
+              h-11
+              rounded-full
+              border-2
+              border-[#0B4EA2]
+              text-[#0B4EA2]
+              bg-white
+              hover:bg-[#0B4EA2]
+              hover:text-white
+              transition-all
+              duration-200
+              cursor-pointer
+              shadow-sm
+              disabled:opacity-30
+              disabled:cursor-not-allowed
+              disabled:hover:bg-white
+              disabled:hover:text-[#0B4EA2]
             "
           >
-            <ChevronLeft size={20} />
+            <ChevronLeft size={21} />
           </button>
 
+          {/* NEXT BUTTON */}
           <button
             type="button"
             onClick={goNext}
-            disabled={page === TOTAL_PAGES - 1}
-            aria-label="Next testimonials"
+            disabled={currentIndex >= maxIndex}
+            aria-label="Next testimonial"
             className="
-              flex items-center justify-center
-              w-10 h-10 rounded-full
-              border-2 border-[#0B4EA2]
-              text-[#0B4EA2] bg-white
-              hover:bg-[#0B4EA2] hover:text-white
-              transition-all duration-200 cursor-pointer shadow-sm
-              disabled:opacity-30 disabled:cursor-not-allowed
-              disabled:hover:bg-white disabled:hover:text-[#0B4EA2]
+              flex
+              items-center
+              justify-center
+              w-11
+              h-11
+              rounded-full
+              border-2
+              border-[#0B4EA2]
+              text-[#0B4EA2]
+              bg-white
+              hover:bg-[#0B4EA2]
+              hover:text-white
+              transition-all
+              duration-200
+              cursor-pointer
+              shadow-sm
+              disabled:opacity-30
+              disabled:cursor-not-allowed
+              disabled:hover:bg-white
+              disabled:hover:text-[#0B4EA2]
             "
           >
-            <ChevronRight size={20} />
+            <ChevronRight size={21} />
           </button>
         </div>
       </div>
