@@ -12,66 +12,24 @@ const ServiceCard = ({ service }) => {
 
   return (
     <Link to={`/services/${slug}`} className="group block h-full font-['Inter',sans-serif]">
+      {/* GOOGLE FONTS */}
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@400;500;600;700&display=swap');
+
         /* 1920px Full HD */
         @media (min-width: 1920px) {
-          .service-item-card {
-            min-height: 230px !important;
-            padding: 1.5rem !important;
-          }
-          .service-item-image-box {
-            width: 4.5rem !important;
-            height: 4.5rem !important;
-            margin-bottom: 1rem !important;
-          }
-          .service-item-title {
-            font-size: 1.05rem !important;
-          }
-          .service-item-tag {
-            font-size: 0.75rem !important;
-            padding: 0.45rem 0.85rem !important;
-          }
-        }
-
-        /* 2560px 2K */
-        @media (min-width: 2560px) {
-          .service-item-card {
-            min-height: 270px !important;
-            padding: 1.75rem !important;
-          }
-          .service-item-image-box {
-            width: 5.5rem !important;
-            height: 5.5rem !important;
-            margin-bottom: 1.25rem !important;
-          }
-          .service-item-title {
-            font-size: 1.25rem !important;
-          }
-          .service-item-tag {
-            font-size: 0.85rem !important;
-            padding: 0.55rem 1rem !important;
-          }
+          .service-item-card { min-height: 230px !important; padding: 1.5rem !important; }
+          .service-item-image-box { width: 4.5rem !important; height: 4.5rem !important; margin-bottom: 1rem !important; }
+          .service-item-title { font-size: 1.1rem !important; }
+          .service-item-tag { font-size: 0.8rem !important; padding: 0.45rem 0.85rem !important; }
         }
 
         /* 3840px 4K */
         @media (min-width: 3840px) {
-          .service-item-card {
-            min-height: 380px !important;
-            padding: 2.25rem !important;
-            border-radius: 1.5rem !important;
-          }
-          .service-item-image-box {
-            width: 7.5rem !important;
-            height: 7.5rem !important;
-            margin-bottom: 1.75rem !important;
-          }
-          .service-item-title {
-            font-size: 1.65rem !important;
-          }
-          .service-item-tag {
-            font-size: 1.15rem !important;
-            padding: 0.75rem 1.35rem !important;
-          }
+          .service-item-card { min-height: 380px !important; padding: 2.25rem !important; border-radius: 1.5rem !important; }
+          .service-item-image-box { width: 7.5rem !important; height: 7.5rem !important; margin-bottom: 1.75rem !important; }
+          .service-item-title { font-size: 1.75rem !important; }
+          .service-item-tag { font-size: 1.25rem !important; padding: 0.75rem 1.35rem !important; }
         }
       `}</style>
 
@@ -80,8 +38,8 @@ const ServiceCard = ({ service }) => {
           service-item-card
           relative
           h-full
-          min-h-[175px]
-          sm:min-h-[195px]
+          min-h-[180px]
+          sm:min-h-[200px]
           overflow-hidden
           rounded-2xl
           bg-white
@@ -98,13 +56,13 @@ const ServiceCard = ({ service }) => {
           transition-all
           duration-300
           hover:-translate-y-1.5
-          hover:shadow-xl
-          hover:shadow-emerald-900/10
+          hover:shadow-lg
+          hover:shadow-blue-900/8
           active:scale-[0.98]
           cursor-pointer
         "
       >
-        {/* GREEN ASYMMETRIC BORDER OVERLAY */}
+        {/* GREEN/BLUE ASYMMETRIC BORDER OVERLAY */}
         <div
           className="
             pointer-events-none
@@ -115,7 +73,7 @@ const ServiceCard = ({ service }) => {
             border-r-[1.5px]
             border-l-[3.5px]
             border-b-[3.5px]
-            border-[#00A878]
+            border-[#0B4EA2]
             opacity-0
             transition-opacity
             duration-300
@@ -125,7 +83,7 @@ const ServiceCard = ({ service }) => {
           "
         />
 
-        {/* 🖼️ FLATICON / PNG IMAGE */}
+        {/* IMAGE / ICON BOX */}
         <div
           className="
             service-item-image-box
@@ -151,13 +109,13 @@ const ServiceCard = ({ service }) => {
               className="w-full h-full object-contain"
             />
           ) : (
-            <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 font-bold text-xs">
+            <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-[#0B4EA2] font-bold text-sm">
               {title.charAt(0)}
             </div>
           )}
         </div>
 
-        {/* TITLE */}
+        {/* TITLE (Hedvig Letters Serif) */}
         <h3
           style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
           className="
@@ -174,17 +132,18 @@ const ServiceCard = ({ service }) => {
           {title}
         </h3>
 
-        {/* CATEGORY TAG PILL */}
+        {/* CATEGORY TAG PILL (Inter) */}
         <div
+          style={{ fontFamily: "'Inter', sans-serif" }}
           className="
             service-item-tag
             w-full
             mt-3
-            bg-gray-100
+            bg-slate-100
             text-[10px]
             sm:text-[11px]
-            font-bold
-            text-gray-500
+            font-semibold
+            text-gray-600
             py-1.5
             px-3
             rounded-lg

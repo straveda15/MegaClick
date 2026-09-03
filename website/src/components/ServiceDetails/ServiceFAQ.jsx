@@ -161,99 +161,68 @@ const defaultFAQs = [
 ];
 
 const ServiceFAQ = ({ service }) => {
-  const [openIndex, setOpenIndex] = useState(0);
+  // null = all closed initially; user opens manually
+  const [openIndex, setOpenIndex] = useState(null);
 
-  // If service has specific single/multiple FAQs, prepend them to all 30 default FAQs so ALL 30 are always visible
   const specificFaqs = service?.faqs || service?.faq || [];
-  const faqs = specificFaqs.length > 0
-    ? [...specificFaqs, ...defaultFAQs]
-    : defaultFAQs;
+  const faqs =
+    specificFaqs.length > 0
+      ? [...specificFaqs, ...defaultFAQs]
+      : defaultFAQs;
 
   const toggleFAQ = (index) => {
     setOpenIndex(openIndex === index ? null : index);
   };
 
   return (
-    <section className="w-full bg-blue-50 py-8 sm:py-12 lg:py-16 min-[1920px]:py-20 min-[3840px]:py-32 font-['Inter',sans-serif]">
-      {/* RESPONSIVE CSS STYLES FOR LARGE SCREENS */}
+    <section className="w-full bg-blue-50 py-10 sm:py-12 lg:py-16 font-['Inter',sans-serif]">
+      {/* GOOGLE FONTS */}
       <style>{`
-        /* 1920px Full HD */
-        @media (min-width: 1920px) {
-          .service-faq-container {
-            max-width: 1800px !important;
-            padding-left: 4rem !important;
-            padding-right: 4rem !important;
-          }
-          .service-faq-heading {
-            font-size: 2.75rem !important;
-          }
-          .service-faq-question {
-            font-size: 1.25rem !important;
-            line-height: 1.75rem !important;
-          }
-          .service-faq-answer {
-            font-size: 1.125rem !important;
-            line-height: 2rem !important;
-          }
-          .service-faq-chevron-btn {
-            width: 2.5rem !important;
-            height: 2.5rem !important;
-          }
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@400;500;600;700&display=swap');
 
-        /* 3840px 4K Ultra-Wide */
+        @media (min-width: 1920px) {
+          .service-faq-container { max-width: 1800px !important; padding-left: 4rem !important; padding-right: 4rem !important; }
+          .service-faq-heading { font-size: 3rem !important; }
+          .service-faq-question { font-size: 1.25rem !important; line-height: 1.75rem !important; }
+          .service-faq-answer { font-size: 1.125rem !important; line-height: 2rem !important; }
+        }
         @media (min-width: 3840px) {
-          .service-faq-container {
-            max-width: 3200px !important;
-            padding-left: 6rem !important;
-            padding-right: 6rem !important;
-          }
-          .service-faq-heading {
-            font-size: 4.5rem !important;
-          }
-          .service-faq-question {
-            font-size: 2.25rem !important;
-            line-height: 3rem !important;
-          }
-          .service-faq-answer {
-            font-size: 2rem !important;
-            line-height: 3.25rem !important;
-          }
-          .service-faq-chevron-btn {
-            width: 4.5rem !important;
-            height: 4.5rem !important;
-          }
-          .service-faq-chevron-btn svg {
-            width: 2.5rem !important;
-            height: 2.5rem !important;
-          }
+          .service-faq-container { max-width: 3200px !important; padding-left: 6rem !important; padding-right: 6rem !important; }
+          .service-faq-heading { font-size: 5rem !important; }
+          .service-faq-question { font-size: 2.25rem !important; line-height: 3rem !important; }
+          .service-faq-answer { font-size: 2rem !important; line-height: 3.25rem !important; }
         }
       `}</style>
 
       <div className="service-faq-container w-full max-w-[1380px] mx-auto px-4 sm:px-6 min-[1440px]:px-10">
         {/* =========================================
-            HEADER (NO BADGE)
+            HEADER (Consistent Typography)
         ========================================== */}
-        <div className="mb-6 sm:mb-8 min-[1920px]:mb-12 text-left">
-          {/* MAIN HEADING (Hedvig Letters Serif) */}
+        <div className="mb-8 sm:mb-10 text-left">
           <h2
             style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
             className="
               service-faq-heading
               text-2xl
               sm:text-3xl
+              md:text-3xl
               lg:text-4xl
               font-bold
-              text-[#0B4EA2]
-              leading-tight
+              leading-[1.18]
+              text-black
+              text-left
+              mb-2.5
+              sm:mb-4
             "
           >
-            Frequently Asked Questions
+            Frequently Asked{" "}
+            <span className="text-[#0B4EA2]">Questions</span>
           </h2>
+
         </div>
 
         {/* =========================================
-            CLEAN ACCORDION DIVIDER LIST
+            ACCORDION LIST
         ========================================== */}
         <div className="divide-y divide-gray-200 border-t border-b border-gray-200">
           {faqs.map((faq, index) => {
@@ -262,9 +231,9 @@ const ServiceFAQ = ({ service }) => {
             return (
               <div
                 key={index}
-                className="py-3.5 sm:py-4.5 lg:py-5 min-[1920px]:py-6 min-[3840px]:py-10 transition-colors duration-200"
+                className="py-4 sm:py-5 lg:py-5.5 transition-colors duration-200"
               >
-                {/* QUESTION ACCORDION BUTTON */}
+                {/* QUESTION BUTTON */}
                 <button
                   type="button"
                   onClick={() => toggleFAQ(index)}
@@ -274,7 +243,6 @@ const ServiceFAQ = ({ service }) => {
                     items-center
                     justify-between
                     gap-4
-                    py-1
                     text-left
                     focus:outline-none
                     cursor-pointer
@@ -305,7 +273,6 @@ const ServiceFAQ = ({ service }) => {
                   {/* CHEVRON ICON */}
                   <div
                     className={`
-                      service-faq-chevron-btn
                       shrink-0
                       w-8
                       h-8
@@ -318,7 +285,7 @@ const ServiceFAQ = ({ service }) => {
                       ${
                         isOpen
                           ? "bg-[#0B4EA2] text-white rotate-180 shadow-xs"
-                          : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+                          : "bg-white text-gray-500 border border-gray-200 hover:bg-gray-100"
                       }
                     `}
                   >
@@ -335,7 +302,7 @@ const ServiceFAQ = ({ service }) => {
                     ease-in-out
                     ${
                       isOpen
-                        ? "grid-rows-[1fr] opacity-100 mt-2 sm:mt-3"
+                        ? "grid-rows-[1fr] opacity-100 mt-2.5 sm:mt-3.5"
                         : "grid-rows-[0fr] opacity-0"
                     }
                   `}
@@ -350,8 +317,7 @@ const ServiceFAQ = ({ service }) => {
                         lg:text-base
                         text-gray-600
                         leading-relaxed
-                        pt-1
-                        pb-2
+                        font-normal
                         text-left
                       "
                     >

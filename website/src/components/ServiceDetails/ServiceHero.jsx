@@ -11,23 +11,18 @@ const ServiceHero = ({ service }) => {
 
   return (
     <section className="w-full bg-slate-50 py-4 sm:py-6 lg:py-8 font-['Inter',sans-serif]">
+      {/* GOOGLE FONTS */}
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@400;500;600;700&display=swap');
+
         @media (min-width: 1920px) {
-          .service-hero-container {
-            max-width: 1800px !important;
-            padding-left: 4rem !important;
-            padding-right: 4rem !important;
-          }
+          .service-hero-container { max-width: 1800px !important; padding-left: 4rem !important; padding-right: 4rem !important; }
           .service-hero-title { font-size: 3rem !important; }
-          .service-hero-desc  { font-size: 1.2rem !important; }
+          .service-hero-desc  { font-size: 1.2rem !important; line-height: 2rem !important; }
           .service-hero-img-wrap { width: 20rem !important; }
         }
         @media (min-width: 3840px) {
-          .service-hero-container {
-            max-width: 3200px !important;
-            padding-left: 6rem !important;
-            padding-right: 6rem !important;
-          }
+          .service-hero-container { max-width: 3200px !important; padding-left: 6rem !important; padding-right: 6rem !important; }
           .service-hero-title { font-size: 5rem !important; }
           .service-hero-desc  { font-size: 2rem !important; line-height: 3rem !important; }
           .service-hero-img-wrap { width: 34rem !important; }
@@ -35,7 +30,6 @@ const ServiceHero = ({ service }) => {
       `}</style>
 
       <div className="service-hero-container max-w-[1380px] mx-auto px-4 sm:px-6 min-[1440px]:px-10">
-
         {/* BACK BUTTON */}
         <button
           type="button"
@@ -75,32 +69,37 @@ const ServiceHero = ({ service }) => {
           <div className="relative z-10 flex flex-col lg:flex-row lg:items-center gap-8 lg:gap-10">
 
             {/* LEFT — TEXT */}
-            <div className="flex-1 min-w-0">
-
+            <div className="flex-1 min-w-0 text-left">
               <h1
                 style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
                 className="
                   service-hero-title
-                  text-xl sm:text-3xl lg:text-4xl
+                  text-2xl sm:text-3xl md:text-3xl lg:text-4xl
                   font-bold text-white
-                  leading-tight tracking-tight
+                  leading-[1.18] tracking-tight
                 "
               >
                 {title}
               </h1>
 
-              <p
-                style={{ fontFamily: "'Inter', sans-serif" }}
-                className="
-                  service-hero-desc
-                  mt-3 sm:mt-4
-                  text-sm sm:text-base lg:text-lg
-                  text-blue-50/90 font-medium leading-relaxed
-                  max-w-xl
-                "
-              >
-                {service.description}
-              </p>
+              {service.description && (
+                <p
+                  style={{ fontFamily: "'Inter', sans-serif" }}
+                  className="
+                    service-hero-desc
+                    mt-3 sm:mt-5
+                    text-sm sm:text-base lg:text-[1.05rem]
+                    text-blue-50/90
+                    font-normal
+                    leading-7 sm:leading-8
+                    max-w-none
+                    w-full
+                    break-words
+                  "
+                >
+                  {service.description}
+                </p>
+              )}
 
               {/* GOOGLE RATING BADGE */}
               <div
@@ -114,25 +113,42 @@ const ServiceHero = ({ service }) => {
                 "
               >
                 <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-md bg-white flex items-center justify-center shrink-0">
-                  <span style={{ fontFamily: "'Inter', sans-serif" }} className="text-sm font-extrabold text-blue-800">G</span>
+                  <span
+                    style={{ fontFamily: "'Inter', sans-serif" }}
+                    className="text-sm font-extrabold text-blue-800"
+                  >
+                    G
+                  </span>
                 </div>
                 <div>
                   <div className="flex items-center gap-1.5">
-                    <span style={{ fontFamily: "'Inter', sans-serif" }} className="text-sm font-extrabold text-white">4.9</span>
+                    <span
+                      style={{ fontFamily: "'Inter', sans-serif" }}
+                      className="text-sm font-extrabold text-white"
+                    >
+                      4.9
+                    </span>
                     <div className="flex items-center gap-0.5">
                       {[...Array(5)].map((_, i) => (
-                        <Star key={i} size={11} className="fill-yellow-400 text-yellow-400" />
+                        <Star
+                          key={i}
+                          size={11}
+                          className="fill-yellow-400 text-yellow-400"
+                        />
                       ))}
                     </div>
                   </div>
-                  <p style={{ fontFamily: "'Inter', sans-serif" }} className="text-[10px] sm:text-xs text-blue-200/90 font-semibold mt-0.5">
+                  <p
+                    style={{ fontFamily: "'Inter', sans-serif" }}
+                    className="text-[10px] sm:text-xs text-blue-200/90 font-medium mt-0.5"
+                  >
                     Google Rating
                   </p>
                 </div>
               </div>
             </div>
 
-            {/* RIGHT — FLOATING IMAGE (no card, no bg, no hover) */}
+            {/* RIGHT — FLOATING IMAGE */}
             <div
               className="
                 service-hero-img-wrap
@@ -150,7 +166,9 @@ const ServiceHero = ({ service }) => {
                   className="w-full h-auto object-contain drop-shadow-2xl"
                 />
               ) : (
-                <span className="text-8xl select-none">{service.emoji || "📋"}</span>
+                <span className="text-8xl select-none">
+                  {service.emoji || "📋"}
+                </span>
               )}
             </div>
 

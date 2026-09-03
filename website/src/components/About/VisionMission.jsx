@@ -11,13 +11,14 @@ const VisionMission = () => {
       ref={sectionRef}
       className="vm-section relative overflow-hidden py-10 sm:py-14 min-[1440px]:py-16 min-[1920px]:py-20 min-[3840px]:py-32 bg-blue-50/50 font-['Inter',sans-serif]"
     >
+      {/* GOOGLE FONTS */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif&family=Inter:wght@400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@400;500;600;700;800&display=swap');
 
         /* ── Standard Desktop 1440px ── */
         @media (min-width: 1440px) {
           .vm-container        { max-width: 1380px !important; padding-left: 2.5rem !important; padding-right: 2.5rem !important; }
-          .vm-heading          { font-size: 2.75rem !important; }
+          .vm-heading          { font-size: 2.5rem !important; }
           .vm-card-heading     { font-size: 1.85rem !important; }
           .vm-card-para        { font-size: 1.05rem !important; line-height: 1.8 !important; }
         }
@@ -26,7 +27,7 @@ const VisionMission = () => {
         @media (min-width: 1920px) {
           .vm-container        { max-width: 1800px !important; padding-left: 4rem !important; padding-right: 4rem !important; }
           .vm-tagline          { font-size: 0.95rem !important; letter-spacing: 0.3em !important; }
-          .vm-heading          { font-size: 3.5rem !important; }
+          .vm-heading          { font-size: 3.25rem !important; }
           .vm-card             { padding: 2.75rem !important; }
           .vm-card-icon-box    { width: 4.5rem !important; height: 4.5rem !important; border-radius: 1rem !important; }
           .vm-card-icon-box svg{ width: 2rem !important; height: 2rem !important; }
@@ -60,19 +61,32 @@ const VisionMission = () => {
       {/* UNIFIED CONTAINER */}
       <div className="vm-container w-full max-w-[1380px] min-[1920px]:max-w-[1800px] min-[3840px]:max-w-[3200px] mx-auto px-4 sm:px-6 min-[1440px]:px-10 min-[1920px]:px-16 min-[3840px]:px-24">
 
-        {/* HEADER */}
-        <div className="vm-header mb-8 sm:mb-10 min-[1920px]:mb-12 min-[3840px]:mb-16">
-          <p className="vm-tagline text-xs sm:text-sm font-semibold tracking-[0.25em] uppercase text-[#0B4EA2] mb-3 sm:mb-4 text-left">
+        {/* =========================================
+            HEADER (Consistent Typography)
+        ========================================== */}
+        <div className="vm-header mb-8 sm:mb-10 min-[1920px]:mb-12 min-[3840px]:mb-16 text-left">
+          <p className="vm-tagline text-xs sm:text-sm font-semibold tracking-[0.25em] uppercase text-[#0B4EA2] mb-2 sm:mb-2.5">
             Our Purpose
           </p>
 
           <h2
             style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
-            className="vm-heading text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight"
+            className="
+              vm-heading
+              text-2xl
+              sm:text-3xl
+              md:text-3xl
+              lg:text-4xl
+              font-bold
+              leading-[1.18]
+              text-left
+              mb-2.5
+              sm:mb-4
+            "
           >
             <span className="text-[#0B4EA2]">Vision</span>
-            <span className="text-gray-900"> &amp; </span>
-            <span className="text-green-500">Mission</span>
+            <span className="text-black"> &amp; </span>
+            <span className="text-green-600">Mission</span>
           </h2>
         </div>
 
@@ -116,7 +130,7 @@ const VisionMission = () => {
 
               {/* RIGHT TEXT */}
               <div className="flex-1">
-                <p className="vm-card-para text-gray-700 text-sm sm:text-base lg:text-lg text-left sm:text-justify leading-relaxed">
+                <p className="vm-card-para text-gray-700 text-sm sm:text-base lg:text-lg text-left sm:text-justify leading-relaxed font-normal">
                   To become India's most trusted digital platform for legal, business
                   and financial services by empowering entrepreneurs with innovative,
                   transparent and hassle-free solutions.
@@ -162,7 +176,7 @@ const VisionMission = () => {
 
               {/* RIGHT TEXT */}
               <div className="flex-1">
-                <p className="vm-card-para text-gray-700 text-sm sm:text-base lg:text-lg text-left sm:text-justify leading-relaxed">
+                <p className="vm-card-para text-gray-700 text-sm sm:text-base lg:text-lg text-left sm:text-justify leading-relaxed font-normal">
                   Deliver affordable, reliable and technology-driven legal, taxation
                   and compliance services while ensuring transparency, efficiency and
                   customer satisfaction.

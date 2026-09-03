@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Search, Layers3 } from "lucide-react";
+import { Search } from "lucide-react";
 
 // =================================================
 // ROTATING PLACEHOLDER SUGGESTIONS (2.5s INTERVAL)
@@ -34,9 +34,11 @@ const SearchServices = ({ searchTerm, setSearchTerm }) => {
   }, []);
 
   return (
-    <section className="bg-blue-50 py-8 sm:py-10 lg:py-12 search-services-section">
-      {/* UNIFIED APP-CONTAINER + RESPONSIVE SCALING */}
+    <section className="bg-blue-50/70 py-8 sm:py-10 lg:py-12 search-services-section font-['Inter',sans-serif]">
+      {/* GOOGLE FONTS & RESPONSIVE SCALING */}
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@400;500;600;700&display=swap');
+
         .app-container {
           width: 100%;
           max-width: 1500px;
@@ -67,7 +69,7 @@ const SearchServices = ({ searchTerm, setSearchTerm }) => {
           }
         }
 
-        /* Standard Desktop (1440px x 900px) */
+        /* Standard Desktop (1440px) */
         @media (min-width: 1440px) {
           .app-container {
             max-width: 1440px !important;
@@ -84,7 +86,7 @@ const SearchServices = ({ searchTerm, setSearchTerm }) => {
           }
         }
 
-        /* Large Desktop (1920px x 1080px Full HD) */
+        /* Large Desktop (1920px Full HD) */
         @media (min-width: 1920px) {
           .app-container {
             max-width: 1800px !important;
@@ -95,13 +97,8 @@ const SearchServices = ({ searchTerm, setSearchTerm }) => {
             padding-top: 3.5rem !important;
             padding-bottom: 3.5rem !important;
           }
-          .search-badge {
-            font-size: 0.85rem !important;
-            padding: 0.5rem 1.1rem !important;
-            margin-bottom: 0.85rem !important;
-          }
           .search-heading {
-            font-size: 2.5rem !important;
+            font-size: 2.75rem !important;
             line-height: 1.2 !important;
           }
           .search-input-box {
@@ -120,43 +117,7 @@ const SearchServices = ({ searchTerm, setSearchTerm }) => {
           }
         }
 
-        /* QHD / 2K Ultra-Wide (2560px Desktop) */
-        @media (min-width: 2560px) {
-          .app-container {
-            max-width: 2400px !important;
-            padding-left: 8rem !important;
-            padding-right: 8rem !important;
-          }
-          .search-services-section {
-            padding-top: 4.5rem !important;
-            padding-bottom: 4.5rem !important;
-          }
-          .search-badge {
-            font-size: 1rem !important;
-            padding: 0.6rem 1.35rem !important;
-            margin-bottom: 1rem !important;
-          }
-          .search-heading {
-            font-size: 3rem !important;
-            line-height: 1.2 !important;
-          }
-          .search-input-box {
-            margin-top: 2.5rem !important;
-          }
-          .search-input {
-            height: 4.75rem !important;
-            font-size: 1.3rem !important;
-            padding-left: 4.25rem !important;
-            border-radius: 1.15rem !important;
-          }
-          .search-icon {
-            left: 1.5rem !important;
-            width: 1.65rem !important;
-            height: 1.65rem !important;
-          }
-        }
-
-        /* 4K Ultra-Wide Desktop (3840px x 2160px) */
+        /* 4K Ultra-Wide (3840px) */
         @media (min-width: 3840px) {
           .app-container {
             max-width: 3400px !important;
@@ -167,18 +128,8 @@ const SearchServices = ({ searchTerm, setSearchTerm }) => {
             padding-top: 6rem !important;
             padding-bottom: 6rem !important;
           }
-          .search-badge {
-            font-size: 1.35rem !important;
-            padding: 0.85rem 1.85rem !important;
-            margin-bottom: 1.35rem !important;
-            border-radius: 9999px !important;
-          }
-          .search-badge-icon {
-            width: 1.5rem !important;
-            height: 1.5rem !important;
-          }
           .search-heading {
-            font-size: 3.75rem !important;
+            font-size: 4rem !important;
             line-height: 1.15 !important;
           }
           .search-input-box {
@@ -200,10 +151,10 @@ const SearchServices = ({ searchTerm, setSearchTerm }) => {
       `}</style>
 
       <div className="app-container">
-        {/* Heading */}
+        {/* =========================================
+            CONSISTENT HEADING & SUBTITLE
+        ========================================== */}
         <div className="text-left">
-        
-
           <h2
             style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
             className="
@@ -216,17 +167,21 @@ const SearchServices = ({ searchTerm, setSearchTerm }) => {
               leading-[1.18]
               text-black
               text-left
+              mb-2.5
+              sm:mb-3
             "
           >
             Explore{" "}
-            <span className="text-[#0B4EA2]">
-              Your Services
-            </span>
+            <span className="text-[#0B4EA2]">Your Services</span>
           </h2>
+
+        
         </div>
 
-        {/* Search Box */}
-        <div className="search-input-box mt-5 sm:mt-6">
+        {/* =========================================
+            SEARCH INPUT BOX
+        ========================================== */}
+        <div className="search-input-box mt-4 sm:mt-5">
           <div className="relative">
             <Search
               size={21}
@@ -237,7 +192,7 @@ const SearchServices = ({ searchTerm, setSearchTerm }) => {
                 sm:left-5
                 top-1/2
                 -translate-y-1/2
-                text-gray-400
+                text-[#0B4EA2]
               "
             />
 
@@ -249,7 +204,7 @@ const SearchServices = ({ searchTerm, setSearchTerm }) => {
               className="
                 search-input
                 w-full
-                h-13
+                h-12
                 sm:h-14
                 rounded-xl
                 border-2
@@ -260,23 +215,24 @@ const SearchServices = ({ searchTerm, setSearchTerm }) => {
                 pr-5
                 text-sm
                 sm:text-base
-                text-gray-700
+                text-gray-800
+                font-medium
                 placeholder:text-gray-400
+                placeholder:font-normal
                 placeholder:transition-opacity
                 placeholder:duration-300
                 outline-none
-                shadow-sm
+                shadow-xs
                 transition-all
                 duration-300
                 hover:border-blue-400
                 focus:border-blue-600
-                focus:ring-2
+                focus:ring-3
                 focus:ring-blue-100
               "
             />
           </div>
         </div>
-
       </div>
     </section>
   );

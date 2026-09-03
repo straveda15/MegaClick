@@ -18,9 +18,13 @@ const HeroSection = () => {
         py-6
         sm:py-8
         lg:py-10
+        font-['Inter',sans-serif]
       "
     >
+      {/* GOOGLE FONTS */}
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@400;500;600;700&display=swap');
+
         .app-container {
           width: 100%;
           max-width: 1500px;
@@ -88,11 +92,11 @@ const HeroSection = () => {
           }
 
           .hero-heading-1 {
-            font-size: 2.5rem !important;
+            font-size: 3rem !important;
           }
 
           .hero-heading-2 {
-            font-size: 2.15rem !important;
+            font-size: 2.5rem !important;
           }
 
           .hero-quote {
@@ -130,11 +134,11 @@ const HeroSection = () => {
           }
 
           .hero-heading-1 {
-            font-size: 3.25rem !important;
+            font-size: 3.75rem !important;
           }
 
           .hero-heading-2 {
-            font-size: 2.75rem !important;
+            font-size: 3.15rem !important;
           }
 
           .hero-quote {
@@ -178,11 +182,11 @@ const HeroSection = () => {
           }
 
           .hero-heading-1 {
-            font-size: 4.25rem !important;
+            font-size: 4.75rem !important;
           }
 
           .hero-heading-2 {
-            font-size: 3.65rem !important;
+            font-size: 4rem !important;
           }
 
           .hero-quote {
@@ -550,6 +554,7 @@ const HeroSection = () => {
               "
             >
               <span
+                style={{ fontFamily: "'Inter', sans-serif" }}
                 className="
                   hero-badge
                   inline-flex
@@ -558,7 +563,7 @@ const HeroSection = () => {
                   justify-center
                   gap-1.5
                   sm:gap-2
-                  px-3
+                  px-3.5
                   sm:px-4
                   py-1
                   sm:py-1.5
@@ -588,28 +593,27 @@ const HeroSection = () => {
               </span>
             </div>
 
-            {/* MAIN HEADING */}
+            {/* MAIN HEADING (Hedvig Letters Serif) */}
             <h1
+              style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
               className="
                 mt-3
                 sm:mt-4
                 w-full
                 max-w-full
-                font-extrabold
+                font-bold
                 tracking-tight
-                leading-[1.12]
-                break-words
+                leading-[1.18]
               "
             >
               <span
                 className="
                   hero-heading-1
                   block
-                  text-[22px]
-                  sm:text-[30px]
-                  md:text-[36px]
-                  lg:text-[40px]
-                  xl:text-[48px]
+                  text-2xl
+                  sm:text-3xl
+                  md:text-4xl
+                  lg:text-5xl
                   text-white
                 "
               >
@@ -620,20 +624,19 @@ const HeroSection = () => {
                 className="
                   hero-heading-2
                   block
-                  mt-1
+                  mt-1 sm:mt-1.5
                   text-green-300
-                  text-[19px]
-                  sm:text-[26px]
-                  md:text-[32px]
-                  lg:text-[36px]
-                  xl:text-[42px]
+                  text-xl
+                  sm:text-2xl
+                  md:text-3xl
+                  lg:text-4xl
                 "
               >
                 Designed for Every Business
               </span>
             </h1>
 
-            {/* QUOTE */}
+            {/* QUOTE TAGLINE (Inter) */}
             <div
               className="
                 mt-4
@@ -645,32 +648,23 @@ const HeroSection = () => {
               "
             >
               <p
+                style={{ fontFamily: "'Inter', sans-serif" }}
                 className="
                   hero-quote
-                  text-emerald-300
-                  font-extrabold
-                  text-[13px]
-                  sm:text-[16px]
-                  md:text-[18px]
-                  lg:text-[20px]
-                  leading-[1.4]
+                  text-emerald-200/90
+                  font-semibold
+                  text-xs
+                  sm:text-sm
+                  md:text-base
+                  lg:text-lg
+                  leading-relaxed
                   uppercase
                   tracking-wide
                   drop-shadow-xs
                   break-words
                 "
               >
-                <span className="block">
-                  “ONE PLATFORM COMPLETE
-                </span>
-
-                <span className="block">
-                   SOLUTIONS FOR  BUSINESSES
-                </span>
-
-                <span className="block">
-                  &amp; INDIVIDUALS”
-                </span>
+                “One Platform Complete Solutions For Businesses &amp; Individuals”
               </p>
             </div>
           </div>
