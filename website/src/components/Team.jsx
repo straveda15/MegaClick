@@ -5,8 +5,8 @@ import team1 from "../assets/team1.webp";
 import team2 from "../assets/team2.jpg";
 import team3 from "../assets/team3.jpg";
 import team4 from "../assets/team4.jpg";
-import team5 from "../assets/team5.png";
-import team6 from "../assets/team6.png";
+import team5 from "../assets/team5.jpg";
+import team6 from "../assets/team6.jpg";
 
 /* ------------------- Team data ------------------- */
 const teamMembers = [
@@ -45,7 +45,7 @@ const Team = () => {
   return (
     <>
       {/* ==================== MAIN SECTION ==================== */}
-      <section className="w-full py-8 sm:py-12 min-[1440px]:py-16 min-[1920px]:py-20 min-[3840px]:py-32 bg-white team-section font-['Inter',sans-serif]">
+      <section className="w-full py-8 sm:py-12 min-[1440px]:py-16 min-[1920px]:py-20 min-[3840px]:py-32 bg-blue-50 team-section font-['Inter',sans-serif]">
         {/* DIRECT CSS RULES FOR 1440px, 1920px & 3840px (4K) */}
         <style>{`
           .app-container {

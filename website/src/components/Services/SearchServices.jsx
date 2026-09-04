@@ -155,10 +155,11 @@ const SearchServices = ({ searchTerm, setSearchTerm }) => {
             CONSISTENT HEADING & SUBTITLE
         ========================================== */}
         <div className="text-left">
-          <h2
+         
+             <h2
             style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
             className="
-              search-heading
+              team-title
               text-2xl
               sm:text-3xl
               md:text-3xl
@@ -168,12 +169,15 @@ const SearchServices = ({ searchTerm, setSearchTerm }) => {
               text-black
               text-left
               mb-2.5
-              sm:mb-3
+              sm:mb-4
             "
           >
-            Explore{" "}
-            <span className="text-[#0B4EA2]">Your Services</span>
+          Explore Your  {" "}
+            <span className="text-[#0B4EA2]">
+    Services
+            </span>
           </h2>
+
 
         
         </div>
