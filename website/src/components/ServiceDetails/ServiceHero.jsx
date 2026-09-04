@@ -11,19 +11,24 @@ const ServiceHero = ({ service }) => {
 
   return (
     <section className="w-full bg-slate-50 py-4 sm:py-6 lg:py-8 font-['Inter',sans-serif]">
-      {/* GOOGLE FONTS */}
+      {/* GOOGLE FONTS & RESPONSIVE STYLES */}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@400;500;600;700&display=swap');
 
+        .service-hero-title {
+          word-spacing: 0.18em;
+          letter-spacing: 0.01em;
+        }
+
         @media (min-width: 1920px) {
           .service-hero-container { max-width: 1800px !important; padding-left: 4rem !important; padding-right: 4rem !important; }
-          .service-hero-title { font-size: 3rem !important; }
+          .service-hero-title { font-size: 3rem !important; word-spacing: 0.2em !important; }
           .service-hero-desc  { font-size: 1.2rem !important; line-height: 2rem !important; }
           .service-hero-img-wrap { width: 20rem !important; }
         }
         @media (min-width: 3840px) {
           .service-hero-container { max-width: 3200px !important; padding-left: 6rem !important; padding-right: 6rem !important; }
-          .service-hero-title { font-size: 5rem !important; }
+          .service-hero-title { font-size: 5rem !important; word-spacing: 0.25em !important; }
           .service-hero-desc  { font-size: 2rem !important; line-height: 3rem !important; }
           .service-hero-img-wrap { width: 34rem !important; }
         }
@@ -71,12 +76,15 @@ const ServiceHero = ({ service }) => {
             {/* LEFT — TEXT */}
             <div className="flex-1 min-w-0 text-left">
               <h1
-                style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+                style={{
+                  fontFamily: "'Hedvig Letters Serif', serif",
+                  wordSpacing: "0.18em",
+                }}
                 className="
                   service-hero-title
                   text-2xl sm:text-3xl md:text-3xl lg:text-4xl
                   font-bold text-white
-                  leading-[1.18] tracking-tight
+                  leading-[1.28] tracking-normal
                 "
               >
                 {title}

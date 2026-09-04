@@ -185,24 +185,29 @@ const WhyChoose = () => {
             </p>
 
             {/* HEADING (Hedvig Letters Serif) */}
-            <h2
-              style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
-              className="
-                text-2xl
-                sm:text-3xl
-                md:text-3xl
-                lg:text-4xl
-                font-bold
-                leading-[1.18]
-                text-black
-                text-left
-                mb-2.5
-                sm:mb-4
-              "
-            >
-              Your Trusted{" "}
-              <span className="text-[#0B4EA2]">Partner</span>
-            </h2>
+           
+             <h2
+            style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+            className="
+              team-title
+              text-2xl
+              sm:text-3xl
+              md:text-3xl
+              lg:text-4xl
+              font-bold
+              leading-[1.18]
+              text-black
+              text-left
+              mb-2.5
+              sm:mb-4
+            "
+          >
+          Your Trusted {" "}
+            <span className="text-[#0B4EA2]">
+       Partner
+            </span>
+          </h2>
+
 
             {/* DESCRIPTION */}
             <p
