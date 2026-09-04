@@ -4,47 +4,98 @@ import teamImg from "../../assets/teamimg.png";
 const HeroSection = () => {
   return (
     <section className="about-hero relative w-full overflow-hidden bg-[#0B4EA2] font-['Inter',sans-serif]">
+      {/* GOOGLE FONTS */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif&family=Inter:wght@400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@400;500;600;700;800&display=swap');
 
-        /* ─────────────────────────────────────────────
-           CONTAINER
-        ───────────────────────────────────────────── */
         .about-hero-container {
-          max-width: 1500px;
+          width: 100%;
+          max-width: 1380px;
           margin-left: auto;
           margin-right: auto;
-          padding-left: 1.25rem;
-          padding-right: 1.25rem;
+          padding-left: 1rem;
+          padding-right: 1rem;
           position: relative;
           z-index: 20;
         }
 
         @media (min-width: 640px) {
           .about-hero-container {
-            padding-left: 2rem;
-            padding-right: 2rem;
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
           }
         }
 
-        @media (min-width: 1024px) {
+        /* ── Standard Desktop 1440px ── */
+        @media (min-width: 1440px) {
           .about-hero-container {
-            padding-left: 4rem;
-            padding-right: 4rem;
+            max-width: 1380px !important;
+            padding-left: 2.5rem !important;
+            padding-right: 2.5rem !important;
+          }
+          .about-hero-wrap {
+            min-height: 480px !important;
+          }
+          .about-hero-h1 {
+            font-size: 3.1rem !important;
+            line-height: 1.18 !important;
+          }
+          .about-hero-sub {
+            font-size: 1.85rem !important;
+            margin-top: 1.25rem !important;
+          }
+          .about-blue-panel {
+            width: 58%;
           }
         }
 
-        @media (min-width: 1280px) {
+        /* ── Large Desktop 1920px ── */
+        @media (min-width: 1920px) {
           .about-hero-container {
-            padding-left: 6rem;
-            padding-right: 6rem;
+            max-width: 1800px !important;
+            padding-left: 4rem !important;
+            padding-right: 4rem !important;
+          }
+          .about-hero-wrap {
+            min-height: 580px !important;
+          }
+          .about-hero-h1 {
+            font-size: 3.75rem !important;
+            line-height: 1.18 !important;
+          }
+          .about-hero-sub {
+            font-size: 2.4rem !important;
+            margin-top: 1.5rem !important;
+          }
+          .about-blue-panel {
+            width: 58%;
           }
         }
 
-        /* ─────────────────────────────────────────────
-           BLUE LEFT PANEL
-           Creates the < shaped edge
-        ───────────────────────────────────────────── */
+        /* ── 4K Ultra-Wide 3840px ── */
+        @media (min-width: 3840px) {
+          .about-hero-container {
+            max-width: 3200px !important;
+            padding-left: 6rem !important;
+            padding-right: 6rem !important;
+          }
+          .about-hero-wrap {
+            min-height: 900px !important;
+          }
+          .about-hero-h1 {
+            font-size: 6rem !important;
+            line-height: 1.15 !important;
+          }
+          .about-hero-sub {
+            font-size: 4rem !important;
+            margin-top: 2.5rem !important;
+          }
+          .about-blue-panel {
+            width: 60%;
+          }
+        }
+
+        /* BLUE LEFT PANEL */
         .about-blue-panel {
           position: absolute;
           left: 0;
@@ -52,11 +103,6 @@ const HeroSection = () => {
           width: 58%;
           height: 100%;
           background: #0B4EA2;
-
-          /*
-             Straight left edge
-             Angled < shaped right edge
-          */
           clip-path: polygon(
             0 0,
             100% 0,
@@ -64,130 +110,9 @@ const HeroSection = () => {
             100% 100%,
             0 100%
           );
-
           z-index: 5;
         }
 
-        /* ─────────────────────────────────────────────
-           1440px
-        ───────────────────────────────────────────── */
-        @media (min-width: 1440px) {
-          .about-hero-container {
-            max-width: 1440px !important;
-            padding-left: 4rem !important;
-            padding-right: 4rem !important;
-          }
-
-          .about-hero-wrap {
-            min-height: 500px !important;
-          }
-
-          .about-hero-h1 {
-            font-size: 3.2rem !important;
-            line-height: 1.16 !important;
-          }
-
-          .about-hero-sub {
-            font-size: 2rem !important;
-            margin-top: 1.25rem !important;
-          }
-
-          .about-blue-panel {
-            width: 58%;
-          }
-        }
-
-        /* ─────────────────────────────────────────────
-           1920px
-        ───────────────────────────────────────────── */
-        @media (min-width: 1920px) {
-          .about-hero-container {
-            max-width: 1800px !important;
-            padding-left: 5rem !important;
-            padding-right: 5rem !important;
-          }
-
-          .about-hero-wrap {
-            min-height: 620px !important;
-          }
-
-          .about-hero-h1 {
-            font-size: 4rem !important;
-            line-height: 1.13 !important;
-          }
-
-          .about-hero-sub {
-            font-size: 2.6rem !important;
-            margin-top: 1.5rem !important;
-          }
-
-          .about-blue-panel {
-            width: 58%;
-          }
-        }
-
-        /* ─────────────────────────────────────────────
-           2560px
-        ───────────────────────────────────────────── */
-        @media (min-width: 2560px) {
-          .about-hero-container {
-            max-width: 2300px !important;
-            padding-left: 6rem !important;
-            padding-right: 6rem !important;
-          }
-
-          .about-hero-wrap {
-            min-height: 780px !important;
-          }
-
-          .about-hero-h1 {
-            font-size: 5rem !important;
-            line-height: 1.1 !important;
-          }
-
-          .about-hero-sub {
-            font-size: 3.2rem !important;
-            margin-top: 1.75rem !important;
-          }
-
-          .about-blue-panel {
-            width: 59%;
-          }
-        }
-
-        /* ─────────────────────────────────────────────
-           4K
-        ───────────────────────────────────────────── */
-        @media (min-width: 3840px) {
-          .about-hero-container {
-            max-width: 3400px !important;
-            padding-left: 8rem !important;
-            padding-right: 8rem !important;
-          }
-
-          .about-hero-wrap {
-            min-height: 1080px !important;
-          }
-
-          .about-hero-h1 {
-            font-size: 7rem !important;
-            line-height: 1.08 !important;
-          }
-
-          .about-hero-sub {
-            font-size: 4.5rem !important;
-            margin-top: 2rem !important;
-          }
-
-          .about-blue-panel {
-            width: 60%;
-          }
-        }
-
-        /* ─────────────────────────────────────────────
-           MOBILE
-           No angled panel — image stays below
-        ───────────────────────────────────────────── */
         @media (max-width: 1023px) {
           .about-blue-panel {
             display: none;
@@ -195,9 +120,7 @@ const HeroSection = () => {
         }
       `}</style>
 
-      {/* ─────────────────────────────────────────────
-          MOBILE IMAGE
-      ───────────────────────────────────────────── */}
+      {/* MOBILE IMAGE */}
       <div className="relative w-full h-[260px] sm:h-[320px] lg:hidden">
         <img
           src={teamImg}
@@ -206,10 +129,7 @@ const HeroSection = () => {
         />
       </div>
 
-      {/* ─────────────────────────────────────────────
-          DESKTOP IMAGE
-          ORIGINAL IMAGE — NO OVERLAY
-        ───────────────────────────────────────────── */}
+      {/* DESKTOP IMAGE */}
       <div className="hidden lg:block absolute right-0 top-0 w-[55%] h-full z-0">
         <img
           src={teamImg}
@@ -218,74 +138,36 @@ const HeroSection = () => {
         />
       </div>
 
-      {/* ─────────────────────────────────────────────
-          BLUE < SHAPED PANEL
-      ───────────────────────────────────────────── */}
+      {/* BLUE PANEL */}
       <div className="about-blue-panel hidden lg:block" />
 
-      {/* ─────────────────────────────────────────────
-          CONTENT
-      ───────────────────────────────────────────── */}
+      {/* CONTENT (Shifted Upwards) */}
       <div className="about-hero-container">
-        <div className="about-hero-wrap flex items-center min-h-[400px] sm:min-h-[450px] lg:min-h-[520px] py-12 sm:py-14 lg:py-0">
+        <div className="about-hero-wrap flex items-start pt-8 sm:pt-10 lg:pt-14 pb-8 sm:pb-10 lg:pb-12 min-h-[380px] sm:min-h-[420px] lg:min-h-[480px]">
+          <div className="relative z-30 w-full lg:w-[50%] xl:w-[52%] text-left">
+            {/* MAIN TITLE (Hedvig Letters Serif) */}
+            <h1
+              style={{
+                fontFamily: "'Hedvig Letters Serif', serif",
+              }}
+              className="about-hero-h1 text-3xl sm:text-4xl lg:text-[44px] xl:text-[48px] font-bold leading-[1.18] text-green-300"
+            >
+              Simplifying Needs and
+              <br />
+              Problems For Businesses
+              <br />
+              &amp; Individuals
+            </h1>
 
-          {/* LEFT TEXT */}
-        <div className="relative z-30 w-full lg:w-[50%] xl:w-[52%] lg:pl-0 xl:pl-4 2xl:pl-8">
-            {/* WHO WE ARE */}
-            <p className="text-white/80 text-xs sm:text-sm font-semibold tracking-[0.25em] uppercase mb-5">
-              Who We Are
+            {/* SUBTITLE */}
+            <p
+              style={{
+                fontFamily: "'Hedvig Letters Serif', serif",
+              }}
+              className="about-hero-sub text-white font-semibold mt-4 sm:mt-5 text-xl sm:text-2xl lg:text-[32px] xl:text-[36px] leading-tight"
+            >
+              All Under One Roof
             </p>
-
-            {/* HEADING */}
-<h1
-  style={{
-    fontFamily: "'Hedvig Letters Serif', serif",
-    letterSpacing: "0.01em",
-    wordSpacing: "0.12em",
-  }}
-  className="
-    about-hero-h1
-    text-4xl
-    sm:text-5xl
-    md:text-5xl
-    lg:text-[48px]
-    xl:text-[52px]
-    font-extrabold
-    leading-[1.15]
-    tracking-normal
-    text-green-300
-  "
->
-  Simplifying Needs and
-  <br />
-  Problems  For 
- 
-   Businesses
-  <br />
-  & Individuals
-</h1>
-
-{/* SEPARATE SUBTEXT */}
-<p
-  style={{
-    fontFamily: "'Hedvig Letters Serif', serif",
-  }}
-  className="
-    about-hero-sub
-    text-white
-    font-semibold
-    mt-6
-    text-2xl
-    sm:text-3xl
-    md:text-3xl
-    lg:text-[36px]
-    xl:text-[40px]
-    leading-tight
-  "
->
-  All Under One Roof
-</p>
-
           </div>
         </div>
       </div>

@@ -5,20 +5,24 @@ const ServiceCategory = ({ category }) => {
   if (!category) return null;
 
   return (
-    <section className="mb-10">
+    <section className="mb-8 sm:mb-10 font-['Inter',sans-serif]">
+      {/* GOOGLE FONTS */}
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@400;500;600;700&display=swap');
+      `}</style>
+
       <div
         className="
           bg-white
           rounded-3xl
-          border border-gray-200
+          border border-gray-200/80
           shadow-sm
           p-5
           sm:p-6
-          lg:p-7
+          lg:p-8
         "
       >
         {/* ================= CATEGORY HEADER ================= */}
-
         <div
           className="
             flex
@@ -26,38 +30,46 @@ const ServiceCategory = ({ category }) => {
             sm:flex-row
             sm:items-center
             sm:justify-between
-            gap-5
+            gap-4
             mb-6
+            sm:mb-8
+            pb-4
+            border-b border-gray-100
           "
         >
           {/* LEFT SIDE */}
-
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 text-left">
             <div
               className="
-                w-14
-                h-14
+                w-12
+                h-12
+                sm:w-14
+                sm:h-14
                 shrink-0
                 rounded-2xl
-                bg-[#EAF3FF]
+                bg-blue-50
+                border border-blue-100
                 flex
                 items-center
                 justify-center
                 text-2xl
                 sm:text-3xl
+                shadow-2xs
               "
             >
-              {category.emoji}
+              {category.emoji || "📁"}
             </div>
 
             <div>
               <h2
+                style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
                 className="
                   text-xl
                   sm:text-2xl
                   lg:text-3xl
                   font-bold
-                  text-gray-900
+                  text-black
+                  leading-[1.18]
                   tracking-tight
                 "
               >
@@ -65,43 +77,45 @@ const ServiceCategory = ({ category }) => {
               </h2>
 
               <p
+                style={{ fontFamily: "'Inter', sans-serif" }}
                 className="
                   mt-1
-                  text-sm
+                  text-xs
+                  sm:text-sm
                   text-gray-500
+                  font-normal
                 "
               >
-                {category.description ||
-                  "Complete professional solutions"}
+                {category.description || "Complete professional solutions"}
               </p>
             </div>
           </div>
 
-          {/* SERVICE COUNT */}
-
+          {/* SERVICE COUNT BADGE */}
           <div
+            style={{ fontFamily: "'Inter', sans-serif" }}
             className="
               self-start
               sm:self-auto
               inline-flex
               items-center
               rounded-full
-              bg-gray-50
-              border border-gray-200
-              px-4
-              py-2
+              bg-blue-50
+              border border-blue-200/80
+              px-3.5
+              py-1.5
               text-xs
               sm:text-sm
-              font-semibold
-              text-gray-600
+              font-bold
+              text-[#0B4EA2]
+              shadow-xs
             "
           >
             {category.services?.length || 0} Services
           </div>
         </div>
 
-        {/* ================= SERVICES ================= */}
-
+        {/* ================= SERVICES GRID ================= */}
         {category.services?.length > 0 && (
           <div
             className="
@@ -115,7 +129,7 @@ const ServiceCategory = ({ category }) => {
           >
             {category.services.map((service, index) => (
               <ServiceCard
-                key={service.slug || index}
+                key={service.slug || service.title || index}
                 service={service}
               />
             ))}

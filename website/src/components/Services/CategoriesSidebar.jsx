@@ -73,84 +73,41 @@ const CategoriesSidebar = ({
   setSelectedService,
   selectedService,
 }) => {
-  const [openCategory, setOpenCategory] = useState("Legal Services");
+  const [openCategory, setOpenCategory] = useState("");
 
   return (
-    <aside className="cat-sidebar sticky top-24 bg-white rounded-3xl border border-slate-100 shadow-xl shadow-slate-200/40 p-4 sm:p-5 w-full font-['Inter',sans-serif]">
+    <aside className="cat-sidebar sticky top-24 bg-white rounded-3xl border border-slate-200/80 shadow-sm p-4 sm:p-5 w-full font-['Inter',sans-serif]">
+      {/* GOOGLE FONTS */}
       <style>{`
-        /* Standard Desktop (1440px) */
-        @media (min-width: 1440px) {
-          .cat-sidebar {
-            padding: 1.25rem !important;
-          }
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@400;500;600;700&display=swap');
 
         /* Large Desktop (1920px Full HD) */
         @media (min-width: 1920px) {
-          .cat-sidebar {
-            padding: 1.5rem !important;
-            border-radius: 1.5rem !important;
-          }
-          .cat-header-title {
-            font-size: 0.95rem !important;
-          }
-          .cat-btn {
-            padding: 0.85rem 1rem !important;
-          }
-          .cat-btn-text {
-            font-size: 0.95rem !important;
-          }
-          .cat-badge {
-            font-size: 0.85rem !important;
-            padding: 0.2rem 0.75rem !important;
-          }
-          .cat-sub-btn {
-            font-size: 0.85rem !important;
-            padding: 0.55rem 0.85rem !important;
-          }
+          .cat-sidebar { padding: 1.5rem !important; border-radius: 1.5rem !important; }
+          .cat-header-title { font-size: 1.05rem !important; }
+          .cat-btn { padding: 0.85rem 1rem !important; }
+          .cat-btn-text { font-size: 1rem !important; }
+          .cat-badge { font-size: 0.85rem !important; padding: 0.25rem 0.85rem !important; }
         }
 
-        /* 4K Ultra-Wide Desktop (3840px) */
+        /* 4K Ultra-Wide (3840px) */
         @media (min-width: 3840px) {
-          .cat-sidebar {
-            padding: 2.5rem !important;
-            border-radius: 2.25rem !important;
-          }
-          .cat-header-title {
-            font-size: 1.45rem !important;
-          }
-          .cat-header-icon {
-            width: 3.25rem !important;
-            height: 3.25rem !important;
-            font-size: 1.4rem !important;
-          }
-          .cat-btn {
-            padding: 1.35rem 1.6rem !important;
-            border-radius: 1.25rem !important;
-          }
-          .cat-btn-text {
-            font-size: 1.45rem !important;
-          }
-          .cat-badge {
-            font-size: 1.25rem !important;
-            padding: 0.35rem 1.25rem !important;
-          }
-          .cat-sub-btn {
-            font-size: 1.25rem !important;
-            padding: 0.85rem 1.35rem !important;
-            border-radius: 1rem !important;
-          }
+          .cat-sidebar { padding: 2.5rem !important; border-radius: 2.25rem !important; }
+          .cat-header-title { font-size: 1.5rem !important; }
+          .cat-btn { padding: 1.35rem 1.6rem !important; border-radius: 1.25rem !important; }
+          .cat-btn-text { font-size: 1.45rem !important; }
+          .cat-badge { font-size: 1.25rem !important; padding: 0.35rem 1.25rem !important; }
         }
       `}</style>
 
       {/* HEADER */}
       <div className="flex items-center gap-3 pb-3 mb-3 border-b border-slate-100">
-        <div className="cat-header-icon w-8 h-8 rounded-xl bg-amber-100/70 text-amber-700 flex items-center justify-center text-sm shadow-xs">
+        <div className="cat-header-icon w-8 h-8 rounded-xl bg-blue-50 text-[#0B4EA2] border border-blue-100 flex items-center justify-center text-sm shadow-2xs">
           📁
         </div>
         <h3
           style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
-          className="cat-header-title font-bold text-sm tracking-wider text-slate-800 uppercase"
+          className="cat-header-title font-bold text-sm tracking-wider text-slate-900 uppercase"
         >
           Categories
         </h3>
@@ -165,6 +122,7 @@ const CategoriesSidebar = ({
 
           return (
             <div key={category.name} className="w-full">
+              {/* CATEGORY BUTTON */}
               <button
                 type="button"
                 onClick={() => {
@@ -187,7 +145,7 @@ const CategoriesSidebar = ({
                   cursor-pointer
                   ${
                     isSelected
-                      ? "bg-emerald-50/80 border border-emerald-300/80 text-emerald-900 shadow-xs"
+                      ? "bg-blue-50/80 border border-[#0B4EA2]/30 text-[#0B4EA2] shadow-xs"
                       : "bg-transparent hover:bg-slate-50 border border-transparent text-slate-700"
                   }
                 `}
@@ -196,7 +154,7 @@ const CategoriesSidebar = ({
                   <span className="text-lg shrink-0">{category.icon}</span>
                   <span
                     className={`cat-btn-text text-xs sm:text-sm font-semibold leading-tight ${
-                      isSelected ? "text-emerald-900 font-bold" : "text-slate-700"
+                      isSelected ? "text-[#0B4EA2] font-bold" : "text-slate-700"
                     }`}
                   >
                     {category.name}
@@ -215,7 +173,7 @@ const CategoriesSidebar = ({
                     transition-colors
                     ${
                       isSelected
-                        ? "bg-emerald-600 text-white shadow-xs"
+                        ? "bg-[#0B4EA2] text-white shadow-xs"
                         : "bg-slate-100 text-slate-500"
                     }
                   `}
@@ -224,20 +182,35 @@ const CategoriesSidebar = ({
                 </span>
               </button>
 
-              {/* SUB-SERVICES */}
+              {/* SUB-SERVICES UNDER "ALL SERVICES" */}
               {isAllServices && isOpen && (
-                <div className="my-2 ml-4 pl-3 border-l-2 border-emerald-300 space-y-4 transition-all">
+                <div className="my-3 ml-3 pl-3 border-l-2 border-blue-200 space-y-5 transition-all">
                   {serviceCategories.map((group) => (
-                    <div key={group.name}>
-                      <p
-                        style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
-                        className="text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5 flex items-center gap-1.5"
+                    <div key={group.name} className="space-y-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelectedCategory(group.name);
+                          setSelectedService(null);
+                        }}
+                        className="cat-group-header w-full flex items-center justify-between bg-gradient-to-r from-blue-50 to-emerald-50/50 hover:from-blue-100/80 hover:to-emerald-100/60 border border-blue-200 text-slate-900 px-3 py-2 rounded-xl text-left transition-all duration-200 shadow-xs cursor-pointer"
                       >
-                        <span>{group.icon}</span>
-                        {group.name}
-                      </p>
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm shrink-0">{group.icon}</span>
+                          <span
+                            style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+                            className="font-bold text-xs sm:text-[13px] text-slate-900 tracking-wide"
+                          >
+                            {group.name}
+                          </span>
+                        </div>
+                        <span className="text-[10px] font-extrabold bg-white text-[#0B4EA2] border border-blue-200 px-2 py-0.5 rounded-full shadow-2xs">
+                          {group.count}
+                        </span>
+                      </button>
 
-                      <div className="space-y-1">
+                      {/* SUB-ITEMS */}
+                      <div className="space-y-1 pl-1">
                         {group.services.map((service) => {
                           const isServiceSelected = selectedService === service;
 
@@ -253,9 +226,9 @@ const CategoriesSidebar = ({
                                 cat-sub-btn
                                 w-full
                                 text-left
-                                px-3
-                                py-2
-                                rounded-xl
+                                px-2.5
+                                py-1.5
+                                rounded-lg
                                 text-xs
                                 font-medium
                                 transition-all
@@ -266,17 +239,17 @@ const CategoriesSidebar = ({
                                 cursor-pointer
                                 ${
                                   isServiceSelected
-                                    ? "bg-emerald-100/70 text-emerald-900 font-bold"
-                                    : "text-slate-600 hover:text-emerald-700 hover:bg-emerald-50/60"
+                                    ? "bg-blue-100 text-[#0B4EA2] font-bold"
+                                    : "text-slate-600 hover:text-[#0B4EA2] hover:bg-blue-50/50"
                                 }
                               `}
                             >
                               <span
                                 className={`w-1.5 h-1.5 rounded-full shrink-0 ${
-                                  isServiceSelected ? "bg-emerald-600" : "bg-slate-300"
+                                  isServiceSelected ? "bg-[#0B4EA2] ring-2 ring-blue-200" : "bg-slate-300"
                                 }`}
                               />
-                              <span>{service}</span>
+                              <span className="truncate">{service}</span>
                             </button>
                           );
                         })}
@@ -286,8 +259,9 @@ const CategoriesSidebar = ({
                 </div>
               )}
 
+              {/* SUB-SERVICES UNDER SPECIFIC CATEGORY */}
               {!isAllServices && isOpen && (
-                <div className="my-2 ml-4 pl-3 border-l-2 border-emerald-300 space-y-1 transition-all">
+                <div className="my-2 ml-4 pl-3 border-l-2 border-blue-200 space-y-1 transition-all">
                   {category.services.map((service) => {
                     const isServiceSelected = selectedService === service;
 
@@ -316,14 +290,14 @@ const CategoriesSidebar = ({
                           cursor-pointer
                           ${
                             isServiceSelected
-                              ? "bg-emerald-100/70 text-emerald-900 font-bold"
-                              : "text-slate-600 hover:text-emerald-700 hover:bg-emerald-50/60"
+                              ? "bg-blue-100/80 text-[#0B4EA2] font-bold"
+                              : "text-slate-600 hover:text-[#0B4EA2] hover:bg-blue-50/50"
                           }
                         `}
                       >
                         <span
                           className={`w-1.5 h-1.5 rounded-full shrink-0 ${
-                            isServiceSelected ? "bg-emerald-600" : "bg-slate-300"
+                            isServiceSelected ? "bg-[#0B4EA2]" : "bg-slate-300"
                           }`}
                         />
                         <span>{service}</span>

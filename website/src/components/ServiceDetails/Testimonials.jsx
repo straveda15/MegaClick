@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   MapPin,
   Quote,
   Star,
-  Sparkles,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
@@ -44,194 +43,341 @@ const testimonials = [
     review:
       "Excellent service provider! No need to run around different consultants. Everything was handled under one roof.",
   },
+  {
+    name: "Riya Mehta",
+    service: "MSME Registration",
+    location: "Mumbai, Maharashtra",
+    review:
+      "Very fast and professional team. Got my MSME registration done within a day. Highly recommend MegaClick for all legal services.",
+  },
+  {
+    name: "Aditya Sharma",
+    service: "Trademark Registration",
+    location: "Nashik, Maharashtra",
+    review:
+      "MegaClick handled my trademark registration smoothly. The team was knowledgeable and always available to answer my questions.",
+  },
+  {
+    name: "Pooja Desai",
+    service: "Income Tax Filing",
+    location: "Aurangabad, Maharashtra",
+    review:
+      "Filing income tax was always stressful, but MegaClick made the whole process simple and transparent. Excellent support.",
+  },
+  {
+    name: "Rahul Patil",
+    service: "Marriage Registration",
+    location: "Nashik, Maharashtra",
+    review:
+      "Got our marriage certificate registered without any hassle. The team guided us with all the required documents. Great service!",
+  },
 ];
 
-const Testimonials = () => {
-  const [current, setCurrent] = useState(0);
+const TestimonialCard = ({ testimonial }) => (
+  <article
+    className="
+      relative flex flex-col justify-between
+      rounded-2xl border border-gray-200
+      bg-blue-50/60
+      p-5 sm:p-6
+      shadow-sm
+      h-full
+      transition-all duration-300
+      hover:shadow-md
+    "
+  >
+    {/* QUOTE ICON */}
+    <div className="absolute right-5 top-5 text-blue-400">
+      <Quote size={22} />
+    </div>
 
-  const goPrev = () => {
-    setCurrent((prev) => (prev - 1 + testimonials.length) % testimonials.length);
-  };
+    {/* TOP CONTENT */}
+    <div className="flex-1">
+      <div className="flex items-center gap-3.5">
+        {/* AVATAR */}
+        <div
+          className="
+            flex h-11 w-11 shrink-0 items-center justify-center
+            rounded-full
+            bg-blue-100
+            border border-blue-200
+            text-base font-bold
+            text-[#0B4EA2]
+          "
+          style={{ fontFamily: "'Inter', sans-serif" }}
+        >
+          {testimonial.name.charAt(0)}
+        </div>
 
-  const goNext = () => {
-    setCurrent((prev) => (prev + 1) % testimonials.length);
-  };
-
-  const visibleTestimonials = [
-    testimonials[current % testimonials.length],
-    testimonials[(current + 1) % testimonials.length],
-    testimonials[(current + 2) % testimonials.length],
-  ];
-
-  return (
-    <section className="w-full bg-white py-10 sm:py-12 lg:py-16">
-      <div
-        className="
-          w-full
-          max-w-[1500px]
-          mx-auto
-          px-4
-          sm:px-8
-          lg:px-16
-          xl:px-24
-        "
-      >
-        {/* HEADING */}
-        <div className="mb-8 sm:mb-10 text-left">
-          <span
+        {/* NAME / SERVICE / LOCATION */}
+        <div className="min-w-0 pr-6">
+          {/* NAME */}
+          <h3
+            style={{ fontFamily: "'Inter', sans-serif" }}
             className="
-              inline-flex
-              items-center
-              gap-1.5
-              rounded-full
-              bg-blue-700
-              border
-              border-blue-100
-              px-3.5
-              py-1
-              text-xs
+              truncate
+              text-base
+              sm:text-[17px]
               font-bold
-              text-white
-              mb-3
+              text-gray-900
             "
           >
-            <Sparkles size={14} className="text-white" />
-            Client Feedback
-          </span>
+            {testimonial.name}
+          </h3>
 
-          <br />
-          <h2 className="section-heading text-[#0B4EA2]">
-            What Our Clients Say
+          {/* SERVICE */}
+          <p
+            style={{ fontFamily: "'Inter', sans-serif" }}
+            className="
+              truncate
+              text-xs
+              font-semibold
+              text-[#0B4EA2]
+              mt-0.5
+            "
+          >
+            {testimonial.service}
+          </p>
+
+          {/* LOCATION (Visible & Clear) */}
+          <div
+            className="
+              flex items-center gap-1.5
+              text-xs text-gray-600
+              font-medium
+              mt-1
+            "
+          >
+            <MapPin
+              size={13}
+              className="shrink-0 text-[#0B4EA2]"
+            />
+            <span
+              style={{ fontFamily: "'Inter', sans-serif" }}
+              className="truncate"
+            >
+              {testimonial.location}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* REVIEW */}
+      <p
+        style={{ fontFamily: "'Inter', sans-serif" }}
+        className="
+          mt-4
+          text-xs
+          sm:text-sm
+          text-gray-600
+          leading-relaxed
+          font-normal
+        "
+      >
+        "{testimonial.review}"
+      </p>
+    </div>
+
+    {/* STARS */}
+    <div
+      className="
+        mt-5
+        pt-3
+        border-t border-gray-200/80
+        flex items-center
+      "
+    >
+      <div className="flex shrink-0 gap-0.5">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <Star
+            key={star}
+            size={14}
+            className="fill-green-500 stroke-green-500"
+          />
+        ))}
+      </div>
+    </div>
+  </article>
+);
+
+const Testimonials = () => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [visibleCards, setVisibleCards] = useState(3);
+
+  /* =========================================
+      RESPONSIVE CARDS
+      Desktop: 3
+      Tablet: 2
+      Mobile: 1
+  ========================================== */
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setVisibleCards(3);
+      } else if (window.innerWidth >= 640) {
+        setVisibleCards(2);
+      } else {
+        setVisibleCards(1);
+      }
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  /* =========================================
+      MAXIMUM SLIDE INDEX
+  ========================================== */
+  const maxIndex = Math.max(0, testimonials.length - visibleCards);
+
+  /* =========================================
+      PREVIOUS (1 Card at a time)
+  ========================================== */
+  const goPrev = () => {
+    setCurrentIndex((prev) => Math.max(0, prev - 1));
+  };
+
+  /* =========================================
+      NEXT (1 Card at a time)
+  ========================================== */
+  const goNext = () => {
+    setCurrentIndex((prev) => Math.min(maxIndex, prev + 1));
+  };
+
+  /* =======================================================
+      PER-CARD PERCENTAGE CALCULATION
+      Shift exact 1 card width relative to entire track width
+  ======================================================= */
+  const trackWidthPercent = (testimonials.length / visibleCards) * 100;
+  const singleCardShiftPercent = 100 / testimonials.length;
+
+  return (
+    <section
+      className="
+        w-full
+        bg-white
+        overflow-hidden
+        py-10
+        sm:py-14
+        lg:py-16
+      "
+    >
+      {/* GOOGLE FONTS */}
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@400;500;600;700&display=swap');
+      `}</style>
+
+      <div
+        className="
+          max-w-[1380px]
+          mx-auto
+          px-4
+          sm:px-6
+          min-[1440px]:px-10
+        "
+      >
+        {/* =========================================
+            HEADING (Left-aligned)
+        ========================================== */}
+        <div className="mb-8 sm:mb-10 text-left">
+          <h2
+            style={{
+              fontFamily: "'Hedvig Letters Serif', serif",
+            }}
+            className="
+              text-2xl
+              sm:text-3xl
+              md:text-3xl
+              lg:text-4xl
+              font-bold
+              leading-[1.18]
+              text-black
+              text-left
+              mb-2.5
+              sm:mb-4
+            "
+          >
+            What Our Clients{" "}
+            <span className="text-[#0B4EA2]">
+              Say
+            </span>
           </h2>
 
-          <p className="section-text mt-2 max-w-xl">
-            Real feedback from businesses trusting MegaClick for their growth.
+          <p
+            style={{
+              fontFamily: "'Inter', sans-serif",
+            }}
+            className="
+              text-sm
+              sm:text-base
+              text-gray-500
+              font-normal
+              leading-relaxed
+              max-w-xl
+              text-left
+            "
+          >
+            Real feedback from businesses trusting
+            MegaClick for their growth.
           </p>
         </div>
 
-        {/* TESTIMONIAL CARDS */}
-        <div className="relative">
+        {/* =========================================
+            TESTIMONIAL CAROUSEL (1-Card Smooth Movement)
+        ========================================== */}
+        <div className="relative overflow-hidden w-full">
           <div
-            className="
-              flex
-              gap-5
-              overflow-x-auto
-              snap-x
-              snap-mandatory
-              pb-2
-              -mx-4
-              px-4
-              sm:mx-0
-              sm:px-0
-              sm:grid
-              sm:grid-cols-2
-              lg:grid-cols-3
-              sm:gap-6
-              sm:overflow-visible
-              items-stretch
-            "
+            className="flex transition-transform duration-500 ease-in-out"
+            style={{
+              width: `${trackWidthPercent}%`,
+              transform: `translateX(-${currentIndex * singleCardShiftPercent}%)`,
+            }}
           >
-            {visibleTestimonials.map((testimonial, index) => (
-              <article
-                key={`${testimonial.name}-${current}-${index}`}
-                className={`
-                  relative
-                  flex
-                  flex-col
-                  w-[82%]
-                  flex-shrink-0
-                  snap-center
-                  sm:w-full
-                  sm:flex-shrink
-                  min-w-0
-                  rounded-2xl
-                  border
-                  border-gray-200
-                  bg-blue-50
-                  p-5
-                  sm:p-6
-                  shadow-sm
-                  ${index === 2 ? "sm:hidden lg:flex" : ""}
-                `}
+            {testimonials.map((testimonial, index) => (
+              <div
+                key={`${testimonial.name}-${index}`}
+                style={{
+                  width: `${100 / testimonials.length}%`,
+                }}
+                className="px-2.5 shrink-0"
               >
-                {/* TOP CONTENT — grows to fill */}
-                <div className="flex-1">
-                  {/* QUOTE ICON */}
-                  <div className="absolute right-5 top-5 text-blue-500">
-                    <Quote size={20} />
-                  </div>
-
-                  {/* USER INFO */}
-                  <div className="flex items-center gap-3">
-                    <div
-                      className="
-                        flex
-                        h-10
-                        w-10
-                        shrink-0
-                        items-center
-                        justify-center
-                        rounded-full
-                        bg-blue-100
-                        border
-                        border-blue-100
-                        text-base
-                        font-bold
-                        text-[#0B4EA2]
-                      "
-                    >
-                      {testimonial.name.charAt(0)}
-                    </div>
-
-                    <div className="min-w-0 pr-6">
-                      <h3 className="truncate text-sm font-bold text-gray-900">
-                        {testimonial.name}
-                      </h3>
-                      <p className="truncate text-xs font-semibold text-[#0B4EA2] mt-0.5">
-                        {testimonial.service}
-                      </p>
-                      <div className="flex items-center gap-1 text-[11px] text-gray-400 mt-0.5">
-                        <MapPin size={11} className="shrink-0 text-gray-400" />
-                        <span className="truncate">{testimonial.location}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* REVIEW */}
-                  <p className="mt-4 text-xs sm:text-sm text-gray-600 leading-relaxed">
-                    "{testimonial.review}"
-                  </p>
+                {/* UNIFORM CARD HEIGHT */}
+                <div className="w-full h-[275px]">
+                  <TestimonialCard testimonial={testimonial} />
                 </div>
-
-                {/* STARS — always pinned to bottom */}
-                <div className="mt-5 pt-3 border-t border-gray-100 flex items-center">
-                  <div className="flex shrink-0 gap-0.5">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <Star
-                        key={star}
-                        size={13}
-                        className="fill-green-500 stroke-green-500"
-                      />
-                    ))}
-                  </div>
-                </div>
-              </article>
+              </div>
             ))}
           </div>
         </div>
 
-        {/* ARROW NAVIGATION */}
-        <div className="mt-8 flex justify-center items-center gap-4">
+        {/* =========================================
+            NAVIGATION BUTTONS
+        ========================================== */}
+        <div
+          className="
+            mt-8
+            flex
+            justify-center
+            items-center
+            gap-4
+          "
+        >
+          {/* PREVIOUS BUTTON */}
           <button
             type="button"
             onClick={goPrev}
-            aria-label="Previous testimonials"
+            disabled={currentIndex === 0}
+            aria-label="Previous testimonial"
             className="
               flex
               items-center
               justify-center
-              w-10
-              h-10
+              w-11
+              h-11
               rounded-full
               border-2
               border-[#0B4EA2]
@@ -240,24 +386,30 @@ const Testimonials = () => {
               hover:bg-[#0B4EA2]
               hover:text-white
               transition-all
-              duration-300
+              duration-200
               cursor-pointer
               shadow-sm
+              disabled:opacity-30
+              disabled:cursor-not-allowed
+              disabled:hover:bg-white
+              disabled:hover:text-[#0B4EA2]
             "
           >
-            <ChevronLeft size={20} />
+            <ChevronLeft size={21} />
           </button>
 
+          {/* NEXT BUTTON */}
           <button
             type="button"
             onClick={goNext}
-            aria-label="Next testimonials"
+            disabled={currentIndex >= maxIndex}
+            aria-label="Next testimonial"
             className="
               flex
               items-center
               justify-center
-              w-10
-              h-10
+              w-11
+              h-11
               rounded-full
               border-2
               border-[#0B4EA2]
@@ -266,12 +418,16 @@ const Testimonials = () => {
               hover:bg-[#0B4EA2]
               hover:text-white
               transition-all
-              duration-300
+              duration-200
               cursor-pointer
               shadow-sm
+              disabled:opacity-30
+              disabled:cursor-not-allowed
+              disabled:hover:bg-white
+              disabled:hover:text-[#0B4EA2]
             "
           >
-            <ChevronRight size={20} />
+            <ChevronRight size={21} />
           </button>
         </div>
       </div>

@@ -31,60 +31,26 @@ const faqs = [
 
 const FAQ = () => {
   const [openIndex, setOpenIndex] = useState(null);
-
-  const toggleFAQ = (index) => {
-    setOpenIndex(openIndex === index ? null : index);
-  };
+  const toggleFAQ = (index) => setOpenIndex(openIndex === index ? null : index);
 
   return (
-    <section className="relative overflow-hidden py-8 sm:py-10 lg:py-14 xl:py-16 bg-blue-50 faq-section">
-      {/* UNIFIED APP-CONTAINER + BALANCED RESPONSIVE SCALING */}
+    <section className="w-full py-8 sm:py-12 lg:py-16 min-[1920px]:py-20 min-[3840px]:py-32 bg-blue-50/50 font-['Inter',sans-serif] overflow-hidden">
+      {/* DIRECT CSS FOR RESPONSIVE SCALING */}
       <style>{`
-        .app-container {
-          width: 100%;
-          max-width: 1500px;
-          margin-left: auto;
-          margin-right: auto;
-          padding-left: 1.25rem;
-          padding-right: 1.25rem;
-        }
-
-        @media (min-width: 640px) {
-          .app-container {
-            padding-left: 2rem;
-            padding-right: 2rem;
-          }
-        }
-
-        @media (min-width: 1024px) {
-          .app-container {
-            padding-left: 4rem;
-            padding-right: 4rem;
-          }
-        }
-
-        @media (min-width: 1280px) {
-          .app-container {
-            padding-left: 6rem;
-            padding-right: 6rem;
-          }
-        }
-
-        /* Standard Desktop (1440px x 900px) */
+        /* Standard Desktop (1440px) */
         @media (min-width: 1440px) {
-          .app-container {
-            max-width: 1440px !important;
-            padding-left: 5rem !important;
-            padding-right: 5rem !important;
+          .faq-container {
+            max-width: 1380px !important;
+            padding-left: 2.5rem !important;  /* px-10 */
+            padding-right: 2.5rem !important; /* px-10 */
           }
-          .faq-title {
-            font-size: 2.25rem !important;
+          .faq-heading {
+            font-size: 2.5rem !important;
             line-height: 1.2 !important;
           }
-          .faq-desc {
+          .faq-sub {
             font-size: 0.95rem !important;
             line-height: 1.65 !important;
-            max-width: 28rem !important;
           }
           .faq-question {
             font-size: 1.1rem !important;
@@ -95,65 +61,31 @@ const FAQ = () => {
           }
         }
 
-        /* Large Desktop (1920px x 1080px Full HD) */
+        /* Large Desktop (1920px Full HD) */
         @media (min-width: 1920px) {
-          .app-container {
+          .faq-container {
             max-width: 1800px !important;
-            padding-left: 6rem !important;
-            padding-right: 6rem !important;
+            padding-left: 4rem !important;   /* px-16 */
+            padding-right: 4rem !important;  /* px-16 */
           }
-          .faq-section {
-            padding-top: 4.5rem !important;
-            padding-bottom: 4.5rem !important;
+          .faq-heading {
+            font-size: 3.25rem !important;
+            line-height: 1.18 !important;
           }
-          .faq-title {
-            font-size: 2.5rem !important;
-            line-height: 1.2 !important;
-          }
-          .faq-desc {
-            font-size: 1.05rem !important;
-            line-height: 1.75 !important;
-            max-width: 32rem !important;
+          .faq-sub {
+            font-size: 1.15rem !important;
+            line-height: 1.8 !important;
           }
           .faq-question {
-            font-size: 1.2rem !important;
-            padding-top: 1.35rem !important;
-            padding-bottom: 1.35rem !important;
+            font-size: 1.25rem !important;
           }
           .faq-answer {
             font-size: 1.05rem !important;
             line-height: 1.75 !important;
           }
-        }
-
-        /* QHD / 2K Ultra-Wide (2560px Desktop) */
-        @media (min-width: 2560px) {
-          .app-container {
-            max-width: 2400px !important;
-            padding-left: 8rem !important;
-            padding-right: 8rem !important;
-          }
-          .faq-section {
-            padding-top: 5.5rem !important;
-            padding-bottom: 5.5rem !important;
-          }
-          .faq-title {
-            font-size: 3rem !important;
-            line-height: 1.2 !important;
-          }
-          .faq-desc {
-            font-size: 1.2rem !important;
-            line-height: 1.8 !important;
-            max-width: 38rem !important;
-          }
-          .faq-question {
-            font-size: 1.35rem !important;
-            padding-top: 1.6rem !important;
-            padding-bottom: 1.6rem !important;
-          }
-          .faq-answer {
-            font-size: 1.2rem !important;
-            line-height: 1.8 !important;
+          .faq-row-btn {
+            padding-top: 1.5rem !important;
+            padding-bottom: 1.5rem !important;
           }
           .faq-chevron {
             width: 1.5rem !important;
@@ -161,121 +93,121 @@ const FAQ = () => {
           }
         }
 
-        /* 4K Ultra-Wide Desktop (3840px x 2160px) */
+        /* 4K Ultra-Wide Desktop (3840px) */
         @media (min-width: 3840px) {
-          .app-container {
-            max-width: 3400px !important;
-            padding-left: 10rem !important;
-            padding-right: 10rem !important;
+          .faq-container {
+            max-width: 3200px !important;
+            padding-left: 6rem !important;   /* px-24 */
+            padding-right: 6rem !important;  /* px-24 */
           }
-          .faq-section {
-            padding-top: 6.5rem !important;
-            padding-bottom: 6.5rem !important;
-          }
-          .faq-title {
-            font-size: 3.75rem !important;
+          .faq-heading {
+            font-size: 5.5rem !important;
             line-height: 1.15 !important;
           }
-          .faq-desc {
-            font-size: 1.5rem !important;
-            line-height: 1.8 !important;
-            max-width: 48rem !important;
+          .faq-sub {
+            font-size: 2rem !important;
+            line-height: 3.25rem !important;
+            margin-top: 1.5rem !important;
           }
           .faq-question {
-            font-size: 1.75rem !important;
-            padding-top: 2rem !important;
-            padding-bottom: 2rem !important;
+            font-size: 2.25rem !important;
           }
           .faq-answer {
-            font-size: 1.5rem !important;
-            line-height: 1.8 !important;
+            font-size: 1.75rem !important;
+            line-height: 2.75rem !important;
             padding-bottom: 2rem !important;
           }
+          .faq-row-btn {
+            padding-top: 2.5rem !important;
+            padding-bottom: 2.5rem !important;
+          }
           .faq-chevron {
-            width: 2rem !important;
-            height: 2rem !important;
+            width: 2.5rem !important;
+            height: 2.5rem !important;
           }
         }
       `}</style>
 
-      {/* MAIN CONTAINER */}
-      <div className="app-container">
-        
-        {/* TWO COLUMN LAYOUT (STICKY HEADING LEFT, FAQ LIST RIGHT) */}
-        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)] gap-6 lg:gap-14 xl:gap-16 items-start">
+      {/* UNIFIED CONTAINER */}
+      <div className="faq-container w-full max-w-[1380px] mx-auto px-4 sm:px-6 min-[1440px]:px-10">
+        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)] gap-8 lg:gap-14 min-[1920px]:gap-16 min-[3840px]:gap-24 items-start">
           
-          {/* LEFT: HEADING SHIFTED HIGHER FLUSH AT TOP */}
-          <div className="lg:sticky lg:top-8 lg:self-start mt-0 pt-0">
-            {/* MAIN HEADING */}
-            <h2
-              style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
-              className="
-                faq-title
-                text-2xl
-                sm:text-3xl
-                md:text-3xl
-                lg:text-3xl
-                xl:text-4xl
-                font-bold
-                leading-[1.18]
-                text-black
-                text-left
-              "
-            >
-              Frequently asked{" "}
-              <span className="text-[#0B4EA2] block sm:inline lg:block">
-                questions
-              </span>
-            </h2>
+          {/* LEFT: STICKY HEADING (EXACT FONT-BOLD WEIGHT) */}
+          <div className="lg:sticky  lg:self-start text-left">
+               <h2
+            style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+            className="
+              team-title
+              text-2xl
+              sm:text-3xl
+              md:text-3xl
+              lg:text-4xl
+              font-bold
+              leading-[1.18]
+              text-black
+              text-left
+              mb-2.5
+              sm:mb-4
+            "
+          >
+         Frequently asked {" "}
+            <span className="text-[#0B4EA2]">
+     questions 
+            </span>
+          </h2>
 
-            {/* DESCRIPTION */}
-            <p className="faq-desc mt-3 sm:mt-3.5 text-slate-600 font-normal text-sm sm:text-base leading-relaxed max-w-md text-left">
+            <p
+              style={{ fontFamily: "'Inter', sans-serif" }}
+              className="faq-sub mt-3 sm:mt-4 text-slate-600 font-normal text-xs sm:text-sm lg:text-base leading-relaxed max-w-md min-[1920px]:max-w-lg min-[3840px]:max-w-2xl text-left"
+            >
               Find answers to common questions about our business, legal,
-              financial, and registration services. Our experts are here to
-              provide clear guidance and reliable support.
+              financial, and registration services.
             </p>
           </div>
 
-          {/* RIGHT: FAQ LIST (DIVIDER STYLE) */}
-          <div className="divide-y divide-slate-200 border-t border-slate-200">
+          {/* RIGHT: ACCORDION LIST */}
+          <div className="divide-y divide-slate-200 border-t border-slate-200 w-full">
             {faqs.map((faq, index) => {
               const isOpen = openIndex === index;
 
               return (
                 <div key={index} className="group">
-                  {/* QUESTION */}
                   <button
                     type="button"
                     onClick={() => toggleFAQ(index)}
                     aria-expanded={isOpen}
-                    className="w-full flex items-center justify-between gap-4 py-4 sm:py-5 text-left focus:outline-none cursor-pointer"
+                    className="faq-row-btn w-full flex items-center justify-between gap-4 py-4 sm:py-5 text-left focus:outline-none cursor-pointer"
                   >
                     <h3
-                      className={`faq-question text-base sm:text-lg font-semibold transition-colors duration-200 ${
-                        isOpen ? "text-[#0B4EA2]" : "text-[#0f172a] group-hover:text-[#0B4EA2]"
+                      style={{ fontFamily: "'Inter', sans-serif" }}
+                      className={`faq-question text-sm sm:text-base lg:text-lg font-semibold leading-snug transition-colors duration-200 ${
+                        isOpen
+                          ? "text-[#0B4EA2]"
+                          : "text-slate-900 group-hover:text-[#0B4EA2]"
                       }`}
                     >
                       {faq.question}
                     </h3>
-
-                    {/* CHEVRON ICON */}
                     <ChevronDown
                       size={19}
-                      strokeWidth={2}
-                      className={`faq-chevron flex-shrink-0 text-slate-400 transition-transform duration-300 ${
+                      className={`faq-chevron shrink-0 text-slate-400 transition-transform duration-300 ${
                         isOpen ? "rotate-180 text-[#0B4EA2]" : ""
                       }`}
                     />
                   </button>
 
-                  {/* ANSWER */}
                   <div
                     className={`grid transition-all duration-300 ease-in-out ${
-                      isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                      isOpen
+                        ? "grid-rows-[1fr] opacity-100"
+                        : "grid-rows-[0fr] opacity-0"
                     }`}
                   >
                     <div className="overflow-hidden">
-                      <p className="faq-answer text-slate-600 font-normal text-sm sm:text-base leading-relaxed pb-4 sm:pb-5 max-w-2xl text-left">
+                      <p
+                        style={{ fontFamily: "'Inter', sans-serif" }}
+                        className="faq-answer text-slate-600 font-normal text-xs sm:text-sm lg:text-base leading-relaxed pb-4 sm:pb-5 text-left max-w-2xl min-[3840px]:max-w-4xl"
+                      >
                         {faq.answer}
                       </p>
                     </div>

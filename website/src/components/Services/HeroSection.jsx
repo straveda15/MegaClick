@@ -1,5 +1,4 @@
 import React from "react";
-import { BriefcaseBusiness } from "lucide-react";
 import img1 from "../../assets/img1.jpg";
 
 const HeroSection = () => {
@@ -12,15 +11,19 @@ const HeroSection = () => {
         bg-[#073FA8]
         min-h-[460px]
         sm:min-h-[500px]
-        lg:min-h-[540px]
+        lg:min-h-[560px]
         flex
         items-center
-        py-6
-        sm:py-8
-        lg:py-10
+        py-8
+        sm:py-10
+        lg:py-12
+        font-['Inter',sans-serif]
       "
     >
+      {/* GOOGLE FONTS & ULTRA-WIDE MEDIA QUERIES */}
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@400;500;600;700&display=swap');
+
         .app-container {
           width: 100%;
           max-width: 1500px;
@@ -67,37 +70,33 @@ const HeroSection = () => {
           }
 
           .hero-section {
-            min-height: 580px !important;
-            padding-top: 3.5rem !important;
-            padding-bottom: 3.5rem !important;
+            min-height: 620px !important;
+            padding-top: 4rem !important;
+            padding-bottom: 4rem !important;
           }
 
           .hero-image-outer {
-            width: 380px !important;
-            height: 380px !important;
+            width: 400px !important;
+            height: 400px !important;
           }
 
           .hero-image-inner {
-            width: 330px !important;
-            height: 330px !important;
-          }
-
-          .hero-badge {
-            font-size: 0.9rem !important;
-            padding: 0.4rem 1.1rem !important;
+            width: 350px !important;
+            height: 350px !important;
           }
 
           .hero-heading-1 {
-            font-size: 2.5rem !important;
+            font-size: 3.6rem !important;
           }
 
           .hero-heading-2 {
-            font-size: 2.15rem !important;
+            font-size: 3rem !important;
           }
 
           .hero-quote {
-            font-size: 1.25rem !important;
-            line-height: 1.5 !important;
+            font-size: 1.45rem !important;
+            line-height: 1.55 !important;
+            max-width: 750px !important;
           }
         }
 
@@ -109,37 +108,33 @@ const HeroSection = () => {
           }
 
           .hero-section {
-            min-height: 660px !important;
-            padding-top: 4.5rem !important;
-            padding-bottom: 4.5rem !important;
+            min-height: 720px !important;
+            padding-top: 5rem !important;
+            padding-bottom: 5rem !important;
           }
 
           .hero-image-outer {
-            width: 460px !important;
-            height: 460px !important;
+            width: 480px !important;
+            height: 480px !important;
           }
 
           .hero-image-inner {
-            width: 400px !important;
-            height: 400px !important;
-          }
-
-          .hero-badge {
-            font-size: 1.05rem !important;
-            padding: 0.5rem 1.35rem !important;
+            width: 420px !important;
+            height: 420px !important;
           }
 
           .hero-heading-1 {
-            font-size: 3.25rem !important;
+            font-size: 4.4rem !important;
           }
 
           .hero-heading-2 {
-            font-size: 2.75rem !important;
+            font-size: 3.7rem !important;
           }
 
           .hero-quote {
-            font-size: 1.55rem !important;
-            line-height: 1.55 !important;
+            font-size: 1.85rem !important;
+            line-height: 1.6 !important;
+            max-width: 900px !important;
           }
         }
 
@@ -151,44 +146,33 @@ const HeroSection = () => {
           }
 
           .hero-section {
-            min-height: 800px !important;
-            padding-top: 6rem !important;
-            padding-bottom: 6rem !important;
+            min-height: 860px !important;
+            padding-top: 7rem !important;
+            padding-bottom: 7rem !important;
           }
 
           .hero-image-outer {
-            width: 600px !important;
-            height: 600px !important;
+            width: 620px !important;
+            height: 620px !important;
           }
 
           .hero-image-inner {
-            width: 520px !important;
-            height: 520px !important;
-          }
-
-          .hero-badge {
-            font-size: 1.45rem !important;
-            padding: 0.75rem 2rem !important;
-            border-radius: 9999px !important;
-          }
-
-          .hero-badge-icon {
-            width: 1.65rem !important;
-            height: 1.65rem !important;
+            width: 540px !important;
+            height: 540px !important;
           }
 
           .hero-heading-1 {
-            font-size: 4.25rem !important;
+            font-size: 5.5rem !important;
           }
 
           .hero-heading-2 {
-            font-size: 3.65rem !important;
+            font-size: 4.6rem !important;
           }
 
           .hero-quote {
-            font-size: 2.15rem !important;
+            font-size: 2.45rem !important;
             line-height: 1.6 !important;
-            max-width: 850px !important;
+            max-width: 1100px !important;
           }
         }
       `}</style>
@@ -349,11 +333,11 @@ const HeroSection = () => {
           className="
             grid
             grid-cols-1
-            lg:grid-cols-[0.9fr_1.1fr]
+            lg:grid-cols-[0.85fr_1.15fr]
             items-center
-            gap-6
-            sm:gap-8
-            lg:gap-10
+            gap-8
+            sm:gap-10
+            lg:gap-12
             min-w-0
           "
         >
@@ -375,16 +359,16 @@ const HeroSection = () => {
                 flex
                 items-center
                 justify-center
-                w-[180px]
-                h-[180px]
-                sm:w-[230px]
-                sm:h-[230px]
-                md:w-[270px]
-                md:h-[270px]
-                lg:w-[310px]
-                lg:h-[310px]
-                xl:w-[330px]
-                xl:h-[330px]
+                w-[190px]
+                h-[190px]
+                sm:w-[240px]
+                sm:h-[240px]
+                md:w-[280px]
+                md:h-[280px]
+                lg:w-[320px]
+                lg:h-[320px]
+                xl:w-[350px]
+                xl:h-[350px]
               "
             >
               {/* OUTER GLOW */}
@@ -429,16 +413,16 @@ const HeroSection = () => {
                   hero-image-inner
                   relative
                   z-10
-                  w-[155px]
-                  h-[155px]
-                  sm:w-[200px]
-                  sm:h-[200px]
-                  md:w-[235px]
-                  md:h-[235px]
-                  lg:w-[270px]
-                  lg:h-[270px]
-                  xl:w-[290px]
-                  xl:h-[290px]
+                  w-[165px]
+                  h-[165px]
+                  sm:w-[210px]
+                  sm:h-[210px]
+                  md:w-[245px]
+                  md:h-[245px]
+                  lg:w-[280px]
+                  lg:h-[280px]
+                  xl:w-[305px]
+                  xl:h-[305px]
                   rounded-full
                   overflow-hidden
                   border-[4px]
@@ -540,77 +524,28 @@ const HeroSection = () => {
               lg:text-left
             "
           >
-            {/* BADGE */}
-            <div
-              className="
-                flex
-                justify-center
-                lg:justify-start
-                w-full
-              "
-            >
-              <span
-                className="
-                  hero-badge
-                  inline-flex
-                  max-w-full
-                  items-center
-                  justify-center
-                  gap-1.5
-                  sm:gap-2
-                  px-3
-                  sm:px-4
-                  py-1
-                  sm:py-1.5
-                  rounded-full
-                  border
-                  border-white/25
-                  bg-white/10
-                  backdrop-blur-md
-                  shadow-xs
-                  text-[11px]
-                  sm:text-xs
-                  md:text-sm
-                  font-semibold
-                  whitespace-nowrap
-                "
-              >
-                <BriefcaseBusiness
-                  size={15}
-                  className="
-                    hero-badge-icon
-                    text-green-400
-                    flex-shrink-0
-                  "
-                />
-
-                <span>Our Professional Services</span>
-              </span>
-            </div>
-
             {/* MAIN HEADING */}
             <h1
+              style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
               className="
-                mt-3
-                sm:mt-4
                 w-full
                 max-w-full
-                font-extrabold
+                font-bold
                 tracking-tight
-                leading-[1.12]
-                break-words
+                leading-[1.15]
               "
             >
               <span
                 className="
                   hero-heading-1
                   block
-                  text-[22px]
-                  sm:text-[30px]
-                  md:text-[36px]
-                  lg:text-[40px]
-                  xl:text-[48px]
+                  text-3xl
+                  sm:text-4xl
+                  md:text-5xl
+                  lg:text-5xl
+                  xl:text-6xl
                   text-white
+                  drop-shadow-sm
                 "
               >
                 Professional Services
@@ -620,57 +555,53 @@ const HeroSection = () => {
                 className="
                   hero-heading-2
                   block
-                  mt-1
+                  mt-2
+                  sm:mt-2.5
                   text-green-300
-                  text-[19px]
-                  sm:text-[26px]
-                  md:text-[32px]
-                  lg:text-[36px]
-                  xl:text-[42px]
+                  text-2xl
+                  sm:text-3xl
+                  md:text-4xl
+                  lg:text-4xl
+                  xl:text-5xl
+                  drop-shadow-sm
                 "
               >
                 Designed for Every Business
               </span>
             </h1>
 
-            {/* QUOTE */}
+            {/* QUOTE / TAGLINE */}
             <div
               className="
-                mt-4
-                sm:mt-5
+                mt-5
+                sm:mt-6
+                lg:mt-7
                 w-full
-                max-w-[580px]
+                max-w-[650px]
                 mx-auto
                 lg:mx-0
               "
             >
               <p
+                style={{ fontFamily: "'Inter', sans-serif" }}
                 className="
                   hero-quote
-                  text-emerald-300
-                  font-extrabold
-                  text-[13px]
-                  sm:text-[16px]
-                  md:text-[18px]
-                  lg:text-[20px]
-                  leading-[1.4]
+                  text-emerald-200
+                  font-semibold
+                  text-sm
+                  sm:text-base
+                  md:text-lg
+                  lg:text-xl
+                  xl:text-xl
+                  leading-relaxed
                   uppercase
                   tracking-wide
                   drop-shadow-xs
                   break-words
                 "
               >
-                <span className="block">
-                  “ONE PLATFORM COMPLETE
-                </span>
-
-                <span className="block">
-                   SOLUTIONS FOR  BUSINESSES
-                </span>
-
-                <span className="block">
-                  &amp; INDIVIDUALS”
-                </span>
+                “One Platform Complete Solutions For 
+                <br/> Businesses &amp; Individuals”
               </p>
             </div>
           </div>
