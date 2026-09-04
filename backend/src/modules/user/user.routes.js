@@ -11,7 +11,7 @@ import {
   resetPin,
   updateProfile,
 } from "./user.controller.js";
-import { protect, requireAdmin } from "../../shared/middleware/auth.middleware.js";
+import { protect, allowIfGrantedPage } from "../../shared/middleware/auth.middleware.js";
 
 const router = express.Router();
 
@@ -35,7 +35,10 @@ router.get("/all", protect, getAllUsers);
 // (employees/admins) stays restricted to HR/Admin — enforced inside the controller.
 router.post("/", protect, createUser);
 router.patch("/:id", protect, updateUser);
-router.delete("/:id", protect, requireAdmin, deleteUser);
+// Deleting a team member's login is paired with deleting their employee
+// profile (team.routes.js) from the same "Delete Employee" action — same
+// grant honoured here so that action doesn't half-fail for a granted user.
+router.delete("/:id", protect, allowIfGrantedPage("/employees", ["hr", "manager"]), deleteUser);
 
 
 export default router;

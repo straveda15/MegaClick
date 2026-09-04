@@ -175,12 +175,18 @@ const leadServices = (lead) => {
 export const listClients = async (user, filters = {}) => {
   const query = {};
 
-  // Ownership scoping mirrors the Leads board: admins and the sales manager see
-  // everyone; everyone else sees the clients they are actually working for.
+  // Ownership scoping mirrors the Leads board: admins, the sales manager, and
+  // anyone outside the actual sales department see everyone. Only a plain
+  // sales-team member is scoped to "clients I'm personally working" — that's
+  // a real pipeline concept for them; for anyone else (HR, accountant,
+  // advocate, or any other department granted the Clients/Accounts page) it
+  // would just mean an empty board with nothing ever assigned to them, even
+  // though the admin explicitly gave them this page.
   // `filters.unscoped` is never taken from a request query string — only the
   // dedicated task-picker route (getClientsForPicker) sets it, so a client
-  // requesting /clients directly still gets the ownership-scoped list.
-  const isManagerView = user.role === "admin" || user.isSalesManager === true || filters.unscoped === true;
+  // requesting /clients directly still gets this same scoping.
+  const isManagerView = user.role === "admin" || user.isSalesManager === true
+    || user.departmentRole !== "sales" || filters.unscoped === true;
   if (!isManagerView) {
     query.$or = [{ assignedTo: user._id }, { "services.assignedTo": user._id }];
   }

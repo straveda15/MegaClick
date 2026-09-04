@@ -467,9 +467,13 @@ export const getAssignedLeads = async (user, filters = {}) => {
 
     if (filters.status) query.status = filters.status;
 
-    // Ownership scoping: admins and the Senior Sales Manager see every lead
-    // (oversight); regular sales members see only leads assigned to them.
-    const isManagerView = user.role === "admin" || user.isSalesManager === true;
+    // Ownership scoping: admins, the Senior Sales Manager, and anyone outside
+    // the sales department see every lead (oversight); a plain sales-team
+    // member sees only leads assigned to them — their actual pipeline. Anyone
+    // else who was granted the Leads page (HR, advocate, etc.) has no
+    // pipeline of their own, so scoping them the same way would just leave
+    // the page empty despite being explicitly granted access to it.
+    const isManagerView = user.role === "admin" || user.isSalesManager === true || user.departmentRole !== "sales";
     if (!isManagerView) {
         query.assignedTo = user._id;
         query.pool = { $ne: true }; // pooled leads aren't "theirs" until distributed
@@ -546,7 +550,7 @@ const withServices = (lead) => {
  */
 export const getMyLeadStats = async (user) => {
     const match = {};
-    const isManagerView = user.role === "admin" || user.isSalesManager === true;
+    const isManagerView = user.role === "admin" || user.isSalesManager === true || user.departmentRole !== "sales";
     if (!isManagerView) {
         match.assignedTo = user._id;
         match.pool = { $ne: true };
@@ -2055,7 +2059,7 @@ export const listFollowUps = async (user, filters = {}) => {
         ],
     };
 
-    const isManagerView = user.role === "admin" || user.isSalesManager === true;
+    const isManagerView = user.role === "admin" || user.isSalesManager === true || user.departmentRole !== "sales";
     if (!isManagerView) {
         query.$and = [{ $or: [{ assignedTo: user._id }, { "services.assignedTo": user._id }] }];
     }

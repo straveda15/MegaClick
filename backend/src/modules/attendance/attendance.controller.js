@@ -32,6 +32,16 @@ export const getTodayAttendance = catchAsync(async (req, res, next) => {
   });
 });
 
+export const getPendingAttendance = catchAsync(async (req, res, next) => {
+  const attendance = await attendanceService.getPendingAttendance();
+
+  res.status(200).json({
+    status: "success",
+    results: attendance.length,
+    data: { attendance },
+  });
+});
+
 export const getAttendanceByDate = catchAsync(async (req, res, next) => {
   const { date } = req.query;
   if (!date) {
@@ -156,7 +166,8 @@ export const approveEarlyPunchOut = catchAsync(async (req, res, next) => {
     approverId,
     status,
     approverRole,
-    approverDeptRole
+    approverDeptRole,
+    req.user.allowedPaths || []
   );
 
   res.status(200).json({
@@ -181,7 +192,8 @@ export const approveHalfDay = catchAsync(async (req, res, next) => {
     approverId,
     status,
     approverRole,
-    approverDeptRole
+    approverDeptRole,
+    req.user.allowedPaths || []
   );
 
   res.status(200).json({

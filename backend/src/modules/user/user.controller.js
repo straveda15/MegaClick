@@ -1,4 +1,5 @@
 import User from "./user.model.js";
+import { hasGrantedPage } from "../../shared/middleware/auth.middleware.js";
 import { generateOtp, verifyOtp } from "../otp/otp.service.js";
 import { sendOtpSms } from "../notification/sms.service.js";
 import { parsePhoneNumberFromString } from "libphonenumber-js";
@@ -58,7 +59,8 @@ export const createUser = async (req, res) => {
     // reach the Customer Master page. Creating a privileged account (employee /
     // admin / staff role) stays restricted to HR or Admin.
     const targetRole = role || "employee";
-    const canManageStaff = req.user.role === "admin" || req.user.departmentRole === "hr";
+    const canManageStaff = req.user.role === "admin" || req.user.departmentRole === "hr"
+      || req.user.departmentRole === "manager" || hasGrantedPage(req.user, "/employees");
     if (targetRole !== "user" && !canManageStaff) {
       return res.status(403).json({ success: false, message: "Access denied. HR or Admin permissions required to create staff accounts." });
     }
@@ -112,7 +114,8 @@ export const updateUser = async (req, res) => {
     // Editing staff/admin accounts (or promoting a customer into one) stays
     // restricted to HR/Admin. Editing a customer profile is open to any
     // authenticated staff who can reach the Customer Master page.
-    const canManageStaff = req.user.role === "admin" || req.user.departmentRole === "hr";
+    const canManageStaff = req.user.role === "admin" || req.user.departmentRole === "hr"
+      || req.user.departmentRole === "manager" || hasGrantedPage(req.user, "/employees");
     const touchesPrivileged = user.role !== "user" || (updateData.role && updateData.role !== "user");
     if (touchesPrivileged && !canManageStaff) {
       return res.status(403).json({ success: false, message: "Access denied. HR or Admin permissions required to modify staff accounts." });

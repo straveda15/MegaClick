@@ -13,6 +13,7 @@ import {
   getMyTodayAttendance,
   approveEarlyPunchOut,
   approveHalfDay,
+  getPendingAttendance,
 } from "./attendance.controller.js";
 import { protect, requireHR, requireEmployee, requireManager, requireProductionStaff, requireOperationsStaff, requireEmployeeAppAccess, requirePageAccess } from "../../shared/middleware/auth.middleware.js";
 import workLocationRouter from "./workLocation.routes.js";
@@ -21,7 +22,8 @@ const router = express.Router();
 
 router.use(protect);
 
-// ── Work location management (admin-only, sub-router) ─────────────────────────
+// ── Work location management (sub-router — see workLocation.routes.js for its
+// own per-route access grant) ─────────────────────────────────────────────────
 // Must be mounted before parametric routes to avoid conflicts.
 router.use("/work-locations", workLocationRouter);
 
@@ -35,6 +37,9 @@ router.get("/me", requireEmployeeAppAccess, getMyAttendance);
 router.post("/override", requirePageAccess("/people/attendance", ["hr"]), overrideAttendance);
 router.get("/", requirePageAccess("/people/attendance", ["hr", "manager"]), getAttendanceByDate);
 router.get("/today", requirePageAccess(["/", "/people/attendance"], ["hr", "manager"]), getTodayAttendance);
+// Every early-punch-out / half-day request still awaiting approval, across all
+// dates — feeds the "pending from other dates" banner on HR & Leave.
+router.get("/pending", requirePageAccess("/people/attendance", ["hr", "manager"]), getPendingAttendance);
 
 // View specific user history
 router.get("/user/:id", requirePageAccess("/people/attendance", ["hr", "manager"]), getAttendanceByUser);
