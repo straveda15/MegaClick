@@ -55,7 +55,7 @@ const userSchema = new mongoose.Schema(
 
     departmentRole: {
       type: String,
-      enum: ["hr", "accountant", "manager", "business_analyst", "sales"],
+      enum: ["hr", "accountant", "manager", "business_analyst", "sales", "advocate"],
       default: null,
     },
 

@@ -26,7 +26,7 @@ import {
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-type DeptValue = "hr" | "sales" | "business_analyst" | "accountant" | "manager";
+type DeptValue = "hr" | "sales" | "business_analyst" | "accountant" | "manager" | "advocate";
 
 interface FormState {
   name: string;
@@ -51,6 +51,7 @@ const DEPT_OPTIONS: { value: DeptValue; label: string }[] = [
   { value: "business_analyst", label: "Business Analyst" },
   { value: "accountant", label: "Accountant" },
   { value: "manager", label: "Manager" },
+  { value: "advocate", label: "Advocate" },
 ];
 
 // Fragment tabs — "ALL" plus one per department
@@ -61,6 +62,7 @@ const DEPT_TABS = [
   "BUSINESS ANALYST",
   "ACCOUNTANT",
   "MANAGER",
+  "ADVOCATE",
 ] as const;
 type DeptTab = (typeof DEPT_TABS)[number];
 
@@ -72,9 +74,18 @@ const TAB_TO_ROLE: Record<DeptTab, DeptValue | null> = {
   "BUSINESS ANALYST": "business_analyst",
   ACCOUNTANT: "accountant",
   MANAGER: "manager",
+  ADVOCATE: "advocate",
 };
 
 const DEPT_TO_PATHS: Record<DeptValue, string[]> = {
+  advocate: [
+    "/",
+    "/dashboard",
+    "/self/attendance",
+    "/self/leaves",
+    "/tasks",
+    "/clients",
+  ],
   hr: [
     "/",
     "/dashboard",
