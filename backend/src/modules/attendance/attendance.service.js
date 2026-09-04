@@ -161,6 +161,17 @@ class AttendanceService {
       .populate("employeeProfileId", "employeeId designation department");
   }
 
+  /** Every early-punch-out / half-day request still awaiting approval, across all dates. */
+  async getPendingAttendance() {
+    return await Attendance.find({
+      isDeleted: { $ne: true },
+      $or: [{ earlyPunchOutStatus: "pending" }, { halfDayStatus: "pending" }],
+    })
+      .populate("userId", "name lastName email departmentRole")
+      .populate("employeeProfileId", "employeeId designation department")
+      .sort({ date: -1 });
+  }
+
   async getAttendanceByUser(userId) {
     return await Attendance.find({ userId, isDeleted: { $ne: true } })
       .sort({ date: -1 })
@@ -358,7 +369,7 @@ class AttendanceService {
     return overdue.length;
   }
 
-  async approveEarlyPunchOut(attendanceId, approverId, status, approverRole, approverDeptRole) {
+  async approveEarlyPunchOut(attendanceId, approverId, status, approverRole, approverDeptRole, approverAllowedPaths = []) {
     const attendance = await Attendance.findById(attendanceId).populate("userId");
     if (!attendance) {
       throw new AppError("Attendance record not found.", 404);
@@ -370,16 +381,21 @@ class AttendanceService {
 
     const requester = attendance.userId;
     const isRequesterHR = requester.departmentRole === "hr";
+    const hasAttendancePageGrant = approverAllowedPaths.some(
+      (ap) => ap === "/people/attendance" || ap.startsWith("/people/attendance/")
+    );
 
-    // Logic: 
-    // If requester is HR, only Admin can approve.
-    // If requester is not HR, HR or Admin can approve.
+    // Logic:
+    // If requester is HR, only Admin can approve (checks-and-balances — an HR
+    // peer can't wave through their own department's early exit).
+    // If requester is not HR, HR/Admin can approve — or anyone explicitly
+    // granted the Attendance Management page.
     if (isRequesterHR) {
       if (approverRole !== "admin") {
         throw new AppError("Only an Admin can approve early punch-out for HR staff.", 403);
       }
     } else {
-      if (approverRole !== "admin" && approverDeptRole !== "hr") {
+      if (approverRole !== "admin" && approverDeptRole !== "hr" && !hasAttendancePageGrant) {
         throw new AppError("Only HR or Admin can approve early punch-out requests.", 403);
       }
     }
@@ -398,7 +414,7 @@ class AttendanceService {
     return attendance;
   }
 
-  async approveHalfDay(attendanceId, approverId, status, approverRole, approverDeptRole) {
+  async approveHalfDay(attendanceId, approverId, status, approverRole, approverDeptRole, approverAllowedPaths = []) {
     const attendance = await Attendance.findById(attendanceId).populate("userId");
     if (!attendance) {
       throw new AppError("Attendance record not found.", 404);
@@ -410,13 +426,16 @@ class AttendanceService {
 
     const requester = attendance.userId;
     const isRequesterHR = requester.departmentRole === "hr";
+    const hasAttendancePageGrant = approverAllowedPaths.some(
+      (ap) => ap === "/people/attendance" || ap.startsWith("/people/attendance/")
+    );
 
     if (isRequesterHR) {
       if (approverRole !== "admin") {
         throw new AppError("Only an Admin can approve half-day requests for HR staff.", 403);
       }
     } else {
-      if (approverRole !== "admin" && approverDeptRole !== "hr") {
+      if (approverRole !== "admin" && approverDeptRole !== "hr" && !hasAttendancePageGrant) {
         throw new AppError("Only HR or Admin can approve half-day requests.", 403);
       }
     }

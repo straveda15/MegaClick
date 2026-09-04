@@ -1,7 +1,7 @@
 import express from "express";
 
 import * as serviceStepsController from "./serviceSteps.controller.js";
-import { authenticateUser, requireAdmin } from "../../shared/middleware/auth.middleware.js";
+import { authenticateUser, allowIfGrantedPage } from "../../shared/middleware/auth.middleware.js";
 
 const router = express.Router();
 
@@ -11,8 +11,11 @@ router.use(authenticateUser);
 router.get("/", serviceStepsController.listTemplates);
 router.get("/:serviceSlug", serviceStepsController.getTemplate);
 
-// Defining what the steps ARE is an admin decision.
-router.put("/:serviceSlug", requireAdmin, serviceStepsController.saveTemplate);
-router.delete("/:serviceSlug", requireAdmin, serviceStepsController.deleteTemplate);
+// Defining what the steps ARE is an admin decision by default, but honours an
+// explicit "Service Steps" grant from Permissions the same way the page's
+// visibility does.
+const serviceStepsPageAccess = allowIfGrantedPage("/service-steps");
+router.put("/:serviceSlug", serviceStepsPageAccess, serviceStepsController.saveTemplate);
+router.delete("/:serviceSlug", serviceStepsPageAccess, serviceStepsController.deleteTemplate);
 
 export default router;

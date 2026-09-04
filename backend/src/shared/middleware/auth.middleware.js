@@ -110,6 +110,45 @@ export const requireManager = (req, res, next) => {
 };
 
 /**
+ * Whether `user.allowedPaths` (the Permissions checklist in Team Management)
+ * explicitly includes `path`. Plain boolean helper shared by
+ * `allowIfGrantedPage` below and by controllers that need the same check
+ * inline alongside other conditions (e.g. user.controller.js's staff-account
+ * gate, which also has to allow plain customer management for anyone).
+ */
+export const hasGrantedPage = (user, path) => {
+  const allowed = user?.allowedPaths || [];
+  return allowed.some((ap) => ap === path || (ap !== "/" && path.startsWith(ap + "/")));
+};
+
+/**
+ * Honors an explicit per-user page grant (`user.allowedPaths`, set from the
+ * Permissions checklist in Team Management) as an alternative way through a
+ * route that would otherwise hard-require a specific departmentRole.
+ *
+ * Several pages (Work Locations, Employees, Service Steps, attendance
+ * approvals) used to be locked to "admin" or one hardcoded department no
+ * matter what the admin actually granted a given employee — so a manager or
+ * newly-created staffer explicitly given that page via Permissions could see
+ * it in their sidebar but every read/write on it still 403'd. This closes
+ * that gap: admin always passes; `extraDeptRoles` always passes (keeps the
+ * previous default-role behaviour); otherwise the request only passes if the
+ * admin specifically checked this exact page for this employee.
+ */
+export const allowIfGrantedPage = (path, extraDeptRoles = []) => {
+  return (req, res, next) => {
+    if (req.user.role === "admin") return next();
+    if (extraDeptRoles.includes(req.user.departmentRole)) return next();
+    if (hasGrantedPage(req.user, path)) return next();
+
+    return res.status(403).json({
+      success: false,
+      message: "Access denied. You have not been granted access to this page.",
+    });
+  };
+};
+
+/**
  * requireSalesManager — allows admin or the promoted Senior Sales Manager
  * (isSalesManager flag). Guards lead distribution, oversight, and per-lead
  * assignment endpoints.

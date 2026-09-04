@@ -1,5 +1,5 @@
 import express from "express";
-import { requireAdmin } from "../../shared/middleware/auth.middleware.js";
+import { allowIfGrantedPage } from "../../shared/middleware/auth.middleware.js";
 import {
   createWorkLocation,
   listWorkLocations,
@@ -12,9 +12,11 @@ import {
 
 const router = express.Router();
 
-// All work-location routes are admin-only.
-// `protect` is already applied by the parent attendance router.
-router.use(requireAdmin);
+// Admin, HR, and Manager always get in (the roles this page is granted to by
+// default); anyone else only if the admin specifically checked "Work
+// Locations" for them in Permissions. `protect` is already applied by the
+// parent attendance router.
+router.use(allowIfGrantedPage("/people/work-locations", ["hr", "manager"]));
 
 router.post("/", createWorkLocation);
 router.get("/", listWorkLocations);
