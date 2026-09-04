@@ -132,6 +132,16 @@ export const ROLE_ALLOWED_PATHS: Record<string, string[]> = {
     '/people/work-locations',
   ],
 
+  // ── Advocate ────────────────────────────────────────────────────────────────
+  advocate: [
+    '/',
+    '/dashboard',
+    '/self/attendance',
+    '/self/leaves',
+    '/tasks',
+    '/clients',
+  ],
+
   // ── Roles with self-service + task board only ───────────────────────────────
   accountant:       ['/', '/dashboard', '/self/attendance', '/self/leaves', '/tasks', '/accounts'],
   business_analyst: ['/', '/dashboard', '/self/attendance', '/self/leaves', '/tasks'],
