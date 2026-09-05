@@ -35,7 +35,7 @@ const ServiceOverview = ({ service }) => {
         @media (min-width: 1920px) {
           .so-container  { max-width: 1800px !important; padding-left: 4rem !important; padding-right: 4rem !important; }
           .so-heading    { font-size: 3rem !important; }
-          .so-desc       { font-size: 1.2rem !important; }
+          .so-desc       { font-size: 1.2rem !important; line-height: 2.2rem !important; }
           .so-card-icon  { width: 3.5rem !important; height: 3.5rem !important; font-size: 1.75rem !important; }
           .so-card-title { font-size: 1.1rem !important; }
           .so-card-sub   { font-size: 1rem !important; }
@@ -43,7 +43,7 @@ const ServiceOverview = ({ service }) => {
         @media (min-width: 3840px) {
           .so-container  { max-width: 3200px !important; padding-left: 6rem !important; padding-right: 6rem !important; }
           .so-heading    { font-size: 5rem !important; }
-          .so-desc       { font-size: 2rem !important; line-height: 3rem !important; }
+          .so-desc       { font-size: 2rem !important; line-height: 3.2rem !important; }
           .so-card-icon  { width: 6rem !important; height: 6rem !important; font-size: 3rem !important; border-radius: 1.25rem !important; }
           .so-card-title { font-size: 2rem !important; }
           .so-card-sub   { font-size: 1.5rem !important; }
@@ -58,9 +58,9 @@ const ServiceOverview = ({ service }) => {
         "
       >
         {/* =========================================
-            OVERVIEW HEADING & DESCRIPTION (Centered in Middle with Black & Blue text)
+            OVERVIEW HEADING & DESCRIPTION (Properly Left-Aligned & Spread Out)
         ========================================== */}
-        <div className="w-full text-center mb-8 sm:mb-10">
+        <div className="w-full text-left mb-8 sm:mb-10">
           <h2
             style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
             className="
@@ -70,10 +70,9 @@ const ServiceOverview = ({ service }) => {
               md:text-3xl
               lg:text-4xl
               font-bold
-              leading-[1.18]
-              text-center
-              mb-2.5
-              sm:mb-4
+              leading-[1.2]
+              text-left
+              mb-3 sm:mb-4
             "
           >
             {renderStyledTitle(service.title)}
@@ -84,13 +83,13 @@ const ServiceOverview = ({ service }) => {
               style={{ fontFamily: "'Inter', sans-serif" }}
               className="
                 so-desc
-                mt-3 sm:mt-4 mx-auto max-w-4xl
-                text-sm
-                sm:text-base
-                text-gray-500
+                text-sm sm:text-base lg:text-[1.05rem]
+                text-slate-600
                 font-normal
-                leading-relaxed
-                text-center
+                leading-relaxed sm:leading-8
+                text-left
+                w-full
+                break-words
               "
             >
               {service.description}

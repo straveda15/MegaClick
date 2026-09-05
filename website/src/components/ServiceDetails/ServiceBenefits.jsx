@@ -1,11 +1,68 @@
 import React from "react";
-import { ArrowUpRight } from "lucide-react";
+import { 
+  Scale, 
+  BarChart3, 
+  ClipboardCheck, 
+  ShieldCheck, 
+  Zap, 
+  Headphones 
+} from "lucide-react";
+
+// 🎨 6 Distinct Cards (Just Heading & Bigger Icons in 1 Horizontal Line)
+const benefitsList = [
+  {
+    title: "Legal Accuracy",
+    bgGradient: "bg-gradient-to-b from-white via-blue-50/40 to-[#DBEAFE]/80",
+    border: "border-blue-100 hover:border-blue-300",
+    iconBg: "bg-white border-blue-100 shadow-sm",
+    titleHover: "group-hover:text-blue-600",
+    icon: <Scale className="w-8 h-8 sm:w-9 sm:h-9 text-blue-600" strokeWidth={2.2} />
+  },
+  {
+    title: "Financial Guidance",
+    bgGradient: "bg-gradient-to-b from-white via-purple-50/40 to-[#F3E8FF]/80",
+    border: "border-purple-100 hover:border-purple-300",
+    iconBg: "bg-white border-purple-100 shadow-sm",
+    titleHover: "group-hover:text-purple-600",
+    icon: <BarChart3 className="w-8 h-8 sm:w-9 sm:h-9 text-purple-600" strokeWidth={2.2} />
+  },
+  {
+    title: "Govt Approvals",
+    bgGradient: "bg-gradient-to-b from-white via-emerald-50/40 to-[#DCFCE7]/80",
+    border: "border-emerald-100 hover:border-emerald-300",
+    iconBg: "bg-white border-emerald-100 shadow-sm",
+    titleHover: "group-hover:text-emerald-600",
+    icon: <ClipboardCheck className="w-8 h-8 sm:w-9 sm:h-9 text-emerald-600" strokeWidth={2.2} />
+  },
+  {
+    title: "Data Security",
+    bgGradient: "bg-gradient-to-b from-white via-amber-50/40 to-[#FEF3C7]/80",
+    border: "border-amber-100 hover:border-amber-300",
+    iconBg: "bg-white border-amber-100 shadow-sm",
+    titleHover: "group-hover:text-amber-600",
+    icon: <ShieldCheck className="w-8 h-8 sm:w-9 sm:h-9 text-amber-600" strokeWidth={2.2} />
+  },
+  {
+    title: "Express Process",
+    bgGradient: "bg-gradient-to-b from-white via-rose-50/40 to-[#FFE4E6]/80",
+    border: "border-rose-100 hover:border-rose-300",
+    iconBg: "bg-white border-rose-100 shadow-sm",
+    titleHover: "group-hover:text-rose-600",
+    icon: <Zap className="w-8 h-8 sm:w-9 sm:h-9 text-rose-500" strokeWidth={2.2} />
+  },
+  {
+    title: "24/7 Support",
+    bgGradient: "bg-gradient-to-b from-white via-cyan-50/40 to-[#CFFAFE]/80",
+    border: "border-cyan-100 hover:border-cyan-300",
+    iconBg: "bg-white border-cyan-100 shadow-sm",
+    titleHover: "group-hover:text-cyan-600",
+    icon: <Headphones className="w-8 h-8 sm:w-9 sm:h-9 text-cyan-600" strokeWidth={2.2} />
+  }
+];
 
 const ServiceBenefits = ({ service }) => {
-  if (!service?.benefits?.length) return null;
-
   return (
-    <section className="w-full bg-white overflow-hidden font-['Inter',sans-serif] py-10 sm:py-12 lg:py-16">
+    <section className="w-full bg-white font-['Inter',sans-serif] py-8 sm:py-10 lg:py-12">
       {/* GOOGLE FONTS */}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@400;500;600;700&display=swap');
@@ -13,21 +70,25 @@ const ServiceBenefits = ({ service }) => {
         @media (min-width: 1920px) {
           .sb-container { max-width: 1800px !important; padding-left: 4rem !important; padding-right: 4rem !important; }
           .sb-heading   { font-size: 3rem !important; }
-          .sb-benefit-text { font-size: 1.1rem !important; }
         }
         @media (min-width: 3840px) {
           .sb-container { max-width: 3200px !important; padding-left: 6rem !important; padding-right: 6rem !important; }
           .sb-heading   { font-size: 5rem !important; }
-          .sb-benefit-text { font-size: 2rem !important; }
-          .sb-benefit-num  { font-size: 1.5rem !important; }
         }
       `}</style>
 
       <div className="sb-container max-w-[1380px] mx-auto px-4 sm:px-6 min-[1440px]:px-10">
         {/* =========================================
-            HEADER (Consistent Typography)
+            HEADER
         ========================================== */}
-        <div className="mb-8 sm:mb-10 lg:mb-12 text-left">
+        <div className="mb-6 sm:mb-8 text-left">
+          <p
+            style={{ fontFamily: "'Inter', sans-serif" }}
+            className="text-xs sm:text-sm font-semibold text-[#0B4EA2] uppercase tracking-[0.15em] mb-1.5 text-left"
+          >
+            Key Advantages
+          </p>
+
           <h2
             style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
             className="
@@ -40,62 +101,70 @@ const ServiceBenefits = ({ service }) => {
               leading-[1.18]
               text-black
               text-left
-              mb-2.5
-              sm:mb-4
+              mb-2 sm:mb-2.5
             "
           >
             Why Choose{" "}
             <span className="text-[#0B4EA2]">Our Services?</span>
           </h2>
 
-       
+          <p
+            style={{ fontFamily: "'Inter', sans-serif" }}
+            className="text-xs sm:text-sm text-gray-500 max-w-3xl text-left font-normal leading-relaxed"
+          >
+            Experience hassle-free business compliance, guaranteed transparent guidance, and dedicated support.
+          </p>
         </div>
 
         {/* =========================================
-            BENEFITS GRID
+            SINGLE HORIZONTAL LINE: 6 CARDS (JUST HEADING & ICONS)
         ========================================== */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 min-[1920px]:gap-8 min-[3840px]:gap-12">
-          {service.benefits.map((item, index) => (
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5 sm:gap-4">
+          {benefitsList.map((item, index) => (
             <div
               key={index}
-              className="
+              className={`
                 group relative
-                flex items-center justify-between gap-4
-                pl-5 pr-4
-                py-4 sm:py-5 min-[1920px]:py-6 min-[3840px]:py-10
-                bg-slate-100/70 border border-slate-200/60
-                hover:bg-[#F0F6FF] hover:border-blue-200/80
-                border-l-4 border-l-gray-400 hover:border-l-[#0B4EA2]
-                rounded-r-2xl
-                transition-all duration-300 cursor-pointer
-              "
+                ${item.bgGradient}
+                border ${item.border}
+                rounded-2xl sm:rounded-3xl
+                p-4 sm:p-5
+                flex flex-col items-center text-center justify-between
+                shadow-xs hover:shadow-md hover:-translate-y-1.5
+                transition-all duration-300
+                min-h-[160px] sm:min-h-[175px]
+              `}
             >
-              <div className="flex items-center gap-3.5">
-                <span
-                  style={{ fontFamily: "'Inter', sans-serif" }}
-                  className="
-                    sb-benefit-num
-                    text-xs sm:text-sm
-                    font-extrabold text-gray-500
-                    group-hover:text-[#0B4EA2] transition-colors
-                  "
+              {/* TOP: JUST HEADING */}
+              <h3
+                style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+                className={`
+                  text-sm sm:text-base
+                  font-bold text-slate-900
+                  ${item.titleHover}
+                  transition-colors
+                  leading-snug
+                  pt-1
+                `}
+              >
+                {item.title}
+              </h3>
+
+              {/* BOTTOM: BIGGER CENTERED ICON */}
+              <div className="mt-3">
+                <div
+                  className={`
+                    w-13 h-13 sm:w-14 sm:h-14
+                    rounded-2xl
+                    ${item.iconBg}
+                    border
+                    flex items-center justify-center
+                    group-hover:scale-110 group-hover:shadow-md
+                    transition-all duration-300
+                  `}
                 >
-                  {String(index + 1).padStart(2, "0")}.
-                </span>
-                <p
-                  style={{ fontFamily: "'Inter', sans-serif" }}
-                  className="
-                    sb-benefit-text
-                    text-sm sm:text-base
-                    font-semibold text-gray-800
-                    group-hover:text-gray-950 transition-colors leading-snug
-                  "
-                >
-                  {item}
-                </p>
-              </div>
-              <div className="shrink-0 text-gray-400 group-hover:text-[#0B4EA2] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-300 pr-1">
-                <ArrowUpRight size={18} strokeWidth={2.5} />
+                  {item.icon}
+                </div>
               </div>
             </div>
           ))}
