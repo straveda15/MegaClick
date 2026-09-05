@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import {
-  MapPin,
   Quote,
   Star,
   ChevronLeft,
@@ -73,128 +72,76 @@ const testimonials = [
   },
 ];
 
+/* =========================================
+    EXACT SCREENSHOT CARD DESIGN
+========================================== */
 const TestimonialCard = ({ testimonial }) => (
   <article
     className="
       relative flex flex-col justify-between
-      rounded-2xl border border-gray-200
-      bg-blue-50/60
-      p-5 sm:p-6
-      shadow-sm
+      rounded-3xl border border-slate-200/90
+      bg-white
+      p-6
+      shadow-sm hover:shadow-md hover:border-blue-200
       h-full
       transition-all duration-300
-      hover:shadow-md
     "
   >
-    {/* QUOTE ICON */}
-    <div className="absolute right-5 top-5 text-blue-400">
-      <Quote size={22} />
-    </div>
-
-    {/* TOP CONTENT */}
-    <div className="flex-1">
-      <div className="flex items-center gap-3.5">
-        {/* AVATAR */}
-        <div
-          className="
-            flex h-11 w-11 shrink-0 items-center justify-center
-            rounded-full
-            bg-blue-100
-            border border-blue-200
-            text-base font-bold
-            text-[#0B4EA2]
-          "
-          style={{ fontFamily: "'Inter', sans-serif" }}
-        >
-          {testimonial.name.charAt(0)}
-        </div>
-
-        {/* NAME / SERVICE / LOCATION */}
-        <div className="min-w-0 pr-6">
-          {/* NAME */}
-          <h3
-            style={{ fontFamily: "'Inter', sans-serif" }}
-            className="
-              truncate
-              text-base
-              sm:text-[17px]
-              font-bold
-              text-gray-900
-            "
-          >
-            {testimonial.name}
-          </h3>
-
-          {/* SERVICE */}
-          <p
-            style={{ fontFamily: "'Inter', sans-serif" }}
-            className="
-              truncate
-              text-xs
-              font-semibold
-              text-[#0B4EA2]
-              mt-0.5
-            "
-          >
-            {testimonial.service}
-          </p>
-
-          {/* LOCATION (Visible & Clear) */}
-          <div
-            className="
-              flex items-center gap-1.5
-              text-xs text-gray-600
-              font-medium
-              mt-1
-            "
-          >
-            <MapPin
-              size={13}
-              className="shrink-0 text-[#0B4EA2]"
+    {/* TOP: STARS & QUOTE */}
+    <div>
+      <div className="flex items-center justify-between mb-3.5">
+        {/* 5 Green Stars */}
+        <div className="flex items-center gap-0.5">
+          {[1, 2, 3, 4, 5].map((star) => (
+            <Star
+              key={star}
+              size={15}
+              className="fill-emerald-500 text-emerald-500"
             />
-            <span
-              style={{ fontFamily: "'Inter', sans-serif" }}
-              className="truncate"
-            >
-              {testimonial.location}
-            </span>
-          </div>
+          ))}
         </div>
+        {/* Light Quote Icon */}
+        <Quote size={18} className="text-slate-300" />
       </div>
 
-      {/* REVIEW */}
+      {/* REVIEW TEXT */}
       <p
         style={{ fontFamily: "'Inter', sans-serif" }}
         className="
-          mt-4
-          text-xs
-          sm:text-sm
-          text-gray-600
+          text-xs sm:text-[13.5px]
+          text-slate-600
           leading-relaxed
-          font-normal
+          text-left
+          min-h-[75px]
         "
       >
         "{testimonial.review}"
       </p>
     </div>
 
-    {/* STARS */}
-    <div
-      className="
-        mt-5
-        pt-3
-        border-t border-gray-200/80
-        flex items-center
-      "
-    >
-      <div className="flex shrink-0 gap-0.5">
-        {[1, 2, 3, 4, 5].map((star) => (
-          <Star
-            key={star}
-            size={14}
-            className="fill-green-500 stroke-green-500"
-          />
-        ))}
+    {/* BOTTOM: DIVIDER & CLIENT DETAILS */}
+    <div>
+      <div className="my-4 h-px bg-slate-100" />
+
+      <div className="flex flex-col text-left">
+        <h3
+          style={{ fontFamily: "'Inter', sans-serif" }}
+          className="text-xs sm:text-sm font-bold text-[#0B4EA2] leading-snug truncate"
+        >
+          {testimonial.name}
+        </h3>
+        <p
+          style={{ fontFamily: "'Inter', sans-serif" }}
+          className="text-[11px] sm:text-xs font-semibold text-[#0B4EA2]/80 mt-0.5 truncate"
+        >
+          {testimonial.service}
+        </p>
+        <p
+          style={{ fontFamily: "'Inter', sans-serif" }}
+          className="text-[10px] sm:text-[11px] text-slate-400 mt-0.5 truncate"
+        >
+          {testimonial.location}
+        </p>
       </div>
     </div>
   </article>
@@ -229,91 +176,57 @@ const Testimonials = () => {
     };
   }, []);
 
-  /* =========================================
-      MAXIMUM SLIDE INDEX
-  ========================================== */
   const maxIndex = Math.max(0, testimonials.length - visibleCards);
 
-  /* =========================================
-      PREVIOUS (1 Card at a time)
-  ========================================== */
   const goPrev = () => {
     setCurrentIndex((prev) => Math.max(0, prev - 1));
   };
 
-  /* =========================================
-      NEXT (1 Card at a time)
-  ========================================== */
   const goNext = () => {
     setCurrentIndex((prev) => Math.min(maxIndex, prev + 1));
   };
 
-  /* =======================================================
-      PER-CARD PERCENTAGE CALCULATION
-      Shift exact 1 card width relative to entire track width
-  ======================================================= */
   const trackWidthPercent = (testimonials.length / visibleCards) * 100;
   const singleCardShiftPercent = 100 / testimonials.length;
 
   return (
-    <section
-      className="
-        w-full
-        bg-white
-        overflow-hidden
-        py-10
-        sm:py-14
-        lg:py-16
-      "
-    >
+    <section className="w-full bg-white overflow-hidden py-10 sm:py-14 lg:py-16">
       {/* GOOGLE FONTS */}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@400;500;600;700&display=swap');
       `}</style>
 
-      <div
-        className="
-          max-w-[1380px]
-          mx-auto
-          px-4
-          sm:px-6
-          min-[1440px]:px-10
-        "
-      >
+      <div className="max-w-[1380px] mx-auto px-4 sm:px-6 min-[1440px]:px-10">
         {/* =========================================
             HEADING (Left-aligned)
         ========================================== */}
         <div className="mb-8 sm:mb-10 text-left">
+          <p
+            style={{ fontFamily: "'Inter', sans-serif" }}
+            className="text-xs sm:text-sm font-semibold tracking-[0.25em] uppercase text-[#0B4EA2] mb-2 text-left"
+          >
+            CLIENT OUTCOMES
+          </p>
+
           <h2
-            style={{
-              fontFamily: "'Hedvig Letters Serif', serif",
-            }}
+            style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
             className="
-              text-2xl
-              sm:text-3xl
-              md:text-3xl
-              lg:text-4xl
+              text-2xl sm:text-3xl md:text-3xl lg:text-4xl
               font-bold
               leading-[1.18]
               text-black
               text-left
-              mb-2.5
-              sm:mb-4
+              mb-2.5 sm:mb-3
             "
           >
             What Our Clients{" "}
-            <span className="text-[#0B4EA2]">
-              Say
-            </span>
+            <span className="text-[#0B4EA2]">Say About MegaClick</span>
           </h2>
 
           <p
-            style={{
-              fontFamily: "'Inter', sans-serif",
-            }}
+            style={{ fontFamily: "'Inter', sans-serif" }}
             className="
-              text-sm
-              sm:text-base
+              text-sm sm:text-base
               text-gray-500
               font-normal
               leading-relaxed
@@ -321,15 +234,14 @@ const Testimonials = () => {
               text-left
             "
           >
-            Real feedback from businesses trusting
-            MegaClick for their growth.
+            Real feedback from businesses trusting MegaClick for their growth.
           </p>
         </div>
 
         {/* =========================================
-            TESTIMONIAL CAROUSEL (1-Card Smooth Movement)
+            TESTIMONIAL CAROUSEL (Exact 1-Card Shift)
         ========================================== */}
-        <div className="relative overflow-hidden w-full">
+        <div className="relative overflow-hidden w-full py-2">
           <div
             className="flex transition-transform duration-500 ease-in-out"
             style={{
@@ -346,7 +258,7 @@ const Testimonials = () => {
                 className="px-2.5 shrink-0"
               >
                 {/* UNIFORM CARD HEIGHT */}
-                <div className="w-full h-[275px]">
+                <div className="w-full h-[255px] sm:h-[265px]">
                   <TestimonialCard testimonial={testimonial} />
                 </div>
               </div>
@@ -357,74 +269,46 @@ const Testimonials = () => {
         {/* =========================================
             NAVIGATION BUTTONS
         ========================================== */}
-        <div
-          className="
-            mt-8
-            flex
-            justify-center
-            items-center
-            gap-4
-          "
-        >
-          {/* PREVIOUS BUTTON */}
+        <div className="mt-8 flex justify-center items-center gap-4">
           <button
             type="button"
             onClick={goPrev}
             disabled={currentIndex === 0}
             aria-label="Previous testimonial"
             className="
-              flex
-              items-center
-              justify-center
-              w-11
-              h-11
+              flex items-center justify-center
+              w-11 h-11
               rounded-full
-              border-2
-              border-[#0B4EA2]
-              text-[#0B4EA2]
-              bg-white
-              hover:bg-[#0B4EA2]
-              hover:text-white
-              transition-all
-              duration-200
+              border-2 border-[#0B4EA2]
+              text-[#0B4EA2] bg-white
+              hover:bg-[#0B4EA2] hover:text-white
+              transition-all duration-200
               cursor-pointer
               shadow-sm
-              disabled:opacity-30
-              disabled:cursor-not-allowed
-              disabled:hover:bg-white
-              disabled:hover:text-[#0B4EA2]
+              disabled:opacity-30 disabled:cursor-not-allowed
+              disabled:hover:bg-white disabled:hover:text-[#0B4EA2]
             "
           >
             <ChevronLeft size={21} />
           </button>
 
-          {/* NEXT BUTTON */}
           <button
             type="button"
             onClick={goNext}
             disabled={currentIndex >= maxIndex}
             aria-label="Next testimonial"
             className="
-              flex
-              items-center
-              justify-center
-              w-11
-              h-11
+              flex items-center justify-center
+              w-11 h-11
               rounded-full
-              border-2
-              border-[#0B4EA2]
-              text-[#0B4EA2]
-              bg-white
-              hover:bg-[#0B4EA2]
-              hover:text-white
-              transition-all
-              duration-200
+              border-2 border-[#0B4EA2]
+              text-[#0B4EA2] bg-white
+              hover:bg-[#0B4EA2] hover:text-white
+              transition-all duration-200
               cursor-pointer
               shadow-sm
-              disabled:opacity-30
-              disabled:cursor-not-allowed
-              disabled:hover:bg-white
-              disabled:hover:text-[#0B4EA2]
+              disabled:opacity-30 disabled:cursor-not-allowed
+              disabled:hover:bg-white disabled:hover:text-[#0B4EA2]
             "
           >
             <ChevronRight size={21} />
