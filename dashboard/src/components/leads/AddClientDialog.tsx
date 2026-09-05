@@ -70,6 +70,8 @@ interface ClientForm {
   phone: string;
   email: string;
   company: string;
+  /** Internal-facing name for the client — how the office refers to them, distinct from their legal name. */
+  referenceName: string;
   state: string;
   city: string;
   /** One follow-up for the lead as a whole, whatever they booked. */
@@ -78,7 +80,7 @@ interface ClientForm {
 }
 
 const EMPTY_FORM: ClientForm = {
-  client: '', phone: '+91', email: '', company: '', state: DEFAULT_STATE, city: '',
+  client: '', phone: '+91', email: '', company: '', referenceName: '', state: DEFAULT_STATE, city: '',
   followUpAt: '', followUpNote: '',
 };
 
@@ -188,11 +190,7 @@ export function AddClientDialog({ open, onOpenChange }: AddClientDialogProps) {
     }
 
     const email = form.email.trim();
-    if (!email) {
-      toast.error('Email is required.');
-      return;
-    }
-    if (!EMAIL_PATTERN.test(email)) {
+    if (email && !EMAIL_PATTERN.test(email)) {
       toast.error('Enter a valid email address.');
       return;
     }
@@ -251,6 +249,7 @@ export function AddClientDialog({ open, onOpenChange }: AddClientDialogProps) {
         phone,
         email: form.email.trim() || undefined,
         company: form.company.trim() || undefined,
+        referenceName: form.referenceName.trim() || undefined,
         state: form.state || undefined,
         city: form.city.trim() || undefined,
         services: payload,
@@ -318,15 +317,26 @@ export function AddClientDialog({ open, onOpenChange }: AddClientDialogProps) {
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="lead-email">Email *</Label>
-                <Input
-                  id="lead-email"
-                  type="email"
-                  value={form.email}
-                  onChange={(e) => update('email', e.target.value)}
-                  placeholder="client@example.com"
-                />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <Label htmlFor="lead-email">Email</Label>
+                  <Input
+                    id="lead-email"
+                    type="email"
+                    value={form.email}
+                    onChange={(e) => update('email', e.target.value)}
+                    placeholder="client@example.com"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="client-reference-name">Client Reference Name</Label>
+                  <Input
+                    id="client-reference-name"
+                    value={form.referenceName}
+                    onChange={(e) => update('referenceName', e.target.value)}
+                    placeholder="Reference Name"
+                  />
+                </div>
               </div>
             </section>
 
@@ -538,7 +548,7 @@ export function AddClientDialog({ open, onOpenChange }: AddClientDialogProps) {
                 !form.client.trim() ||
                 !NAME_TEXT_PATTERN.test(form.client.trim()) ||
                 form.phone.replace(/^\+91/, '').length !== 10 ||
-                !EMAIL_PATTERN.test(form.email.trim()) ||
+                (Boolean(form.email.trim()) && !EMAIL_PATTERN.test(form.email.trim())) ||
                 !services.some((service) => service.slug) ||
                 services.some((service) => service.slug && (!service.quotation.trim() || Number(service.quotation) <= 0))
               }

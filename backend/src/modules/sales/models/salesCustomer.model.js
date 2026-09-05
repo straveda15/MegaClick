@@ -24,6 +24,12 @@ const salesCustomerSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    // An internal-facing name for the client, distinct from their legal name —
+    // e.g. how the office refers to them, or who referred them.
+    referenceName: {
+      type: String,
+      trim: true,
+    },
     address: {
       type: String,
     },

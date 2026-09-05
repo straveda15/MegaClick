@@ -32,6 +32,8 @@ export interface LeadCustomer {
   email?: string;
   phone: string;
   company?: string;
+  /** Internal-facing name for the client — how the office refers to them, distinct from their legal name. */
+  referenceName?: string;
   city?: string;
   state?: string;
   addressLine1?: string;
@@ -209,6 +211,7 @@ export interface CreateLeadPayload {
   phone: string;
   email?: string;
   company?: string;
+  referenceName?: string;
   city?: string;
   state?: string;
   /** Every service the client opted for, each with its own dates and status. */
@@ -500,6 +503,7 @@ export function useUpdateLead() {
       phone: string;
       email?: string;
       company?: string;
+      referenceName?: string;
       city?: string;
       state?: string;
       services: LeadServiceInput[];
@@ -536,6 +540,7 @@ export function useUpdateLeadCustomer() {
       email?: string;
       phone?: string;
       company?: string;
+      referenceName?: string;
       city?: string;
       state?: string;
     }) => {
