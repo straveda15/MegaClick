@@ -1,13 +1,15 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Quote, Star } from "lucide-react";
 
-const testimonials = [
+// Fallback agar backend connect na ho
+const defaultTestimonials = [
   {
     name: "Rajesh Sharma",
     service: "Income Tax Registration",
     location: "Nashik, Maharashtra",
     review:
       "MegaClick provided exceptional support during our company registration process. Their team handled every document professionally and ensured a hassle-free experience.",
+    rating: 5,
   },
   {
     name: "Priya Enterprises",
@@ -15,6 +17,7 @@ const testimonials = [
     location: "Pune, Maharashtra",
     review:
       "The entire process was smooth and transparent. We received regular updates and expert guidance throughout the business registration journey.",
+    rating: 5,
   },
   {
     name: "Amit Patil",
@@ -22,6 +25,7 @@ const testimonials = [
     location: "Mumbai, Maharashtra",
     review:
       "Excellent service with outstanding customer support. Every query was answered promptly and the team completed our work on time.",
+    rating: 5,
   },
   {
     name: "Sneha Kulkarni",
@@ -29,19 +33,37 @@ const testimonials = [
     location: "Nagpur, Maharashtra",
     review:
       "MegaClick made the documentation process incredibly simple. Their professional approach exceeded our expectations.",
+    rating: 5,
   },
 ];
 
 const Testimonials = () => {
+  const [testimonialsList, setTestimonialsList] = useState(defaultTestimonials);
   const [isPaused, setIsPaused] = useState(false);
   const pauseTimerRef = useRef(null);
 
+  // 🔄 Fetch dynamic data from Backend API (with /v1)
+  useEffect(() => {
+    const fetchTestimonials = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/v1/website-control/testimonials");
+        const resData = await response.json();
+        if (resData.success && resData.data && resData.data.length > 0) {
+          setTestimonialsList(resData.data);
+        }
+      } catch (error) {
+        console.error("Backend fetch failed, using fallback:", error);
+      }
+    };
+    fetchTestimonials();
+  }, []);
+
   // Repeat items for smooth continuous loop
   const extendedTestimonials = [
-    ...testimonials,
-    ...testimonials,
-    ...testimonials,
-    ...testimonials,
+    ...testimonialsList,
+    ...testimonialsList,
+    ...testimonialsList,
+    ...testimonialsList,
   ];
 
   // Cleanup timeout on unmount
@@ -63,7 +85,7 @@ const Testimonials = () => {
 
   return (
     <section className="w-full py-8 sm:py-12 lg:py-16 min-[1920px]:py-20 min-[3840px]:py-32 bg-white font-['Inter',sans-serif] overflow-hidden">
-      {/* DIRECT CSS RULES FOR 1440px, 1920px & 3840px RESPONSIVENESS (MATCHED TO SERVICES) */}
+      {/* DIRECT CSS RULES FOR 1440px, 1920px & 3840px RESPONSIVENESS */}
       <style>{`
         @keyframes continuous-scroll {
           0% { transform: translateX(0); }
@@ -77,8 +99,8 @@ const Testimonials = () => {
         @media (min-width: 1440px) {
           .testimonials-container {
             max-width: 1380px !important;
-            padding-left: 2.5rem !important;  /* px-10 */
-            padding-right: 2.5rem !important; /* px-10 */
+            padding-left: 2.5rem !important;
+            padding-right: 2.5rem !important;
           }
           .testimonials-tagline {
             font-size: 0.85rem !important;
@@ -94,8 +116,8 @@ const Testimonials = () => {
         @media (min-width: 1920px) {
           .testimonials-container {
             max-width: 1800px !important;
-            padding-left: 4rem !important;   /* px-16 */
-            padding-right: 4rem !important;  /* px-16 */
+            padding-left: 4rem !important;
+            padding-right: 4rem !important;
           }
           .testimonials-tagline {
             font-size: 1rem !important;
@@ -120,8 +142,8 @@ const Testimonials = () => {
         @media (min-width: 3840px) {
           .testimonials-container {
             max-width: 3200px !important;
-            padding-left: 6rem !important;   /* px-24 */
-            padding-right: 6rem !important;  /* px-24 */
+            padding-left: 6rem !important;
+            padding-right: 6rem !important;
           }
           .testimonials-tagline {
             font-size: 1.75rem !important;
@@ -154,7 +176,7 @@ const Testimonials = () => {
         }
       `}</style>
 
-      {/* UNIFIED CONTAINER (MATCHED TO SERVICES SECTION) */}
+      {/* UNIFIED CONTAINER */}
       <div className="testimonials-container w-full max-w-[1380px] mx-auto px-4 sm:px-6 min-[1440px]:px-10">
         
         {/* HEADER */}
@@ -166,7 +188,7 @@ const Testimonials = () => {
             CLIENT OUTCOMES
           </p>
 
-            <h2
+          <h2
             style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
             className="
               team-title
@@ -182,10 +204,8 @@ const Testimonials = () => {
               sm:mb-4
             "
           >
-          What Our Clients {" "}
-            <span className="text-[#0B4EA2]">
-      Say About MegaClick
-            </span>
+            What Our Clients{" "}
+            <span className="text-[#0B4EA2]">Say About MegaClick</span>
           </h2>
         </div>
 
@@ -202,104 +222,107 @@ const Testimonials = () => {
             className="flex w-max animate-continuous-scroll select-none items-stretch"
             style={{ animationPlayState: isPaused ? "paused" : "running" }}
           >
-            {extendedTestimonials.map((item, index) => (
-              <div
-                key={index}
-                className="pr-4 sm:pr-5 lg:pr-6 min-[1920px]:pr-7 min-[3840px]:pr-10 shrink-0 flex"
-              >
-                <article
-                  onClick={handleCardClick}
-                  onMouseEnter={() => setIsPaused(true)}
-                  onMouseLeave={() => setIsPaused(false)}
-                  className="
-                    testimonials-card
-                    relative
-                    w-[280px]
-                    sm:w-[330px]
-                    md:w-[360px]
-                    min-[1920px]:w-[420px]
-                    min-[3840px]:w-[660px]
-                    bg-white
-                    rounded-2xl
-                    border
-                    border-slate-200/90
-                    p-5
-                    sm:p-6
-                    flex
-                    flex-col
-                    justify-between
-                    shadow-sm
-                    hover:shadow-md
-                    hover:border-blue-200
-                    transition-all
-                    duration-300
-                    cursor-pointer
-                  "
+            {extendedTestimonials.map((item, index) => {
+              const starsCount = item.rating || 5;
+              return (
+                <div
+                  key={item._id || index}
+                  className="pr-4 sm:pr-5 lg:pr-6 min-[1920px]:pr-7 min-[3840px]:pr-10 shrink-0 flex"
                 >
-                  {/* TOP: STARS & QUOTE */}
-                  <div>
-                    <div className="flex items-center justify-between mb-3 sm:mb-4">
-                      <div className="flex items-center gap-0.5">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                          <Star
-                            key={star}
-                            size={15}
-                            className="fill-emerald-500 text-emerald-500 min-[3840px]:w-7 min-[3840px]:h-7"
-                          />
-                        ))}
+                  <article
+                    onClick={handleCardClick}
+                    onMouseEnter={() => setIsPaused(true)}
+                    onMouseLeave={() => setIsPaused(false)}
+                    className="
+                      testimonials-card
+                      relative
+                      w-[280px]
+                      sm:w-[330px]
+                      md:w-[360px]
+                      min-[1920px]:w-[420px]
+                      min-[3840px]:w-[660px]
+                      bg-white
+                      rounded-2xl
+                      border
+                      border-slate-200/90
+                      p-5
+                      sm:p-6
+                      flex
+                      flex-col
+                      justify-between
+                      shadow-sm
+                      hover:shadow-md
+                      hover:border-blue-200
+                      transition-all
+                      duration-300
+                      cursor-pointer
+                    "
+                  >
+                    {/* TOP: STARS & QUOTE */}
+                    <div>
+                      <div className="flex items-center justify-between mb-3 sm:mb-4">
+                        <div className="flex items-center gap-0.5">
+                          {Array.from({ length: starsCount }).map((_, i) => (
+                            <Star
+                              key={i}
+                              size={15}
+                              className="fill-emerald-500 text-emerald-500 min-[3840px]:w-7 min-[3840px]:h-7"
+                            />
+                          ))}
+                        </div>
+                        <Quote
+                          size={18}
+                          className="text-slate-300 min-[3840px]:w-8 min-[3840px]:h-8"
+                        />
                       </div>
-                      <Quote
-                        size={18}
-                        className="text-slate-300 min-[3840px]:w-8 min-[3840px]:h-8"
-                      />
-                    </div>
 
-                    {/* REVIEW TEXT */}
-                    <p
-                      style={{ fontFamily: "'Inter', sans-serif" }}
-                      className="
-                        testimonials-review
-                        text-xs
-                        sm:text-[13.5px]
-                        text-slate-600
-                        leading-relaxed
-                        text-left
-                        min-h-[76px]
-                        sm:min-h-[85px]
-                      "
-                    >
-                      "{item.review}"
-                    </p>
-                  </div>
-
-                  {/* BOTTOM: DIVIDER & CLIENT DETAILS */}
-                  <div>
-                    <div className="my-3.5 sm:my-4 h-px bg-slate-100" />
-
-                    <div className="flex flex-col text-left">
-                      <h3
-                        style={{ fontFamily: "'Inter', sans-serif" }}
-                        className="testimonials-name text-xs sm:text-sm font-bold text-[#0B4EA2] leading-snug truncate"
-                      >
-                        {item.name}
-                      </h3>
+                      {/* REVIEW TEXT */}
                       <p
                         style={{ fontFamily: "'Inter', sans-serif" }}
-                        className="testimonials-service text-[11px] sm:text-xs font-semibold text-[#0B4EA2]/80 mt-0.5 truncate"
+                        className="
+                          testimonials-review
+                          text-xs
+                          sm:text-[13.5px]
+                          text-slate-600
+                          leading-relaxed
+                          text-left
+                          min-h-[76px]
+                          sm:min-h-[85px]
+                        "
                       >
-                        {item.service}
-                      </p>
-                      <p
-                        style={{ fontFamily: "'Inter', sans-serif" }}
-                        className="testimonials-location text-[10px] sm:text-[11px] text-slate-400 mt-0.5 truncate"
-                      >
-                        {item.location}
+                        "{item.review}"
                       </p>
                     </div>
-                  </div>
-                </article>
-              </div>
-            ))}
+
+                    {/* BOTTOM: DIVIDER & CLIENT DETAILS */}
+                    <div>
+                      <div className="my-3.5 sm:my-4 h-px bg-slate-100" />
+
+                      <div className="flex flex-col text-left">
+                        <h3
+                          style={{ fontFamily: "'Inter', sans-serif" }}
+                          className="testimonials-name text-xs sm:text-sm font-bold text-[#0B4EA2] leading-snug truncate"
+                        >
+                          {item.name}
+                        </h3>
+                        <p
+                          style={{ fontFamily: "'Inter', sans-serif" }}
+                          className="testimonials-service text-[11px] sm:text-xs font-semibold text-[#0B4EA2]/80 mt-0.5 truncate"
+                        >
+                          {item.service}
+                        </p>
+                        <p
+                          style={{ fontFamily: "'Inter', sans-serif" }}
+                          className="testimonials-location text-[10px] sm:text-[11px] text-slate-400 mt-0.5 truncate"
+                        >
+                          {item.location}
+                        </p>
+                      </div>
+                    </div>
+                  </article>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

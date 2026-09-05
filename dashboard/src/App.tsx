@@ -19,6 +19,7 @@ import ServiceStepsPage from '@/pages/ServiceStepsPage';
 import AccountsPage from '@/pages/AccountsPage'; // Added AccountsPage
 import WebsiteControlPage from '@/pages/WebsiteControlPage';
 import WebsiteTemplatesPage from '@/pages/WebsiteTemplatesPage';
+import WebsiteTestimonialsPage from '@/pages/WebsiteTestimonialsPage'; 
 
 // ── People: employees, attendance, leave ─────────────────────────────────────
 import TeamManagementPage from '@/pages/TeamManagementPage';
@@ -104,6 +105,11 @@ const App = () => (
                         path="/website-control/templates"
                         element={<RoleGuard><WebsiteTemplatesPage /></RoleGuard>}
                       />
+
+                      <Route
+  path="/website-control/testimonials"
+  element={<RoleGuard><WebsiteTestimonialsPage /></RoleGuard>}
+/>
 
                       {/* ── Tasks ──────────────────────────────────────── */}
                       <Route
