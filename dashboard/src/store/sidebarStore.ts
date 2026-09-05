@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import {
   LayoutDashboard, Target, Users, ListTodo, ClipboardList, ListChecks, PhoneCall,
-  UsersRound, CalendarCheck, MapPin, Wallet,
+  UsersRound, CalendarCheck, MapPin, Wallet, Globe,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -33,6 +33,7 @@ export const ALL_SECTIONS: NavSection[] = [
       { title: 'Follow Ups',      path: '/follow-ups',             icon: PhoneCall },
       { title: 'Tasks',           path: '/tasks',                  icon: ListTodo },
       { title: 'Service Steps',   path: '/service-steps',          icon: ListChecks },
+      { title: 'Website Control', path: '/website-control',        icon: Globe },
       // Admin/founder/cofounder only — stripped for other roles in getSectionsForRole.
       { title: 'Team Logs',       path: '/tasks/team-logs',        icon: ClipboardList },
       { title: 'Employees',       path: '/employees',              icon: UsersRound },
@@ -68,6 +69,7 @@ export const DASHBOARD_PAGES: PagePermission[] = [
   { section: 'Business Ops', label: 'Clients',          path: '/clients' },
   { section: 'Business Ops', label: 'Follow Ups',       path: '/follow-ups' },
   { section: 'Business Ops', label: 'Service Steps',    path: '/service-steps' },
+  { section: 'Business Ops', label: 'Website Control',  path: '/website-control' },
   { section: 'Business Ops', label: 'Accounts',         path: '/accounts' },
   { section: 'Tasks',        label: 'Tasks',            path: '/tasks' },
   { section: 'Tasks',        label: 'Team Logs',        path: '/tasks/team-logs' },

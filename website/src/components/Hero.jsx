@@ -116,6 +116,8 @@ const services = [
   },
 ];
 
+const CAROUSEL_INTERVAL_MS = 4500;
+
 const Hero = () => {
   let navigate;
   try {
@@ -123,6 +125,29 @@ const Hero = () => {
   } catch (e) {
     navigate = null;
   }
+
+  // =========================================================
+  // ✅ SERVICE CARD CAROUSEL (auto-rotate + manual select)
+  // =========================================================
+  const [activeService, setActiveService] = useState(0);
+  const rotateTimerRef = useRef(null);
+
+  const resetRotateTimer = () => {
+    if (rotateTimerRef.current) clearInterval(rotateTimerRef.current);
+    rotateTimerRef.current = setInterval(() => {
+      setActiveService((prev) => (prev + 1) % services.length);
+    }, CAROUSEL_INTERVAL_MS);
+  };
+
+  useEffect(() => {
+    resetRotateTimer();
+    return () => clearInterval(rotateTimerRef.current);
+  }, []);
+
+  const handleServiceSelect = (index) => {
+    setActiveService(index);
+    resetRotateTimer();
+  };
 
   const scrollToHowItWorks = () => {
     const target =
@@ -161,10 +186,10 @@ const Hero = () => {
           .hero-desc             { font-size: 1rem !important; }
           .hero-stat-num         { font-size: 2.25rem !important; }
           .hero-stat-label       { font-size: 0.875rem !important; }
-          .hero-card             { min-height: 230px !important; padding: 1.35rem !important; border-radius: 1.25rem !important; }
-          .hero-card-img-box     { height: 4.5rem !important; }
-          .hero-card-title       { font-size: 1rem !important; }
-          .hero-card-desc        { font-size: 0.8rem !important; line-height: 1.55 !important; }
+          .hero-card             { min-height: 230px !important; padding: 2rem !important; border-radius: 1.25rem !important; }
+          .hero-card-img-box     { height: 8rem !important; }
+          .hero-card-title       { font-size: 1.5rem !important; }
+          .hero-card-desc        { font-size: 1rem !important; line-height: 1.65 !important; }
         }
 
         /* ── 1920px Full HD ── */
@@ -178,10 +203,10 @@ const Hero = () => {
 
           /* ✅ Card scaling for 1920px */
           .hero-cards-grid       { max-width: 700px !important; gap: 1.5rem !important; }
-          .hero-card             { min-height: 280px !important; padding: 1.75rem !important; border-radius: 1.5rem !important; }
-          .hero-card-img-box     { height: 5.5rem !important; margin-bottom: 1.25rem !important; }
-          .hero-card-title       { font-size: 1.2rem !important; margin-bottom: 0.75rem !important; }
-          .hero-card-desc        { font-size: 0.95rem !important; line-height: 1.65 !important; }
+          .hero-card             { min-height: 280px !important; padding: 2.5rem !important; border-radius: 1.5rem !important; }
+          .hero-card-img-box     { height: 9rem !important; }
+          .hero-card-title       { font-size: 1.75rem !important; margin-bottom: 0.75rem !important; }
+          .hero-card-desc        { font-size: 1.125rem !important; line-height: 1.7 !important; }
         }
 
         /* ── 2560px QHD ── */
@@ -195,10 +220,10 @@ const Hero = () => {
 
           /* ✅ Card scaling for 2560px */
           .hero-cards-grid       { max-width: 1000px !important; gap: 2rem !important; }
-          .hero-card             { min-height: 380px !important; padding: 2.25rem !important; border-radius: 1.75rem !important; }
-          .hero-card-img-box     { height: 7.5rem !important; margin-bottom: 1.5rem !important; }
-          .hero-card-title       { font-size: 1.65rem !important; margin-bottom: 1rem !important; }
-          .hero-card-desc        { font-size: 1.3rem !important; line-height: 1.75 !important; }
+          .hero-card             { min-height: 380px !important; padding: 3rem !important; border-radius: 1.75rem !important; }
+          .hero-card-img-box     { height: 11rem !important; }
+          .hero-card-title       { font-size: 2.25rem !important; margin-bottom: 1rem !important; }
+          .hero-card-desc        { font-size: 1.4rem !important; line-height: 1.8 !important; }
         }
 
         /* ── 3840px 4K Ultra-Wide ── */
@@ -213,16 +238,23 @@ const Hero = () => {
 
           /* ✅ Card scaling for 4K */
           .hero-cards-grid       { max-width: 1400px !important; gap: 2.5rem !important; }
-          .hero-card             { min-height: 520px !important; padding: 3rem !important; border-radius: 2.5rem !important; }
-          .hero-card-img-box     { height: 11rem !important; margin-bottom: 2rem !important; }
-          .hero-card-title       { font-size: 2.5rem !important; margin-bottom: 1.25rem !important; line-height: 1.3 !important; }
-          .hero-card-desc        { font-size: 1.75rem !important; line-height: 2.5rem !important; }
+          .hero-card             { min-height: 520px !important; padding: 4rem !important; border-radius: 2.5rem !important; }
+          .hero-card-img-box     { height: 15rem !important; }
+          .hero-card-title       { font-size: 3rem !important; margin-bottom: 1.25rem !important; line-height: 1.3 !important; }
+          .hero-card-desc        { font-size: 2rem !important; line-height: 2.75rem !important; }
+        }
+
+        /* ── Respect reduced-motion preference: swap instead of fade ── */
+        @media (prefers-reduced-motion: reduce) {
+          .hero-carousel-card {
+            transition: none !important;
+          }
         }
       `}</style>
 
       {/* MAIN CONTAINER */}
       <div className="hero-container w-full max-w-[1380px] mx-auto px-4 sm:px-6 min-[1440px]:px-10">
-        <div className="hero-grid grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-12 items-start">
+        <div className="hero-grid grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-12 items-start lg:items-stretch">
 
           {/* =====================================================
               LEFT — Heading, Desc, Stats, Buttons
@@ -309,66 +341,97 @@ const Hero = () => {
           </div>
 
           {/* =====================================================
-              RIGHT — 4 Service Cards (properly scaled)
+              RIGHT — Single Large Auto-Rotating Service Card
           ====================================================== */}
-          <div className="w-full flex justify-center lg:justify-end items-start">
-            <div className="hero-cards-grid grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-5 w-full max-w-[620px]">
-              {services.map((service) => (
-                <div
-                  key={service.id}
-                  className={`
-                    hero-card
-                    group relative
-                    bg-gradient-to-b ${service.gradient}
-                    border ${service.borderColor}
-                    rounded-2xl sm:rounded-3xl
-                    p-4 sm:p-5
-                    flex flex-col justify-between
-                    shadow-[0_2px_12px_-2px_rgba(0,0,0,0.04)]
-                    hover:shadow-[0_12px_30px_-4px_rgba(11,78,162,0.15)]
-                    hover:-translate-y-1.5
-                    transition-all duration-300
-                    overflow-hidden
-                    min-h-[210px] sm:min-h-[225px]
-                  `}
-                >
-                  {/* IMAGE */}
-                  <div className="hero-card-img-box h-14 sm:h-16 w-full flex items-center justify-center mb-3">
-                    {service.image ? (
-                      <img
-                        src={service.image}
-                        alt={service.title}
-                        loading="lazy"
-                        className={`${service.imgClass || "max-h-full max-w-[85%]"} object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-300`}
-                        onError={(e) => {
-                          e.currentTarget.style.display = "none";
-                          const fallback = e.currentTarget.parentElement?.querySelector(".fallback-box");
-                          if (fallback) fallback.classList.remove("hidden");
-                        }}
-                      />
-                    ) : null}
-                    <div className="fallback-box hidden items-center justify-center p-2.5 rounded-2xl bg-white/90 shadow-sm border border-slate-100">
-                      {service.fallbackIcon}
-                    </div>
-                  </div>
+          <div className="w-full flex justify-center lg:justify-end items-start lg:items-stretch">
+            <div className="hero-cards-grid w-full max-w-[620px] flex flex-col">
 
-                  {/* TEXT */}
-                  <div className="flex flex-col flex-grow text-left">
-                    <h3
-                      style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
-                      className="hero-card-title text-[15px] sm:text-[16.5px] font-bold text-slate-900 mb-1.5 leading-snug"
+              {/* CARD STAGE — crossfading cards stacked on top of each other */}
+              <div className="hero-card-stage relative w-full min-h-[280px] sm:min-h-[380px] lg:flex-1">
+                {services.map((service, index) => {
+                  const isActive = index === activeService;
+                  return (
+                    <div
+                      key={service.id}
+                      aria-hidden={!isActive}
+                      className={`
+                        hero-card hero-carousel-card
+                        group absolute inset-0
+                        bg-gradient-to-b ${service.gradient}
+                        border ${service.borderColor}
+                        rounded-2xl sm:rounded-3xl
+                        p-6 sm:p-10
+                        flex flex-col items-center justify-center text-center
+                        gap-5 sm:gap-7
+                        shadow-[0_2px_12px_-2px_rgba(0,0,0,0.04)]
+                        hover:shadow-[0_12px_30px_-4px_rgba(11,78,162,0.15)]
+                        overflow-hidden
+                        transition-opacity duration-700 ease-in-out
+                        ${isActive ? "opacity-100 z-10 pointer-events-auto" : "opacity-0 z-0 pointer-events-none"}
+                      `}
                     >
-                      {service.title}
-                    </h3>
-                    <p
-                      style={{ fontFamily: "'Inter', sans-serif" }}
-                      className="hero-card-desc text-xs sm:text-[12.5px] text-slate-600 leading-[1.55] line-clamp-3 font-normal"
-                    >
-                      {service.desc}
-                    </p>
-                  </div>
-                </div>
-              ))}
+                      {/* IMAGE */}
+                      <div className="hero-card-img-box h-24 sm:h-32 md:h-36 w-full flex items-center justify-center shrink-0">
+                        {service.image ? (
+                          <img
+                            src={service.image}
+                            alt={service.title}
+                            loading="lazy"
+                            className={`${service.imgClass || "max-h-full max-w-[85%]"} object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-300`}
+                            onError={(e) => {
+                              e.currentTarget.style.display = "none";
+                              const fallback = e.currentTarget.parentElement?.querySelector(".fallback-box");
+                              if (fallback) fallback.classList.remove("hidden");
+                            }}
+                          />
+                        ) : null}
+                        <div className="fallback-box hidden items-center justify-center p-2.5 rounded-2xl bg-white/90 shadow-sm border border-slate-100">
+                          {service.fallbackIcon}
+                        </div>
+                      </div>
+
+                      {/* TEXT */}
+                      <div className="flex flex-col items-center max-w-md">
+                        <h3
+                          style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+                          className="hero-card-title text-xl sm:text-2xl font-bold text-slate-900 mb-2.5 sm:mb-3 leading-snug"
+                        >
+                          {service.title}
+                        </h3>
+                        <p
+                          style={{ fontFamily: "'Inter', sans-serif" }}
+                          className="hero-card-desc text-sm sm:text-base text-slate-600 leading-[1.65] line-clamp-5 font-normal"
+                        >
+                          {service.desc}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* INDICATORS */}
+              <div
+                role="tablist"
+                aria-label="Featured services"
+                className="flex items-center justify-center gap-2 mt-4 sm:mt-5"
+              >
+                {services.map((service, index) => (
+                  <button
+                    key={service.id}
+                    type="button"
+                    role="tab"
+                    aria-selected={index === activeService}
+                    aria-label={`Show ${service.title}`}
+                    onClick={() => handleServiceSelect(index)}
+                    className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                      index === activeService
+                        ? "w-6 bg-green-600"
+                        : "w-2 bg-slate-300 hover:bg-slate-400"
+                    }`}
+                  />
+                ))}
+              </div>
             </div>
           </div>
 

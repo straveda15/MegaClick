@@ -1,5 +1,5 @@
 import React from "react";
-import { Phone, Mail, MapPin } from "lucide-react";
+import { Phone, Mail, MapPin, ArrowUp } from "lucide-react";
 import {
   FaFacebookF,
   FaInstagram,
@@ -127,7 +127,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="relative mt-auto overflow-hidden bg-[#083A7A] text-white font-['Inter',sans-serif] pt-8 sm:pt-10 min-[1440px]:pt-12 min-[1920px]:pt-16 min-[3840px]:pt-24 pb-5 min-[1440px]:pb-6 min-[3840px]:pb-10 footer-section">
+    <footer className="relative mt-auto overflow-hidden bg-gradient-to-br from-[#0e57ac] via-[#083A7A] to-[#041d3d] text-white font-['Inter',sans-serif] pt-5 sm:pt-6 min-[1440px]:pt-7 min-[1920px]:pt-9 min-[3840px]:pt-14 pb-4 min-[1440px]:pb-5 min-[3840px]:pb-8 footer-section">
       {/* DIRECT DESKTOP & LAPTOP RESPONSIVE SCALING */}
       <style>{`
         .app-container {
@@ -240,19 +240,25 @@ const Footer = () => {
       {/* TOP ACCENT LINE */}
       <div className="h-1 bg-green-400 absolute top-0 left-0 right-0 z-10" />
 
-      {/* MEGACLICK WATERMARK — AT THE BOTTOM ON MOBILE, CENTERED ON DESKTOP */}
+      {/* MEGACLICK WATERMARK — HUGE FADED BRAND TEXT ANCHORED TO THE FOOTER FLOOR */}
       <div
-        className="absolute inset-0 z-0 flex items-end md:items-center justify-center pointer-events-none select-none overflow-hidden pb-4 md:pb-0"
+        className="absolute inset-0 z-0 flex items-end justify-center pointer-events-none select-none overflow-hidden pb-2 md:pb-0"
         aria-hidden="true"
       >
-        <div className="absolute bottom-6 md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 w-3/4 h-1/2 bg-blue-400/10 blur-[120px] rounded-full pointer-events-none" />
+        <div className="absolute -top-1/4 left-1/2 -translate-x-1/2 md:top-0 md:left-auto md:right-0 md:translate-x-1/4 w-3/4 h-2/3 bg-[#3b82f6]/25 blur-[130px] rounded-full pointer-events-none" />
 
         <span
-          className="text-[20vw] md:text-[18vw] font-black uppercase tracking-tight whitespace-nowrap text-center text-white/[0.04] md:text-white/[0.045] leading-none select-none"
+          className="text-[20vw] md:text-[18vw] font-black uppercase tracking-tight whitespace-nowrap text-center text-white/[0.06] md:text-white/[0.07] leading-[0.8] select-none"
           style={{
             fontFamily:
               "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
             letterSpacing: "-0.03em",
+            WebkitMaskImage:
+              "linear-gradient(to right, transparent 0%, black 18%, black 82%, transparent 100%), linear-gradient(to bottom, black 55%, transparent 100%)",
+            WebkitMaskComposite: "source-in",
+            maskImage:
+              "linear-gradient(to right, transparent 0%, black 18%, black 82%, transparent 100%), linear-gradient(to bottom, black 55%, transparent 100%)",
+            maskComposite: "intersect",
           }}
         >
           MEGACLICK
@@ -266,7 +272,17 @@ const Footer = () => {
             MOBILE VIEW (< md) — FULLY ORGANIZED UNDER PROPER HEADINGS
         ======================================================= */}
         <div className="md:hidden w-full flex flex-col items-start text-left px-1 pb-1 space-y-6">
-          
+
+          {/* 0. BACK TO TOP */}
+          <button
+            type="button"
+            onClick={scrollToTop}
+            className="ml-auto flex items-center gap-1.5 text-[11px] font-black text-white/70 uppercase tracking-[0.15em] hover:text-green-400 transition-colors cursor-pointer p-0 bg-transparent border-none"
+          >
+            <ArrowUp size={13} className="shrink-0" />
+            Back to Top
+          </button>
+
           {/* 1. LOGO & BRAND INFO */}
           <div>
             <div className="flex items-center justify-start gap-3 mb-2">
@@ -388,18 +404,25 @@ const Footer = () => {
           </div>
 
           {/* 6. MOBILE BOTTOM BAR */}
-          <div className="border-t border-white/10 pt-4 w-full flex justify-between items-center text-left">
-            <p className="text-[12px] font-semibold text-blue-100/90 text-left">
-              Straveda Tech.
+          <div className="border-t border-white/10 pt-4 w-full flex flex-col gap-2 text-left">
+            <p className="text-[11px] font-bold uppercase tracking-wider text-blue-100/70 text-left">
+              &copy; {new Date().getFullYear()} MegaClick. All rights reserved.
             </p>
 
-            <button
-              type="button"
-              onClick={scrollToTop}
-              className="text-[12px] font-semibold text-blue-100 hover:text-green-400 transition-colors cursor-pointer p-0 bg-transparent border-none"
-            >
-              Back to Top ↑
-            </button>
+            <div className="flex items-center gap-5">
+              <a
+                href="/privacy-policy"
+                className="text-[11px] font-bold uppercase tracking-wider text-blue-100/70 hover:text-green-400 transition-colors"
+              >
+                Privacy Policy
+              </a>
+              <a
+                href="/terms-of-service"
+                className="text-[11px] font-bold uppercase tracking-wider text-blue-100/70 hover:text-green-400 transition-colors"
+              >
+                Terms of Service
+              </a>
+            </div>
           </div>
         </div>
 
@@ -407,10 +430,22 @@ const Footer = () => {
             DESKTOP & LAPTOP VIEW (>= md)
         ======================================================= */}
         <div className="hidden md:block">
-          <div className="grid grid-cols-4 lg:grid-cols-12 gap-y-6 gap-x-6 min-[1440px]:gap-x-8 mb-5 pt-1">
-            
+          {/* BACK TO TOP */}
+          <div className="flex justify-end mb-3 min-[1440px]:mb-4">
+            <button
+              type="button"
+              onClick={scrollToTop}
+              className="flex items-center gap-1.5 text-[11px] min-[1920px]:text-xs font-black text-white/70 uppercase tracking-[0.2em] hover:text-green-400 transition-colors cursor-pointer p-0 bg-transparent border-none"
+            >
+              <ArrowUp size={13} className="shrink-0" />
+              Back to Top
+            </button>
+          </div>
+
+          <div className="flex flex-col lg:flex-row lg:items-start gap-y-6 gap-x-8 min-[1440px]:gap-x-10 mb-4">
+
             {/* BRAND */}
-            <div className="lg:col-span-4 space-y-3.5 min-[1440px]:space-y-4">
+            <div className="lg:w-[260px] min-[1440px]:w-[300px] lg:shrink-0 space-y-3.5 min-[1440px]:space-y-4">
               <div>
                 <div className="flex items-center gap-3 mb-1.5">
                   <img
@@ -451,8 +486,11 @@ const Footer = () => {
               </div>
             </div>
 
+            {/* LINK COLUMNS */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:flex lg:flex-1 lg:justify-between gap-y-8 gap-x-6 lg:gap-x-10">
+
             {/* EXPLORE */}
-            <div className="lg:col-span-2 space-y-2.5">
+            <div className="space-y-2.5">
               <h3 className="footer-col-heading text-[11px] font-black uppercase tracking-widest text-green-400">
                 EXPLORE
               </h3>
@@ -473,7 +511,7 @@ const Footer = () => {
             </div>
 
             {/* SERVICES */}
-            <div className="lg:col-span-3 space-y-2.5">
+            <div className="space-y-2.5">
               <h3 className="footer-col-heading text-[11px] font-black uppercase tracking-widest text-green-400">
                 SERVICES
               </h3>
@@ -494,7 +532,7 @@ const Footer = () => {
             </div>
 
             {/* CONTACT US */}
-            <div className="lg:col-span-3 space-y-2.5">
+            <div className="space-y-2.5">
               <h3 className="footer-col-heading text-[11px] font-black uppercase tracking-widest text-green-400">
                 CONTACT US
               </h3>
@@ -550,22 +588,29 @@ const Footer = () => {
                 </a>
               </div>
             </div>
+
+            </div>
           </div>
 
           {/* DESKTOP BOTTOM BAR */}
           <div className="pt-3.5 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-3">
-            <p className="footer-link-text text-[13px] font-semibold text-blue-100/90 normal-case tracking-normal">
-              Straveda Tech.
+            <p className="text-[11px] min-[1920px]:text-xs min-[3840px]:text-lg font-bold text-white/50 uppercase tracking-[0.15em]">
+              &copy; {new Date().getFullYear()} MegaClick. All rights reserved.
             </p>
 
-            <div className="flex gap-6">
-              <button
-                type="button"
-                onClick={scrollToTop}
-                className="text-[11px] min-[1920px]:text-xs min-[3840px]:text-lg font-black text-white/50 uppercase tracking-[0.2em] hover:text-green-400 cursor-pointer"
+            <div className="flex gap-6 min-[3840px]:gap-10">
+              <a
+                href="/privacy-policy"
+                className="text-[11px] min-[1920px]:text-xs min-[3840px]:text-lg font-bold text-white/50 uppercase tracking-[0.15em] hover:text-green-400 transition-colors"
               >
-                Back to Top ↑
-              </button>
+                Privacy Policy
+              </a>
+              <a
+                href="/terms-of-service"
+                className="text-[11px] min-[1920px]:text-xs min-[3840px]:text-lg font-bold text-white/50 uppercase tracking-[0.15em] hover:text-green-400 transition-colors"
+              >
+                Terms of Service
+              </a>
             </div>
           </div>
         </div>

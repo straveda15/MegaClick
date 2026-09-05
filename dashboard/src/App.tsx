@@ -17,6 +17,8 @@ import ClientsPage from '@/pages/ClientsPage';
 import FollowUpsPage from '@/pages/FollowUpsPage';
 import ServiceStepsPage from '@/pages/ServiceStepsPage';
 import AccountsPage from '@/pages/AccountsPage'; // Added AccountsPage
+import WebsiteControlPage from '@/pages/WebsiteControlPage';
+import WebsiteTemplatesPage from '@/pages/WebsiteTemplatesPage';
 
 // ── People: employees, attendance, leave ─────────────────────────────────────
 import TeamManagementPage from '@/pages/TeamManagementPage';
@@ -91,6 +93,16 @@ const App = () => (
                       <Route
                         path="/accounts"
                         element={<RoleGuard><AccountsPage /></RoleGuard>}
+                      />
+                      {/* Placeholder page — CMS/CRM functionality for the
+                          public website lands here separately. */}
+                      <Route
+                        path="/website-control"
+                        element={<RoleGuard><WebsiteControlPage /></RoleGuard>}
+                      />
+                      <Route
+                        path="/website-control/templates"
+                        element={<RoleGuard><WebsiteTemplatesPage /></RoleGuard>}
                       />
 
                       {/* ── Tasks ──────────────────────────────────────── */}

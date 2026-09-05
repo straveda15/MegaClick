@@ -238,6 +238,87 @@ const ModernCardIcon = ({ type }) => {
         </svg>
       );
 
+    case "support":
+      return (
+        <svg
+          viewBox="0 0 48 48"
+          className="w-11 h-11 sm:w-12 sm:h-12 lg:w-13 lg:h-13 min-[1920px]:w-16 min-[1920px]:h-16 min-[3840px]:w-28 min-[3840px]:h-28"
+          fill="none"
+        >
+          <circle
+            cx="24"
+            cy="22"
+            r="15"
+            fill="#e0f2fe"
+            stroke="#0B4EA2"
+            strokeWidth="2.5"
+          />
+          <path
+            d="M14 24v-3a10 10 0 0 1 20 0v3"
+            stroke="#0284c7"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+          />
+          <rect
+            x="10.5"
+            y="22.5"
+            width="6"
+            height="8"
+            rx="3"
+            fill="#38bdf8"
+            stroke="#0f172a"
+            strokeWidth="1.8"
+          />
+          <rect
+            x="31.5"
+            y="22.5"
+            width="6"
+            height="8"
+            rx="3"
+            fill="#38bdf8"
+            stroke="#0f172a"
+            strokeWidth="1.8"
+          />
+          <path
+            d="M34.5 30.5v1.5a4 4 0 0 1-4 4H27"
+            stroke="#0f172a"
+            strokeWidth="2"
+            strokeLinecap="round"
+          />
+        </svg>
+      );
+
+    case "compliance":
+      return (
+        <svg
+          viewBox="0 0 48 48"
+          className="w-11 h-11 sm:w-12 sm:h-12 lg:w-13 lg:h-13 min-[1920px]:w-16 min-[1920px]:h-16 min-[3840px]:w-28 min-[3840px]:h-28"
+          fill="none"
+        >
+          <path
+            d="M24 8a4 4 0 0 1 4 4v1.5c5.2 1.8 8.5 6.6 8.5 12.5v6l2.5 3.5H9l2.5-3.5v-6c0-5.9 3.3-10.7 8.5-12.5V12a4 4 0 0 1 4-4z"
+            fill="#e0f2fe"
+            stroke="#0B4EA2"
+            strokeWidth="2.5"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M19 35.5a5 5 0 0 0 10 0"
+            stroke="#0f172a"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+          />
+          <circle
+            cx="34"
+            cy="12"
+            r="4"
+            fill="#22c55e"
+            stroke="#ffffff"
+            strokeWidth="1.5"
+          />
+        </svg>
+      );
+
     default:
       return null;
   }
@@ -282,6 +363,18 @@ const solutionCards = [
     title: "Certificate Delivery",
     desc: "Instant digital certificate issuance with complete ongoing support.",
     iconType: "delivery",
+  },
+  {
+    id: 7,
+    title: "Dedicated Support",
+    desc: "Reach our team anytime for quick answers and hands-on assistance.",
+    iconType: "support",
+  },
+  {
+    id: 8,
+    title: "Compliance Reminders",
+    desc: "Timely alerts for renewals and deadlines so you never miss one.",
+    iconType: "compliance",
   },
 ];
 
@@ -770,13 +863,13 @@ const HowItWorks = () => {
           HOW IT WORKS
         </p>
 
-        {/* SOLUTION GRID */}
+        {/* SOLUTION GRID — featured card + all cards, auto-flowing into rows (3 beside the card on desktop, then 5 full-width below) */}
         <div
           className="
             hiw-grid
             grid
             grid-cols-2
-            lg:grid-cols-4
+            lg:grid-cols-5
             gap-3
             sm:gap-4.5
             lg:gap-5
@@ -903,13 +996,8 @@ const HowItWorks = () => {
             </div>
           </div>
 
-          {/* TOP ROW CARDS */}
-          {solutionCards.slice(0, 2).map((item) => (
-            <SolutionCardItem key={item.id} item={item} />
-          ))}
-
-          {/* BOTTOM ROW CARDS */}
-          {solutionCards.slice(2).map((item) => (
+          {/* SOLUTION CARDS — single continuous grid so mobile/tablet never leaves an orphan card */}
+          {solutionCards.map((item) => (
             <SolutionCardItem key={item.id} item={item} />
           ))}
         </div>
