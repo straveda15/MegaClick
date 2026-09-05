@@ -1,15 +1,16 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { 
-  Search, 
-  Plus, 
-  Pencil, 
-  Trash2, 
-  ArrowLeft, 
-  Star, 
-  X, 
-  Loader2 
+import {
+  Search,
+  Plus,
+  Pencil,
+  Trash2,
+  ArrowLeft,
+  Star,
+  X,
+  Loader2
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import GenericPage from "@/components/GenericPage";
 
 export interface ITestimonial {
   _id?: string;
@@ -48,6 +49,16 @@ const WebsiteTestimonialsPage: React.FC = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+
+  // Lock the page behind the modal from scrolling while it's open.
+  useEffect(() => {
+    if (!isModalOpen) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, [isModalOpen]);
 
   // Fetch Testimonials
   const fetchTestimonials = async () => {
@@ -167,182 +178,170 @@ const WebsiteTestimonialsPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background p-6 lg:p-10 font-sans text-foreground">
-      <div className="max-w-7xl mx-auto space-y-6">
+    <GenericPage
+      title="Testimonials"
+      subtitle="Manage client reviews, ratings, and outcomes — changes reflect on the website in real-time."
+    >
+      <button
+        type="button"
+        onClick={() => navigate("/website-control")}
+        className="inline-flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors -mt-2"
+      >
+        <ArrowLeft className="w-3.5 h-3.5" /> Back to Website Control
+      </button>
 
-        {/* ── HEADER ── */}
-        <div>
-          <h1 className="text-2xl lg:text-3xl font-bold tracking-tight">
-            Website Control
-          </h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Manage D2C storefront content — changes reflect on the website in real-time.
-          </p>
+      {/* ── 4 STAT CARDS ── */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-card border border-border rounded-2xl p-5 shadow-sm">
+          <span className="text-[11px] font-bold tracking-wider uppercase text-muted-foreground">
+            TOTAL REVIEWS
+          </span>
+          <div className="text-3xl font-extrabold text-blue-600 mt-2">
+            {metrics.total}
+          </div>
+          <p className="text-xs text-muted-foreground mt-1">All statuses</p>
+        </div>
+
+        <div className="bg-card border border-border rounded-2xl p-5 shadow-sm">
+          <span className="text-[11px] font-bold tracking-wider uppercase text-muted-foreground">
+            APPROVED
+          </span>
+          <div className="text-3xl font-extrabold text-blue-600 mt-2">
+            {metrics.approved}
+          </div>
+          <p className="text-xs text-muted-foreground mt-1">Live on website</p>
+        </div>
+
+        <div className="bg-card border border-border rounded-2xl p-5 shadow-sm">
+          <span className="text-[11px] font-bold tracking-wider uppercase text-muted-foreground">
+            PENDING
+          </span>
+          <div className="text-3xl font-extrabold text-blue-600 mt-2">
+            {metrics.pending}
+          </div>
+          <p className="text-xs text-muted-foreground mt-1">Awaiting review</p>
+        </div>
+
+        <div className="bg-card border border-border rounded-2xl p-5 shadow-sm">
+          <span className="text-[11px] font-bold tracking-wider uppercase text-muted-foreground">
+            FEATURED
+          </span>
+          <div className="text-3xl font-extrabold text-blue-600 mt-2">
+            {metrics.featured}
+          </div>
+          <p className="text-xs text-muted-foreground mt-1">Highlighted</p>
+        </div>
+      </div>
+
+      {/* ── SEARCH & FILTER BAR ── */}
+      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 pt-2">
+        <div className="relative flex-1 max-w-xl">
+          <Search className="w-4 h-4 text-muted-foreground absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <input
+            type="text"
+            placeholder="Search testimonials..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-10 pr-4 py-2.5 bg-card border border-border rounded-xl text-xs placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-600 shadow-sm"
+          />
+        </div>
+
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="bg-card border border-border rounded-xl p-1 flex items-center shadow-sm">
+            {(["All", "Approved", "Pending", "Rejected"] as const).map((filter) => (
+              <button
+                key={filter}
+                type="button"
+                onClick={() => setActiveFilter(filter)}
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  activeFilter === filter
+                    ? "bg-blue-600 text-white shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {filter}
+              </button>
+            ))}
+          </div>
 
           <button
             type="button"
-            onClick={() => navigate("/website-control")}
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors mt-4"
+            onClick={handleOpenAdd}
+            className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-colors shadow-sm"
           >
-            <ArrowLeft className="w-3.5 h-3.5" /> Back to Website Control
+            <Plus className="w-4 h-4" /> New Testimonial
           </button>
         </div>
+      </div>
 
-        {/* ── 4 STAT CARDS ── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-card border border-border rounded-2xl p-5 shadow-sm">
-            <span className="text-[11px] font-bold tracking-wider uppercase text-muted-foreground">
-              TOTAL REVIEWS
-            </span>
-            <div className="text-3xl font-extrabold text-emerald-600 mt-2">
-              {metrics.total}
-            </div>
-            <p className="text-xs text-muted-foreground mt-1">All statuses</p>
-          </div>
-
-          <div className="bg-card border border-border rounded-2xl p-5 shadow-sm">
-            <span className="text-[11px] font-bold tracking-wider uppercase text-muted-foreground">
-              APPROVED
-            </span>
-            <div className="text-3xl font-extrabold text-emerald-600 mt-2">
-              {metrics.approved}
-            </div>
-            <p className="text-xs text-muted-foreground mt-1">Live on website</p>
-          </div>
-
-          <div className="bg-card border border-border rounded-2xl p-5 shadow-sm">
-            <span className="text-[11px] font-bold tracking-wider uppercase text-muted-foreground">
-              PENDING
-            </span>
-            <div className="text-3xl font-extrabold text-emerald-600 mt-2">
-              {metrics.pending}
-            </div>
-            <p className="text-xs text-muted-foreground mt-1">Awaiting review</p>
-          </div>
-
-          <div className="bg-card border border-border rounded-2xl p-5 shadow-sm">
-            <span className="text-[11px] font-bold tracking-wider uppercase text-muted-foreground">
-              FEATURED
-            </span>
-            <div className="text-3xl font-extrabold text-emerald-600 mt-2">
-              {metrics.featured}
-            </div>
-            <p className="text-xs text-muted-foreground mt-1">Highlighted</p>
-          </div>
+      {/* ── TESTIMONIAL ROWS ── */}
+      {loading ? (
+        <div className="flex items-center justify-center py-20">
+          <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
         </div>
-
-        {/* ── SEARCH & FILTER BAR ── */}
-        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 pt-2">
-          <div className="relative flex-1 max-w-xl">
-            <Search className="w-4 h-4 text-muted-foreground absolute left-3.5 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              placeholder="Search testimonials..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-card border border-border rounded-xl text-xs placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-emerald-600 shadow-sm"
-            />
-          </div>
-
-          <div className="flex flex-wrap items-center gap-3">
-            <div className="bg-card border border-border rounded-xl p-1 flex items-center shadow-sm">
-              {(["All", "Approved", "Pending", "Rejected"] as const).map((filter) => (
-                <button
-                  key={filter}
-                  type="button"
-                  onClick={() => setActiveFilter(filter)}
-                  className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                    activeFilter === filter
-                      ? "bg-[#14532d] text-white shadow-sm"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  {filter}
-                </button>
-              ))}
-            </div>
-
-            <button
-              type="button"
-              onClick={handleOpenAdd}
-              className="inline-flex items-center gap-2 bg-[#14532d] hover:bg-[#0f3e22] text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-colors shadow-sm"
+      ) : filteredList.length === 0 ? (
+        <div className="bg-card border border-border rounded-2xl p-12 text-center shadow-sm">
+          <p className="text-sm text-muted-foreground">No testimonials found.</p>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {filteredList.map((item) => (
+            <div
+              key={item._id}
+              className="bg-card border border-border rounded-2xl p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6 hover:border-slate-300 dark:hover:border-slate-700 transition-colors"
             >
-              <Plus className="w-4 h-4" /> New Testimonial
-            </button>
-          </div>
-        </div>
-
-        {/* ── TESTIMONIAL ROWS (Green Stars ⭐) ── */}
-        {loading ? (
-          <div className="flex items-center justify-center py-20">
-            <Loader2 className="w-8 h-8 animate-spin text-[#14532d]" />
-          </div>
-        ) : filteredList.length === 0 ? (
-          <div className="bg-card border border-border rounded-2xl p-12 text-center shadow-sm">
-            <p className="text-sm text-muted-foreground">No testimonials found.</p>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {filteredList.map((item) => (
-              <div
-                key={item._id}
-                className="bg-card border border-border rounded-2xl p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6 hover:border-slate-300 dark:hover:border-slate-700 transition-colors"
-              >
-                {/* Left Testimonial Info */}
-                <div className="space-y-2 flex-1">
-                  <div className="flex items-center gap-3">
-                    <h3 className="text-sm font-bold text-foreground">{item.name}</h3>
-                    <span className="bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200/80 dark:border-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider">
-                      {item.status}
-                    </span>
-                  </div>
-
-                  {/* 🟢 Emerald Green Stars */}
-                  <div className="flex items-center gap-1">
-                    {Array.from({ length: item.rating || 5 }).map((_, i) => (
-                      <Star key={i} size={15} className="fill-emerald-500 text-emerald-500" />
-                    ))}
-                  </div>
-
-                  {/* Service Headline */}
-                  <h4 className="text-xs font-bold text-foreground">
-                    "{item.service}"
-                  </h4>
-
-                  {/* Review Text */}
-                  <p className="text-xs text-muted-foreground italic leading-relaxed">
-                    "{item.review}"
-                  </p>
-
-                  {/* Location Info */}
-                  <div className="text-[11px] text-muted-foreground/80 font-medium">
-                    {item.location}
-                  </div>
+              {/* Left Testimonial Info */}
+              <div className="space-y-2 flex-1">
+                <div className="flex items-center gap-3">
+                  <h3 className="text-sm font-bold text-foreground">{item.name}</h3>
+                  <span className="bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-400 border border-blue-200/80 dark:border-blue-800 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider">
+                    {item.status}
+                  </span>
                 </div>
 
-                {/* Right Edit & Delete Buttons */}
-                <div className="flex md:flex-col items-center gap-2 self-end md:self-center shrink-0">
-                  <button
-                    type="button"
-                    onClick={() => handleOpenEdit(item)}
-                    className="inline-flex items-center justify-center gap-1.5 px-4 py-1.5 border border-border rounded-lg text-xs font-semibold text-muted-foreground hover:bg-muted hover:text-foreground transition-colors w-24 shadow-sm"
-                  >
-                    <Pencil className="w-3.5 h-3.5" /> Edit
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => item._id && handleDelete(item._id)}
-                    className="inline-flex items-center justify-center gap-1.5 px-4 py-1.5 border border-border rounded-lg text-xs font-semibold text-muted-foreground hover:bg-red-50 hover:text-red-600 hover:border-red-200 dark:hover:bg-red-950/30 transition-colors w-24 shadow-sm"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" /> Delete
-                  </button>
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: item.rating || 5 }).map((_, i) => (
+                    <Star key={i} size={15} className="fill-blue-500 text-blue-500" />
+                  ))}
+                </div>
+
+                {/* Service Headline */}
+                <h4 className="text-xs font-bold text-foreground">
+                  "{item.service}"
+                </h4>
+
+                {/* Review Text */}
+                <p className="text-xs text-muted-foreground italic leading-relaxed">
+                  "{item.review}"
+                </p>
+
+                {/* Location Info */}
+                <div className="text-[11px] text-muted-foreground/80 font-medium">
+                  {item.location}
                 </div>
               </div>
-            ))}
-          </div>
-        )}
 
-      </div>
+              {/* Right Edit & Delete Buttons */}
+              <div className="flex md:flex-col items-center gap-2 self-end md:self-center shrink-0">
+                <button
+                  type="button"
+                  onClick={() => handleOpenEdit(item)}
+                  className="inline-flex items-center justify-center gap-1.5 px-4 py-1.5 border border-border rounded-lg text-xs font-semibold text-muted-foreground hover:bg-muted hover:text-foreground transition-colors w-24 shadow-sm"
+                >
+                  <Pencil className="w-3.5 h-3.5" /> Edit
+                </button>
+                <button
+                  type="button"
+                  onClick={() => item._id && handleDelete(item._id)}
+                  className="inline-flex items-center justify-center gap-1.5 px-4 py-1.5 border border-border rounded-lg text-xs font-semibold text-muted-foreground hover:bg-red-50 hover:text-red-600 hover:border-red-200 dark:hover:bg-red-950/30 transition-colors w-24 shadow-sm"
+                >
+                  <Trash2 className="w-3.5 h-3.5" /> Delete
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* ── MODAL: 5 INPUTS (Add / Edit) ── */}
       {isModalOpen && (
@@ -386,7 +385,7 @@ const WebsiteTestimonialsPage: React.FC = () => {
                   placeholder="e.g. Rajesh Sharma"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full text-xs p-3 rounded-xl border border-border bg-background focus:outline-none focus:ring-2 focus:ring-[#14532d]"
+                  className="w-full text-xs p-3 rounded-xl border border-border bg-background focus:outline-none focus:ring-2 focus:ring-blue-600"
                 />
               </div>
 
@@ -403,7 +402,7 @@ const WebsiteTestimonialsPage: React.FC = () => {
                   placeholder="e.g. Income Tax Registration"
                   value={formData.service}
                   onChange={(e) => setFormData({ ...formData, service: e.target.value })}
-                  className="w-full text-xs p-3 rounded-xl border border-border bg-background focus:outline-none focus:ring-2 focus:ring-[#14532d]"
+                  className="w-full text-xs p-3 rounded-xl border border-border bg-background focus:outline-none focus:ring-2 focus:ring-blue-600"
                 />
               </div>
 
@@ -420,7 +419,7 @@ const WebsiteTestimonialsPage: React.FC = () => {
                   placeholder="e.g. Nashik, Maharashtra"
                   value={formData.location}
                   onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                  className="w-full text-xs p-3 rounded-xl border border-border bg-background focus:outline-none focus:ring-2 focus:ring-[#14532d]"
+                  className="w-full text-xs p-3 rounded-xl border border-border bg-background focus:outline-none focus:ring-2 focus:ring-blue-600"
                 />
               </div>
 
@@ -437,11 +436,11 @@ const WebsiteTestimonialsPage: React.FC = () => {
                   placeholder="Write client feedback here..."
                   value={formData.review}
                   onChange={(e) => setFormData({ ...formData, review: e.target.value })}
-                  className="w-full text-xs p-3 rounded-xl border border-border bg-background focus:outline-none focus:ring-2 focus:ring-[#14532d]"
+                  className="w-full text-xs p-3 rounded-xl border border-border bg-background focus:outline-none focus:ring-2 focus:ring-blue-600"
                 />
               </div>
 
-              {/* 5. Rating & Status (Clean Numbers + Green Look) */}
+              {/* 5. Rating & Status */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold text-foreground mb-1">
@@ -450,7 +449,7 @@ const WebsiteTestimonialsPage: React.FC = () => {
                   <select
                     value={formData.rating}
                     onChange={(e) => setFormData({ ...formData, rating: Number(e.target.value) })}
-                    className="w-full text-xs p-3 rounded-xl border border-emerald-300 bg-emerald-50/50 text-emerald-900 font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600 transition-colors"
+                    className="w-full text-xs p-3 rounded-xl border border-blue-300 bg-blue-50/50 text-blue-900 font-semibold focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-colors"
                   >
                     <option value={5}>5</option>
                     <option value={4}>4</option>
@@ -467,7 +466,7 @@ const WebsiteTestimonialsPage: React.FC = () => {
                   <select
                     value={formData.status}
                     onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
-                    className="w-full text-xs p-3 rounded-xl border border-emerald-300 bg-emerald-50/50 text-emerald-900 font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600 transition-colors"
+                    className="w-full text-xs p-3 rounded-xl border border-blue-300 bg-blue-50/50 text-blue-900 font-semibold focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-colors"
                   >
                     <option value="APPROVED">Approved (Live)</option>
                     <option value="PENDING">Pending</option>
@@ -487,7 +486,7 @@ const WebsiteTestimonialsPage: React.FC = () => {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#14532d] text-white text-xs font-bold hover:bg-[#0f3e22] transition-colors disabled:opacity-50 shadow-sm"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 text-white text-xs font-bold hover:bg-blue-700 transition-colors disabled:opacity-50 shadow-sm"
                 >
                   {submitting && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
                   {editingId ? "Update Testimonial" : "Save Testimonial"}
@@ -497,7 +496,7 @@ const WebsiteTestimonialsPage: React.FC = () => {
           </div>
         </div>
       )}
-    </div>
+    </GenericPage>
   );
 };
 

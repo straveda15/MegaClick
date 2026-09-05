@@ -1,5 +1,5 @@
 import {
-  Building2, CalendarClock, CalendarDays, FileDown, History, Loader2, Mail, MapPin,
+  Building2, CalendarClock, CalendarDays, FileDown, History, IdCard, Loader2, Mail, MapPin,
   MessageSquare, Pencil, Phone, Tag, User,
 } from 'lucide-react';
 import { useState } from 'react';
@@ -205,6 +205,7 @@ export function LeadDetailsDialog({ leadId, open, onOpenChange }: LeadDetailsDia
                   <InfoRow icon={Phone} label="Phone" value={customer?.phone} />
                   <InfoRow icon={Mail} label="Email" value={customer?.email} />
                   <InfoRow icon={Building2} label="Company" value={customer?.company} />
+                  <InfoRow icon={IdCard} label="Client Reference Name" value={customer?.referenceName} />
                   <InfoRow
                     icon={MapPin}
                     label="City / State"

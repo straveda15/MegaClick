@@ -250,6 +250,7 @@ export const listClients = async (user, filters = {}) => {
         phone: customer.phone ?? "",
         email: customer.email ?? "",
         company: customer.company ?? "",
+        referenceName: customer.referenceName ?? "",
         city: customer.city ?? "",
         state: customer.state ?? "",
         address: [customer.addressLine1, customer.addressLine2, customer.city, customer.state, customer.postalCode]

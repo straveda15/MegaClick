@@ -87,6 +87,8 @@ interface LeadRow {
   phone: string;
   email: string;
   company: string;
+  /** Internal-facing name for the client — how the office refers to them, distinct from their legal name. */
+  referenceName: string;
   city: string;
   state: string;
   services: LeadService[];
@@ -137,6 +139,7 @@ const toRow = (lead: SalesLead): LeadRow => {
     phone: lead.customer?.phone ?? '',
     email: lead.customer?.email ?? '',
     company: lead.customer?.company ?? '',
+    referenceName: lead.customer?.referenceName ?? '',
     city: lead.customer?.city ?? '',
     state: lead.customer?.state ?? '',
     services,
@@ -162,6 +165,7 @@ const LEAD_COLUMNS = [
   { key: 'phone',           header: 'Phone',             required: true, aliases: ['mobile', 'mobile no', 'contact', 'phone no'],                     value: (r: LeadRow) => r.phone },
   { key: 'email',           header: 'Email',             aliases: ['e-mail', 'email address'],                                                        value: (r: LeadRow) => r.email },
   { key: 'company',         header: 'Company',           aliases: ['organisation', 'organization', 'firm'],                                           value: (r: LeadRow) => r.company },
+  { key: 'referenceName',   header: 'Client Reference Name', aliases: ['reference name', 'client reference', 'client reference name', 'ref name'],     value: (r: LeadRow) => r.referenceName },
   { key: 'state',           header: 'State',             aliases: ['state name', 'province'],                                                         value: (r: LeadRow) => r.state },
   { key: 'city',            header: 'City',              aliases: ['location'],                                                                       value: (r: LeadRow) => r.city },
   { key: 'productInterest', header: 'Services',          aliases: ['service', 'interested service', 'service name', 'interest', 'requirement'],       value: (r: LeadRow) => r.serviceNames },
@@ -374,13 +378,18 @@ const resolveImportServices = (
  */
 const COMPLETENESS_CHECKS: Array<{ label: string; test: (row: LeadRow) => boolean }> = [
   { label: 'client name', test: (r) => !r.hasName },
-  { label: 'email', test: (r) => !r.email },
   { label: 'state', test: (r) => !r.state },
   { label: 'services', test: (r) => r.services.length === 0 },
 ];
 
 const missingFieldsFor = (row: LeadRow) =>
   COMPLETENESS_CHECKS.filter((check) => check.test(row)).map((check) => check.label);
+
+/** A confirmed lead is a client now — nothing on this page is fixable for it,
+ *  so it's excluded from the incomplete-data count the same way its row hides
+ *  the alert icon (see the row render below). */
+const isRowConfirmed = (row: LeadRow) =>
+  row.services.length > 0 && row.services.every((s) => s.quotationConfirmed === true);
 
 /* ── Small controls ─────────────────────────────────────────────────────────── */
 
@@ -464,7 +473,7 @@ const LeadsPage = () => {
   // snapshot), so the alert stays accurate for leads edited or created any
   // other way too.
   const incompleteCount = useMemo(
-    () => allRows.filter((r) => missingFieldsFor(r).length > 0).length,
+    () => allRows.filter((r) => !isRowConfirmed(r) && missingFieldsFor(r).length > 0).length,
     [allRows]
   );
 
@@ -590,6 +599,7 @@ const LeadsPage = () => {
         phone: v.phone ?? '',
         email: v.email,
         company: row.company,
+        referenceName: row.referenceName,
         city: v.city,
         state: v.state,
         services,
@@ -781,7 +791,7 @@ const LeadsPage = () => {
                 pagedRows.map((row) => {
                   const source = sourceLabel(row.source);
                   const sourceStyle = SOURCE_STYLES[source];
-                  const isConfirmed = row.services.length > 0 && row.services.every(s => s.quotationConfirmed === true);
+                  const isConfirmed = isRowConfirmed(row);
                   const missing = missingFieldsFor(row);
 
                   return (

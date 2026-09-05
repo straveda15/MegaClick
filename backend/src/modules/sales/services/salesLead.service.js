@@ -711,6 +711,7 @@ const buildLeadInput = (data) => {
         phone,
         email: String(data.email ?? "").trim() || undefined,
         company: String(data.company ?? "").trim() || undefined,
+        referenceName: String(data.referenceName ?? "").trim() || undefined,
         city: String(data.city ?? "").trim() || undefined,
         state: String(data.state ?? "").trim() || undefined,
         addressLine1: data.flat,
@@ -741,7 +742,7 @@ const upsertLeadCustomer = async (input, actorId) => {
     const set = {};
     // Only overwrite fields the caller actually supplied — a second lead for an
     // existing customer must not blank out details captured the first time.
-    for (const field of ["name", "email", "company", "city", "state", "addressLine1", "addressLine2", "landmark", "postalCode"]) {
+    for (const field of ["name", "email", "company", "referenceName", "city", "state", "addressLine1", "addressLine2", "landmark", "postalCode"]) {
         if (input[field]) set[field] = input[field];
     }
 
@@ -1424,6 +1425,7 @@ export const updateLeadCustomer = async (leadId, customerData) => {
     if (customerData.email) customer.email = customerData.email;
     if (customerData.phone) customer.phone = customerData.phone;
     if (customerData.company !== undefined) customer.company = customerData.company;
+    if (customerData.referenceName !== undefined) customer.referenceName = customerData.referenceName;
     if (customerData.flat) customer.addressLine1 = customerData.flat;
     if (customerData.area) customer.addressLine2 = customerData.area;
     if (customerData.city) customer.city = customerData.city;
@@ -1477,6 +1479,7 @@ export const updateManualLead = async (leadId, data, actorId) => {
     customer.phone = phone;
     if (data.email !== undefined) customer.email = String(data.email ?? "").trim();
     if (data.company !== undefined) customer.company = String(data.company ?? "").trim();
+    if (data.referenceName !== undefined) customer.referenceName = String(data.referenceName ?? "").trim();
     if (data.city !== undefined) customer.city = String(data.city ?? "").trim();
     if (data.state !== undefined) customer.state = String(data.state ?? "").trim();
     await customer.save();
