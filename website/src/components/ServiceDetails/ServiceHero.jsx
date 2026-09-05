@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronLeft, Star } from "lucide-react";
+import { ArrowLeft, Star } from "lucide-react";
 
 const ServiceHero = ({ service }) => {
   const navigate = useNavigate();
@@ -10,7 +10,7 @@ const ServiceHero = ({ service }) => {
   const title = service.heroTitle || service.title || "Service Details";
 
   return (
-    <section className="w-full bg-slate-50 py-4 sm:py-6 lg:py-8 font-['Inter',sans-serif]">
+    <section className="w-full bg-slate-50 pt-0 pb-6 sm:pb-8 font-['Inter',sans-serif]">
       {/* GOOGLE FONTS & RESPONSIVE STYLES */}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@400;500;600;700&display=swap');
@@ -34,26 +34,29 @@ const ServiceHero = ({ service }) => {
         }
       `}</style>
 
-      <div className="service-hero-container max-w-[1380px] mx-auto px-4 sm:px-6 min-[1440px]:px-10">
-        {/* BACK BUTTON */}
-        <button
-          type="button"
-          onClick={() => navigate(-1)}
-          aria-label="Go back"
-          className="
-            mb-4 sm:mb-6
-            w-10 h-10 sm:w-11 sm:h-11
-            flex items-center justify-center
-            rounded-full
-            border-2 border-[#0B4EA2]
-            text-[#0B4EA2] bg-white
-            transition-all duration-200
-            hover:bg-[#0B4EA2] hover:text-white hover:shadow-md
-            cursor-pointer
-          "
-        >
-          <ChevronLeft size={20} strokeWidth={2.5} />
-        </button>
+      <div className="service-hero-container max-w-[1380px] mx-auto px-4 sm:px-6 min-[1440px]:px-10 pt-1">
+        {/* OUTSIDE BACK ARROW (CLEAN / NO CIRCLE) */}
+        <div className="flex items-center justify-start mb-2">
+          <button
+            type="button"
+            onClick={() => navigate(-1)}
+            aria-label="Go back"
+            className="
+              group
+              inline-flex items-center justify-center
+              text-slate-600 hover:text-[#0B4EA2]
+              transition-colors duration-200
+              p-1 -ml-1
+              cursor-pointer
+            "
+          >
+            <ArrowLeft
+              size={24}
+              strokeWidth={2.4}
+              className="group-hover:-translate-x-1 transition-transform duration-200"
+            />
+          </button>
+        </div>
 
         {/* HERO CARD */}
         <div
@@ -62,7 +65,7 @@ const ServiceHero = ({ service }) => {
             rounded-2xl sm:rounded-3xl
             bg-gradient-to-r from-[#0B4EA2] via-[#093e82] to-[#0A8F55]
             px-6 sm:px-10 lg:px-12
-            py-8 sm:py-12 lg:py-14
+            py-6 sm:py-9 lg:py-11
             shadow-xl border border-blue-900/40
           "
         >
@@ -95,7 +98,7 @@ const ServiceHero = ({ service }) => {
                   style={{ fontFamily: "'Inter', sans-serif" }}
                   className="
                     service-hero-desc
-                    mt-3 sm:mt-5
+                    mt-3 sm:mt-4
                     text-sm sm:text-base lg:text-[1.05rem]
                     text-blue-50/90
                     font-normal
@@ -112,7 +115,7 @@ const ServiceHero = ({ service }) => {
               {/* GOOGLE RATING BADGE */}
               <div
                 className="
-                  mt-5 sm:mt-7
+                  mt-5 sm:mt-6
                   inline-flex items-center gap-3
                   bg-white/10 backdrop-blur-md
                   border border-white/15
@@ -136,12 +139,13 @@ const ServiceHero = ({ service }) => {
                     >
                       4.9
                     </span>
+                    {/* 🟢 Emerald Green Stars */}
                     <div className="flex items-center gap-0.5">
                       {[...Array(5)].map((_, i) => (
                         <Star
                           key={i}
-                          size={11}
-                          className="fill-yellow-400 text-yellow-400"
+                          size={12}
+                          className="fill-emerald-400 text-emerald-400"
                         />
                       ))}
                     </div>
