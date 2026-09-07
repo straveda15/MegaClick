@@ -126,19 +126,30 @@ const TestimonialCard = ({ testimonial }) => (
       <div className="flex flex-col text-left">
         <h3
           style={{ fontFamily: "'Inter', sans-serif" }}
-          className="text-xs sm:text-sm font-bold text-[#0B4EA2] leading-snug truncate"
+          className="text-xs sm:text-sm font-bold text-black leading-snug truncate"
         >
           {testimonial.name}
         </h3>
+        {/* Services: Blue, stacked vertically one by one (ek ke niche ek) */}
+        <div className="flex flex-col gap-0.5 mt-0.5">
+          {(Array.isArray(testimonial.services) && testimonial.services.length > 0
+            ? testimonial.services
+            : testimonial.service
+            ? testimonial.service.split(/[,•|]/).map((s) => s.trim()).filter(Boolean)
+            : []
+          ).map((svc, sIdx) => (
+            <span
+              key={sIdx}
+              style={{ fontFamily: "'Inter', sans-serif" }}
+              className="text-[11px] sm:text-xs font-semibold text-[#0B4EA2] leading-tight"
+            >
+              {svc}
+            </span>
+          ))}
+        </div>
         <p
           style={{ fontFamily: "'Inter', sans-serif" }}
-          className="text-[11px] sm:text-xs font-semibold text-[#0B4EA2]/80 mt-0.5 truncate"
-        >
-          {testimonial.service}
-        </p>
-        <p
-          style={{ fontFamily: "'Inter', sans-serif" }}
-          className="text-[10px] sm:text-[11px] text-slate-400 mt-0.5 truncate"
+          className="text-[11px] sm:text-xs font-medium text-black/90 mt-1 truncate"
         >
           {testimonial.location}
         </p>
@@ -220,7 +231,7 @@ const Testimonials = () => {
             "
           >
             What Our Clients{" "}
-            <span className="text-[#0B4EA2]">Say About MegaClick</span>
+            <span className="text-[#0B4EA2]">Say About Our Services</span>
           </h2>
 
           <p
