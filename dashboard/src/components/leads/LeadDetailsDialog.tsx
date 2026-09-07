@@ -143,8 +143,8 @@ export function LeadDetailsDialog({ leadId, open, onOpenChange }: LeadDetailsDia
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl p-0 overflow-hidden">
-        <DialogHeader className="px-6 pt-6 pb-4 border-b border-border">
+      <DialogContent className="max-w-3xl p-0 overflow-hidden flex flex-col max-h-[85vh]">
+        <DialogHeader className="px-6 pt-5 pb-3 border-b border-border shrink-0">
           <DialogTitle className="flex items-center gap-2 flex-wrap">
             {clientName}
             {lead && (
@@ -157,8 +157,8 @@ export function LeadDetailsDialog({ leadId, open, onOpenChange }: LeadDetailsDia
             Everything this client shared, and the services they asked for.
           </DialogDescription>
 
-          {(services.length > 0 || (lead && !isConfirmed)) && (
-            <div className="pt-2 flex items-center gap-2">
+          {lead && (
+            <div className="pt-2 flex items-center gap-2 flex-wrap">
               {services.length > 0 && (
                 <Button
                   variant="outline"
@@ -172,17 +172,30 @@ export function LeadDetailsDialog({ leadId, open, onOpenChange }: LeadDetailsDia
                   Download Invoice
                 </Button>
               )}
-              {lead && !isConfirmed && (
+              {!isConfirmed && (
                 <Button variant="outline" size="sm" onClick={startEditing}>
                   <Pencil className="w-3.5 h-3.5" />
                   Edit details
                 </Button>
               )}
+              <Button variant="outline" size="sm" onClick={() => setLogOpen(true)}>
+                <CalendarClock className="w-3.5 h-3.5" />
+                Log follow-up
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => setHistoryOpen(true)}>
+                <History className="w-3.5 h-3.5" />
+                Follow-up history
+                {(lead.followUpHistory?.length ?? 0) > 0 && (
+                  <span className="ml-1 text-[10px] text-muted-foreground">
+                    ({lead.followUpHistory?.length})
+                  </span>
+                )}
+              </Button>
             </div>
           )}
         </DialogHeader>
 
-        <div className="max-h-[65vh] overflow-y-auto">
+        <div className="flex-1 min-h-0 overflow-y-auto">
           {isLoading ? (
             <div className="py-20 text-center text-sm text-muted-foreground">
               <Loader2 className="w-4 h-4 animate-spin inline mr-2" />
@@ -193,14 +206,14 @@ export function LeadDetailsDialog({ leadId, open, onOpenChange }: LeadDetailsDia
               {error instanceof Error ? error.message : 'Failed to load this lead.'}
             </div>
           ) : lead ? (
-            <div className="p-6 space-y-6">
+            <div className="px-6 pb-5 pt-3 space-y-4">
               {/* ── Client information ────────────────────────────────────── */}
               <section>
-                <h3 className="text-[11px] uppercase tracking-wider font-bold text-muted-foreground mb-3">
+                <h3 className="text-[11px] uppercase tracking-wider font-bold text-muted-foreground mb-2">
                   Client Information
                 </h3>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 rounded-lg border border-border bg-muted/20 p-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 rounded-lg border border-border bg-muted/20 p-3.5">
                   <InfoRow icon={User} label="Name" value={customer?.name} />
                   <InfoRow icon={Phone} label="Phone" value={customer?.phone} />
                   <InfoRow icon={Mail} label="Email" value={customer?.email} />
@@ -217,7 +230,7 @@ export function LeadDetailsDialog({ leadId, open, onOpenChange }: LeadDetailsDia
 
                 {/* The one follow-up that covers the whole lead */}
                 {(lead.followUpAt || lead.followUpNote) && (
-                  <div className="mt-3 rounded-lg border border-amber-200 bg-amber-50/60 p-4 min-w-0">
+                  <div className="mt-2.5 rounded-lg border border-amber-200 bg-amber-50/60 p-3.5 min-w-0">
                     <p className="text-[10px] uppercase tracking-wider font-semibold text-amber-800 flex items-center gap-1.5">
                       <CalendarDays className="w-3 h-3 shrink-0" />
                       Follow up{lead.followUpAt ? ` — ${formatDate(lead.followUpAt)}` : ''}
@@ -230,25 +243,8 @@ export function LeadDetailsDialog({ leadId, open, onOpenChange }: LeadDetailsDia
                   </div>
                 )}
 
-                {/* The follow-up record lives on the lead, so reach it here */}
-                <div className="flex items-center gap-2 mt-3">
-                  <Button variant="outline" size="sm" onClick={() => setLogOpen(true)}>
-                    <CalendarClock className="w-3.5 h-3.5" />
-                    Log follow-up
-                  </Button>
-                  <Button variant="outline" size="sm" onClick={() => setHistoryOpen(true)}>
-                    <History className="w-3.5 h-3.5" />
-                    Follow-up history
-                    {(lead.followUpHistory?.length ?? 0) > 0 && (
-                      <span className="ml-1 text-[10px] text-muted-foreground">
-                        ({lead.followUpHistory?.length})
-                      </span>
-                    )}
-                  </Button>
-                </div>
-
                 {lead.message && (
-                  <div className="mt-3 rounded-lg border border-border bg-muted/20 p-4">
+                  <div className="mt-2.5 rounded-lg border border-border bg-muted/20 p-3.5">
                     <p className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground flex items-center gap-1.5 mb-1.5">
                       <MessageSquare className="w-3 h-3" />
                       What they told us
@@ -262,7 +258,7 @@ export function LeadDetailsDialog({ leadId, open, onOpenChange }: LeadDetailsDia
 
               {/* ── Services, each with its own assign button ──────────────── */}
               <section>
-                <h3 className="text-[11px] uppercase tracking-wider font-bold text-muted-foreground mb-3">
+                <h3 className="text-[11px] uppercase tracking-wider font-bold text-muted-foreground mb-2">
                   Services Requested ({services.length})
                 </h3>
 
@@ -283,7 +279,7 @@ export function LeadDetailsDialog({ leadId, open, onOpenChange }: LeadDetailsDia
                       const steps = task?.serviceRequest?.steps ?? [];
 
                       return (
-                        <div key={service._id} className="rounded-lg border border-border bg-card p-3.5">
+                        <div key={service._id} className="rounded-lg border border-border bg-card p-3">
                           <div className="flex items-start justify-between gap-3 flex-wrap">
                             <div className="min-w-0 flex-1">
                               <p className="text-sm font-semibold text-foreground">{service.title}</p>

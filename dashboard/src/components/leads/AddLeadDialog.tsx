@@ -480,7 +480,9 @@ export function AddLeadDialog({ open, onOpenChange, lead }: AddLeadDialogProps) 
                   <Input
                     id="lead-reference-name"
                     value={form.referenceName}
-                    onChange={(e) => update('referenceName', e.target.value)}
+                    onChange={(e) => update('referenceName', sanitizeNameInput(e.target.value))}
+                    pattern="^[a-zA-Z][a-zA-Z ]*$"
+                    title="Letters only"
                     placeholder="Reference Name"
                   />
                 </div>
@@ -599,6 +601,7 @@ export function AddLeadDialog({ open, onOpenChange, lead }: AddLeadDialogProps) 
                           inputMode="decimal"
                           placeholder="0.00"
                           value={service.quotation}
+                          disabled={!service.slug}
                           onChange={(e) =>
                             updateService(service.id, 'quotation', sanitizeAmountInput(e.target.value))
                           }
@@ -610,6 +613,7 @@ export function AddLeadDialog({ open, onOpenChange, lead }: AddLeadDialogProps) 
                         type="date"
                         min={isEdit ? undefined : todayDateInput()}
                         value={service.startAt}
+                        disabled={!service.slug}
                         onChange={(e) => handleStartChange(service.id, e.target.value)}
                         className="h-9 text-xs"
                       />
@@ -618,11 +622,16 @@ export function AddLeadDialog({ open, onOpenChange, lead }: AddLeadDialogProps) 
                         type="date"
                         min={service.startAt || undefined}
                         value={service.dueAt}
+                        disabled={!service.slug}
                         onChange={(e) => updateService(service.id, 'dueAt', e.target.value)}
                         className="h-9 text-xs"
                       />
 
-                      <Select value={service.temperature} onValueChange={(val) => updateService(service.id, 'temperature', val as LeadTemperature)}>
+                      <Select
+                        value={service.temperature}
+                        disabled={!service.slug}
+                        onValueChange={(val) => updateService(service.id, 'temperature', val as LeadTemperature)}
+                      >
                         <SelectTrigger className="h-9 text-xs">
                           <SelectValue placeholder="Status" />
                         </SelectTrigger>

@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import GenericPage from "@/components/GenericPage";
+import { API_BASE } from "@/hooks/api-config";
 
 export interface ITestimonial {
   _id?: string;
@@ -23,7 +24,9 @@ export interface ITestimonial {
   isFeatured?: boolean;
 }
 
-const API_BASE_URL = "http://localhost:5000/api/v1/website-control/testimonials";
+// Same pattern every other page uses — resolves to the right backend host per
+// environment (VITE_API_URL) instead of only ever working on localhost.
+const API_BASE_URL = `${API_BASE}/api/v1/website-control/testimonials`;
 
 const initialFormState: ITestimonial = {
   name: "",
