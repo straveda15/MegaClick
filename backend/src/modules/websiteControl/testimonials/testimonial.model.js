@@ -11,10 +11,13 @@ const testimonialSchema = new mongoose.Schema(
     },
     service: {
       type: String,
-      required: [true, "Service name is required"],
       trim: true,
-      minlength: [2, "Service must be at least 2 characters"],
-      maxlength: [80, "Service cannot exceed 80 characters"],
+      maxlength: [500, "Service cannot exceed 500 characters"],
+      default: "",
+    },
+    services: {
+      type: [String],
+      default: [],
     },
     location: {
       type: String,
@@ -36,6 +39,15 @@ const testimonialSchema = new mongoose.Schema(
       min: [1, "Rating must be between 1 and 5"],
       max: [5, "Rating must be between 1 and 5"],
     },
+    status: {
+      type: String,
+      enum: ["APPROVED", "PENDING", "REJECTED"],
+      default: "APPROVED",
+    },
+    isFeatured: {
+      type: Boolean,
+      default: false,
+    },
     isActive: {
       type: Boolean,
       default: true,
@@ -43,5 +55,23 @@ const testimonialSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+// Keep 'services' array and 'service' string synchronized
+testimonialSchema.pre("validate", function () {
+  if (Array.isArray(this.services) && this.services.length > 0) {
+    if (!this.service) {
+      this.service = this.services.join(", ");
+    }
+  } else if (this.service && (!this.services || this.services.length === 0)) {
+    this.services = this.service
+      .split(/[,•|]/)
+      .map((s) => s.trim())
+      .filter(Boolean);
+  }
+
+  if (!this.service && (!this.services || this.services.length === 0)) {
+    throw new Error("At least one service is required");
+  }
+});
 
 export default mongoose.model("Testimonial", testimonialSchema);

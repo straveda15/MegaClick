@@ -1,38 +1,42 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Quote, Star } from "lucide-react";
 
-// Fallback agar backend connect na ho
+// Fallback seed data focused on services outcomes
 const defaultTestimonials = [
   {
     name: "Rajesh Sharma",
     service: "Income Tax Registration",
+    services: ["Income Tax Registration"],
     location: "Nashik, Maharashtra",
     review:
-      "MegaClick provided exceptional support during our company registration process. Their team handled every document professionally and ensured a hassle-free experience.",
+      "The Income Tax registration and filing process was handled seamlessly. Every document was verified accurately and processed without any delay.",
     rating: 5,
   },
   {
     name: "Priya Enterprises",
     service: "GST Registration",
+    services: ["GST Registration"],
     location: "Pune, Maharashtra",
     review:
-      "The entire process was smooth and transparent. We received regular updates and expert guidance throughout the business registration journey.",
+      "Our GST registration was completed transparently with regular status updates. Expert guidance made the entire compliance process effortless.",
     rating: 5,
   },
   {
     name: "Amit Patil",
     service: "Trademark Registration",
+    services: ["Trademark Registration"],
     location: "Mumbai, Maharashtra",
     review:
-      "Excellent service with outstanding customer support. Every query was answered promptly and the team completed our work on time.",
+      "Exceptional legal service for our trademark registration. All filing queries were answered promptly and completed well within the timeline.",
     rating: 5,
   },
   {
     name: "Sneha Kulkarni",
-    service: "MSME Registration",
+    service: "Marriage Registration",
+    services: ["Marriage Registration", "Partnership Deed (Notary & Registration of Firm)"],
     location: "Nagpur, Maharashtra",
     review:
-      "MegaClick made the documentation process incredibly simple. Their professional approach exceeded our expectations.",
+      "Both our marriage registration and partnership deed documentation were completed smoothly with precise legal paperwork and fast turnarounds.",
     rating: 5,
   },
 ];
@@ -48,8 +52,12 @@ const Testimonials = () => {
       try {
         const response = await fetch("http://localhost:5000/api/v1/website-control/testimonials");
         const resData = await response.json();
-        if (resData.success && resData.data && resData.data.length > 0) {
-          setTestimonialsList(resData.data);
+        if (resData.success && Array.isArray(resData.data) && resData.data.length > 0) {
+          // Deduplicate by _id or name to prevent identical cards side-by-side
+          const uniqueItems = Array.from(
+            new Map(resData.data.map((item) => [item._id || item.name, item])).values()
+          );
+          setTestimonialsList(uniqueItems);
         }
       } catch (error) {
         console.error("Backend fetch failed, using fallback:", error);
@@ -58,7 +66,7 @@ const Testimonials = () => {
     fetchTestimonials();
   }, []);
 
-  // Repeat items for smooth continuous loop
+  // Repeat items for smooth continuous marquee loop
   const extendedTestimonials = [
     ...testimonialsList,
     ...testimonialsList,
@@ -205,7 +213,7 @@ const Testimonials = () => {
             "
           >
             What Our Clients{" "}
-            <span className="text-[#0B4EA2]">Say About MegaClick</span>
+            <span className="text-[#0B4EA2]">Say About Our Services</span>
           </h2>
         </div>
 
@@ -224,9 +232,16 @@ const Testimonials = () => {
           >
             {extendedTestimonials.map((item, index) => {
               const starsCount = item.rating || 5;
+              const serviceList =
+                Array.isArray(item.services) && item.services.length > 0
+                  ? item.services
+                  : item.service
+                  ? item.service.split(/[,•|]/).map((s) => s.trim()).filter(Boolean)
+                  : [];
+
               return (
                 <div
-                  key={item._id || index}
+                  key={`${item._id || item.name || "t"}-${index}`}
                   className="pr-4 sm:pr-5 lg:pr-6 min-[1920px]:pr-7 min-[3840px]:pr-10 shrink-0 flex"
                 >
                   <article
@@ -283,7 +298,7 @@ const Testimonials = () => {
                           testimonials-review
                           text-xs
                           sm:text-[13.5px]
-                          text-slate-600
+                          text-slate-700
                           leading-relaxed
                           text-left
                           min-h-[76px]
@@ -299,21 +314,31 @@ const Testimonials = () => {
                       <div className="my-3.5 sm:my-4 h-px bg-slate-100" />
 
                       <div className="flex flex-col text-left">
+                        {/* Person Name: Black */}
                         <h3
                           style={{ fontFamily: "'Inter', sans-serif" }}
-                          className="testimonials-name text-xs sm:text-sm font-bold text-[#0B4EA2] leading-snug truncate"
+                          className="testimonials-name text-xs sm:text-sm font-bold text-black leading-snug truncate"
                         >
                           {item.name}
                         </h3>
+
+                        {/* Services: Blue, stacked vertically one by one (ek ke niche ek) */}
+                        <div className="flex flex-col gap-0.5 mt-0.5">
+                          {serviceList.map((svc, sIdx) => (
+                            <span
+                              key={sIdx}
+                              style={{ fontFamily: "'Inter', sans-serif" }}
+                              className="testimonials-service text-[11px] sm:text-xs font-semibold text-[#0B4EA2] leading-tight"
+                            >
+                              {svc}
+                            </span>
+                          ))}
+                        </div>
+
+                        {/* Location: Black with proper visibility */}
                         <p
                           style={{ fontFamily: "'Inter', sans-serif" }}
-                          className="testimonials-service text-[11px] sm:text-xs font-semibold text-[#0B4EA2]/80 mt-0.5 truncate"
-                        >
-                          {item.service}
-                        </p>
-                        <p
-                          style={{ fontFamily: "'Inter', sans-serif" }}
-                          className="testimonials-location text-[10px] sm:text-[11px] text-slate-400 mt-0.5 truncate"
+                          className="testimonials-location text-[11px] sm:text-xs font-medium text-black/90 mt-1 truncate"
                         >
                           {item.location}
                         </p>
