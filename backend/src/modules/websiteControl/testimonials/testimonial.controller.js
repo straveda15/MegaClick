@@ -53,6 +53,14 @@ export const getAllTestimonials = async (req, res) => {
     }
 
     const filter = req.query.all === "true" ? {} : { isActive: true };
+    if (req.query.service) {
+      const escapedService = req.query.service.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const serviceRegex = new RegExp(escapedService, "i");
+      filter.$or = [
+        { services: { $regex: serviceRegex } },
+        { service: serviceRegex },
+      ];
+    }
     const testimonials = await Testimonial.find(filter).sort({ createdAt: -1 });
 
     res.status(200).json({

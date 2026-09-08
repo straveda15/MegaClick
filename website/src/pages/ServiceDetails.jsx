@@ -170,7 +170,7 @@ const ServiceDetails = () => {
           TESTIMONIALS
       ========================================= */}
 
-      <Testimonials />
+      <Testimonials service={service} />
 
     </div>
   );

@@ -31,10 +31,12 @@ function Navbar({ showTopBar = false }) {
   // REDIRECT TO /contact AND SCROLL TO TOP
   const handleConsultation = () => {
     navigate("/contact");
+
     window.scrollTo({
       top: 0,
       behavior: "smooth",
     });
+
     setMenuOpen(false);
   };
 
@@ -56,13 +58,15 @@ function Navbar({ showTopBar = false }) {
           @media (min-width: 1024px) and (max-width: 1439px) {
             .nav-container {
               max-width: 1400px !important;
-              padding-left: 2rem !important;
-              padding-right: 2rem !important;
+              padding-left: 1.75rem !important;
+              padding-right: 1.75rem !important;
             }
+
             .nav-links {
               gap: 2rem !important;
               font-size: 0.9rem !important;
             }
+
             .nav-btn {
               padding: 0.6rem 1.35rem !important;
               font-size: 0.875rem !important;
@@ -72,91 +76,109 @@ function Navbar({ showTopBar = false }) {
           /* 2. Standard Desktop (1440px x 900px) */
           @media (min-width: 1440px) {
             .nav-container {
-              max-width: 1420px !important;
-              padding-left: 2.25rem !important;
-              padding-right: 2.25rem !important;
+              max-width: 1460px !important;
+              padding-left: 2rem !important;
+              padding-right: 2rem !important;
             }
+
             .nav-row {
               height: 4.75rem !important;
             }
+
             .nav-logo-title {
               font-size: 1.25rem !important;
             }
+
             .nav-links {
               gap: 2.5rem !important;
               font-size: 0.95rem !important;
             }
+
             .nav-btn {
               padding: 0.65rem 1.45rem !important;
               font-size: 0.9rem !important;
             }
           }
 
-          /* 3. Large Desktop (1920px x 1080px Full HD) - 1440px jaise perfectly balanced */
+          /* 3. Large Desktop (1920px x 1080px) */
           @media (min-width: 1920px) {
             .nav-container {
-              max-width: 1800px !important;
-              padding-left: 3.5rem !important;  /* 👈 Balanced proportional padding */
-              padding-right: 3.5rem !important;
+              max-width: 1850px !important;
+              padding-left: 3rem !important;
+              padding-right: 3rem !important;
             }
+
             .nav-row {
               height: 5.5rem !important;
             }
+
             .nav-logo-img {
               width: 3.5rem !important;
               height: 3.5rem !important;
             }
+
             .nav-logo-title {
               font-size: 1.45rem !important;
             }
+
             .nav-logo-sub {
               font-size: 0.85rem !important;
             }
+
             .nav-links {
               gap: 3.25rem !important;
               font-size: 1.1rem !important;
             }
+
             .nav-btn {
               padding: 0.85rem 1.75rem !important;
               font-size: 1.1rem !important;
               border-radius: 9999px !important;
             }
+
             .nav-btn-icon {
               width: 1.25rem !important;
               height: 1.25rem !important;
             }
           }
 
-          /* 4. 4K Ultra-Wide Desktop (3840px x 2160px) - 1440px jaise perfectly balanced */
+          /* 4. 4K Ultra-Wide Desktop (3840px x 2160px) */
           @media (min-width: 3840px) {
             .nav-container {
-              max-width: 3200px !important;
-              padding-left: 5.5rem !important;  /* 👈 Balanced proportional padding */
-              padding-right: 5.5rem !important;
+              max-width: 3250px !important;
+              padding-left: 5rem !important;
+              padding-right: 5rem !important;
             }
+
             .nav-row {
               height: 9rem !important;
             }
+
             .nav-logo-img {
               width: 6.5rem !important;
               height: 6.5rem !important;
               border-width: 2px !important;
             }
+
             .nav-logo-title {
               font-size: 2.75rem !important;
             }
+
             .nav-logo-sub {
               font-size: 1.5rem !important;
             }
+
             .nav-links {
-              gap: 6rem !important;
-              font-size: 2rem !important;
+              gap: 4.5rem !important;
+              font-size: 1.85rem !important;
             }
+
             .nav-btn {
               padding: 1.5rem 3.5rem !important;
               font-size: 2rem !important;
               border-radius: 9999px !important;
             }
+
             .nav-btn-icon {
               width: 2.25rem !important;
               height: 2.25rem !important;
@@ -165,9 +187,9 @@ function Navbar({ showTopBar = false }) {
         `}</style>
 
         {/* MAIN CONTAINER */}
-        <div className="nav-container w-full max-w-[1420px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="nav-container w-full max-w-[1460px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="nav-row h-16 sm:h-20 flex items-center justify-between">
-            
+
             {/* LOGO */}
             <Link
               to="/"
@@ -193,12 +215,13 @@ function Navbar({ showTopBar = false }) {
             </Link>
 
             {/* DESKTOP NAV LINKS */}
-            <nav className="nav-links hidden lg:flex items-center gap-6 xl:gap-8 text-sm font-medium">
+            <nav className="nav-links hidden lg:flex items-center gap-6 xl:gap-8 text-sm font-medium whitespace-nowrap shrink-0">
+
               {/* HOME */}
               <Link
                 to="/"
                 onClick={closeMenu}
-                className={`relative pb-1 transition-colors duration-200 after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:bg-[#0B4EA2] after:transition-all ${
+                className={`relative pb-1 transition-colors duration-200 shrink-0 after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:bg-[#0B4EA2] after:transition-all ${
                   activePage === "/"
                     ? "after:w-full text-[#0B4EA2] font-semibold"
                     : "after:w-0 hover:after:w-full text-slate-700 hover:text-[#0B4EA2]"
@@ -211,7 +234,7 @@ function Navbar({ showTopBar = false }) {
               <Link
                 to="/about"
                 onClick={closeMenu}
-                className={`relative pb-1 transition-colors duration-200 after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:bg-[#0B4EA2] after:transition-all ${
+                className={`relative pb-1 transition-colors duration-200 shrink-0 after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:bg-[#0B4EA2] after:transition-all ${
                   activePage === "/about"
                     ? "after:w-full text-[#0B4EA2] font-semibold"
                     : "after:w-0 hover:after:w-full text-slate-700 hover:text-[#0B4EA2]"
@@ -224,7 +247,7 @@ function Navbar({ showTopBar = false }) {
               <Link
                 to="/services"
                 onClick={closeMenu}
-                className={`relative pb-1 transition-colors duration-200 after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:bg-[#0B4EA2] after:transition-all ${
+                className={`relative pb-1 transition-colors duration-200 shrink-0 after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:bg-[#0B4EA2] after:transition-all ${
                   activePage.startsWith("/services")
                     ? "after:w-full text-[#0B4EA2] font-semibold"
                     : "after:w-0 hover:after:w-full text-slate-700 hover:text-[#0B4EA2]"
@@ -237,7 +260,7 @@ function Navbar({ showTopBar = false }) {
               <NavLink
                 to="/associate-with-us"
                 onClick={closeMenu}
-                className={`relative pb-1 transition-colors duration-200 after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:bg-[#0B4EA2] after:transition-all ${
+                className={`relative pb-1 transition-colors duration-200 shrink-0 after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:bg-[#0B4EA2] after:transition-all ${
                   activePage === "/associate-with-us"
                     ? "after:w-full text-[#0B4EA2] font-semibold"
                     : "after:w-0 hover:after:w-full text-slate-700 hover:text-[#0B4EA2]"
@@ -250,7 +273,7 @@ function Navbar({ showTopBar = false }) {
               <Link
                 to="/contact"
                 onClick={closeMenu}
-                className={`relative pb-1 transition-colors duration-200 after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:bg-[#0B4EA2] after:transition-all ${
+                className={`relative pb-1 transition-colors duration-200 shrink-0 after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:bg-[#0B4EA2] after:transition-all ${
                   activePage === "/contact"
                     ? "after:w-full text-[#0B4EA2] font-semibold"
                     : "after:w-0 hover:after:w-full text-slate-700 hover:text-[#0B4EA2]"
@@ -260,7 +283,7 @@ function Navbar({ showTopBar = false }) {
               </Link>
             </nav>
 
-            {/* DESKTOP GET FREE CONSULTATION BUTTON (REDIRECTS TO /contact) */}
+            {/* DESKTOP GET FREE CONSULTATION BUTTON */}
             <button
               type="button"
               onClick={handleConsultation}
@@ -284,6 +307,7 @@ function Navbar({ showTopBar = false }) {
           {/* MOBILE MENU ACCORDION */}
           {menuOpen && (
             <div className="lg:hidden bg-white border-t border-slate-100 py-4 space-y-3 animate-in fade-in slide-in-from-top-2 duration-200">
+
               <Link
                 to="/"
                 onClick={closeMenu}

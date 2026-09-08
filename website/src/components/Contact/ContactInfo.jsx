@@ -21,19 +21,14 @@ const ContactInfo = () => {
   const handleEmailClick = (e) => {
     e.preventDefault();
 
-    const isMobile = /Android|iPhone|iPad|iPod/i.test(
-      navigator.userAgent
-    );
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(emailAddress)}`;
 
     if (isMobile) {
-      const mailtoUrl = `mailto:${emailAddress}`;
-      window.location.href = mailtoUrl;
+      // Direct Gmail compose link on mobile opens Gmail app/web directly without Outlook interception
+      window.open(gmailUrl, "_blank");
     } else {
-      const gmailComposeUrl =
-        `https://mail.google.com/mail/?view=cm&fs=1` +
-        `&to=${encodeURIComponent(emailAddress)}`;
-
-      window.open(gmailComposeUrl, "_blank");
+      window.open(gmailUrl, "_blank");
     }
   };
 

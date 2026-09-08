@@ -84,7 +84,7 @@ const HowItWorks = ({ service }) => {
                 text-gray-600
                 font-normal
                 leading-relaxed
-                max-w-2xl
+                max-w-full
                 text-left
               "
             >
@@ -139,7 +139,7 @@ const HowItWorks = ({ service }) => {
                 >
                   {String(step.step || currentStep + 1).padStart(2, "0")}
                 </div>
-                <div className="pt-0.5 pb-2 text-left">
+                <div className="pt-0.5 pb-2 text-left flex-1 min-w-0">
                   <p
                     style={{ fontFamily: "'Inter', sans-serif" }}
                     className="text-xs font-semibold uppercase tracking-[0.12em] text-[#0B4EA2] mb-1"
@@ -154,7 +154,7 @@ const HowItWorks = ({ service }) => {
                   </h3>
                   <p
                     style={{ fontFamily: "'Inter', sans-serif" }}
-                    className="text-xs sm:text-sm text-gray-700 leading-relaxed font-normal"
+                    className="text-xs sm:text-sm text-gray-700 leading-relaxed font-normal text-justify"
                   >
                     {step.description}
                   </p>

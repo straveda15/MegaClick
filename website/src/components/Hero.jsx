@@ -322,18 +322,18 @@ const Hero = () => {
             </div>
 
             {/* BUTTONS */}
-            <div className="flex flex-row gap-3 sm:gap-4 pt-2 w-full sm:w-auto justify-start items-center">
+            <div className="flex flex-row gap-2.5 sm:gap-4 pt-2 w-full sm:w-auto justify-start items-center">
               <button
                 onClick={scrollToHowItWorks}
-                className="hero-btn group flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white px-6 sm:px-8 py-3.5 rounded-full font-semibold text-sm sm:text-base shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 cursor-pointer whitespace-nowrap"
+                className="hero-btn group inline-flex items-center justify-center gap-1.5 sm:gap-2 bg-green-600 hover:bg-green-700 text-white px-4 sm:px-8 py-2.5 sm:py-3.5 rounded-full font-semibold text-xs sm:text-base shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 cursor-pointer whitespace-nowrap"
               >
                 <span>Get Started</span>
-                <ArrowRight size={17} className="transition-transform duration-200 group-hover:translate-x-1" />
+                <ArrowRight className="w-3.5 h-3.5 sm:w-[17px] sm:h-[17px] transition-transform duration-200 group-hover:translate-x-1" />
               </button>
 
               <button
                 onClick={handleContactRedirect}
-                className="hero-btn flex-1 sm:flex-initial inline-flex items-center justify-center bg-[#0B4EA2] hover:bg-blue-700 text-white px-6 sm:px-8 py-3.5 rounded-full font-semibold text-sm sm:text-base shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 cursor-pointer whitespace-nowrap"
+                className="hero-btn inline-flex items-center justify-center bg-[#0B4EA2] hover:bg-blue-700 text-white px-4 sm:px-8 py-2.5 sm:py-3.5 rounded-full font-semibold text-xs sm:text-base shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 cursor-pointer whitespace-nowrap"
               >
                 Contact Us
               </button>

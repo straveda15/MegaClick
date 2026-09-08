@@ -77,18 +77,11 @@ const Footer = () => {
   ========================================================= */
   const openGmailCompose = () => {
     const email = "megaclickofficial@gmail.com";
-    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    const gmailComposeUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(
+      email
+    )}`;
 
-    if (isMobile) {
-      window.location.href = `mailto:${email}`;
-    } else {
-      window.open(
-        `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(
-          email
-        )}`,
-        "_blank"
-      );
-    }
+    window.open(gmailComposeUrl, "_blank");
   };
 
   /* =========================================================

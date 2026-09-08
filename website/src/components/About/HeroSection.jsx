@@ -121,7 +121,7 @@ const HeroSection = () => {
       `}</style>
 
       {/* MOBILE IMAGE */}
-      <div className="relative w-full h-[260px] sm:h-[320px] lg:hidden">
+      <div className="relative w-full h-[220px] xs:h-[250px] sm:h-[300px] lg:hidden">
         <img
           src={teamImg}
           alt="MegaClick Team"
@@ -143,14 +143,14 @@ const HeroSection = () => {
 
       {/* CONTENT (Shifted Upwards) */}
       <div className="about-hero-container">
-        <div className="about-hero-wrap flex items-start pt-8 sm:pt-10 lg:pt-14 pb-8 sm:pb-10 lg:pb-12 min-h-[380px] sm:min-h-[420px] lg:min-h-[480px]">
+        <div className="about-hero-wrap flex items-start pt-5 sm:pt-8 lg:pt-14 pb-6 sm:pb-8 lg:pb-12 min-h-0 sm:min-h-[300px] lg:min-h-[480px]">
           <div className="relative z-30 w-full lg:w-[50%] xl:w-[52%] text-left">
             {/* MAIN TITLE (Hedvig Letters Serif) */}
             <h1
               style={{
                 fontFamily: "'Hedvig Letters Serif', serif",
               }}
-              className="about-hero-h1 text-3xl sm:text-4xl lg:text-[44px] xl:text-[48px] font-bold leading-[1.18] text-green-300"
+              className="about-hero-h1 text-[22px] xs:text-2xl sm:text-4xl lg:text-[44px] xl:text-[48px] font-bold leading-[1.25] sm:leading-[1.18] text-green-300"
             >
               Simplifying Needs and
               <br />
@@ -164,7 +164,7 @@ const HeroSection = () => {
               style={{
                 fontFamily: "'Hedvig Letters Serif', serif",
               }}
-              className="about-hero-sub text-white font-semibold mt-4 sm:mt-5 text-xl sm:text-2xl lg:text-[32px] xl:text-[36px] leading-tight"
+              className="about-hero-sub text-white font-semibold mt-2.5 sm:mt-4 text-base xs:text-lg sm:text-2xl lg:text-[32px] xl:text-[36px] leading-tight"
             >
               All Under One Roof
             </p>
