@@ -57,9 +57,9 @@ function Navbar({ showTopBar = false }) {
           /* 1. Laptop Screens (1024px to 1439px) */
           @media (min-width: 1024px) and (max-width: 1439px) {
             .nav-container {
-              max-width: 1400px !important;
-              padding-left: 1.75rem !important;
-              padding-right: 1.75rem !important;
+              max-width: 1350px !important;
+              padding-left: 2rem !important;
+              padding-right: 2rem !important;
             }
 
             .nav-links {
@@ -76,7 +76,7 @@ function Navbar({ showTopBar = false }) {
           /* 2. Standard Desktop (1440px x 900px) */
           @media (min-width: 1440px) {
             .nav-container {
-              max-width: 1460px !important;
+              max-width: 1400px !important;
               padding-left: 2rem !important;
               padding-right: 2rem !important;
             }
@@ -103,9 +103,9 @@ function Navbar({ showTopBar = false }) {
           /* 3. Large Desktop (1920px x 1080px) */
           @media (min-width: 1920px) {
             .nav-container {
-              max-width: 1850px !important;
-              padding-left: 3rem !important;
-              padding-right: 3rem !important;
+              max-width: 1750px !important;
+              padding-left: 2.5rem !important;
+              padding-right: 2.5rem !important;
             }
 
             .nav-row {
@@ -145,9 +145,9 @@ function Navbar({ showTopBar = false }) {
           /* 4. 4K Ultra-Wide Desktop (3840px x 2160px) */
           @media (min-width: 3840px) {
             .nav-container {
-              max-width: 3250px !important;
-              padding-left: 5rem !important;
-              padding-right: 5rem !important;
+              max-width: 3000px !important;
+              padding-left: 4rem !important;
+              padding-right: 4rem !important;
             }
 
             .nav-row {
@@ -187,7 +187,7 @@ function Navbar({ showTopBar = false }) {
         `}</style>
 
         {/* MAIN CONTAINER */}
-        <div className="nav-container w-full max-w-[1460px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="nav-container w-full max-w-[1400px] mx-auto px-5 sm:px-7 lg:px-10">
           <div className="nav-row h-16 sm:h-20 flex items-center justify-between">
 
             {/* LOGO */}

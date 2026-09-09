@@ -46,6 +46,16 @@ import passportImg from "../assets/passport-services.png";
 import voterPanTanImg from "../assets/hero2.jpg";
 import liquorLicenseImg from "../assets/liquor-license.png";
 
+// =============================================================================
+// 4. IT SERVICES IMAGE IMPORTS (6 Images)
+// =============================================================================
+import aiAutomationImg from "../assets/artificial-intelligence.png";
+import customSoftwareImg from "../assets/software-development.png";
+import aiCrmImg from "../assets/customer-relationship-management.png";
+import dashboardImg from "../assets/dashboard.png";
+import systemIntegrationImg from "../assets/system-integration.png";
+import businessOptimizationImg from "../assets/success.png";
+
 const serviceDetailsData = [
   // ===========================================================================
   // SECTION 1: LEGAL SERVICES (1 - 12)
@@ -1854,6 +1864,341 @@ const serviceDetailsData = [
         question: "What is a temporary one-day liquor permit?",
         answer:
           "A temporary one-day permit (such as Form FL-4) is issued by the State Excise department allowing the legal serving of liquor at private parties, banquets, and commercial events for a specific date and venue.",
+      },
+    ],
+  },
+
+  // ===========================================================================
+  // SECTION 4: IT SERVICES (1 - 6)
+  // ===========================================================================
+
+  // 1. AI & BUSINESS AUTOMATION
+  {
+    slug: "ai-business-automation",
+    title: "AI & Business Automation",
+    category: "IT Services",
+    image: aiAutomationImg,
+    heroTitle: "AI & Business Automation Solutions – Modernize Your Workflows",
+    description:
+      "Automate repetitive workflows with AI, intelligent agents and connected systems to save time, reduce manual work and improve business efficiency.",
+    highlights: [
+      {
+        title: "Intelligent Workflows",
+        description: "Automate complex, repetitive operational tasks with intelligent triggers.",
+      },
+      {
+        title: "Autonomous AI Agents",
+        description: "Deploy smart AI assistants for 24/7 customer service and task execution.",
+      },
+      {
+        title: "Connected Platforms",
+        description: "Seamlessly synchronize all your existing tools into unified workflows.",
+      },
+    ],
+    process: [
+      { step: "1", title: "Workflow Assessment", description: "Analyze your current operational workflows and identify key repetitive bottlenecks." },
+      { step: "2", title: "AI Architecture Design", description: "Design customized AI agent prompts, decision logic, and automated action triggers." },
+      { step: "3", title: "Integration & Testing", description: "Connect automation pipelines into your software systems and test for 100% accuracy." },
+      { step: "4", title: "Deployment & Monitoring", description: "Roll out live automation with real-time logging, performance tracking, and support." },
+    ],
+    documents: [
+      "Current Process Documentation",
+      "Software & Platform Catalog",
+      "API Credentials / Access Permissions",
+      "Target Efficiency & Automation Goals",
+    ],
+    benefits: [
+      "Save 100+ manual hours every month",
+      "Eliminate costly operational errors",
+      "24/7 autonomous workflow execution",
+      "Accelerate customer turnaround times",
+    ],
+    faq: [
+      {
+        question: "How does AI & Business Automation help my business?",
+        answer: "AI automation streamlines repetitive tasks, manages customer communication, processes document data, and bridges disparate tools together so your staff can focus on high-value business growth."
+      },
+      {
+        question: "What types of workflows can be automated?",
+        answer: "Common workflows include lead capture, email follow‑ups, invoice processing, data entry, and reporting dashboards."
+      },
+      {
+        question: "Do I need a technical team to implement AI agents?",
+        answer: "Our solution includes a low‑code platform and dedicated consultants, so you can launch bots without extensive coding."
+      },
+      {
+        question: "How is data security handled?",
+        answer: "All integrations run in encrypted containers, with role‑based access control and audit logging."
+      },
+      {
+        question: "Can the automation scale with my business?",
+        answer: "Yes, the architecture is built on cloud services that auto‑scale based on load."
+      },
+      {
+        question: "How long does a typical implementation take?",
+        answer: "Most projects launch a Minimum Viable Automation in 4‑6 weeks, with full rollout in 2‑3 months."
+      },
+      {
+        question: "What ROI can I expect?",
+        answer: "Clients see 30‑70% reduction in manual effort and a 2‑5× increase in processing speed."
+      },
+      {
+        question: "Is training required for my staff?",
+        answer: "We provide hands‑on workshops and documentation to get teams up to speed quickly."
+      },
+      {
+        question: "What support is included after go‑live?",
+        answer: "We offer 24/7 monitoring, SLA‑backed incident response, and continuous improvement sprints."
+      }
+    ],
+  },
+
+  // 2. CUSTOM SOFTWARE & SYSTEMS
+  {
+    slug: "custom-software-systems",
+    title: "Custom Software & Systems",
+    category: "IT Services",
+    image: customSoftwareImg,
+    heroTitle: "Custom Software & Internal Systems – Built for Your Workflows",
+    description:
+      "Build business-specific software and internal systems designed around your unique workflows, processes and operational requirements.",
+    highlights: [
+      {
+        title: "Bespoke Architecture",
+        description: "Engineered specifically to solve your company's operational needs.",
+      },
+      {
+        title: "Scalable Tech Stack",
+        description: "Built on high-performance, future-proof, and enterprise-grade tech.",
+      },
+      {
+        title: "Full Tech Ownership",
+        description: "100% proprietary software with zero per-user recurring license fees.",
+      },
+    ],
+    process: [
+      { step: "1", title: "Discovery & Scope", description: "Deep dive into your business logic, operational requirements, and technical goals." },
+      { step: "2", title: "Architecture & UI/UX", description: "Design intuitive interfaces, interactive wireframes, and scalable database schemas." },
+      { step: "3", title: "Agile Development", description: "Iterative sprints with regular sprint demos, security audits, and quality assurance." },
+      { step: "4", title: "Deployment & Training", description: "Seamless production launch with complete staff onboarding and documentation." },
+    ],
+    documents: [
+      "Business Requirements Document (BRD)",
+      "Existing Workflow Diagrams",
+      "Role-Based Access Specifications",
+      "Third-Party API Integration Docs",
+    ],
+    benefits: [
+      "Perfect fit for your company workflows",
+      "Complete data control and security",
+      "Eliminate restrictive SaaS subscription tiers",
+      "Scale features effortlessly as you grow",
+    ],
+    faq: [
+      {
+        question: "Why should we build custom software instead of buying ready-made tools?",
+        answer:
+          "Off-the-shelf tools force your business to compromise on workflows and charge hefty per-user subscription fees. Custom software gives you full control, custom automation, and a strong competitive edge.",
+      },
+    ],
+  },
+
+  // 3. AI-POWERED CRM SOLUTIONS
+  {
+    slug: "ai-powered-crm-solutions",
+    title: "AI-Powered CRM Solutions",
+    category: "IT Services",
+    image: aiCrmImg,
+    heroTitle: "AI-Powered CRM Solutions – Smart Customer Relationship Management",
+    description:
+      "Intelligent CRM solutions tailored to your business processes, customer journeys and data, helping teams manage relationships and work more efficiently.",
+    highlights: [
+      {
+        title: "Lead Prioritization",
+        description: "AI-driven scoring that highlights your highest-converting opportunities.",
+      },
+      {
+        title: "Automated Follow-ups",
+        description: "Engage prospects across WhatsApp, email, and SMS with smart automations.",
+      },
+      {
+        title: "Unified Customer View",
+        description: "Centralized 360-degree visibility into interactions, deals, and touchpoints.",
+      },
+    ],
+    process: [
+      { step: "1", title: "Journey Mapping", description: "Map your lead acquisition sources, sales funnel stages, and conversion goals." },
+      { step: "2", title: "CRM Setup & AI Integration", description: "Configure custom pipelines, automated messaging triggers, and lead scoring logic." },
+      { step: "3", title: "Data Migration", description: "Clean and import existing customer contacts, histories, and notes." },
+      { step: "4", title: "Team Onboarding", description: "Train sales and support teams to maximize conversion and streamline daily outreach." },
+    ],
+    documents: [
+      "Existing Customer / Lead Lists",
+      "Sales Pipeline Stages & Criteria",
+      "Communication Templates (Email/WhatsApp)",
+      "User Roles & Permission Guidelines",
+    ],
+    benefits: [
+      "Significantly boost lead conversion rates",
+      "Never miss a scheduled customer follow-up",
+      "Actionable sales forecasting and analytics",
+      "Centralized communication history in one place",
+    ],
+    faq: [
+      {
+        question: "Can the AI CRM integrate with WhatsApp and website forms?",
+        answer:
+          "Yes, our CRM solutions connect directly with WhatsApp, email, website inquiry forms, and phone logs into a single centralized dashboard.",
+      },
+    ],
+  },
+
+  // 4. DASHBOARDS & DATA SYSTEMS
+  {
+    slug: "dashboards-data-systems",
+    title: "Dashboards & Data Systems",
+    category: "IT Services",
+    image: dashboardImg,
+    heroTitle: "Real-Time Dashboards & Data Systems – Actionable Business Intelligence",
+    description:
+      "Real-time dashboards and centralized data systems that bring your business information together for faster insights and smarter decision-making.",
+    highlights: [
+      {
+        title: "Real-Time Metrics",
+        description: "Live operational and financial visibility updated in real-time.",
+      },
+      {
+        title: "Unified Data Pipeline",
+        description: "Eliminate messy spreadsheets by consolidating all data sources.",
+      },
+      {
+        title: "Custom KPI Visuals",
+        description: "Clean, interactive graphs customized for management and departmental teams.",
+      },
+    ],
+    process: [
+      { step: "1", title: "Data Source Audit", description: "Identify and audit all operational databases, APIs, software tools, and spreadsheets." },
+      { step: "2", title: "Data Warehouse Setup", description: "Clean, model, and aggregate raw data into secure, high-speed data pipelines." },
+      { step: "3", title: "Dashboard Engineering", description: "Build responsive, visual dashboards with drill-down filters and role-based permissions." },
+      { step: "4", title: "Automated Reports", description: "Configure automated daily/weekly email and PDF performance summaries." },
+    ],
+    documents: [
+      "List of Existing Data Sources & Endpoints",
+      "Core Key Performance Indicators (KPIs)",
+      "Sample Export Files / Formats",
+      "Stakeholder Role & Reporting Requirements",
+    ],
+    benefits: [
+      "Instant clarity on overall business performance",
+      "Make confident, data-backed strategic decisions",
+      "Save hours spent building manual reports",
+      "Automated alerts on critical performance thresholds",
+    ],
+    faq: [
+      {
+        question: "Can we access our dashboards on mobile phones?",
+        answer:
+          "Yes, all dashboards are fully responsive and securely accessible from phones, tablets, and desktop workstations.",
+      },
+    ],
+  },
+
+  // 5. WORKFLOW & SYSTEM INTEGRATION
+  {
+    slug: "workflow-system-integration",
+    title: "Workflow & System Integration",
+    category: "IT Services",
+    image: systemIntegrationImg,
+    heroTitle: "Workflow & System Integration – Connect Your Entire Business Ecosystem",
+    description:
+      "Connect your existing tools, platforms and business processes into one seamless ecosystem with automated data flow and efficient workflows.",
+    highlights: [
+      {
+        title: "API Bridges",
+        description: "Reliable custom connectors linking your ERP, CRM, accounting, and cloud tools.",
+      },
+      {
+        title: "Instant Data Flow",
+        description: "Data updates in one platform reflect instantaneously across all others.",
+      },
+      {
+        title: "High Reliability & Security",
+        description: "End-to-end encryption, automated retry logic, and robust error-logging.",
+      },
+    ],
+    process: [
+      { step: "1", title: "Ecosystem Architecture Review", description: "Map protocols, data models, endpoints, and event triggers across all applications." },
+      { step: "2", title: "Connector Development", description: "Build secure API webhooks, transformation engines, and bidirectional sync bridges." },
+      { step: "3", title: "Validation & Failover Testing", description: "Simulate edge cases, peak loads, and failovers to ensure data integrity." },
+      { step: "4", title: "Live Go-Live & Sync", description: "Activate live data flow with continuous monitoring and automated error alerts." },
+    ],
+    documents: [
+      "Catalog of Software Tools & Versions",
+      "API Documentation & Access Keys",
+      "Data Mapping & Field Conversion Rules",
+      "Compliance & Security Policies",
+    ],
+    benefits: [
+      "Completely eliminate double data entry",
+      "Prevent departmental communication silos",
+      "Faster cross-departmental operations",
+      "Smooth, uninterrupted customer experience",
+    ],
+    faq: [
+      {
+        question: "Which software platforms can be integrated?",
+        answer:
+          "We can integrate any modern software with an API, including accounting tools, payment gateways, CRM, ERP, e-commerce stores, WhatsApp, and Google Workspace.",
+      },
+    ],
+  },
+
+  // 6. ONGOING OPTIMIZATION & SCALE
+  {
+    slug: "ongoing-optimization-scale",
+    title: "Ongoing Optimization & Scale",
+    category: "IT Services",
+    image: businessOptimizationImg,
+    heroTitle: "Ongoing Optimization & Scale – Keep Your Systems Modern and Resilient",
+    description:
+      "Continuously improve, monitor and scale your technology systems with ongoing optimization, upgrades and support as your business grows.",
+    highlights: [
+      {
+        title: "24/7 Monitoring",
+        description: "Proactive uptime monitoring, error alerts, and health diagnostics.",
+      },
+      {
+        title: "Security & Upgrades",
+        description: "Regular security patches, software library updates, and compliance audits.",
+      },
+      {
+        title: "Proactive Scaling",
+        description: "Continuous infrastructure tuning to seamlessly support rapid user growth.",
+      },
+    ],
+    process: [
+      { step: "1", title: "System Baseline & Health Check", description: "Benchmark server response times, resource utilization, and potential vulnerabilities." },
+      { step: "2", title: "Performance Tuning", description: "Implement caching, database index optimizations, and query refactoring." },
+      { step: "3", title: "Continuous Maintenance", description: "Deploy regular security updates, backup verifications, and architectural enhancements." },
+      { step: "4", title: "Scaling Execution", description: "Expand server resources and infrastructure capacity before growth surges occur." },
+    ],
+    documents: [
+      "Current Server & Hosting Specifications",
+      "Historical Uptime & Error Logs",
+      "Traffic & Database Growth Forecasts",
+      "Target Service Level Agreement (SLA)",
+    ],
+    benefits: [
+      "99.9%+ system uptime and availability",
+      "Fast, responsive software load speeds",
+      "Protection against security risks and data leaks",
+      "Dedicated tech team ready whenever you need support",
+    ],
+    faq: [
+      {
+        question: "Why is ongoing optimization necessary if our system works fine right now?",
+        answer:
+          "As databases expand, customer traffic climbs, and third-party APIs update, systems naturally experience slowdowns and new security vulnerabilities without continuous maintenance and tuning.",
       },
     ],
   },

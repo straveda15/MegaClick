@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const categories = [
   {
     name: "All Services",
     icon: "🌐",
-    count: 36,
+    count: 42,
   },
   {
     name: "Legal Services",
@@ -45,6 +45,19 @@ const categories = [
     ],
   },
   {
+    name: "IT Services",
+    icon: "💻",
+    count: 6,
+    services: [
+      "AI & Business Automation",
+      "Custom Software & Systems",
+      "AI-Powered CRM Solutions",
+      "Dashboards & Data Systems",
+      "Workflow & System Integration",
+      "Ongoing Optimization & Scale",
+    ],
+  },
+  {
     name: "Other Services",
     icon: "🏢",
     count: 12,
@@ -73,7 +86,17 @@ const CategoriesSidebar = ({
   setSelectedService,
   selectedService,
 }) => {
-  const [openCategory, setOpenCategory] = useState("");
+  const [openCategory, setOpenCategory] = useState(
+    selectedCategory && selectedCategory !== "All Services"
+      ? selectedCategory
+      : ""
+  );
+
+  useEffect(() => {
+    if (selectedCategory && selectedCategory !== "All Services") {
+      setOpenCategory(selectedCategory);
+    }
+  }, [selectedCategory]);
 
   return (
     <aside className="cat-sidebar sticky top-24 bg-white rounded-3xl border border-slate-200/80 shadow-sm p-4 sm:p-5 w-full font-['Inter',sans-serif]">
