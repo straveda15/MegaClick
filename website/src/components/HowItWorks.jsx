@@ -331,49 +331,49 @@ const solutionCards = [
   {
     id: 1,
     title: "Needs Assessment",
-    desc: "Expert legal consultation and custom business planning for fast growth.",
+    desc: "Expert legal consultation and tailored business planning.",
     iconType: "consultation",
   },
   {
     id: 2,
     title: "100% Digital Upload",
-    desc: "Secure online document upload with zero visits and zero paperwork.",
+    desc: "Upload required documents online with zero paperwork.",
     iconType: "digital",
   },
   {
     id: 3,
     title: "Flawless Verification",
-    desc: "Thorough document audit by legal experts ensuring zero rejections.",
+    desc: "Thorough audit by legal experts ensuring zero rejections.",
     iconType: "verification",
   },
   {
     id: 4,
     title: "Priority Portal Filing",
-    desc: "Fast-track application filing directly through government portals.",
+    desc: "Fast-track application filing via government portals.",
     iconType: "filing",
   },
   {
     id: 5,
     title: "Live Status Tracking",
-    desc: "Real-time milestone alerts and transparent tracking at every step.",
+    desc: "Real-time milestone alerts and transparent status tracking.",
     iconType: "tracking",
   },
   {
     id: 6,
     title: "Certificate Delivery",
-    desc: "Instant digital certificate issuance with complete ongoing support.",
+    desc: "Instant digital certificates with full ongoing support.",
     iconType: "delivery",
   },
   {
     id: 7,
     title: "Dedicated Support",
-    desc: "Reach our team anytime for quick answers and hands-on assistance.",
+    desc: "Connect with dedicated experts for fast, hands-on help.",
     iconType: "support",
   },
   {
     id: 8,
     title: "Compliance Reminders",
-    desc: "Timely alerts for renewals and deadlines so you never miss one.",
+    desc: "Timely alerts for renewals and statutory deadlines.",
     iconType: "compliance",
   },
 ];
@@ -389,7 +389,7 @@ const SolutionCardItem = ({ item }) => (
         bg-white
         border border-slate-200/90
         rounded-2xl
-        p-4 sm:p-5 lg:p-6
+        p-3.5 sm:p-4 lg:p-3 xl:p-4.5
         flex flex-col
         items-center
         justify-center
@@ -403,7 +403,7 @@ const SolutionCardItem = ({ item }) => (
       }}
     >
       {/* ICON */}
-      <div className="hiw-card-icon mb-2.5 sm:mb-3.5 flex justify-center w-full group-hover:scale-105 transition-transform duration-300">
+      <div className="hiw-card-icon mb-2 sm:mb-2.5 lg:mb-2 xl:mb-3 flex justify-center w-full group-hover:scale-105 transition-transform duration-300">
         <ModernCardIcon type={item.iconType} />
       </div>
 
@@ -415,12 +415,13 @@ const SolutionCardItem = ({ item }) => (
           }}
           className="
             hiw-card-title
-            text-[14px]
-            sm:text-[15.5px]
-            lg:text-[17px]
+            text-[13px]
+            sm:text-[14.5px]
+            lg:text-[14px]
+            xl:text-[16px]
             font-bold
             text-slate-900
-            mb-1.5
+            mb-1
             leading-snug
             w-full
             text-center
@@ -429,22 +430,26 @@ const SolutionCardItem = ({ item }) => (
           {item.title}
         </h3>
 
-        {/* 2-LINE CENTERED DESCRIPTION (MATCHED TO SCREENSHOT) */}
+        {/* 2-LINE CENTERED DESCRIPTION */}
         <p
           style={{ fontFamily: "'Inter', sans-serif" }}
           className="
             hiw-card-desc
             w-full
-            max-w-[240px]
+            max-w-[210px]
+            sm:max-w-[230px]
+            lg:max-w-[195px]
+            xl:max-w-[235px]
             min-[1920px]:max-w-[320px]
             min-[3840px]:max-w-[500px]
-            text-[11px]
-            sm:text-[12px]
-            lg:text-[12.5px]
+            text-[10.5px]
+            sm:text-[11.5px]
+            lg:text-[11px]
+            xl:text-[12px]
             text-slate-600
             leading-snug
-            sm:leading-relaxed
             text-center
+            line-clamp-2
           "
         >
           {item.desc}
@@ -457,7 +462,7 @@ const SolutionCardItem = ({ item }) => (
 );
 
 // ─────────────────────────────────────────────
-// Stepper Steps Data
+// Stepper Steps Data (UNTOUCHED)
 // ─────────────────────────────────────────────
 const steps = [
   {
@@ -863,7 +868,7 @@ const HowItWorks = () => {
           HOW IT WORKS
         </p>
 
-        {/* SOLUTION GRID — featured card + all cards, auto-flowing into rows (3 beside the card on desktop, then 5 full-width below) */}
+        {/* SOLUTION GRID */}
         <div
           className="
             hiw-grid
@@ -996,13 +1001,13 @@ const HowItWorks = () => {
             </div>
           </div>
 
-          {/* SOLUTION CARDS — single continuous grid so mobile/tablet never leaves an orphan card */}
+          {/* SOLUTION CARDS */}
           {solutionCards.map((item) => (
             <SolutionCardItem key={item.id} item={item} />
           ))}
         </div>
 
-        {/* HOW IT WORKS STEPPER */}
+        {/* HOW IT WORKS STEPPER (UNTOUCHED) */}
         <div className="hiw-stepper-box mt-10 sm:mt-12 lg:mt-14 w-full relative">
           {/* DESKTOP CONNECTING LINE */}
           <div
@@ -1132,113 +1137,110 @@ const HowItWorks = () => {
                     />
                   </div>
 
-                  {/* STEP CONTENT WRAPPER - Solid background on mobile so line stays under/behind text */}
-                  <div className="w-full flex flex-col items-center bg-blue-50 lg:bg-transparent relative z-10 px-2 py-1 rounded-2xl">
-                    {/* STEP NUMBER */}
-                    <div
-                      className={`
-                        hiw-step-num
-                        mt-2.5
-                        text-[11px]
-                        sm:text-xs
+                  {/* STEP NUMBER */}
+                  <div
+                    className={`
+                      hiw-step-num
+                      mt-2.5
+                      text-[11px]
+                      sm:text-xs
+                      font-bold
+                      transition-colors
+                      duration-300
+                      ${
+                        isMobileActive
+                          ? "max-lg:text-green-600"
+                          : "text-[#0B4EA2]"
+                      }
+                    `}
+                  >
+                    STEP {item.number}
+                  </div>
+
+                  {/* TITLE & DESCRIPTION WRAPPER */}
+                  <div
+                    className="
+                      hiw-step-text-wrapper
+                      w-full
+                      max-w-[240px]
+                      flex
+                      flex-col
+                      items-center
+                      mt-1
+                      sm:mt-1.5
+                    "
+                  >
+                    {/* TITLE */}
+                    <h4
+                      style={{
+                        fontFamily: "'Hedvig Letters Serif', serif",
+                      }}
+                      className="
+                        hiw-step-title
+                        text-base
+                        sm:text-lg
                         font-bold
-                        transition-colors
-                        duration-300
-                        ${
-                          isMobileActive
-                            ? "max-lg:text-green-600"
-                            : "text-[#0B4EA2]"
-                        }
-                      `}
-                    >
-                      STEP {item.number}
-                    </div>
-
-                    {/* TITLE & DESCRIPTION WRAPPER */}
-                    <div
-                      className="
-                        hiw-step-text-wrapper
+                        text-gray-900
+                        leading-snug
                         w-full
-                        max-w-[240px]
-                        flex
-                        flex-col
-                        items-center
-                        mt-1
-                        sm:mt-1.5
+                        text-center
                       "
                     >
-                      {/* TITLE */}
-                      <h4
-                        style={{
-                          fontFamily: "'Hedvig Letters Serif', serif",
-                        }}
-                        className="
-                          hiw-step-title
-                          text-base
-                          sm:text-lg
-                          font-bold
-                          text-gray-900
-                          leading-snug
-                          w-full
-                          text-center
-                        "
-                      >
-                        {item.title}
-                      </h4>
+                      {item.title}
+                    </h4>
 
-                      {/* DESCRIPTION */}
-                      <p
-                        className="
-                          hiw-step-text
-                          mt-1.5
-                          w-full
-                          text-xs
-                          sm:text-[13px]
-                          leading-[1.45]
-                          text-gray-600
-                          text-center
-                          px-1
-                        "
-                      >
-                        {item.text}
-                      </p>
-                    </div>
-
-                    {/* BADGE */}
-                    <div
+                    {/* DESCRIPTION */}
+                    <p
                       className="
-                        hiw-step-badge
-                        mt-2.5
-                        sm:mt-3
-                        px-2.5
-                        py-0.5
-                        rounded-full
-                        bg-white/80
-                        border
-                        border-blue-100
-                        flex
-                        items-center
-                        justify-center
-                        gap-1
-                        shadow-xs
+                        hiw-step-text
+                        mt-1.5
+                        w-full
+                        text-xs
+                        sm:text-[13px]
+                        leading-[1.45]
+                        text-gray-600
+                        text-center
+                        px-1
                       "
                     >
-                      <Check
-                        size={12}
-                        className="text-green-600 shrink-0"
-                      />
-                      <span
-                        className="
-                          text-[10px]
-                          sm:text-[10.5px]
-                          font-semibold
-                          text-[#0B4EA2]
-                          whitespace-nowrap
-                        "
-                      >
-                        Fast &amp; Secure
-                      </span>
-                    </div>
+                      {item.text}
+                    </p>
+                  </div>
+
+                  {/* BADGE */}
+                  <div 
+                    className="
+                      hiw-step-badge
+                      mt-2.5
+                      sm:mt-3
+                      px-2.5
+                      py-0.5
+                      rounded-full
+                      bg-white/80
+                      border
+                      border-blue-100
+                      flex
+                      items-center
+                      justify-center
+                      gap-1
+                      shadow-xs
+                    "
+                  >
+                    <Check
+                      size={12}
+                      className="text-green-600 shrink-0"
+                    />
+                    <span
+                      className="
+                        text-[10px]
+                        sm:text-[10.5px]
+                        font-semibold
+                        text-[#0B4EA2]
+                        whitespace-nowrap
+                      "
+                    >
+                      Fast &amp; Secure
+                    </span>
                   </div>
                 </div>
               );

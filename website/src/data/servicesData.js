@@ -46,6 +46,16 @@ import passportImg from "../assets/passport-services.png";
 import voterPanTanImg from "../assets/hero2.jpg";
 import liquorLicenseImg from "../assets/liquor-license.png";
 
+// =====================================================
+// 4. IT SERVICES ICONS (6 Images)
+// =====================================================
+import aiAutomationImg from "../assets/artificial-intelligence.png";
+import customSoftwareImg from "../assets/software-development.png";
+import aiCrmImg from "../assets/customer-relationship-management.png";
+import dashboardImg from "../assets/dashboard.png";
+import systemIntegrationImg from "../assets/system-integration.png";
+import businessOptimizationImg from "../assets/success.png";
+
 const serviceCategories = [
   {
     id: 1,
@@ -188,6 +198,48 @@ const serviceCategories = [
 
   {
     id: 3,
+    title: "IT Services",
+    description:
+      "Advanced technology solutions including AI, software development, cloud infrastructure, cybersecurity, data analytics and digital experiences designed to modernize your business and accelerate growth.",
+    slug: "it-services",
+    emoji: "💻",
+
+    services: [
+      {
+        title: "AI & Business Automation",
+        slug: "ai-business-automation",
+        image: aiAutomationImg,
+      },
+      {
+        title: "Custom Software & Systems",
+        slug: "custom-software-systems",
+        image: customSoftwareImg,
+      },
+      {
+        title: "AI-Powered CRM Solutions",
+        slug: "ai-powered-crm-solutions",
+        image: aiCrmImg,
+      },
+      {
+        title: "Dashboards & Data Systems",
+        slug: "dashboards-data-systems",
+        image: dashboardImg,
+      },
+      {
+        title: "Workflow & System Integration",
+        slug: "workflow-system-integration",
+        image: systemIntegrationImg,
+      },
+      {
+        title: "Ongoing Optimization & Scale",
+        slug: "ongoing-optimization-scale",
+        image: businessOptimizationImg,
+      },
+    ],
+  },
+
+  {
+    id: 4,
     title: "Other Services",
     description: "Additional professional and government services",
     slug: "other-services",

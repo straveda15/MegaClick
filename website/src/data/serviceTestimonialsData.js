@@ -2235,5 +2235,311 @@ export const SERVICE_TESTIMONIALS_CATALOG = {
       "review": "Annual personal liquor permit issued legally through state excise portal. Authentic and prompt service.",
       "rating": 5
     }
+  ],
+
+  "ai-business-automation": [
+    {
+      "name": "Aditya Sharma",
+      "service": "AI & Business Automation",
+      "services": ["AI & Business Automation"],
+      "location": "Pune, Maharashtra",
+      "review": "Automated our customer onboarding and invoice matching using MegaClick's AI agents. Reduced our processing time by 75% and eliminated routine human errors.",
+      "rating": 5
+    },
+    {
+      "name": "Pooja Mehta",
+      "service": "AI & Business Automation",
+      "services": ["AI & Business Automation"],
+      "location": "Mumbai, Maharashtra",
+      "review": "The intelligent document extraction pipeline has saved our accounting team over 30 hours each week. The system runs 24/7 without a single hiccup.",
+      "rating": 5
+    },
+    {
+      "name": "Rohan Varma",
+      "service": "AI & Business Automation",
+      "services": ["AI & Business Automation"],
+      "location": "Bengaluru, Karnataka",
+      "review": "Implemented automated customer support bots and lead qualification agents. Our response times dropped from 2 hours to under 30 seconds!",
+      "rating": 5
+    },
+    {
+      "name": "Sneha Nair",
+      "service": "AI & Business Automation",
+      "services": ["AI & Business Automation"],
+      "location": "Hyderabad, Telangana",
+      "review": "Flawless execution. The team helped us automate multi-department approvals and Slack notifications, making operations 10x smoother.",
+      "rating": 5
+    },
+    {
+      "name": "Nikhil Joshi",
+      "service": "AI & Business Automation",
+      "services": ["AI & Business Automation"],
+      "location": "Nagpur, Maharashtra",
+      "review": "Automated end-to-end report generation and email dispatch for our field team. What used to take hours is now finished in just seconds.",
+      "rating": 5
+    },
+    {
+      "name": "Archana Kulkarni",
+      "service": "AI & Business Automation",
+      "services": ["AI & Business Automation"],
+      "location": "Thane, Maharashtra",
+      "review": "Custom intelligent workflows connected our CRM and ticketing system flawlessly. Operational efficiency and team morale have skyrocketed.",
+      "rating": 5
+    }
+  ],
+
+  "custom-software-systems": [
+    {
+      "name": "Vikram Malhotra",
+      "service": "Custom Software & Systems",
+      "services": ["Custom Software & Systems"],
+      "location": "Mumbai, Maharashtra",
+      "review": "Built our internal inventory and warehouse management system from scratch. The tailored UI matches our warehouse floor workflows perfectly.",
+      "rating": 5
+    },
+    {
+      "name": "Divya Joshi",
+      "service": "Custom Software & Systems",
+      "services": ["Custom Software & Systems"],
+      "location": "Pune, Maharashtra",
+      "review": "Superb software architecture and clean codebase. Moving away from off-the-shelf SaaS to our own custom portal saved us lakhs in annual license fees.",
+      "rating": 5
+    },
+    {
+      "name": "Amitabh Sen",
+      "service": "Custom Software & Systems",
+      "services": ["Custom Software & Systems"],
+      "location": "Delhi NCR",
+      "review": "Delivered our custom B2B supplier portal ahead of deadline. The team's attention to role-based security and database speed was remarkable.",
+      "rating": 5
+    },
+    {
+      "name": "Kavita Rao",
+      "service": "Custom Software & Systems",
+      "services": ["Custom Software & Systems"],
+      "location": "Nashik, Maharashtra",
+      "review": "From wireframing to production deployment, the development process was agile and transparent. Highly recommended for bespoke enterprise software.",
+      "rating": 5
+    },
+    {
+      "name": "Prateek Deshmukh",
+      "service": "Custom Software & Systems",
+      "services": ["Custom Software & Systems"],
+      "location": "Aurangabad, Maharashtra",
+      "review": "They engineered a tailored order-dispatch portal for our distribution network. Real-time updates and zero server downtime since rollout.",
+      "rating": 5
+    },
+    {
+      "name": "Rashmi Khandelwal",
+      "service": "Custom Software & Systems",
+      "services": ["Custom Software & Systems"],
+      "location": "Indore, Madhya Pradesh",
+      "review": "Exceptional UI design combined with solid backend logic. The team delivered our customer booking system on time and well within budget.",
+      "rating": 5
+    }
+  ],
+
+  "ai-powered-crm-solutions": [
+    {
+      "name": "Rajesh Singhania",
+      "service": "AI-Powered CRM Solutions",
+      "services": ["AI-Powered CRM Solutions"],
+      "location": "Ahmedabad, Gujarat",
+      "review": "The AI lead prioritization feature transformed our sales conversions. Our reps focus exclusively on high-probability deals and follow-ups are automated.",
+      "rating": 5
+    },
+    {
+      "name": "Tanvi Deshpande",
+      "service": "AI-Powered CRM Solutions",
+      "services": ["AI-Powered CRM Solutions"],
+      "location": "Pune, Maharashtra",
+      "review": "Integrated WhatsApp and email lead capture directly into our CRM. We have full visibility into our client communications in a single clean dashboard.",
+      "rating": 5
+    },
+    {
+      "name": "Siddharth Kothari",
+      "service": "AI-Powered CRM Solutions",
+      "services": ["AI-Powered CRM Solutions"],
+      "location": "Mumbai, Maharashtra",
+      "review": "Smart deal tracking and automated reminders ensured zero leads slipped through the cracks. Our quarterly close rate rose by 32% within 3 months.",
+      "rating": 5
+    },
+    {
+      "name": "Ananya Iyer",
+      "service": "AI-Powered CRM Solutions",
+      "services": ["AI-Powered CRM Solutions"],
+      "location": "Chennai, Tamil Nadu",
+      "review": "The custom pipelines and AI conversation summaries make team handovers completely seamless. Truly modern CRM technology.",
+      "rating": 5
+    },
+    {
+      "name": "Vikramaditya Solanki",
+      "service": "AI-Powered CRM Solutions",
+      "services": ["AI-Powered CRM Solutions"],
+      "location": "Surat, Gujarat",
+      "review": "Automated WhatsApp lead follow-ups and AI pipeline forecasting helped our sales team double their monthly deal closures.",
+      "rating": 5
+    },
+    {
+      "name": "Bhavna Patel",
+      "service": "AI-Powered CRM Solutions",
+      "services": ["AI-Powered CRM Solutions"],
+      "location": "Vadodara, Gujarat",
+      "review": "Centralized client communication history and smart reminders keep all account managers aligned. Customer satisfaction has never been higher.",
+      "rating": 5
+    }
+  ],
+
+  "dashboards-data-systems": [
+    {
+      "name": "Gaurav Bansal",
+      "service": "Dashboards & Data Systems",
+      "services": ["Dashboards & Data Systems"],
+      "location": "Gurugram, Haryana",
+      "review": "Consolidated data from 5 separate software platforms into one live executive dashboard. Management now has real-time numbers at their fingertips.",
+      "rating": 5
+    },
+    {
+      "name": "Priyanka Patil",
+      "service": "Dashboards & Data Systems",
+      "services": ["Dashboards & Data Systems"],
+      "location": "Nashik, Maharashtra",
+      "review": "Replaced hours of tedious manual Excel reporting with automated live KPIs. The visualizations are interactive and intuitive for everyone.",
+      "rating": 5
+    },
+    {
+      "name": "Harish Pillai",
+      "service": "Dashboards & Data Systems",
+      "services": ["Dashboards & Data Systems"],
+      "location": "Bengaluru, Karnataka",
+      "review": "Clean data warehousing and lightning-fast query speeds. Mobile responsiveness allows me to check revenue metrics on the go effortlessly.",
+      "rating": 5
+    },
+    {
+      "name": "Manish Agarwal",
+      "service": "Dashboards & Data Systems",
+      "services": ["Dashboards & Data Systems"],
+      "location": "Jaipur, Rajasthan",
+      "review": "Automated alert thresholds notify us immediately when operational metrics deviate. Outstanding data engineering and visual layout.",
+      "rating": 5
+    },
+    {
+      "name": "Arvind Swaminathan",
+      "service": "Dashboards & Data Systems",
+      "services": ["Dashboards & Data Systems"],
+      "location": "Coimbatore, Tamil Nadu",
+      "review": "Interactive business analytics that track production yields and daily profits in real time. Crucial for our executive decision-making.",
+      "rating": 5
+    },
+    {
+      "name": "Neelam Saxena",
+      "service": "Dashboards & Data Systems",
+      "services": ["Dashboards & Data Systems"],
+      "location": "Lucknow, Uttar Pradesh",
+      "review": "Clean visual layout and automated daily KPI summaries sent straight to management phones. Extremely dependable data architecture.",
+      "rating": 5
+    }
+  ],
+
+  "workflow-system-integration": [
+    {
+      "name": "Kunal Bhatia",
+      "service": "Workflow & System Integration",
+      "services": ["Workflow & System Integration"],
+      "location": "Mumbai, Maharashtra",
+      "review": "Seamlessly connected our Tally accounting, Shopify e-commerce, and courier logistics. Orders flow end-to-end with zero manual re-entry.",
+      "rating": 5
+    },
+    {
+      "name": "Sunita Reddy",
+      "service": "Workflow & System Integration",
+      "services": ["Workflow & System Integration"],
+      "location": "Hyderabad, Telangana",
+      "review": "Robust API connectors and webhook listeners. Even during peak Diwali flash sales, data synchronized across all systems without delay.",
+      "rating": 5
+    },
+    {
+      "name": "Abhinav Tiwari",
+      "service": "Workflow & System Integration",
+      "services": ["Workflow & System Integration"],
+      "location": "Noida, Uttar Pradesh",
+      "review": "Eliminated data discrepancies between our sales CRM and ERP billing system. The error-handling and automated fallback mechanisms are top notch.",
+      "rating": 5
+    },
+    {
+      "name": "Meera Kulkarni",
+      "service": "Workflow & System Integration",
+      "services": ["Workflow & System Integration"],
+      "location": "Pune, Maharashtra",
+      "review": "MegaClick linked our WhatsApp Business API, payment gateways, and backend inventory into a smooth, automated workflow.",
+      "rating": 5
+    },
+    {
+      "name": "Girish Mahajan",
+      "service": "Workflow & System Integration",
+      "services": ["Workflow & System Integration"],
+      "location": "Kolhapur, Maharashtra",
+      "review": "Connected our payment gateway, ERP, and shipping partners with zero downtime. Order fulfilment now happens on complete autopilot.",
+      "rating": 5
+    },
+    {
+      "name": "Radhika Sen",
+      "service": "Workflow & System Integration",
+      "services": ["Workflow & System Integration"],
+      "location": "Kolkata, West Bengal",
+      "review": "Webhook integrations and automated data synchronization removed all manual cross-checking between our internal finance and operations tools.",
+      "rating": 5
+    }
+  ],
+
+  "ongoing-optimization-scale": [
+    {
+      "name": "Tarun Kapoor",
+      "service": "Ongoing Optimization & Scale",
+      "services": ["Ongoing Optimization & Scale"],
+      "location": "Bengaluru, Karnataka",
+      "review": "MegaClick tuned our server caching and database indexing, cutting application page load times from 3.8 seconds to under 400ms.",
+      "rating": 5
+    },
+    {
+      "name": "Deepali Chawla",
+      "service": "Ongoing Optimization & Scale",
+      "services": ["Ongoing Optimization & Scale"],
+      "location": "Mumbai, Maharashtra",
+      "review": "24/7 uptime monitoring and proactive patch management give us complete peace of mind. We have experienced zero downtime over the last 12 months.",
+      "rating": 5
+    },
+    {
+      "name": "Suresh Menon",
+      "service": "Ongoing Optimization & Scale",
+      "services": ["Ongoing Optimization & Scale"],
+      "location": "Kochi, Kerala",
+      "review": "Helped us scale our cloud infrastructure smoothly during high traffic spikes. Costs were optimized and performance stayed blazing fast.",
+      "rating": 5
+    },
+    {
+      "name": "Alok Srivastava",
+      "service": "Ongoing Optimization & Scale",
+      "services": ["Ongoing Optimization & Scale"],
+      "location": "Pune, Maharashtra",
+      "review": "Prompt response for updates, security audits, and version upgrades. They act as our dedicated tech partners who care about our growth.",
+      "rating": 5
+    },
+    {
+      "name": "Hemant Chavan",
+      "service": "Ongoing Optimization & Scale",
+      "services": ["Ongoing Optimization & Scale"],
+      "location": "Navi Mumbai, Maharashtra",
+      "review": "Proactive database tuning and continuous cloud monitoring keep our web portal lightning-fast even during flash peak traffic.",
+      "rating": 5
+    },
+    {
+      "name": "Shalini Gupta",
+      "service": "Ongoing Optimization & Scale",
+      "services": ["Ongoing Optimization & Scale"],
+      "location": "Chandigarh, Punjab",
+      "review": "Their tech team conducts regular security audits, backups, and speed enhancements. Exceptional maintenance and scalability support.",
+      "rating": 5
+    }
   ]
 };

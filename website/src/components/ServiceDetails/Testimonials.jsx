@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+﻿import React, { useState, useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import {
   Quote,
@@ -8,21 +8,25 @@ import {
 } from "lucide-react";
 import { SERVICE_TESTIMONIALS_CATALOG } from "../../data/serviceTestimonialsData";
 
-// Helper to normalize services list from item
+/* =========================================================
+   HELPERS
+========================================================= */
+
 const extractServices = (item) => {
   if (Array.isArray(item?.services) && item.services.length > 0) {
     return item.services;
   }
+
   if (item?.service) {
     return item.service
       .split(/[,•|]/)
       .map((s) => s.trim())
       .filter(Boolean);
   }
+
   return [];
 };
 
-// Clean string for accurate multi-service matching
 const normalizeText = (text) =>
   (text || "")
     .toLowerCase()
@@ -30,58 +34,86 @@ const normalizeText = (text) =>
     .replace(/\s+/g, " ")
     .trim();
 
-// Check if a testimonial matches the current service page
 const isMatchingService = (testimonial, serviceObj, slug) => {
   if (!serviceObj && !slug) return false;
 
-  const itemServices = extractServices(testimonial);
-  const allTestimonialServices = [
-    ...itemServices,
+  const itemSvc = extractServices(testimonial);
+
+  const allSvc = [
+    ...itemSvc,
     ...(testimonial?.service ? [testimonial.service] : []),
   ];
 
-  const candidateTargetStrings = [
+  const targets = [
     serviceObj?.title,
     serviceObj?.name,
     serviceObj?.heroTitle,
     slug ? slug.replace(/-/g, " ") : "",
   ].filter(Boolean);
 
-  for (const rawTestimonialService of allTestimonialServices) {
-    const normTestimonial = normalizeText(rawTestimonialService);
-    if (!normTestimonial) continue;
+  const keywords = [
+    "marriage",
+    "trademark",
+    "patent",
+    "copyright",
+    "gazette",
+    "mortgage",
+    "tenant",
+    "licence",
+    "license",
+    "deed",
+    "fssai",
+    "passport",
+    "liquor",
+    "udyam",
+    "msme",
+    "gst",
+    "itr",
+    "audit",
+    "dsc",
+    "llp",
+    "rera",
+    "incorporation",
+    "liaisoning",
+    "tender",
+    "light",
+    "mutation",
+  ];
 
-    for (const target of candidateTargetStrings) {
-      const normTarget = normalizeText(target);
-      if (!normTarget) continue;
+  for (const rawSvc of allSvc) {
+    const ns = normalizeText(rawSvc);
 
-      // 1. Exact string match
-      if (normTestimonial === normTarget) return true;
+    if (!ns) continue;
 
-      // 2. Contains match (e.g. "Marriage Registration" in "Marriage Registration, Trademark")
+    for (const t of targets) {
+      const nt = normalizeText(t);
+
+      if (!nt) continue;
+
+      if (ns === nt) return true;
+
+      if (nt.includes(ns) || ns.includes(nt)) {
+        return true;
+      }
+
+      const tw = nt
+        .split(" ")
+        .filter((w) => w.length > 3);
+
+      const sw = ns
+        .split(" ")
+        .filter((w) => w.length > 3);
+
+      const shared = tw.filter((w) => sw.includes(w));
+
       if (
-        normTarget.includes(normTestimonial) ||
-        normTestimonial.includes(normTarget)
+        shared.length >= 2 ||
+        (shared.length === 1 && tw.length === 1)
       ) {
         return true;
       }
 
-      // 3. Meaningful word match (handles slight naming variations)
-      const targetWords = normTarget.split(" ").filter((w) => w.length > 3);
-      const testWords = normTestimonial.split(" ").filter((w) => w.length > 3);
-      const sharedWords = targetWords.filter((w) => testWords.includes(w));
-
-      if (sharedWords.length >= 2 || (sharedWords.length === 1 && targetWords.length === 1)) {
-        return true;
-      }
-
-      const specificKeywords = [
-        "marriage", "trademark", "patent", "copyright", "gazette", "mortgage",
-        "tenant", "licence", "license", "deed", "fssai", "passport", "liquor",
-        "udyam", "msme", "gst", "itr", "audit", "dsc", "llp", "rera", "incorporation",
-        "liaisoning", "tender", "light", "mutation"
-      ];
-      if (sharedWords.some((w) => specificKeywords.includes(w))) {
+      if (shared.some((w) => keywords.includes(w))) {
         return true;
       }
     }
@@ -90,16 +122,23 @@ const isMatchingService = (testimonial, serviceObj, slug) => {
   return false;
 };
 
-// Retrieve specific dummy testimonials tailored to the current service
-const getSpecificDummyTestimonials = (serviceObj, slug) => {
-  const targetKey = slug || serviceObj?.slug;
-  if (targetKey && SERVICE_TESTIMONIALS_CATALOG[targetKey]) {
-    return SERVICE_TESTIMONIALS_CATALOG[targetKey];
+const getSpecificDummy = (serviceObj, slug) => {
+  const key = slug || serviceObj?.slug;
+
+  if (
+    key &&
+    SERVICE_TESTIMONIALS_CATALOG[key]
+  ) {
+    return SERVICE_TESTIMONIALS_CATALOG[key];
   }
 
-  // Look up by matching title if slug key wasn't direct
-  for (const [key, list] of Object.entries(SERVICE_TESTIMONIALS_CATALOG)) {
-    if (list.length > 0 && isMatchingService(list[0], serviceObj, slug)) {
+  for (const [, list] of Object.entries(
+    SERVICE_TESTIMONIALS_CATALOG
+  )) {
+    if (
+      list.length > 0 &&
+      isMatchingService(list[0], serviceObj, slug)
+    ) {
       return list;
     }
   }
@@ -107,83 +146,225 @@ const getSpecificDummyTestimonials = (serviceObj, slug) => {
   return [];
 };
 
-/* =========================================
-    EXACT SCREENSHOT CARD DESIGN WITH STABLE ALIGNMENT
-========================================== */
+/* =========================================================
+   TESTIMONIAL CARD
+========================================================= */
+
 const TestimonialCard = ({ testimonial }) => {
   const serviceList = extractServices(testimonial);
 
   return (
     <article
       className="
-        relative flex flex-col justify-between
-        rounded-3xl border border-slate-200/90
+        testimonial-card
+        flex
+        flex-col
+        justify-between
+        rounded-3xl
+        border
+        border-slate-200/90
         bg-white
-        p-6
-        shadow-sm hover:shadow-md hover:border-blue-200
+        p-5
+        sm:p-6
+        lg:p-6
+        w-full
         h-full
-        transition-all duration-300
+        shadow-sm
+        hover:shadow-md
+        hover:border-blue-200
+        transition-all
+        duration-300
       "
     >
-      {/* TOP: STARS & QUOTE */}
-      <div>
-        <div className="flex items-center justify-between mb-3.5">
-          {/* 5 Green Stars */}
+      {/* =====================================================
+          REVIEW CONTENT
+      ===================================================== */}
+
+      <div className="flex-1 min-h-0">
+        {/* Rating + Quote */}
+        <div
+          className="
+            flex
+            items-center
+            justify-between
+            mb-3
+            min-[1440px]:mb-4
+            min-[1920px]:mb-5
+            min-[3840px]:mb-7
+          "
+        >
+          {/* Stars */}
           <div className="flex items-center gap-0.5">
-            {Array.from({ length: testimonial.rating || 5 }).map((_, star) => (
+            {Array.from({
+              length: testimonial.rating || 5,
+            }).map((_, i) => (
               <Star
-                key={star}
-                size={15}
-                className="fill-emerald-500 text-emerald-500"
+                key={i}
+                className="
+                  fill-emerald-500
+                  text-emerald-500
+                  w-[13px]
+                  h-[13px]
+                  sm:w-[14px]
+                  sm:h-[14px]
+                  min-[1440px]:w-[15px]
+                  min-[1440px]:h-[15px]
+                  min-[1920px]:w-[17px]
+                  min-[1920px]:h-[17px]
+                  min-[3840px]:w-[23px]
+                  min-[3840px]:h-[23px]
+                "
               />
             ))}
           </div>
-          {/* Light Quote Icon */}
-          <Quote size={18} className="text-slate-300" />
+
+          {/* Quote Icon */}
+          <Quote
+            className="
+              text-slate-300
+              flex-shrink-0
+              w-4
+              h-4
+              min-[1440px]:w-[18px]
+              min-[1440px]:h-[18px]
+              min-[1920px]:w-5
+              min-[1920px]:h-5
+              min-[3840px]:w-7
+              min-[3840px]:h-7
+            "
+          />
         </div>
 
-        {/* REVIEW TEXT - Consistent height for multi-line reviews */}
+        {/* Review */}
         <p
-          style={{ fontFamily: "'Inter', sans-serif" }}
+          style={{
+            fontFamily: "'Inter', sans-serif",
+          }}
           className="
-            text-xs sm:text-[13.5px]
+            testimonial-review
+            text-[12.5px]
+            sm:text-[13px]
+            lg:text-[13.5px]
             text-slate-600
             leading-relaxed
             text-left
-            min-h-[76px]
-            sm:min-h-[82px]
+            line-clamp-4
+
+            min-[1440px]:text-[14px]
+            min-[1440px]:leading-[1.65]
+
+            min-[1920px]:text-[15.5px]
+            min-[1920px]:leading-[1.7]
+
+            min-[3840px]:text-[22px]
+            min-[3840px]:leading-[1.8]
           "
         >
-          "{testimonial.review}"
+          &ldquo;{testimonial.review}&rdquo;
         </p>
       </div>
 
-      {/* BOTTOM: DIVIDER & CLIENT DETAILS - Anchored to bottom for clean alignment */}
-      <div className="mt-auto">
-        <div className="my-3.5 sm:my-4 h-px bg-slate-100" />
+      {/* =====================================================
+          CLIENT DETAILS
+      ===================================================== */}
+
+      <div
+        className="
+          mt-auto
+          pt-3
+          sm:pt-4
+          min-[1440px]:pt-5
+          min-[1920px]:pt-6
+          min-[3840px]:pt-8
+        "
+      >
+        {/* Divider */}
+        <div
+          className="
+            mb-3
+            min-[1440px]:mb-4
+            min-[1920px]:mb-5
+            min-[3840px]:mb-6
+            h-px
+            bg-slate-100
+          "
+        />
 
         <div className="flex flex-col text-left">
+          {/* Name */}
           <h3
-            style={{ fontFamily: "'Inter', sans-serif" }}
-            className="text-xs sm:text-sm font-bold text-black leading-snug truncate"
+            style={{
+              fontFamily: "'Inter', sans-serif",
+            }}
+            className="
+              text-xs
+              sm:text-sm
+              font-bold
+              text-black
+              leading-snug
+              truncate
+
+              min-[1440px]:text-[14px]
+              min-[1920px]:text-[16px]
+              min-[3840px]:text-[23px]
+            "
           >
             {testimonial.name}
           </h3>
-          {/* Services: Blue, stacked vertically one by one (ek ke niche ek) */}
-          <div className="flex flex-col gap-0.5 mt-0.5 min-h-[18px]">
-            {serviceList.map((svc, sIdx) => (
+
+          {/* Services */}
+          <div
+            className="
+              flex
+              flex-col
+              gap-0.5
+              mt-0.5
+              min-[1440px]:gap-1
+              min-[1920px]:mt-1
+              min-[3840px]:gap-2
+            "
+          >
+            {serviceList.map((svc, i) => (
               <span
-                key={sIdx}
-                style={{ fontFamily: "'Inter', sans-serif" }}
-                className="text-[11px] sm:text-xs font-semibold text-[#0B4EA2] leading-tight truncate"
+                key={i}
+                style={{
+                  fontFamily: "'Inter', sans-serif",
+                }}
+                className="
+                  text-[11px]
+                  sm:text-[12px]
+                  font-semibold
+                  text-[#0B4EA2]
+                  leading-tight
+                  truncate
+
+                  min-[1440px]:text-[13px]
+                  min-[1920px]:text-[14px]
+                  min-[3840px]:text-[20px]
+                "
               >
                 {svc}
               </span>
             ))}
           </div>
+
+          {/* Location */}
           <p
-            style={{ fontFamily: "'Inter', sans-serif" }}
-            className="text-[11px] sm:text-xs font-medium text-black/90 mt-1 truncate"
+            style={{
+              fontFamily: "'Inter', sans-serif",
+            }}
+            className="
+              text-[11px]
+              sm:text-[12px]
+              font-medium
+              text-black/70
+              mt-1
+              truncate
+
+              min-[1440px]:text-[13px]
+              min-[1920px]:text-[14px]
+              min-[3840px]:text-[19px]
+            "
           >
             {testimonial.location}
           </p>
@@ -193,242 +374,671 @@ const TestimonialCard = ({ testimonial }) => {
   );
 };
 
+/* =========================================================
+   MAIN TESTIMONIALS COMPONENT
+========================================================= */
+
 const Testimonials = ({ service: propService }) => {
   const { slug } = useParams();
-  const [allTestimonials, setAllTestimonials] = useState([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [visibleCards, setVisibleCards] = useState(3);
 
-  // 🔄 Fetch dynamic testimonials from Backend API (with /v1)
+  const [allTestimonials, setAllTestimonials] =
+    useState([]);
+
+  const [currentIndex, setCurrentIndex] =
+    useState(0);
+
+  const [visibleCards, setVisibleCards] =
+    useState(3);
+
+  /* =======================================================
+     FETCH TESTIMONIALS
+  ======================================================= */
+
   useEffect(() => {
-    const fetchTestimonials = async () => {
+    const fetchT = async () => {
       try {
         const apiUrl = import.meta.env.VITE_API_URL
           ? `${import.meta.env.VITE_API_URL}/api/v1/website-control/testimonials`
           : "http://localhost:5000/api/v1/website-control/testimonials";
 
-        let response;
+        let res;
+
         try {
-          response = await fetch(apiUrl);
+          res = await fetch(apiUrl);
         } catch {
-          response = await fetch("/api/v1/website-control/testimonials");
+          res = await fetch(
+            "/api/v1/website-control/testimonials"
+          );
         }
 
-        const resData = await response.json();
-        if (resData.success && Array.isArray(resData.data) && resData.data.length > 0) {
-          const uniqueItems = Array.from(
-            new Map(resData.data.map((item) => [item._id || item.name, item])).values()
+        const data = await res.json();
+
+        if (
+          data.success &&
+          Array.isArray(data.data) &&
+          data.data.length > 0
+        ) {
+          setAllTestimonials(
+            Array.from(
+              new Map(
+                data.data.map((d) => [
+                  d._id || d.name,
+                  d,
+                ])
+              ).values()
+            )
           );
-          setAllTestimonials(uniqueItems);
         }
-      } catch (error) {
-        console.error("Backend fetch failed, using fallback:", error);
+      } catch (e) {
+        console.error(
+          "Testimonials fetch failed:",
+          e
+        );
       }
     };
 
-    fetchTestimonials();
+    fetchT();
   }, []);
 
-  // Compute matched testimonials strictly for this service
+  /* =======================================================
+     ACTIVE TESTIMONIALS
+  ======================================================= */
+
   const activeTestimonials = useMemo(() => {
-    // 1. Dynamic approved testimonials from backend that match THIS specific service
-    const matchedBackend = allTestimonials.filter((item) =>
-      isMatchingService(item, propService, slug)
+    const matched = allTestimonials.filter((t) =>
+      isMatchingService(
+        t,
+        propService,
+        slug
+      )
     );
 
-    // 2. Dedicated dummy testimonials tailored specifically for this service (5-6 reviews)
-    const specificDummy = getSpecificDummyTestimonials(propService, slug);
+    const dummy = getSpecificDummy(
+      propService,
+      slug
+    );
 
-    // If dynamic backend testimonials exist for this service:
-    if (matchedBackend.length > 0) {
-      // Prioritize live approved testimonials from dashboard!
-      // Append specificDummy reviews (preventing duplicates) so the carousel always has 5-6+ cards
-      // and the < > navigation buttons are always enabled and functional!
-      const combined = [...matchedBackend];
-      for (const dummy of specificDummy) {
-        if (!combined.some((c) => c.name.toLowerCase() === dummy.name.toLowerCase())) {
-          combined.push(dummy);
+    if (matched.length > 0) {
+      const combined = [...matched];
+
+      for (const d of dummy) {
+        if (
+          !combined.some(
+            (c) =>
+              c.name.toLowerCase() ===
+              d.name.toLowerCase()
+          )
+        ) {
+          combined.push(d);
         }
       }
+
       return combined;
     }
 
-    // If no dynamic testimonials exist yet in backend for this service,
-    // show ALL 5 to 6 dedicated, tailored dummy reviews for this service!
-    if (specificDummy.length > 0) {
-      return specificDummy;
-    }
+    return dummy.length > 0 ? dummy : [];
+  }, [
+    allTestimonials,
+    propService,
+    slug,
+  ]);
 
-    return [];
-  }, [allTestimonials, propService, slug]);
+  /* =======================================================
+     RESET CAROUSEL
+  ======================================================= */
 
-  // Reset index whenever the service or testimonials list changes
   useEffect(() => {
     setCurrentIndex(0);
-  }, [propService, slug, activeTestimonials.length]);
+  }, [
+    propService,
+    slug,
+    activeTestimonials.length,
+  ]);
 
-  /* =========================================
-      RESPONSIVE CARDS
-      Desktop: 3
-      Tablet: 2
-      Mobile: 1
-  ========================================== */
+  /* =======================================================
+     RESPONSIVE CARD COUNT
+  ======================================================= */
+
   useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth >= 1024) {
+    const update = () => {
+      const width = window.innerWidth;
+
+      if (width >= 1024) {
         setVisibleCards(3);
-      } else if (window.innerWidth >= 640) {
+      } else if (width >= 640) {
         setVisibleCards(2);
       } else {
         setVisibleCards(1);
       }
     };
 
-    handleResize();
-    window.addEventListener("resize", handleResize);
+    update();
 
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
+    window.addEventListener(
+      "resize",
+      update
+    );
+
+    return () =>
+      window.removeEventListener(
+        "resize",
+        update
+      );
   }, []);
 
-  const totalCards = activeTestimonials.length;
-  const maxIndex = Math.max(0, totalCards - visibleCards);
+  /* =======================================================
+     EMPTY STATE
+  ======================================================= */
+
+  const total = activeTestimonials.length;
+
+  if (total === 0) {
+    return null;
+  }
+
+  /* =======================================================
+     CAROUSEL MATH
+  ======================================================= */
+
+  const visible = Math.min(
+    visibleCards,
+    total
+  );
+
+  const maxIndex = Math.max(
+    0,
+    total - visible
+  );
+
+  const cardPct = 100 / total;
+
+  const trackPct =
+    (total / visible) * 100;
+
+  const shiftPct = cardPct;
+
+  /* =======================================================
+     NAVIGATION
+  ======================================================= */
 
   const goPrev = () => {
-    setCurrentIndex((prev) => Math.max(0, prev - visibleCards));
+    setCurrentIndex((p) =>
+      Math.max(0, p - 1)
+    );
   };
 
   const goNext = () => {
-    setCurrentIndex((prev) => Math.min(maxIndex, prev + visibleCards));
+    setCurrentIndex((p) =>
+      Math.min(maxIndex, p + 1)
+    );
   };
 
-  const trackWidthPercent = totalCards > 0 ? (totalCards / visibleCards) * 100 : 100;
-  const singleCardShiftPercent = totalCards > 0 ? 100 / totalCards : 0;
+  /* =======================================================
+     RETURN
+  ======================================================= */
 
   return (
-    <section className="w-full bg-white overflow-hidden py-10 sm:py-14 lg:py-16">
-      {/* GOOGLE FONTS */}
+    <section
+      className="
+        testimonials-section
+        w-full
+        bg-white
+        overflow-hidden
+
+        py-8
+        sm:py-12
+        lg:py-16
+
+        min-[1440px]:py-[4.5rem]
+        min-[1920px]:py-20
+        min-[3840px]:py-28
+      "
+    >
+      {/* =====================================================
+          FONTS
+      ===================================================== */}
+
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@400;500;600;700&display=swap');
+
+        /* =====================================================
+           STANDARD DESKTOP - 1440px
+        ===================================================== */
+
+        @media (min-width: 1440px) {
+          .testimonials-container {
+            max-width: 1400px !important;
+            padding-left: 2.5rem !important;
+            padding-right: 2.5rem !important;
+          }
+
+          .testimonials-header {
+            margin-bottom: 2.75rem !important;
+          }
+
+          .testimonials-label {
+            font-size: 0.9rem !important;
+            letter-spacing: 0.27em !important;
+            margin-bottom: 0.8rem !important;
+          }
+
+          .testimonials-heading {
+            font-size: 2.65rem !important;
+            line-height: 1.2 !important;
+          }
+
+          .testimonials-intro {
+            font-size: 1rem !important;
+            line-height: 1.65 !important;
+            max-width: 48rem !important;
+          }
+
+          .testimonials-carousel {
+            padding-top: 0.5rem !important;
+            padding-bottom: 0.5rem !important;
+          }
+
+          .testimonial-item {
+            padding-left: 0.7rem !important;
+            padding-right: 0.7rem !important;
+          }
+
+          .testimonial-card-wrapper {
+            min-height: 295px !important;
+            height: 295px !important;
+          }
+
+          .testimonials-navigation {
+            margin-top: 2rem !important;
+            gap: 1rem !important;
+          }
+
+          .testimonial-nav-button {
+            width: 46px !important;
+            height: 46px !important;
+          }
+        }
+
+
+        /* =====================================================
+           LARGE DESKTOP - 1920px
+        ===================================================== */
+
+        @media (min-width: 1920px) {
+          .testimonials-container {
+            max-width: 1750px !important;
+            padding-left: 3rem !important;
+            padding-right: 3rem !important;
+          }
+
+          .testimonials-header {
+            margin-bottom: 3.5rem !important;
+          }
+
+          .testimonials-label {
+            font-size: 1rem !important;
+            letter-spacing: 0.3em !important;
+            margin-bottom: 1rem !important;
+          }
+
+          .testimonials-heading {
+            font-size: 3.35rem !important;
+            line-height: 1.18 !important;
+          }
+
+          .testimonials-intro {
+            font-size: 1.15rem !important;
+            line-height: 1.75 !important;
+            max-width: 58rem !important;
+          }
+
+          .testimonials-carousel {
+            padding-top: 0.75rem !important;
+            padding-bottom: 0.75rem !important;
+          }
+
+          .testimonial-item {
+            padding-left: 0.9rem !important;
+            padding-right: 0.9rem !important;
+          }
+
+          .testimonial-card-wrapper {
+            min-height: 330px !important;
+            height: 330px !important;
+          }
+
+          .testimonial-card {
+            padding: 1.75rem !important;
+            border-radius: 1.75rem !important;
+          }
+
+          .testimonials-navigation {
+            margin-top: 2.5rem !important;
+            gap: 1.25rem !important;
+          }
+
+          .testimonial-nav-button {
+            width: 50px !important;
+            height: 50px !important;
+          }
+        }
+
+
+        /* =====================================================
+           4K / ULTRA-WIDE - 3840px
+        ===================================================== */
+
+        @media (min-width: 3840px) {
+          .testimonials-container {
+            max-width: 3000px !important;
+            padding-left: 4rem !important;
+            padding-right: 4rem !important;
+          }
+
+          .testimonials-header {
+            margin-bottom: 5rem !important;
+          }
+
+          .testimonials-label {
+            font-size: 1.5rem !important;
+            letter-spacing: 0.35em !important;
+            margin-bottom: 1.5rem !important;
+          }
+
+          .testimonials-heading {
+            font-size: 5rem !important;
+            line-height: 1.15 !important;
+          }
+
+          .testimonials-intro {
+            font-size: 1.75rem !important;
+            line-height: 1.8 !important;
+            max-width: 85rem !important;
+          }
+
+          .testimonials-carousel {
+            padding-top: 1rem !important;
+            padding-bottom: 1rem !important;
+          }
+
+          .testimonial-item {
+            padding-left: 1.25rem !important;
+            padding-right: 1.25rem !important;
+          }
+
+          .testimonial-card-wrapper {
+            min-height: 460px !important;
+            height: 460px !important;
+          }
+
+          .testimonial-card {
+            padding: 2.75rem !important;
+            border-radius: 2.25rem !important;
+          }
+
+          .testimonials-navigation {
+            margin-top: 4rem !important;
+            gap: 1.5rem !important;
+          }
+
+          .testimonial-nav-button {
+            width: 64px !important;
+            height: 64px !important;
+            border-width: 2px !important;
+          }
+
+          .testimonial-nav-button svg {
+            width: 28px !important;
+            height: 28px !important;
+          }
+        }
       `}</style>
 
-      <div className="max-w-[1380px] mx-auto px-4 sm:px-6 min-[1440px]:px-10">
-        {/* =========================================
-            HEADING (Left-aligned)
-        ========================================== */}
-        <div className="mb-8 sm:mb-10 text-left">
+      {/* =====================================================
+          CONTAINER
+      ===================================================== */}
+
+      <div
+        className="
+          testimonials-container
+          w-full
+          max-w-[1380px]
+          mx-auto
+          px-4
+          sm:px-6
+          lg:px-8
+          min-[1440px]:px-10
+        "
+      >
+        {/* ===================================================
+            HEADER
+        =================================================== */}
+
+        <div
+          className="
+            testimonials-header
+            mb-8
+            sm:mb-10
+            lg:mb-12
+            text-left
+            w-full
+          "
+        >
+          {/* Label */}
           <p
-            style={{ fontFamily: "'Inter', sans-serif" }}
-            className="text-xs sm:text-sm font-semibold tracking-[0.25em] uppercase text-[#0B4EA2] mb-2 text-left"
+            style={{
+              fontFamily: "'Inter', sans-serif",
+            }}
+            className="
+              testimonials-label
+              text-xs
+              sm:text-sm
+              font-semibold
+              tracking-[0.25em]
+              uppercase
+              text-[#0B4EA2]
+              mb-2
+            "
           >
             CLIENT OUTCOMES
           </p>
 
+          {/* Heading */}
           <h2
-            style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+            style={{
+              fontFamily:
+                "'Hedvig Letters Serif', serif",
+            }}
             className="
-              text-2xl sm:text-3xl md:text-3xl lg:text-4xl
+              testimonials-heading
+              text-2xl
+              sm:text-3xl
+              md:text-3xl
+              lg:text-4xl
               font-bold
               leading-[1.18]
               text-black
-              text-left
-              mb-2.5 sm:mb-3
+              mb-2.5
+              sm:mb-3
             "
           >
             What Our Clients{" "}
-            <span className="text-[#0B4EA2]">Say About Our Services</span>
+            <span className="text-[#0B4EA2]">
+              Say About Our Services
+            </span>
           </h2>
 
+          {/* Description */}
           <p
-            style={{ fontFamily: "'Inter', sans-serif" }}
+            style={{
+              fontFamily: "'Inter', sans-serif",
+            }}
             className="
-              text-sm sm:text-base
+              testimonials-intro
+              text-sm
+              sm:text-base
               text-gray-500
               font-normal
               leading-relaxed
               max-w-xl
-              text-left
             "
           >
-            Real feedback from businesses trusting MegaClick for their growth.
+            Real feedback from businesses
+            trusting MegaClick for their growth.
           </p>
         </div>
 
-        {/* =========================================
-            TESTIMONIAL CAROUSEL (Exact 1-Card Shift)
-        ========================================== */}
-        <div className="relative overflow-hidden w-full py-2">
+        {/* ===================================================
+            CAROUSEL
+        =================================================== */}
+
+        <div
+          className="
+            testimonials-carousel
+            relative
+            overflow-hidden
+            w-full
+            py-2
+          "
+        >
           <div
-            className="flex transition-transform duration-500 ease-in-out"
+            className="
+              flex
+              flex-nowrap
+              transition-transform
+              duration-500
+              ease-in-out
+            "
             style={{
-              width: `${trackWidthPercent}%`,
-              transform: `translateX(-${currentIndex * singleCardShiftPercent}%)`,
+              width: `${trackPct}%`,
+              transform: `translateX(-${
+                currentIndex * shiftPct
+              }%)`,
             }}
           >
-            {activeTestimonials.map((testimonial, index) => (
+            {activeTestimonials.map((t, i) => (
               <div
-                key={`${testimonial._id || testimonial.name}-${index}`}
+                key={`${t._id || t.name}-${i}`}
                 style={{
-                  width: `${100 / totalCards}%`,
+                  width: `${cardPct}%`,
                 }}
-                className="px-2.5 shrink-0"
+                className="
+                  testimonial-item
+                  px-2.5
+                  sm:px-3
+                  shrink-0
+                  box-border
+                "
               >
-                {/* UNIFORM CARD HEIGHT WITH GENEROUS SPACING FOR ALIGNMENT */}
-                <div className="w-full h-[270px] sm:h-[280px]">
-                  <TestimonialCard testimonial={testimonial} />
+                <div
+                  className="
+                    testimonial-card-wrapper
+                    w-full
+                    min-h-[240px]
+                    sm:min-h-[260px]
+                    lg:min-h-[275px]
+                    flex
+                  "
+                >
+                  <TestimonialCard
+                    testimonial={t}
+                  />
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* =========================================
-            NAVIGATION BUTTONS (< >)
-        ========================================== */}
-        <div className="mt-8 flex justify-center items-center gap-4">
+        {/* ===================================================
+            NAVIGATION
+        =================================================== */}
+
+        <div
+          className="
+            testimonials-navigation
+            mt-7
+            sm:mt-8
+            flex
+            justify-center
+            items-center
+            gap-3
+            sm:gap-4
+          "
+        >
+          {/* Previous */}
           <button
             type="button"
             onClick={goPrev}
             disabled={currentIndex === 0}
             aria-label="Previous testimonial"
             className="
-              flex items-center justify-center
-              w-11 h-11
+              testimonial-nav-button
+              flex
+              items-center
+              justify-center
+              w-10
+              h-10
+              sm:w-11
+              sm:h-11
               rounded-full
-              border-2 border-[#0B4EA2]
-              text-[#0B4EA2] bg-white
-              hover:bg-[#0B4EA2] hover:text-white
-              transition-all duration-200
+              border-2
+              border-[#0B4EA2]
+              text-[#0B4EA2]
+              bg-white
+              hover:bg-[#0B4EA2]
+              hover:text-white
+              transition-all
+              duration-200
               cursor-pointer
               shadow-sm
-              disabled:opacity-30 disabled:cursor-not-allowed
-              disabled:hover:bg-white disabled:hover:text-[#0B4EA2]
+              disabled:opacity-30
+              disabled:cursor-not-allowed
+              disabled:hover:bg-white
+              disabled:hover:text-[#0B4EA2]
             "
           >
-            <ChevronLeft size={21} />
+            <ChevronLeft
+              size={20}
+            />
           </button>
 
+          {/* Next */}
           <button
             type="button"
             onClick={goNext}
-            disabled={currentIndex >= maxIndex}
+            disabled={
+              currentIndex >= maxIndex
+            }
             aria-label="Next testimonial"
             className="
-              flex items-center justify-center
-              w-11 h-11
+              testimonial-nav-button
+              flex
+              items-center
+              justify-center
+              w-10
+              h-10
+              sm:w-11
+              sm:h-11
               rounded-full
-              border-2 border-[#0B4EA2]
-              text-[#0B4EA2] bg-white
-              hover:bg-[#0B4EA2] hover:text-white
-              transition-all duration-200
+              border-2
+              border-[#0B4EA2]
+              text-[#0B4EA2]
+              bg-white
+              hover:bg-[#0B4EA2]
+              hover:text-white
+              transition-all
+              duration-200
               cursor-pointer
               shadow-sm
-              disabled:opacity-30 disabled:cursor-not-allowed
-              disabled:hover:bg-white disabled:hover:text-[#0B4EA2]
+              disabled:opacity-30
+              disabled:cursor-not-allowed
+              disabled:hover:bg-white
+              disabled:hover:text-[#0B4EA2]
             "
           >
-            <ChevronRight size={21} />
+            <ChevronRight
+              size={20}
+            />
           </button>
         </div>
       </div>
