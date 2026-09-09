@@ -1,166 +1,271 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
+import { useParams } from "react-router-dom";
 import {
   Quote,
   Star,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
+import { SERVICE_TESTIMONIALS_CATALOG } from "../../data/serviceTestimonialsData";
 
-const testimonials = [
-  {
-    name: "Keval Barot",
-    service: "GST & Tax Compliance",
-    location: "Nashik, Maharashtra",
-    review:
-      "Its a great platform to solve all business registration and tax query problems. The MegaClick staff is extremely supportive and prompt.",
-  },
-  {
-    name: "Prakshal Jain",
-    service: "Company Incorporation",
-    location: "Pune, Maharashtra",
-    review:
-      "Genuine and reliable service provider. MegaClick made our company incorporation fast, transparent, and hassle-free.",
-  },
-  {
-    name: "Prem Nair",
-    service: "Business Advisory",
-    location: "Nashik, Maharashtra",
-    review:
-      "MegaClick does a fantastic job of managing complex policies and filings into smooth, accessible solutions for businesses.",
-  },
-  {
-    name: "Satyam Jha",
-    service: "PAN & ROC Filings",
-    location: "Nashik, Maharashtra",
-    review:
-      "Quick, professional, and reliable. The team guided us step-by-step through our PAN and annual ROC filings without any hassle.",
-  },
-  {
-    name: "Sanatan Jena",
-    service: "Trademark & Audit",
-    location: "Pune, Maharashtra",
-    review:
-      "Excellent service provider! No need to run around different consultants. Everything was handled under one roof.",
-  },
-  {
-    name: "Riya Mehta",
-    service: "MSME Registration",
-    location: "Mumbai, Maharashtra",
-    review:
-      "Very fast and professional team. Got my MSME registration done within a day. Highly recommend MegaClick for all legal services.",
-  },
-  {
-    name: "Aditya Sharma",
-    service: "Trademark Registration",
-    location: "Nashik, Maharashtra",
-    review:
-      "MegaClick handled my trademark registration smoothly. The team was knowledgeable and always available to answer my questions.",
-  },
-  {
-    name: "Pooja Desai",
-    service: "Income Tax Filing",
-    location: "Aurangabad, Maharashtra",
-    review:
-      "Filing income tax was always stressful, but MegaClick made the whole process simple and transparent. Excellent support.",
-  },
-  {
-    name: "Rahul Patil",
-    service: "Marriage Registration",
-    location: "Nashik, Maharashtra",
-    review:
-      "Got our marriage certificate registered without any hassle. The team guided us with all the required documents. Great service!",
-  },
-];
+// Helper to normalize services list from item
+const extractServices = (item) => {
+  if (Array.isArray(item?.services) && item.services.length > 0) {
+    return item.services;
+  }
+  if (item?.service) {
+    return item.service
+      .split(/[,•|]/)
+      .map((s) => s.trim())
+      .filter(Boolean);
+  }
+  return [];
+};
+
+// Clean string for accurate multi-service matching
+const normalizeText = (text) =>
+  (text || "")
+    .toLowerCase()
+    .replace(/[^\w\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+// Check if a testimonial matches the current service page
+const isMatchingService = (testimonial, serviceObj, slug) => {
+  if (!serviceObj && !slug) return false;
+
+  const itemServices = extractServices(testimonial);
+  const allTestimonialServices = [
+    ...itemServices,
+    ...(testimonial?.service ? [testimonial.service] : []),
+  ];
+
+  const candidateTargetStrings = [
+    serviceObj?.title,
+    serviceObj?.name,
+    serviceObj?.heroTitle,
+    slug ? slug.replace(/-/g, " ") : "",
+  ].filter(Boolean);
+
+  for (const rawTestimonialService of allTestimonialServices) {
+    const normTestimonial = normalizeText(rawTestimonialService);
+    if (!normTestimonial) continue;
+
+    for (const target of candidateTargetStrings) {
+      const normTarget = normalizeText(target);
+      if (!normTarget) continue;
+
+      // 1. Exact string match
+      if (normTestimonial === normTarget) return true;
+
+      // 2. Contains match (e.g. "Marriage Registration" in "Marriage Registration, Trademark")
+      if (
+        normTarget.includes(normTestimonial) ||
+        normTestimonial.includes(normTarget)
+      ) {
+        return true;
+      }
+
+      // 3. Meaningful word match (handles slight naming variations)
+      const targetWords = normTarget.split(" ").filter((w) => w.length > 3);
+      const testWords = normTestimonial.split(" ").filter((w) => w.length > 3);
+      const sharedWords = targetWords.filter((w) => testWords.includes(w));
+
+      if (sharedWords.length >= 2 || (sharedWords.length === 1 && targetWords.length === 1)) {
+        return true;
+      }
+
+      const specificKeywords = [
+        "marriage", "trademark", "patent", "copyright", "gazette", "mortgage",
+        "tenant", "licence", "license", "deed", "fssai", "passport", "liquor",
+        "udyam", "msme", "gst", "itr", "audit", "dsc", "llp", "rera", "incorporation",
+        "liaisoning", "tender", "light", "mutation"
+      ];
+      if (sharedWords.some((w) => specificKeywords.includes(w))) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+};
+
+// Retrieve specific dummy testimonials tailored to the current service
+const getSpecificDummyTestimonials = (serviceObj, slug) => {
+  const targetKey = slug || serviceObj?.slug;
+  if (targetKey && SERVICE_TESTIMONIALS_CATALOG[targetKey]) {
+    return SERVICE_TESTIMONIALS_CATALOG[targetKey];
+  }
+
+  // Look up by matching title if slug key wasn't direct
+  for (const [key, list] of Object.entries(SERVICE_TESTIMONIALS_CATALOG)) {
+    if (list.length > 0 && isMatchingService(list[0], serviceObj, slug)) {
+      return list;
+    }
+  }
+
+  return [];
+};
 
 /* =========================================
-    EXACT SCREENSHOT CARD DESIGN
+    EXACT SCREENSHOT CARD DESIGN WITH STABLE ALIGNMENT
 ========================================== */
-const TestimonialCard = ({ testimonial }) => (
-  <article
-    className="
-      relative flex flex-col justify-between
-      rounded-3xl border border-slate-200/90
-      bg-white
-      p-6
-      shadow-sm hover:shadow-md hover:border-blue-200
-      h-full
-      transition-all duration-300
-    "
-  >
-    {/* TOP: STARS & QUOTE */}
-    <div>
-      <div className="flex items-center justify-between mb-3.5">
-        {/* 5 Green Stars */}
-        <div className="flex items-center gap-0.5">
-          {[1, 2, 3, 4, 5].map((star) => (
-            <Star
-              key={star}
-              size={15}
-              className="fill-emerald-500 text-emerald-500"
-            />
-          ))}
+const TestimonialCard = ({ testimonial }) => {
+  const serviceList = extractServices(testimonial);
+
+  return (
+    <article
+      className="
+        relative flex flex-col justify-between
+        rounded-3xl border border-slate-200/90
+        bg-white
+        p-6
+        shadow-sm hover:shadow-md hover:border-blue-200
+        h-full
+        transition-all duration-300
+      "
+    >
+      {/* TOP: STARS & QUOTE */}
+      <div>
+        <div className="flex items-center justify-between mb-3.5">
+          {/* 5 Green Stars */}
+          <div className="flex items-center gap-0.5">
+            {Array.from({ length: testimonial.rating || 5 }).map((_, star) => (
+              <Star
+                key={star}
+                size={15}
+                className="fill-emerald-500 text-emerald-500"
+              />
+            ))}
+          </div>
+          {/* Light Quote Icon */}
+          <Quote size={18} className="text-slate-300" />
         </div>
-        {/* Light Quote Icon */}
-        <Quote size={18} className="text-slate-300" />
-      </div>
 
-      {/* REVIEW TEXT */}
-      <p
-        style={{ fontFamily: "'Inter', sans-serif" }}
-        className="
-          text-xs sm:text-[13.5px]
-          text-slate-600
-          leading-relaxed
-          text-left
-          min-h-[75px]
-        "
-      >
-        "{testimonial.review}"
-      </p>
-    </div>
-
-    {/* BOTTOM: DIVIDER & CLIENT DETAILS */}
-    <div>
-      <div className="my-4 h-px bg-slate-100" />
-
-      <div className="flex flex-col text-left">
-        <h3
-          style={{ fontFamily: "'Inter', sans-serif" }}
-          className="text-xs sm:text-sm font-bold text-black leading-snug truncate"
-        >
-          {testimonial.name}
-        </h3>
-        {/* Services: Blue, stacked vertically one by one (ek ke niche ek) */}
-        <div className="flex flex-col gap-0.5 mt-0.5">
-          {(Array.isArray(testimonial.services) && testimonial.services.length > 0
-            ? testimonial.services
-            : testimonial.service
-            ? testimonial.service.split(/[,•|]/).map((s) => s.trim()).filter(Boolean)
-            : []
-          ).map((svc, sIdx) => (
-            <span
-              key={sIdx}
-              style={{ fontFamily: "'Inter', sans-serif" }}
-              className="text-[11px] sm:text-xs font-semibold text-[#0B4EA2] leading-tight"
-            >
-              {svc}
-            </span>
-          ))}
-        </div>
+        {/* REVIEW TEXT - Consistent height for multi-line reviews */}
         <p
           style={{ fontFamily: "'Inter', sans-serif" }}
-          className="text-[11px] sm:text-xs font-medium text-black/90 mt-1 truncate"
+          className="
+            text-xs sm:text-[13.5px]
+            text-slate-600
+            leading-relaxed
+            text-left
+            min-h-[76px]
+            sm:min-h-[82px]
+          "
         >
-          {testimonial.location}
+          "{testimonial.review}"
         </p>
       </div>
-    </div>
-  </article>
-);
 
-const Testimonials = () => {
+      {/* BOTTOM: DIVIDER & CLIENT DETAILS - Anchored to bottom for clean alignment */}
+      <div className="mt-auto">
+        <div className="my-3.5 sm:my-4 h-px bg-slate-100" />
+
+        <div className="flex flex-col text-left">
+          <h3
+            style={{ fontFamily: "'Inter', sans-serif" }}
+            className="text-xs sm:text-sm font-bold text-black leading-snug truncate"
+          >
+            {testimonial.name}
+          </h3>
+          {/* Services: Blue, stacked vertically one by one (ek ke niche ek) */}
+          <div className="flex flex-col gap-0.5 mt-0.5 min-h-[18px]">
+            {serviceList.map((svc, sIdx) => (
+              <span
+                key={sIdx}
+                style={{ fontFamily: "'Inter', sans-serif" }}
+                className="text-[11px] sm:text-xs font-semibold text-[#0B4EA2] leading-tight truncate"
+              >
+                {svc}
+              </span>
+            ))}
+          </div>
+          <p
+            style={{ fontFamily: "'Inter', sans-serif" }}
+            className="text-[11px] sm:text-xs font-medium text-black/90 mt-1 truncate"
+          >
+            {testimonial.location}
+          </p>
+        </div>
+      </div>
+    </article>
+  );
+};
+
+const Testimonials = ({ service: propService }) => {
+  const { slug } = useParams();
+  const [allTestimonials, setAllTestimonials] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [visibleCards, setVisibleCards] = useState(3);
+
+  // 🔄 Fetch dynamic testimonials from Backend API (with /v1)
+  useEffect(() => {
+    const fetchTestimonials = async () => {
+      try {
+        const apiUrl = import.meta.env.VITE_API_URL
+          ? `${import.meta.env.VITE_API_URL}/api/v1/website-control/testimonials`
+          : "http://localhost:5000/api/v1/website-control/testimonials";
+
+        let response;
+        try {
+          response = await fetch(apiUrl);
+        } catch {
+          response = await fetch("/api/v1/website-control/testimonials");
+        }
+
+        const resData = await response.json();
+        if (resData.success && Array.isArray(resData.data) && resData.data.length > 0) {
+          const uniqueItems = Array.from(
+            new Map(resData.data.map((item) => [item._id || item.name, item])).values()
+          );
+          setAllTestimonials(uniqueItems);
+        }
+      } catch (error) {
+        console.error("Backend fetch failed, using fallback:", error);
+      }
+    };
+
+    fetchTestimonials();
+  }, []);
+
+  // Compute matched testimonials strictly for this service
+  const activeTestimonials = useMemo(() => {
+    // 1. Dynamic approved testimonials from backend that match THIS specific service
+    const matchedBackend = allTestimonials.filter((item) =>
+      isMatchingService(item, propService, slug)
+    );
+
+    // 2. Dedicated dummy testimonials tailored specifically for this service (5-6 reviews)
+    const specificDummy = getSpecificDummyTestimonials(propService, slug);
+
+    // If dynamic backend testimonials exist for this service:
+    if (matchedBackend.length > 0) {
+      // Prioritize live approved testimonials from dashboard!
+      // Append specificDummy reviews (preventing duplicates) so the carousel always has 5-6+ cards
+      // and the < > navigation buttons are always enabled and functional!
+      const combined = [...matchedBackend];
+      for (const dummy of specificDummy) {
+        if (!combined.some((c) => c.name.toLowerCase() === dummy.name.toLowerCase())) {
+          combined.push(dummy);
+        }
+      }
+      return combined;
+    }
+
+    // If no dynamic testimonials exist yet in backend for this service,
+    // show ALL 5 to 6 dedicated, tailored dummy reviews for this service!
+    if (specificDummy.length > 0) {
+      return specificDummy;
+    }
+
+    return [];
+  }, [allTestimonials, propService, slug]);
+
+  // Reset index whenever the service or testimonials list changes
+  useEffect(() => {
+    setCurrentIndex(0);
+  }, [propService, slug, activeTestimonials.length]);
 
   /* =========================================
       RESPONSIVE CARDS
@@ -187,18 +292,19 @@ const Testimonials = () => {
     };
   }, []);
 
-  const maxIndex = Math.max(0, testimonials.length - visibleCards);
+  const totalCards = activeTestimonials.length;
+  const maxIndex = Math.max(0, totalCards - visibleCards);
 
   const goPrev = () => {
-    setCurrentIndex((prev) => Math.max(0, prev - 1));
+    setCurrentIndex((prev) => Math.max(0, prev - visibleCards));
   };
 
   const goNext = () => {
-    setCurrentIndex((prev) => Math.min(maxIndex, prev + 1));
+    setCurrentIndex((prev) => Math.min(maxIndex, prev + visibleCards));
   };
 
-  const trackWidthPercent = (testimonials.length / visibleCards) * 100;
-  const singleCardShiftPercent = 100 / testimonials.length;
+  const trackWidthPercent = totalCards > 0 ? (totalCards / visibleCards) * 100 : 100;
+  const singleCardShiftPercent = totalCards > 0 ? 100 / totalCards : 0;
 
   return (
     <section className="w-full bg-white overflow-hidden py-10 sm:py-14 lg:py-16">
@@ -260,16 +366,16 @@ const Testimonials = () => {
               transform: `translateX(-${currentIndex * singleCardShiftPercent}%)`,
             }}
           >
-            {testimonials.map((testimonial, index) => (
+            {activeTestimonials.map((testimonial, index) => (
               <div
-                key={`${testimonial.name}-${index}`}
+                key={`${testimonial._id || testimonial.name}-${index}`}
                 style={{
-                  width: `${100 / testimonials.length}%`,
+                  width: `${100 / totalCards}%`,
                 }}
                 className="px-2.5 shrink-0"
               >
-                {/* UNIFORM CARD HEIGHT */}
-                <div className="w-full h-[255px] sm:h-[265px]">
+                {/* UNIFORM CARD HEIGHT WITH GENEROUS SPACING FOR ALIGNMENT */}
+                <div className="w-full h-[270px] sm:h-[280px]">
                   <TestimonialCard testimonial={testimonial} />
                 </div>
               </div>
@@ -278,7 +384,7 @@ const Testimonials = () => {
         </div>
 
         {/* =========================================
-            NAVIGATION BUTTONS
+            NAVIGATION BUTTONS (< >)
         ========================================== */}
         <div className="mt-8 flex justify-center items-center gap-4">
           <button

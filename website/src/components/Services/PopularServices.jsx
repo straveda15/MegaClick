@@ -74,8 +74,14 @@ const PopularServices = ({ onSelectService }) => {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@400;500;600;700&display=swap');
 
+        /* Standard Desktop (1440px) */
+        @media (min-width: 1440px) {
+          .popular-container { max-width: 1440px !important; padding-left: 4rem !important; padding-right: 4rem !important; }
+        }
+
         /* Large Desktop (1920px Full HD) */
         @media (min-width: 1920px) {
+          .popular-container { max-width: 1800px !important; padding-left: 5rem !important; padding-right: 5rem !important; }
           .popular-section { padding-top: 2rem !important; padding-bottom: 2rem !important; }
           .popular-heading { font-size: 1.35rem !important; margin-bottom: 1.5rem !important; }
           .popular-grid { gap: 1.5rem !important; }
@@ -85,6 +91,7 @@ const PopularServices = ({ onSelectService }) => {
 
         /* 4K Ultra-Wide Desktop (3840px) */
         @media (min-width: 3840px) {
+          .popular-container { max-width: 3400px !important; padding-left: 8rem !important; padding-right: 8rem !important; }
           .popular-section { padding-top: 4rem !important; padding-bottom: 4rem !important; }
           .popular-heading { font-size: 2.25rem !important; margin-bottom: 2.5rem !important; }
           .popular-grid { gap: 3rem !important; }
@@ -93,7 +100,7 @@ const PopularServices = ({ onSelectService }) => {
         }
       `}</style>
 
-      <div className="max-w-[1380px] mx-auto px-4 sm:px-6 min-[1440px]:px-10">
+      <div className="popular-container max-w-[1380px] mx-auto px-4 sm:px-6 min-[1440px]:px-10">
         {/* =========================================
             CONSISTENT HEADING
         ========================================== */}

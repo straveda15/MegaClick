@@ -54,11 +54,15 @@ const PRESET_SERVICES = [
   { title: "Accounting / Audit Services", category: "Business / Financial Services" },
   { title: "Project Report & Financing", category: "Business / Financial Services" },
   { title: "Trust Registration & Audit", category: "Business / Financial Services" },
+  { title: "Liaisoning with Govt. Offices", category: "Business / Financial Services" },
+  { title: "Tender Consultancy", category: "Business / Financial Services" },
   { title: "Import Export Code (IEC)", category: "Business / Financial Services" },
   { title: "Digital Signature Certificate (DSC)", category: "Business / Financial Services" },
 
   // Other Services
   { title: "Real Estate Services (Sell / Purchase / Rent / Lease)", category: "Other Services" },
+  { title: "Name Transfer & Address Update in Light Bill", category: "Other Services" },
+  { title: "Name Transfer in Property / Water Tax Bill / NMC Services", category: "Other Services" },
   { title: "MSME / UDYAM Registration", category: "Other Services" },
   { title: "MSME Registration", category: "Other Services" },
   { title: "Shop Act License", category: "Other Services" },

@@ -1132,110 +1132,113 @@ const HowItWorks = () => {
                     />
                   </div>
 
-                  {/* STEP NUMBER */}
-                  <div
-                    className={`
-                      hiw-step-num
-                      mt-2.5
-                      text-[11px]
-                      sm:text-xs
-                      font-bold
-                      transition-colors
-                      duration-300
-                      ${
-                        isMobileActive
-                          ? "max-lg:text-green-600"
-                          : "text-[#0B4EA2]"
-                      }
-                    `}
-                  >
-                    STEP {item.number}
-                  </div>
-
-                  {/* TITLE & DESCRIPTION WRAPPER */}
-                  <div
-                    className="
-                      hiw-step-text-wrapper
-                      w-full
-                      max-w-[240px]
-                      flex
-                      flex-col
-                      items-center
-                      mt-1
-                      sm:mt-1.5
-                    "
-                  >
-                    {/* TITLE */}
-                    <h4
-                      style={{
-                        fontFamily: "'Hedvig Letters Serif', serif",
-                      }}
-                      className="
-                        hiw-step-title
-                        text-base
-                        sm:text-lg
+                  {/* STEP CONTENT WRAPPER - Solid background on mobile so line stays under/behind text */}
+                  <div className="w-full flex flex-col items-center bg-blue-50 lg:bg-transparent relative z-10 px-2 py-1 rounded-2xl">
+                    {/* STEP NUMBER */}
+                    <div
+                      className={`
+                        hiw-step-num
+                        mt-2.5
+                        text-[11px]
+                        sm:text-xs
                         font-bold
-                        text-gray-900
-                        leading-snug
-                        w-full
-                        text-center
-                      "
+                        transition-colors
+                        duration-300
+                        ${
+                          isMobileActive
+                            ? "max-lg:text-green-600"
+                            : "text-[#0B4EA2]"
+                        }
+                      `}
                     >
-                      {item.title}
-                    </h4>
+                      STEP {item.number}
+                    </div>
 
-                    {/* DESCRIPTION */}
-                    <p
+                    {/* TITLE & DESCRIPTION WRAPPER */}
+                    <div
                       className="
-                        hiw-step-text
-                        mt-1.5
+                        hiw-step-text-wrapper
                         w-full
-                        text-xs
-                        sm:text-[13px]
-                        leading-[1.45]
-                        text-gray-600
-                        text-center
-                        px-1
+                        max-w-[240px]
+                        flex
+                        flex-col
+                        items-center
+                        mt-1
+                        sm:mt-1.5
                       "
                     >
-                      {item.text}
-                    </p>
-                  </div>
+                      {/* TITLE */}
+                      <h4
+                        style={{
+                          fontFamily: "'Hedvig Letters Serif', serif",
+                        }}
+                        className="
+                          hiw-step-title
+                          text-base
+                          sm:text-lg
+                          font-bold
+                          text-gray-900
+                          leading-snug
+                          w-full
+                          text-center
+                        "
+                      >
+                        {item.title}
+                      </h4>
 
-                  {/* BADGE */}
-                  <div
-                    className="
-                      hiw-step-badge
-                      mt-2.5
-                      sm:mt-3
-                      px-2.5
-                      py-0.5
-                      rounded-full
-                      bg-white/80
-                      border
-                      border-blue-100
-                      flex
-                      items-center
-                      justify-center
-                      gap-1
-                      shadow-xs
-                    "
-                  >
-                    <Check
-                      size={12}
-                      className="text-green-600 shrink-0"
-                    />
-                    <span
+                      {/* DESCRIPTION */}
+                      <p
+                        className="
+                          hiw-step-text
+                          mt-1.5
+                          w-full
+                          text-xs
+                          sm:text-[13px]
+                          leading-[1.45]
+                          text-gray-600
+                          text-center
+                          px-1
+                        "
+                      >
+                        {item.text}
+                      </p>
+                    </div>
+
+                    {/* BADGE */}
+                    <div
                       className="
-                        text-[10px]
-                        sm:text-[10.5px]
-                        font-semibold
-                        text-[#0B4EA2]
-                        whitespace-nowrap
+                        hiw-step-badge
+                        mt-2.5
+                        sm:mt-3
+                        px-2.5
+                        py-0.5
+                        rounded-full
+                        bg-white/80
+                        border
+                        border-blue-100
+                        flex
+                        items-center
+                        justify-center
+                        gap-1
+                        shadow-xs
                       "
                     >
-                      Fast &amp; Secure
-                    </span>
+                      <Check
+                        size={12}
+                        className="text-green-600 shrink-0"
+                      />
+                      <span
+                        className="
+                          text-[10px]
+                          sm:text-[10.5px]
+                          font-semibold
+                          text-[#0B4EA2]
+                          whitespace-nowrap
+                        "
+                      >
+                        Fast &amp; Secure
+                      </span>
+                    </div>
                   </div>
                 </div>
               );
