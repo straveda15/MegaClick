@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -66,6 +65,178 @@ const Services = () => {
   return (
     <section className="w-full bg-white font-['Inter',sans-serif] py-8 sm:py-12 lg:py-16 min-[1920px]:py-20 min-[3840px]:py-28">
       <style>{`
+        /* =========================================================
+           MOBILE OPTIMIZATION
+           ========================================================= */
+
+        @media (max-width: 639px) {
+          .services-container {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+          }
+
+          .services-header {
+            margin-bottom: 1.5rem !important;
+          }
+
+          .services-tagline {
+            font-size: 0.7rem !important;
+            margin-bottom: 0.5rem !important;
+            letter-spacing: 0.18em !important;
+          }
+
+          .services-title {
+            font-size: 1.65rem !important;
+            line-height: 1.2 !important;
+            margin-bottom: 0.5rem !important;
+          }
+
+          .services-desc {
+            font-size: 0.82rem !important;
+            line-height: 1.6 !important;
+            margin-top: 0.5rem !important;
+          }
+
+          .services-grid {
+            gap: 1rem !important;
+          }
+
+          /*
+            Compact mobile cards
+          */
+          .services-card {
+            border-radius: 1.25rem !important;
+          }
+
+          .services-card-content {
+            padding: 1.15rem 1rem 0.75rem !important;
+          }
+
+          /*
+            Smaller title area so button comes upward
+          */
+          .services-card-title-wrapper {
+            height: 3.25rem !important;
+            min-height: 3.25rem !important;
+            margin-bottom: 0.35rem !important;
+          }
+
+          .services-card-title {
+            font-size: 1.05rem !important;
+            line-height: 1.25 !important;
+            min-height: auto !important;
+          }
+
+          /*
+            Paragraph slightly bigger and more readable,
+            but with reduced height to keep card compact
+          */
+          .services-card-description-wrapper {
+            height: 6.9rem !important;
+            min-height: 6.9rem !important;
+            margin-bottom: 0.65rem !important;
+          }
+
+          .services-card-desc {
+            font-size: 0.875rem !important;
+            line-height: 1.55 !important;
+          }
+
+          /*
+            Read More moves upward
+          */
+          .services-read-more-wrapper {
+            margin-top: 0 !important;
+          }
+
+          .services-btn {
+            font-size: 0.75rem !important;
+            padding: 0.4rem 1rem !important;
+            gap: 0.4rem !important;
+          }
+
+          .services-btn svg {
+            width: 13px !important;
+            height: 13px !important;
+          }
+
+          /*
+            Compact bottom icon section
+          */
+          .services-icon-section {
+            padding-top: 0.75rem !important;
+            padding-bottom: 1rem !important;
+          }
+
+          .services-icon-box {
+            width: 3.25rem !important;
+            height: 3.25rem !important;
+            border-radius: 0.85rem !important;
+          }
+
+          .services-icon-box svg {
+            width: 1.45rem !important;
+            height: 1.45rem !important;
+          }
+        }
+
+        /* =========================================================
+           SMALL PHONES
+           ========================================================= */
+
+        @media (max-width: 374px) {
+          .services-title {
+            font-size: 1.5rem !important;
+          }
+
+          .services-desc {
+            font-size: 0.78rem !important;
+          }
+
+          .services-card-content {
+            padding: 1rem 0.85rem 0.65rem !important;
+          }
+
+          .services-card-title-wrapper {
+            height: 3rem !important;
+            min-height: 3rem !important;
+          }
+
+          .services-card-title {
+            font-size: 1rem !important;
+          }
+
+          .services-card-description-wrapper {
+            height: 7rem !important;
+            min-height: 7rem !important;
+          }
+
+          .services-card-desc {
+            font-size: 0.84rem !important;
+            line-height: 1.5 !important;
+          }
+
+          .services-btn {
+            font-size: 0.72rem !important;
+            padding: 0.38rem 0.9rem !important;
+          }
+
+          .services-icon-section {
+            padding-top: 0.65rem !important;
+            padding-bottom: 0.85rem !important;
+          }
+
+          .services-icon-box {
+            width: 3rem !important;
+            height: 3rem !important;
+          }
+        }
+
+        /* =========================================================
+           DESKTOP 1440+
+           ORIGINAL DESKTOP STYLING
+           ========================================================= */
+
         @media (min-width: 1440px) {
           .services-container {
             max-width: 1380px !important;
@@ -101,10 +272,6 @@ const Services = () => {
             padding: 2rem 1.5rem 1.25rem !important;
           }
 
-          /*
-            All card headings use the same fixed title area.
-            This keeps every heading on the same horizontal line.
-          */
           .services-card-title-wrapper {
             height: 4.5rem !important;
             min-height: 4.5rem !important;
@@ -158,6 +325,10 @@ const Services = () => {
             height: 1.75rem !important;
           }
         }
+
+        /* =========================================================
+           DESKTOP 1920+
+           ========================================================= */
 
         @media (min-width: 1920px) {
           .services-container {
@@ -241,6 +412,10 @@ const Services = () => {
             height: 2rem !important;
           }
         }
+
+        /* =========================================================
+           DESKTOP 3840+
+           ========================================================= */
 
         @media (min-width: 3840px) {
           .services-container {
@@ -336,6 +511,7 @@ const Services = () => {
       `}</style>
 
       <div className="services-container w-full max-w-[1380px] mx-auto px-4 sm:px-6 lg:px-8 min-[1440px]:px-10">
+
         {/* SECTION HEADER */}
         <div className="services-header mb-8 sm:mb-10 lg:mb-12 w-full text-left">
           <p
@@ -379,7 +555,17 @@ const Services = () => {
                   cursor-pointer bg-gradient-to-b ${service.gradient}
                 `}
               >
-                <div className="services-card-content flex flex-col items-center text-center px-5 pt-7 pb-4 sm:px-6 sm:pt-8 min-[1920px]:px-8 min-[1920px]:pt-10 min-[3840px]:px-12 min-[3840px]:pt-16 flex-1">
+                <div
+                  className="
+                    services-card-content
+                    flex flex-col items-center text-center
+                    px-5 pt-7 pb-4
+                    sm:px-6 sm:pt-8
+                    min-[1920px]:px-8 min-[1920px]:pt-10
+                    min-[3840px]:px-12 min-[3840px]:pt-16
+                    flex-1
+                  "
+                >
 
                   {/* CARD TITLE */}
                   <div className="services-card-title-wrapper w-full h-[64px] sm:h-[64px] lg:h-[64px] flex items-start justify-center mb-3 shrink-0">
@@ -387,7 +573,13 @@ const Services = () => {
                       style={{
                         fontFamily: "'Hedvig Letters Serif', serif",
                       }}
-                      className="services-card-title text-xl sm:text-[22px] lg:text-[22px] font-bold text-[#0f172a] leading-snug w-full text-center flex items-start justify-center"
+                      className="
+                        services-card-title
+                        text-xl sm:text-[22px] lg:text-[22px]
+                        font-bold text-[#0f172a]
+                        leading-snug w-full text-center
+                        flex items-start justify-center
+                      "
                     >
                       {service.title}
                     </h3>
@@ -397,7 +589,14 @@ const Services = () => {
                   <div className="services-card-description-wrapper w-full h-[125px] sm:h-[125px] lg:h-[135px] min-[1440px]:h-[128px] min-[1920px]:h-[145px] min-[3840px]:h-[210px] flex items-start justify-center overflow-hidden mb-7 shrink-0">
                     <p
                       style={{ fontFamily: "'Inter', sans-serif" }}
-                      className="services-card-desc w-full text-xs sm:text-sm text-slate-600 leading-relaxed text-justify hyphens-auto"
+                      className="
+                        services-card-desc
+                        w-full text-xs sm:text-sm
+                        text-slate-600
+                        leading-relaxed
+                        text-justify
+                        hyphens-auto
+                      "
                     >
                       {service.short}
                     </p>
@@ -411,10 +610,16 @@ const Services = () => {
                       }
                       style={{ fontFamily: "'Inter', sans-serif" }}
                       className={`
-                        services-btn inline-flex items-center justify-center
-                        gap-2 border rounded-full px-5 py-2 text-xs sm:text-sm
-                        font-semibold transition-all duration-200 cursor-pointer
-                        shadow-xs ${service.btnBorder}
+                        services-btn
+                        inline-flex items-center justify-center
+                        gap-2 border rounded-full
+                        px-5 py-2
+                        text-xs sm:text-sm
+                        font-semibold
+                        transition-all duration-200
+                        cursor-pointer
+                        shadow-xs
+                        ${service.btnBorder}
                       `}
                     >
                       <span>Read More</span>
@@ -431,10 +636,14 @@ const Services = () => {
                 <div className="services-icon-section flex items-center justify-center py-6 sm:py-7 lg:py-7 shrink-0">
                   <div
                     className={`
-                      services-icon-box w-14 h-14 sm:w-16 sm:h-16
-                      lg:w-[60px] lg:h-[60px] rounded-2xl ${service.iconBg}
-                      flex items-center justify-center shadow-xs
-                      group-hover:scale-105 transition-transform duration-300
+                      services-icon-box
+                      w-14 h-14 sm:w-16 sm:h-16
+                      lg:w-[60px] lg:h-[60px]
+                      rounded-2xl ${service.iconBg}
+                      flex items-center justify-center
+                      shadow-xs
+                      group-hover:scale-105
+                      transition-transform duration-300
                     `}
                   >
                     <Icon
