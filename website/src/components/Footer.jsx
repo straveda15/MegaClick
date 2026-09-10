@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Phone, Mail, MapPin, ArrowUp } from "lucide-react";
 import {
@@ -77,6 +78,7 @@ const Footer = () => {
   ========================================================= */
   const openGmailCompose = () => {
     const email = "megaclickofficial@gmail.com";
+
     const gmailComposeUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(
       email
     )}`;
@@ -90,6 +92,7 @@ const Footer = () => {
   const scrollToTop = () => {
     if (window.location.pathname !== "/") {
       navigate("/");
+
       setTimeout(() => {
         window.scrollTo({
           top: 0,
@@ -109,6 +112,7 @@ const Footer = () => {
   ========================================================= */
   const handleNavigation = (path) => {
     navigate(path);
+
     if (path === "/") {
       setTimeout(() => {
         window.scrollTo({
@@ -120,132 +124,654 @@ const Footer = () => {
   };
 
   return (
-    <footer className="relative mt-auto overflow-hidden bg-gradient-to-br from-[#0e57ac] via-[#083A7A] to-[#041d3d] text-white font-['Inter',sans-serif] pt-5 sm:pt-6 min-[1440px]:pt-7 min-[1920px]:pt-9 min-[3840px]:pt-14 pb-4 min-[1440px]:pb-5 min-[3840px]:pb-8 footer-section">
-      {/* DIRECT DESKTOP & LAPTOP RESPONSIVE SCALING */}
+    <footer
+      className="
+        relative
+        mt-auto
+        overflow-hidden
+        bg-gradient-to-br
+        from-[#0e57ac]
+        via-[#083A7A]
+        to-[#041d3d]
+        text-white
+        font-['Inter',sans-serif]
+        pt-5
+        sm:pt-6
+        md:pt-7
+        min-[1440px]:pt-8
+        min-[1920px]:pt-10
+        min-[2560px]:pt-12
+        min-[3840px]:pt-14
+        pb-4
+        sm:pb-5
+        md:pb-5
+        min-[1920px]:pb-6
+        min-[3840px]:pb-8
+        footer-section
+      "
+    >
+      {/* =====================================================
+          RESPONSIVE FOOTER CSS
+      ===================================================== */}
       <style>{`
-        .app-container {
+        /* ===================================================
+           BASE CONTAINER
+        =================================================== */
+
+        .footer-container {
           width: 100%;
-          max-width: 1380px;
+          max-width: 100%;
           margin-left: auto;
           margin-right: auto;
-          padding-left: 1.25rem;
-          padding-right: 1.25rem;
+          padding-left: 1rem;
+          padding-right: 1rem;
         }
 
+        /* ===================================================
+           SMALL MOBILE
+        =================================================== */
+
+        @media (min-width: 375px) {
+          .footer-container {
+            padding-left: 1.25rem;
+            padding-right: 1.25rem;
+          }
+        }
+
+        /* ===================================================
+           TABLET
+        =================================================== */
+
         @media (min-width: 640px) {
-          .app-container {
+          .footer-container {
+            max-width: 640px;
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+          }
+        }
+
+        @media (min-width: 768px) {
+          .footer-container {
+            max-width: 768px;
             padding-left: 2rem;
             padding-right: 2rem;
           }
         }
 
-        /* Standard Desktop & Laptops (1440px x 900px / 1366px) */
+        /* ===================================================
+           SMALL LAPTOP
+        =================================================== */
+
         @media (min-width: 1024px) {
-          .app-container {
-            max-width: 1380px !important;
-            padding-left: 2.5rem !important;  /* px-10 (40px) */
-            padding-right: 2.5rem !important; /* px-10 (40px) */
+          .footer-container {
+            max-width: 1180px;
+            padding-left: 2rem;
+            padding-right: 2rem;
           }
+
+          .footer-brand-column {
+            width: 235px !important;
+          }
+
+          .footer-brand-title {
+            font-size: 1.45rem !important;
+          }
+
+          .footer-brand-desc {
+            font-size: 0.82rem !important;
+            line-height: 1.5 !important;
+          }
+
+          .footer-col-heading {
+            font-size: 0.7rem !important;
+            margin-bottom: 0.75rem !important;
+          }
+
+          .footer-link-text {
+            font-size: 0.78rem !important;
+            line-height: 1.45 !important;
+          }
+
+          .footer-contact-icon {
+            width: 15px !important;
+            height: 15px !important;
+          }
+
+          .footer-social-btn {
+            width: 36px !important;
+            height: 36px !important;
+          }
+        }
+
+        /* ===================================================
+           1280px
+        =================================================== */
+
+        @media (min-width: 1280px) {
+          .footer-container {
+            max-width: 1280px;
+            padding-left: 2.5rem;
+            padding-right: 2.5rem;
+          }
+
+          .footer-brand-column {
+            width: 270px !important;
+          }
+
+          .footer-brand-title {
+            font-size: 1.55rem !important;
+          }
+
+          .footer-brand-desc {
+            font-size: 0.86rem !important;
+          }
+
+          .footer-link-text {
+            font-size: 0.84rem !important;
+          }
+        }
+
+        /* ===================================================
+           1366px / STANDARD LAPTOP
+        =================================================== */
+
+        @media (min-width: 1366px) {
+          .footer-container {
+            max-width: 1340px;
+            padding-left: 2.5rem;
+            padding-right: 2.5rem;
+          }
+
+          .footer-brand-column {
+            width: 285px !important;
+          }
+
           .footer-brand-title {
             font-size: 1.6rem !important;
           }
+
+          .footer-brand-desc {
+            font-size: 0.88rem !important;
+          }
+
+          .footer-col-heading {
+            font-size: 0.73rem !important;
+          }
+
+          .footer-link-text {
+            font-size: 0.87rem !important;
+          }
+        }
+
+        /* ===================================================
+           1440px DESKTOP
+        =================================================== */
+
+        @media (min-width: 1440px) {
+          .footer-container {
+            max-width: 1440px;
+            padding-left: 3rem;
+            padding-right: 3rem;
+          }
+
+          .footer-brand-column {
+            width: 300px !important;
+          }
+
+          .footer-brand-title {
+            font-size: 1.65rem !important;
+          }
+
           .footer-brand-desc {
             font-size: 0.9rem !important;
             line-height: 1.5 !important;
           }
+
           .footer-col-heading {
             font-size: 0.75rem !important;
+            margin-bottom: 0.9rem !important;
           }
+
           .footer-link-text {
             font-size: 0.9rem !important;
           }
+
+          .footer-social-btn {
+            width: 40px !important;
+            height: 40px !important;
+          }
+
+          .footer-logo-img {
+            width: 40px !important;
+            height: 40px !important;
+          }
         }
 
-        /* Large Desktop (1920px x 1080px Full HD) */
-        @media (min-width: 1920px) {
-          .app-container {
-            max-width: 1800px !important;
-            padding-left: 4rem !important;   /* px-16 (64px) */
-            padding-right: 4rem !important;  /* px-16 (64px) */
+        /* ===================================================
+           1600px
+        =================================================== */
+
+        @media (min-width: 1600px) {
+          .footer-container {
+            max-width: 1600px;
+            padding-left: 3.5rem;
+            padding-right: 3.5rem;
           }
-          .footer-logo-img {
-            width: 3rem !important;
-            height: 3rem !important;
+
+          .footer-brand-column {
+            width: 320px !important;
           }
+
           .footer-brand-title {
-            font-size: 1.85rem !important;
+            font-size: 1.75rem !important;
           }
+
+          .footer-brand-desc {
+            font-size: 0.95rem !important;
+          }
+
+          .footer-link-text {
+            font-size: 0.95rem !important;
+          }
+        }
+
+        /* ===================================================
+           1920px FULL HD
+        =================================================== */
+
+        @media (min-width: 1920px) {
+          .footer-container {
+            max-width: 1800px;
+            padding-left: 4rem;
+            padding-right: 4rem;
+          }
+
+          .footer-brand-column {
+            width: 350px !important;
+          }
+
+          .footer-brand-title {
+            font-size: 1.9rem !important;
+          }
+
           .footer-brand-desc {
             font-size: 1rem !important;
-            max-width: 320px !important;
+            max-width: 340px !important;
+            line-height: 1.55 !important;
           }
+
           .footer-col-heading {
             font-size: 0.85rem !important;
             margin-bottom: 1rem !important;
           }
+
           .footer-link-text {
             font-size: 1rem !important;
+            line-height: 1.5 !important;
           }
+
           .footer-social-btn {
-            width: 2.75rem !important;
-            height: 2.75rem !important;
+            width: 44px !important;
+            height: 44px !important;
+          }
+
+          .footer-logo-img {
+            width: 48px !important;
+            height: 48px !important;
+          }
+
+          .footer-contact-icon {
+            width: 17px !important;
+            height: 17px !important;
           }
         }
 
-        /* 4K Ultra-Wide Desktop (3840px x 2160px) */
-        @media (min-width: 3840px) {
-          .app-container {
-            max-width: 3200px !important;
-            padding-left: 6rem !important;   /* px-24 (96px) */
-            padding-right: 6rem !important;  /* px-24 (96px) */
+        /* ===================================================
+           2200px
+        =================================================== */
+
+        @media (min-width: 2200px) {
+          .footer-container {
+            max-width: 2100px;
+            padding-left: 4.5rem;
+            padding-right: 4.5rem;
           }
+
+          .footer-brand-column {
+            width: 400px !important;
+          }
+
+          .footer-brand-title {
+            font-size: 2.15rem !important;
+          }
+
+          .footer-brand-desc {
+            font-size: 1.1rem !important;
+            max-width: 390px !important;
+          }
+
+          .footer-col-heading {
+            font-size: 0.95rem !important;
+          }
+
+          .footer-link-text {
+            font-size: 1.1rem !important;
+          }
+
+          .footer-social-btn {
+            width: 48px !important;
+            height: 48px !important;
+          }
+        }
+
+        /* ===================================================
+           2560px QHD / 2K
+        =================================================== */
+
+        @media (min-width: 2560px) {
+          .footer-container {
+            max-width: 2300px;
+            padding-left: 5rem;
+            padding-right: 5rem;
+          }
+
+          .footer-brand-column {
+            width: 450px !important;
+          }
+
+          .footer-brand-title {
+            font-size: 2.5rem !important;
+          }
+
+          .footer-brand-desc {
+            font-size: 1.25rem !important;
+            max-width: 450px !important;
+            line-height: 1.6 !important;
+          }
+
+          .footer-col-heading {
+            font-size: 1.05rem !important;
+            margin-bottom: 1.25rem !important;
+          }
+
+          .footer-link-text {
+            font-size: 1.25rem !important;
+            line-height: 1.55 !important;
+          }
+
+          .footer-social-btn {
+            width: 54px !important;
+            height: 54px !important;
+          }
+
           .footer-logo-img {
-            width: 5.5rem !important;
-            height: 5.5rem !important;
+            width: 60px !important;
+            height: 60px !important;
+          }
+
+          .footer-contact-icon {
+            width: 19px !important;
+            height: 19px !important;
+          }
+        }
+
+        /* ===================================================
+           3200px
+        =================================================== */
+
+        @media (min-width: 3200px) {
+          .footer-container {
+            max-width: 2900px;
+            padding-left: 5.5rem;
+            padding-right: 5.5rem;
+          }
+
+          .footer-brand-column {
+            width: 520px !important;
+          }
+
+          .footer-brand-title {
+            font-size: 3rem !important;
+          }
+
+          .footer-brand-desc {
+            font-size: 1.45rem !important;
+            max-width: 520px !important;
+          }
+
+          .footer-col-heading {
+            font-size: 1.2rem !important;
+          }
+
+          .footer-link-text {
+            font-size: 1.45rem !important;
+          }
+
+          .footer-social-btn {
+            width: 62px !important;
+            height: 62px !important;
+          }
+        }
+
+        /* ===================================================
+           3840px 4K
+        =================================================== */
+
+        @media (min-width: 3840px) {
+          .footer-container {
+            max-width: 3400px;
+            padding-left: 6rem;
+            padding-right: 6rem;
+          }
+
+          .footer-brand-column {
+            width: 600px !important;
+          }
+
+          .footer-logo-img {
+            width: 88px !important;
+            height: 88px !important;
             border-width: 2px !important;
           }
+
           .footer-brand-title {
             font-size: 3.5rem !important;
           }
+
           .footer-brand-desc {
             font-size: 1.6rem !important;
-            max-width: 550px !important;
+            max-width: 600px !important;
             line-height: 1.6 !important;
           }
+
           .footer-col-heading {
             font-size: 1.35rem !important;
             margin-bottom: 1.75rem !important;
           }
+
           .footer-link-text {
             font-size: 1.6rem !important;
+            line-height: 1.6 !important;
           }
+
           .footer-social-btn {
-            width: 4.5rem !important;
-            height: 4.5rem !important;
+            width: 72px !important;
+            height: 72px !important;
           }
+
           .footer-contact-icon {
-            width: 2rem !important;
-            height: 2rem !important;
+            width: 30px !important;
+            height: 30px !important;
+          }
+        }
+
+        /* ===================================================
+           DESKTOP CONTENT ALIGNMENT
+        =================================================== */
+
+        @media (min-width: 768px) {
+          .footer-desktop-content {
+            width: 100%;
+          }
+
+          .footer-link-columns {
+            min-width: 0;
+          }
+
+          .footer-link-column {
+            min-width: 0;
+          }
+
+          .footer-link-text {
+            max-width: 100%;
+            overflow-wrap: anywhere;
+            word-break: normal;
+          }
+
+          .footer-contact-item {
+            min-width: 0;
+          }
+
+          .footer-contact-item span {
+            min-width: 0;
+            overflow-wrap: anywhere;
+          }
+        }
+
+        /* ===================================================
+           MOBILE SAFETY / OVERFLOW
+        =================================================== */
+
+        @media (max-width: 767px) {
+          .footer-mobile-content {
+            width: 100%;
+            min-width: 0;
+          }
+
+          .footer-mobile-content > div {
+            min-width: 0;
+          }
+
+          .footer-mobile-contact {
+            width: 100%;
+            min-width: 0;
+          }
+
+          .footer-mobile-contact span {
+            min-width: 0;
+            overflow-wrap: anywhere;
+          }
+
+          .footer-watermark {
+            font-size: 21vw !important;
+          }
+        }
+
+        /* ===================================================
+           WATERMARK RESPONSIVE SCALING
+        =================================================== */
+
+        .footer-watermark {
+          font-family:
+            system-ui,
+            -apple-system,
+            BlinkMacSystemFont,
+            "Segoe UI",
+            Roboto,
+            sans-serif;
+          letter-spacing: -0.03em;
+        }
+
+        @media (min-width: 768px) {
+          .footer-watermark {
+            font-size: 18vw !important;
+          }
+        }
+
+        @media (min-width: 1440px) {
+          .footer-watermark {
+            font-size: 17vw !important;
+          }
+        }
+
+        @media (min-width: 1920px) {
+          .footer-watermark {
+            font-size: 15vw !important;
+          }
+        }
+
+        @media (min-width: 2560px) {
+          .footer-watermark {
+            font-size: 14vw !important;
+          }
+        }
+
+        @media (min-width: 3840px) {
+          .footer-watermark {
+            font-size: 13vw !important;
           }
         }
       `}</style>
 
-      {/* TOP ACCENT LINE */}
+      {/* =====================================================
+          TOP ACCENT LINE
+      ===================================================== */}
       <div className="h-1 bg-green-400 absolute top-0 left-0 right-0 z-10" />
 
-      {/* MEGACLICK WATERMARK — HUGE FADED BRAND TEXT ANCHORED TO THE FOOTER FLOOR */}
+      {/* =====================================================
+          MEGACLICK WATERMARK
+      ===================================================== */}
       <div
-        className="absolute inset-0 z-0 flex items-end justify-center pointer-events-none select-none overflow-hidden pb-2 md:pb-0"
+        className="
+          absolute
+          inset-0
+          z-0
+          flex
+          items-end
+          justify-center
+          pointer-events-none
+          select-none
+          overflow-hidden
+          pb-2
+          md:pb-0
+        "
         aria-hidden="true"
       >
-        <div className="absolute -top-1/4 left-1/2 -translate-x-1/2 md:top-0 md:left-auto md:right-0 md:translate-x-1/4 w-3/4 h-2/3 bg-[#3b82f6]/25 blur-[130px] rounded-full pointer-events-none" />
+        <div
+          className="
+            absolute
+            -top-1/4
+            left-1/2
+            -translate-x-1/2
+            md:top-0
+            md:left-auto
+            md:right-0
+            md:translate-x-1/4
+            w-3/4
+            h-2/3
+            bg-[#3b82f6]/25
+            blur-[130px]
+            rounded-full
+            pointer-events-none
+          "
+        />
 
         <span
-          className="text-[20vw] md:text-[18vw] font-black uppercase tracking-tight whitespace-nowrap text-center text-white/[0.06] md:text-white/[0.07] leading-[0.8] select-none"
+          className="
+            footer-watermark
+            text-[20vw]
+            md:text-[18vw]
+            font-black
+            uppercase
+            tracking-tight
+            whitespace-nowrap
+            text-center
+            text-white/[0.06]
+            md:text-white/[0.07]
+            leading-[0.8]
+            select-none
+          "
           style={{
-            fontFamily:
-              "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-            letterSpacing: "-0.03em",
             WebkitMaskImage:
               "linear-gradient(to right, transparent 0%, black 18%, black 82%, transparent 100%), linear-gradient(to bottom, black 55%, transparent 100%)",
             WebkitMaskComposite: "source-in",
@@ -258,54 +784,113 @@ const Footer = () => {
         </span>
       </div>
 
-      {/* MAIN FOOTER CONTENT */}
-      <div className="relative z-10 app-container">
-
-        {/* =======================================================
-            MOBILE VIEW (< md) — FULLY ORGANIZED UNDER PROPER HEADINGS
-        ======================================================= */}
-        <div className="md:hidden w-full flex flex-col items-start text-left px-1 pb-1 space-y-6">
-
-          {/* 0. BACK TO TOP */}
+      {/* =====================================================
+          MAIN FOOTER CONTENT
+      ===================================================== */}
+      <div className="relative z-10 footer-container">
+        {/* ===================================================
+            MOBILE VIEW
+        =================================================== */}
+        <div
+          className="
+            md:hidden
+            footer-mobile-content
+            w-full
+            flex
+            flex-col
+            items-start
+            text-left
+            px-0
+            pb-1
+            space-y-6
+          "
+        >
+          {/* BACK TO TOP */}
           <button
             type="button"
             onClick={scrollToTop}
-            className="ml-auto flex items-center gap-1.5 text-[11px] font-black text-white/70 uppercase tracking-[0.15em] hover:text-green-400 transition-colors cursor-pointer p-0 bg-transparent border-none"
+            className="
+              ml-auto
+              flex
+              items-center
+              gap-1.5
+              text-[11px]
+              sm:text-xs
+              font-black
+              text-white/70
+              uppercase
+              tracking-[0.15em]
+              hover:text-green-400
+              transition-colors
+              cursor-pointer
+              p-0
+              bg-transparent
+              border-none
+            "
           >
             <ArrowUp size={13} className="shrink-0" />
             Back to Top
           </button>
 
-          {/* 1. LOGO & BRAND INFO */}
-          <div>
+          {/* LOGO & BRAND INFO */}
+          <div className="w-full min-w-0">
             <div className="flex items-center justify-start gap-3 mb-2">
               <img
                 src={logo}
                 alt="MegaClick"
-                className="w-10 h-10 rounded-full object-contain p-1 border border-blue-300 bg-white shadow-md shadow-blue-900/30"
+                className="
+                  w-10
+                  h-10
+                  sm:w-11
+                  sm:h-11
+                  rounded-full
+                  object-contain
+                  p-1
+                  border
+                  border-blue-300
+                  bg-white
+                  shadow-md
+                  shadow-blue-900/30
+                  shrink-0
+                "
               />
-              <h2 className="text-2xl font-bold tracking-tight">
+
+              <h2 className="text-2xl sm:text-[1.7rem] font-bold tracking-tight">
                 <span className="text-white">Mega</span>
                 <span className="text-green-400">Click</span>
               </h2>
             </div>
-            <p className="text-[13px] text-blue-100/90 font-medium text-left">
+
+            <p className="text-[13px] sm:text-sm text-blue-100/90 font-medium text-left leading-relaxed">
               Exceptional value. Cost effective solutions.
             </p>
           </div>
 
-          {/* 2. EXPLORE SECTION */}
+          {/* EXPLORE */}
           <div className="w-full text-left">
-            <h3 className="text-[11px] font-black uppercase tracking-widest text-green-400 mb-2.5">
+            <h3 className="text-[11px] sm:text-xs font-black uppercase tracking-widest text-green-400 mb-2.5">
               EXPLORE
             </h3>
+
             <div className="flex flex-col items-start gap-2.5">
               {FOOTER_LINKS.EXPLORE.map((link) => (
                 <button
                   key={link.label}
                   type="button"
                   onClick={() => handleNavigation(link.path)}
-                  className="text-[13.5px] font-semibold text-blue-100/90 hover:text-white transition-colors text-left cursor-pointer p-0 bg-transparent border-none"
+                  className="
+                    text-[13.5px]
+                    sm:text-sm
+                    font-semibold
+                    text-blue-100/90
+                    hover:text-white
+                    transition-colors
+                    text-left
+                    cursor-pointer
+                    p-0
+                    bg-transparent
+                    border-none
+                  "
                 >
                   {link.label}
                 </button>
@@ -313,18 +898,31 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* 3. SERVICES SECTION */}
+          {/* SERVICES */}
           <div className="w-full text-left">
-            <h3 className="text-[11px] font-black uppercase tracking-widest text-green-400 mb-2.5">
+            <h3 className="text-[11px] sm:text-xs font-black uppercase tracking-widest text-green-400 mb-2.5">
               SERVICES
             </h3>
+
             <div className="flex flex-col items-start gap-2.5">
               {FOOTER_LINKS.SERVICES.map((link) => (
                 <button
                   key={link.label}
                   type="button"
                   onClick={() => handleNavigation(link.path)}
-                  className="text-[13.5px] font-semibold text-blue-100/90 hover:text-white transition-colors text-left cursor-pointer p-0 bg-transparent border-none"
+                  className="
+                    text-[13.5px]
+                    sm:text-sm
+                    font-semibold
+                    text-blue-100/90
+                    hover:text-white
+                    transition-colors
+                    text-left
+                    cursor-pointer
+                    p-0
+                    bg-transparent
+                    border-none
+                  "
                 >
                   {link.label}
                 </button>
@@ -332,40 +930,97 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* 4. CONTACT US SECTION (WITH 3-LINE ADDRESS) */}
+          {/* CONTACT US */}
           <div className="w-full text-left">
-            <h3 className="text-[11px] font-black uppercase tracking-widest text-green-400 mb-3">
+            <h3 className="text-[11px] sm:text-xs font-black uppercase tracking-widest text-green-400 mb-3">
               CONTACT US
             </h3>
-            <div className="flex flex-col items-start gap-3.5 text-[13px] font-semibold text-blue-100/90">
-              
+
+            <div
+              className="
+                footer-mobile-contact
+                flex
+                flex-col
+                items-start
+                gap-3.5
+                text-[13px]
+                sm:text-sm
+                font-semibold
+                text-blue-100/90
+              "
+            >
               {/* EMAIL */}
               <button
                 type="button"
                 onClick={openGmailCompose}
-                className="flex items-center gap-3 text-left w-full cursor-pointer bg-transparent border-0 p-0 text-[13px] font-semibold text-blue-100/90 hover:text-white transition-colors"
+                className="
+                  flex
+                  items-start
+                  gap-3
+                  text-left
+                  w-full
+                  cursor-pointer
+                  bg-transparent
+                  border-0
+                  p-0
+                  text-[13px]
+                  sm:text-sm
+                  font-semibold
+                  text-blue-100/90
+                  hover:text-white
+                  transition-colors
+                "
               >
-                <Mail size={16} className="shrink-0 text-green-400" />
-                <span className="break-all">megaclickofficial@gmail.com</span>
+                <Mail
+                  size={16}
+                  className="shrink-0 mt-0.5 text-green-400"
+                />
+
+                <span className="break-all">
+                  megaclickofficial@gmail.com
+                </span>
               </button>
 
               {/* PHONE */}
               <a
                 href="tel:+919921611911"
-                className="flex items-center gap-3 hover:text-white transition-colors text-left"
+                className="
+                  flex
+                  items-center
+                  gap-3
+                  hover:text-white
+                  transition-colors
+                  text-left
+                "
               >
-                <Phone size={16} className="shrink-0 text-green-400" />
+                <Phone
+                  size={16}
+                  className="shrink-0 text-green-400"
+                />
+
                 <span>+91 9921611911</span>
               </a>
 
-              {/* 3-LINE FORMATTED ADDRESS */}
+              {/* ADDRESS */}
               <a
                 href="https://www.google.com/maps/search/?api=1&query=4th+Floor+Tristar+Complex+Jehan+Circle+Gangapur+Road+Nashik+Maharashtra+422005"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-start gap-3 hover:text-white transition-colors text-left"
+                className="
+                  flex
+                  items-start
+                  gap-3
+                  hover:text-white
+                  transition-colors
+                  text-left
+                  w-full
+                "
               >
-                <MapPin size={16} className="mt-1 shrink-0 text-green-400" />
+                <MapPin
+                  size={16}
+                  className="mt-1 shrink-0 text-green-400"
+                />
+
                 <span className="leading-snug text-left">
                   4th Floor, Tristar Complex,
                   <br />
@@ -377,10 +1032,11 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* 5. SOCIAL ICONS */}
+          {/* SOCIAL ICONS */}
           <div className="flex justify-start items-center gap-3 pt-1">
             {SOCIAL_LINKS.map((social, index) => {
               const Icon = social.icon;
+
               return (
                 <a
                   key={index}
@@ -388,7 +1044,23 @@ const Footer = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={social.label}
-                  className={`w-10 h-10 rounded-full ${social.bgColor} ${social.iconColor} flex items-center justify-center transition-all duration-300 hover:scale-110 ${social.hoverColor} cursor-pointer`}
+                  className={`
+                    w-10
+                    h-10
+                    sm:w-11
+                    sm:h-11
+                    rounded-full
+                    ${social.bgColor}
+                    ${social.iconColor}
+                    flex
+                    items-center
+                    justify-center
+                    transition-all
+                    duration-300
+                    hover:scale-110
+                    ${social.hoverColor}
+                    cursor-pointer
+                  `}
                 >
                   <Icon size={17} />
                 </a>
@@ -396,22 +1068,52 @@ const Footer = () => {
             })}
           </div>
 
-          {/* 6. MOBILE BOTTOM BAR */}
-          <div className="border-t border-white/10 pt-4 w-full flex flex-col gap-2 text-left">
-            <p className="text-[11px] font-bold uppercase tracking-wider text-blue-100/70 text-left">
+          {/* MOBILE BOTTOM BAR */}
+          <div
+            className="
+              border-t
+              border-white/10
+              pt-4
+              w-full
+              flex
+              flex-col
+              gap-2
+              text-left
+            "
+          >
+            <p className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-blue-100/70 text-left leading-relaxed">
               &copy; {new Date().getFullYear()} MegaClick. All rights reserved.
             </p>
 
-            <div className="flex items-center gap-5">
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
               <a
                 href="/privacy-policy"
-                className="text-[11px] font-bold uppercase tracking-wider text-blue-100/70 hover:text-green-400 transition-colors"
+                className="
+                  text-[11px]
+                  sm:text-xs
+                  font-bold
+                  uppercase
+                  tracking-wider
+                  text-blue-100/70
+                  hover:text-green-400
+                  transition-colors
+                "
               >
                 Privacy Policy
               </a>
+
               <a
                 href="/terms-of-service"
-                className="text-[11px] font-bold uppercase tracking-wider text-blue-100/70 hover:text-green-400 transition-colors"
+                className="
+                  text-[11px]
+                  sm:text-xs
+                  font-bold
+                  uppercase
+                  tracking-wider
+                  text-blue-100/70
+                  hover:text-green-400
+                  transition-colors
+                "
               >
                 Terms of Service
               </a>
@@ -419,40 +1121,127 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* =======================================================
-            DESKTOP & LAPTOP VIEW (>= md)
-        ======================================================= */}
-        <div className="hidden md:block">
+        {/* ===================================================
+            DESKTOP & LAPTOP VIEW
+        =================================================== */}
+        <div className="hidden md:block footer-desktop-content">
           {/* BACK TO TOP */}
-          <div className="flex justify-end mb-3 min-[1440px]:mb-4">
+          <div
+            className="
+              flex
+              justify-end
+              mb-3
+              min-[1440px]:mb-4
+              min-[1920px]:mb-5
+            "
+          >
             <button
               type="button"
               onClick={scrollToTop}
-              className="flex items-center gap-1.5 text-[11px] min-[1920px]:text-xs font-black text-white/70 uppercase tracking-[0.2em] hover:text-green-400 transition-colors cursor-pointer p-0 bg-transparent border-none"
+              className="
+                flex
+                items-center
+                gap-1.5
+                text-[11px]
+                min-[1440px]:text-xs
+                min-[1920px]:text-sm
+                font-black
+                text-white/70
+                uppercase
+                tracking-[0.2em]
+                hover:text-green-400
+                transition-colors
+                cursor-pointer
+                p-0
+                bg-transparent
+                border-none
+              "
             >
-              <ArrowUp size={13} className="shrink-0" />
+              <ArrowUp
+                size={13}
+                className="shrink-0 min-[1920px]:w-4 min-[1920px]:h-4"
+              />
+
               Back to Top
             </button>
           </div>
 
-          <div className="flex flex-col lg:flex-row lg:items-start gap-y-6 gap-x-8 min-[1440px]:gap-x-10 mb-4">
-
+          {/* MAIN DESKTOP ROW */}
+          <div
+            className="
+              flex
+              flex-col
+              lg:flex-row
+              lg:items-start
+              gap-y-7
+              gap-x-8
+              min-[1440px]:gap-x-10
+              min-[1920px]:gap-x-14
+              min-[2560px]:gap-x-20
+              mb-4
+              min-[1920px]:mb-6
+            "
+          >
             {/* BRAND */}
-            <div className="lg:w-[260px] min-[1440px]:w-[300px] lg:shrink-0 space-y-3.5 min-[1440px]:space-y-4">
+            <div
+              className="
+                footer-brand-column
+                lg:shrink-0
+                space-y-3.5
+                min-[1440px]:space-y-4
+                min-[1920px]:space-y-5
+              "
+            >
               <div>
-                <div className="flex items-center gap-3 mb-1.5">
+                <div className="flex items-center gap-3 min-[1920px]:gap-4 mb-1.5">
                   <img
                     src={logo}
                     alt="MegaClick"
-                    className="footer-logo-img w-9 h-9 min-[1440px]:w-10 min-[1440px]:h-10 rounded-full object-contain p-1 border border-blue-300 bg-white shadow-md shadow-blue-900/30"
+                    className="
+                      footer-logo-img
+                      w-9
+                      h-9
+                      min-[1440px]:w-10
+                      min-[1440px]:h-10
+                      rounded-full
+                      object-contain
+                      p-1
+                      border
+                      border-blue-300
+                      bg-white
+                      shadow-md
+                      shadow-blue-900/30
+                      shrink-0
+                    "
                   />
-                  <h2 className="footer-brand-title text-xl min-[1440px]:text-2xl font-bold tracking-tight">
+
+                  <h2
+                    className="
+                      footer-brand-title
+                      text-xl
+                      min-[1440px]:text-2xl
+                      font-bold
+                      tracking-tight
+                      whitespace-nowrap
+                    "
+                  >
                     <span className="text-white">Mega</span>
                     <span className="text-green-400">Click</span>
                   </h2>
                 </div>
 
-                <p className="footer-brand-desc mt-1.5 text-[13px] min-[1440px]:text-[14px] text-blue-100/90 font-medium leading-snug max-w-[280px]">
+                <p
+                  className="
+                    footer-brand-desc
+                    mt-1.5
+                    text-[13px]
+                    min-[1440px]:text-[14px]
+                    text-blue-100/90
+                    font-medium
+                    leading-snug
+                    max-w-[280px]
+                  "
+                >
                   Exceptional value.
                   <br />
                   Cost effective solutions.
@@ -460,9 +1249,18 @@ const Footer = () => {
               </div>
 
               {/* SOCIAL ICONS */}
-              <div className="flex gap-2.5 min-[1440px]:gap-3 pt-1">
+              <div
+                className="
+                  flex
+                  gap-2.5
+                  min-[1440px]:gap-3
+                  min-[1920px]:gap-3.5
+                  pt-1
+                "
+              >
                 {SOCIAL_LINKS.map((social, index) => {
                   const Icon = social.icon;
+
                   return (
                     <a
                       key={index}
@@ -470,9 +1268,29 @@ const Footer = () => {
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={social.label}
-                      className={`footer-social-btn w-9 h-9 min-[1440px]:w-10 min-[1440px]:h-10 rounded-full ${social.bgColor} ${social.iconColor} flex items-center justify-center transition-all duration-300 hover:scale-110 ${social.hoverColor} cursor-pointer`}
+                      className={`
+                        footer-social-btn
+                        w-9
+                        h-9
+                        min-[1440px]:w-10
+                        min-[1440px]:h-10
+                        rounded-full
+                        ${social.bgColor}
+                        ${social.iconColor}
+                        flex
+                        items-center
+                        justify-center
+                        transition-all
+                        duration-300
+                        hover:scale-110
+                        ${social.hoverColor}
+                        cursor-pointer
+                      `}
                     >
-                      <Icon size={16} />
+                      <Icon
+                        size={16}
+                        className="min-[1920px]:w-[18px] min-[1920px]:h-[18px]"
+                      />
                     </a>
                   );
                 })}
@@ -480,134 +1298,319 @@ const Footer = () => {
             </div>
 
             {/* LINK COLUMNS */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:flex lg:flex-1 lg:justify-between gap-y-8 gap-x-6 lg:gap-x-10">
-
-            {/* EXPLORE */}
-            <div className="space-y-2.5">
-              <h3 className="footer-col-heading text-[11px] font-black uppercase tracking-widest text-green-400">
-                EXPLORE
-              </h3>
-
-              <ul className="space-y-1.5">
-                {FOOTER_LINKS.EXPLORE.map((link) => (
-                  <li key={link.label}>
-                    <button
-                      type="button"
-                      onClick={() => handleNavigation(link.path)}
-                      className="footer-link-text text-[13px] font-semibold text-blue-100/90 hover:text-white transition-colors text-left"
-                    >
-                      {link.label}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* SERVICES */}
-            <div className="space-y-2.5">
-              <h3 className="footer-col-heading text-[11px] font-black uppercase tracking-widest text-green-400">
-                SERVICES
-              </h3>
-
-              <ul className="space-y-1.5">
-                {FOOTER_LINKS.SERVICES.map((link) => (
-                  <li key={link.label}>
-                    <button
-                      type="button"
-                      onClick={() => handleNavigation(link.path)}
-                      className="footer-link-text text-[13px] font-semibold text-blue-100/90 hover:text-white transition-colors text-left"
-                    >
-                      {link.label}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* CONTACT US */}
-            <div className="space-y-2.5">
-              <h3 className="footer-col-heading text-[11px] font-black uppercase tracking-widest text-green-400">
-                CONTACT US
-              </h3>
-
-              <div className="space-y-2.5 text-[13px] font-semibold text-blue-100/90">
-                {/* EMAIL */}
-                <button
-                  type="button"
-                  onClick={openGmailCompose}
-                  className="footer-link-text flex items-center gap-3 group text-left w-full cursor-pointer bg-transparent border-0 p-0 text-[13px] font-semibold text-blue-100/90 hover:text-white transition-colors"
+            <div
+              className="
+                footer-link-columns
+                grid
+                grid-cols-2
+                sm:grid-cols-3
+                lg:flex
+                lg:flex-1
+                lg:justify-between
+                gap-y-8
+                gap-x-6
+                lg:gap-x-10
+                min-[1920px]:gap-x-16
+                min-[2560px]:gap-x-24
+              "
+            >
+              {/* EXPLORE */}
+              <div className="footer-link-column space-y-2.5 min-w-0">
+                <h3
+                  className="
+                    footer-col-heading
+                    text-[11px]
+                    font-black
+                    uppercase
+                    tracking-widest
+                    text-green-400
+                  "
                 >
-                  <Mail
-                    size={16}
-                    className="footer-contact-icon shrink-0 text-green-400"
-                  />
-                  <span className="break-all">
-                    megaclickofficial@gmail.com
-                  </span>
-                </button>
+                  EXPLORE
+                </h3>
 
-                {/* PHONE */}
-                <a
-                  href="tel:+919921611911"
-                  className="footer-link-text flex items-center gap-3 group hover:text-white transition-colors"
-                >
-                  <Phone
-                    size={16}
-                    className="footer-contact-icon shrink-0 text-green-400"
-                  />
-                  <span>
-                    +91 9921611911
-                  </span>
-                </a>
-
-                {/* ADDRESS */}
-                <a
-                  href="https://www.google.com/maps/search/?api=1&query=4th+Floor+Tristar+Complex+Jehan+Circle+Gangapur+Road+Nashik+Maharashtra+422005"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="footer-link-text flex items-start gap-3 group hover:text-white transition-colors"
-                >
-                  <MapPin
-                    size={16}
-                    className="footer-contact-icon mt-0.5 shrink-0 text-green-400"
-                  />
-                  <span className="leading-tight">
-                    4th Floor, Tristar Complex,
-                    <br />
-                    Jehan Circle, Gangapur Road,
-                    <br />
-                    Nashik, Maharashtra - 422005
-                  </span>
-                </a>
+                <ul className="space-y-1.5 min-[1920px]:space-y-2">
+                  {FOOTER_LINKS.EXPLORE.map((link) => (
+                    <li key={link.label}>
+                      <button
+                        type="button"
+                        onClick={() => handleNavigation(link.path)}
+                        className="
+                          footer-link-text
+                          text-[13px]
+                          font-semibold
+                          text-blue-100/90
+                          hover:text-white
+                          transition-colors
+                          text-left
+                          cursor-pointer
+                          p-0
+                          bg-transparent
+                          border-none
+                        "
+                      >
+                        {link.label}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
               </div>
-            </div>
 
+              {/* SERVICES */}
+              <div className="footer-link-column space-y-2.5 min-w-0">
+                <h3
+                  className="
+                    footer-col-heading
+                    text-[11px]
+                    font-black
+                    uppercase
+                    tracking-widest
+                    text-green-400
+                  "
+                >
+                  SERVICES
+                </h3>
+
+                <ul className="space-y-1.5 min-[1920px]:space-y-2">
+                  {FOOTER_LINKS.SERVICES.map((link) => (
+                    <li key={link.label}>
+                      <button
+                        type="button"
+                        onClick={() => handleNavigation(link.path)}
+                        className="
+                          footer-link-text
+                          text-[13px]
+                          font-semibold
+                          text-blue-100/90
+                          hover:text-white
+                          transition-colors
+                          text-left
+                          cursor-pointer
+                          p-0
+                          bg-transparent
+                          border-none
+                        "
+                      >
+                        {link.label}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* CONTACT US */}
+              <div className="footer-link-column space-y-2.5 min-w-0">
+                <h3
+                  className="
+                    footer-col-heading
+                    text-[11px]
+                    font-black
+                    uppercase
+                    tracking-widest
+                    text-green-400
+                  "
+                >
+                  CONTACT US
+                </h3>
+
+                <div
+                  className="
+                    space-y-2.5
+                    min-[1920px]:space-y-3
+                    text-[13px]
+                    font-semibold
+                    text-blue-100/90
+                  "
+                >
+                  {/* EMAIL */}
+                  <button
+                    type="button"
+                    onClick={openGmailCompose}
+                    className="
+                      footer-link-text
+                      footer-contact-item
+                      flex
+                      items-start
+                      gap-3
+                      group
+                      text-left
+                      w-full
+                      cursor-pointer
+                      bg-transparent
+                      border-0
+                      p-0
+                      text-[13px]
+                      font-semibold
+                      text-blue-100/90
+                      hover:text-white
+                      transition-colors
+                    "
+                  >
+                    <Mail
+                      size={16}
+                      className="
+                        footer-contact-icon
+                        shrink-0
+                        text-green-400
+                        mt-0.5
+                      "
+                    />
+
+                    <span className="break-all">
+                      megaclickofficial@gmail.com
+                    </span>
+                  </button>
+
+                  {/* PHONE */}
+                  <a
+                    href="tel:+919921611911"
+                    className="
+                      footer-link-text
+                      footer-contact-item
+                      flex
+                      items-center
+                      gap-3
+                      group
+                      hover:text-white
+                      transition-colors
+                    "
+                  >
+                    <Phone
+                      size={16}
+                      className="
+                        footer-contact-icon
+                        shrink-0
+                        text-green-400
+                      "
+                    />
+
+                    <span>+91 9921611911</span>
+                  </a>
+
+                  {/* ADDRESS */}
+                  <a
+                    href="https://www.google.com/maps/search/?api=1&query=4th+Floor+Tristar+Complex+Jehan+Circle+Gangapur+Road+Nashik+Maharashtra+422005"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="
+                      footer-link-text
+                      footer-contact-item
+                      flex
+                      items-start
+                      gap-3
+                      group
+                      hover:text-white
+                      transition-colors
+                    "
+                  >
+                    <MapPin
+                      size={16}
+                      className="
+                        footer-contact-icon
+                        mt-0.5
+                        shrink-0
+                        text-green-400
+                      "
+                    />
+
+                    <span className="leading-tight">
+                      4th Floor, Tristar Complex,
+                      <br />
+                      Jehan Circle, Gangapur Road,
+                      <br />
+                      Nashik, Maharashtra - 422005
+                    </span>
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* DESKTOP BOTTOM BAR */}
-          <div className="pt-3.5 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-3">
-            <p className="text-[11px] min-[1920px]:text-xs min-[3840px]:text-lg font-bold text-white/50 uppercase tracking-[0.15em]">
+          {/* =================================================
+              DESKTOP BOTTOM BAR
+          ================================================= */}
+          <div
+            className="
+              pt-3.5
+              min-[1920px]:pt-5
+              border-t
+              border-white/10
+              flex
+              flex-col
+              md:flex-row
+              justify-between
+              items-center
+              gap-3
+              min-[1920px]:gap-5
+            "
+          >
+            <p
+              className="
+                text-[11px]
+                min-[1920px]:text-xs
+                min-[2560px]:text-sm
+                min-[3840px]:text-lg
+                font-bold
+                text-white/50
+                uppercase
+                tracking-[0.15em]
+                text-center
+                md:text-left
+              "
+            >
               &copy; {new Date().getFullYear()} MegaClick. All rights reserved.
             </p>
 
-            <div className="flex gap-6 min-[3840px]:gap-10">
+            <div
+              className="
+                flex
+                flex-wrap
+                justify-center
+                md:justify-end
+                gap-x-6
+                gap-y-2
+                min-[1920px]:gap-x-8
+                min-[2560px]:gap-x-10
+              "
+            >
               <a
                 href="/privacy-policy"
-                className="text-[11px] min-[1920px]:text-xs min-[3840px]:text-lg font-bold text-white/50 uppercase tracking-[0.15em] hover:text-green-400 transition-colors"
+                className="
+                  text-[11px]
+                  min-[1920px]:text-xs
+                  min-[2560px]:text-sm
+                  min-[3840px]:text-lg
+                  font-bold
+                  text-white/50
+                  uppercase
+                  tracking-[0.15em]
+                  hover:text-green-400
+                  transition-colors
+                "
               >
                 Privacy Policy
               </a>
+
               <a
                 href="/terms-of-service"
-                className="text-[11px] min-[1920px]:text-xs min-[3840px]:text-lg font-bold text-white/50 uppercase tracking-[0.15em] hover:text-green-400 transition-colors"
+                className="
+                  text-[11px]
+                  min-[1920px]:text-xs
+                  min-[2560px]:text-sm
+                  min-[3840px]:text-lg
+                  font-bold
+                  text-white/50
+                  uppercase
+                  tracking-[0.15em]
+                  hover:text-green-400
+                  transition-colors
+                "
               >
                 Terms of Service
               </a>
             </div>
           </div>
         </div>
-
       </div>
     </footer>
   );

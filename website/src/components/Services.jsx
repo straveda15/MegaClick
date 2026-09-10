@@ -1,3 +1,4 @@
+
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -55,7 +56,7 @@ const services = [
     iconBg: "bg-emerald-100",
     iconColor: "text-emerald-600",
     btnBorder:
-      "border-emerald-500 text-emerald-600 hover:bg-emerald-500 hover:text-white",
+      "border-emerald-500 text-emerald-600 hover:bg-emerald-600 hover:text-white",
   },
 ];
 
@@ -65,9 +66,6 @@ const Services = () => {
   return (
     <section className="w-full bg-white font-['Inter',sans-serif] py-8 sm:py-12 lg:py-16 min-[1920px]:py-20 min-[3840px]:py-28">
       <style>{`
-        /* =========================================================
-           STANDARD DESKTOP - 1440px
-        ========================================================= */
         @media (min-width: 1440px) {
           .services-container {
             max-width: 1380px !important;
@@ -103,16 +101,31 @@ const Services = () => {
             padding: 2rem 1.5rem 1.25rem !important;
           }
 
+          /*
+            All card headings use the same fixed title area.
+            This keeps every heading on the same horizontal line.
+          */
+          .services-card-title-wrapper {
+            height: 4.5rem !important;
+            min-height: 4.5rem !important;
+            display: flex !important;
+            align-items: flex-start !important;
+            justify-content: center !important;
+          }
+
           .services-card-title {
-            font-size: 1.25rem !important;
+            font-size: 1.4rem !important;
             line-height: 1.3 !important;
-            height: 3.5rem !important;
-            margin-bottom: 0.5rem !important;
+            min-height: 3.5rem !important;
+            margin-bottom: 0 !important;
+            display: flex !important;
+            align-items: flex-start !important;
+            justify-content: center !important;
           }
 
           .services-card-description-wrapper {
             height: 8rem !important;
-            margin-bottom: 1rem !important;
+            margin-bottom: 1.75rem !important;
           }
 
           .services-card-desc {
@@ -125,27 +138,27 @@ const Services = () => {
             padding: 0.5rem 1.25rem !important;
           }
 
+          .services-read-more-wrapper {
+            margin-top: 0.75rem !important;
+          }
+
           .services-icon-section {
             padding-top: 1.25rem !important;
             padding-bottom: 1.5rem !important;
           }
 
           .services-icon-box {
-            width: 4.25rem !important;
-            height: 4.25rem !important;
+            width: 3.75rem !important;
+            height: 3.75rem !important;
             border-radius: 1rem !important;
           }
 
           .services-icon-box svg {
-            width: 2rem !important;
-            height: 2rem !important;
+            width: 1.75rem !important;
+            height: 1.75rem !important;
           }
         }
 
-
-        /* =========================================================
-           LARGE DESKTOP - 1920px
-        ========================================================= */
         @media (min-width: 1920px) {
           .services-container {
             max-width: 1800px !important;
@@ -182,16 +195,20 @@ const Services = () => {
             padding: 2.5rem 2rem 1.5rem !important;
           }
 
+          .services-card-title-wrapper {
+            height: 5rem !important;
+            min-height: 5rem !important;
+          }
+
           .services-card-title {
-            font-size: 1.5rem !important;
+            font-size: 1.65rem !important;
             line-height: 1.3 !important;
-            height: 4rem !important;
-            margin-bottom: 0.75rem !important;
+            min-height: 4rem !important;
           }
 
           .services-card-description-wrapper {
             height: 8.5rem !important;
-            margin-bottom: 1.25rem !important;
+            margin-bottom: 2rem !important;
           }
 
           .services-card-desc {
@@ -204,27 +221,27 @@ const Services = () => {
             padding: 0.6rem 1.5rem !important;
           }
 
+          .services-read-more-wrapper {
+            margin-top: 0.85rem !important;
+          }
+
           .services-icon-section {
             padding-top: 1.5rem !important;
             padding-bottom: 2rem !important;
           }
 
           .services-icon-box {
-            width: 4.75rem !important;
-            height: 4.75rem !important;
+            width: 4rem !important;
+            height: 4rem !important;
             border-radius: 1.1rem !important;
           }
 
           .services-icon-box svg {
-            width: 2.25rem !important;
-            height: 2.25rem !important;
+            width: 2rem !important;
+            height: 2rem !important;
           }
         }
 
-
-        /* =========================================================
-           4K / ULTRA-WIDE - 3840px
-        ========================================================= */
         @media (min-width: 3840px) {
           .services-container {
             max-width: 3200px !important;
@@ -265,16 +282,20 @@ const Services = () => {
             padding: 4rem 3rem 2rem !important;
           }
 
+          .services-card-title-wrapper {
+            height: 7rem !important;
+            min-height: 7rem !important;
+          }
+
           .services-card-title {
-            font-size: 2.35rem !important;
+            font-size: 2.5rem !important;
             line-height: 1.25 !important;
-            height: 6rem !important;
-            margin-bottom: 1rem !important;
+            min-height: 6rem !important;
           }
 
           .services-card-description-wrapper {
             height: 12rem !important;
-            margin-bottom: 1.5rem !important;
+            margin-bottom: 2.5rem !important;
           }
 
           .services-card-desc {
@@ -292,82 +313,41 @@ const Services = () => {
             height: 1.4rem !important;
           }
 
+          .services-read-more-wrapper {
+            margin-top: 1rem !important;
+          }
+
           .services-icon-section {
             padding-top: 1.75rem !important;
             padding-bottom: 2.5rem !important;
           }
 
           .services-icon-box {
-            width: 6rem !important;
-            height: 6rem !important;
+            width: 5rem !important;
+            height: 5rem !important;
             border-radius: 1.35rem !important;
           }
 
           .services-icon-box svg {
-            width: 2.75rem !important;
-            height: 2.75rem !important;
+            width: 2.25rem !important;
+            height: 2.25rem !important;
           }
         }
       `}</style>
 
-      <div
-        className="
-          services-container
-          w-full
-          max-w-[1380px]
-          mx-auto
-          px-4
-          sm:px-6
-          lg:px-8
-          min-[1440px]:px-10
-        "
-      >
-        {/* =========================================================
-            HEADER
-        ========================================================= */}
-        <div
-          className="
-            services-header
-            mb-8
-            sm:mb-10
-            lg:mb-12
-            w-full
-            text-left
-          "
-        >
+      <div className="services-container w-full max-w-[1380px] mx-auto px-4 sm:px-6 lg:px-8 min-[1440px]:px-10">
+        {/* SECTION HEADER */}
+        <div className="services-header mb-8 sm:mb-10 lg:mb-12 w-full text-left">
           <p
             style={{ fontFamily: "'Inter', sans-serif" }}
-            className="
-              services-tagline
-              text-xs
-              sm:text-sm
-              font-semibold
-              tracking-[0.25em]
-              uppercase
-              text-[#0B4EA2]
-              mb-2.5
-              sm:mb-3
-              text-left
-            "
+            className="services-tagline text-xs sm:text-sm font-semibold tracking-[0.25em] uppercase text-[#0B4EA2] mb-2.5 sm:mb-3 text-left"
           >
             WHAT WE OFFER
           </p>
 
           <h2
             style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
-            className="
-              services-title
-              text-2xl
-              sm:text-3xl
-              md:text-3xl
-              lg:text-4xl
-              font-bold
-              leading-[1.18]
-              text-black
-              text-left
-              mb-2.5
-              sm:mb-4
-            "
+            className="services-title text-2xl sm:text-3xl md:text-3xl lg:text-4xl font-bold leading-[1.18] text-black text-left mb-2.5 sm:mb-4"
           >
             Complete Business{" "}
             <span className="text-[#0B4EA2]">Solutions</span>
@@ -375,19 +355,7 @@ const Services = () => {
 
           <p
             style={{ fontFamily: "'Inter', sans-serif" }}
-            className="
-              services-desc
-              mt-3
-              sm:mt-4
-              text-slate-600
-              font-normal
-              text-xs
-              sm:text-sm
-              lg:text-base
-              leading-relaxed
-              text-left
-              w-full
-            "
+            className="services-desc mt-3 sm:mt-4 text-slate-600 font-normal text-xs sm:text-sm lg:text-base leading-relaxed text-left w-full"
           >
             From legal registrations and financial compliance to essential
             business licenses, MegaClick delivers expert-led services with
@@ -395,25 +363,8 @@ const Services = () => {
           </p>
         </div>
 
-        {/* =========================================================
-            SERVICES GRID
-        ========================================================= */}
-        <div
-          className="
-            services-grid
-            grid
-            grid-cols-1
-            sm:grid-cols-2
-            lg:grid-cols-4
-            gap-5
-            sm:gap-6
-            lg:gap-6
-            min-[1920px]:gap-8
-            min-[3840px]:gap-12
-            items-stretch
-            w-full
-          "
-        >
+        {/* SERVICE CARDS */}
+        <div className="services-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6 lg:gap-6 min-[1920px]:gap-8 min-[3840px]:gap-12 items-stretch w-full">
           {services.map((service, index) => {
             const Icon = service.icon;
 
@@ -422,163 +373,48 @@ const Services = () => {
                 key={index}
                 className={`
                   services-card
-                  group
-                  flex
-                  flex-col
-                  h-full
-                  rounded-3xl
-                  overflow-hidden
-                  border
-                  border-slate-100
-                  shadow-sm
-                  hover:shadow-xl
-                  transition-all
-                  duration-300
-                  hover:-translate-y-1.5
-                  cursor-pointer
-                  bg-gradient-to-b
-                  ${service.gradient}
+                  group flex flex-col h-full rounded-3xl overflow-hidden
+                  border border-slate-100 shadow-sm hover:shadow-xl
+                  transition-all duration-300 hover:-translate-y-1.5
+                  cursor-pointer bg-gradient-to-b ${service.gradient}
                 `}
               >
-                {/* =================================================
-                    CARD CONTENT
-                ================================================= */}
-                <div
-                  className="
-                    services-card-content
-                    flex
-                    flex-col
-                    items-center
-                    text-center
-                    px-5
-                    pt-7
-                    pb-4
-                    sm:px-6
-                    sm:pt-8
-                    min-[1920px]:px-8
-                    min-[1920px]:pt-10
-                    min-[3840px]:px-12
-                    min-[3840px]:pt-16
-                    flex-1
-                  "
-                >
-                  {/* =================================================
-                      CARD TITLE
-                      SAME HORIZONTAL HEIGHT FOR ALL CARDS
-                  ================================================= */}
-                  <div
-                    className="
-                      w-full
-                      h-[56px]
-                      sm:h-[60px]
-                      lg:h-[64px]
-                      flex
-                      items-center
-                      justify-center
-                      mb-3
-                      shrink-0
-                    "
-                  >
+                <div className="services-card-content flex flex-col items-center text-center px-5 pt-7 pb-4 sm:px-6 sm:pt-8 min-[1920px]:px-8 min-[1920px]:pt-10 min-[3840px]:px-12 min-[3840px]:pt-16 flex-1">
+
+                  {/* CARD TITLE */}
+                  <div className="services-card-title-wrapper w-full h-[64px] sm:h-[64px] lg:h-[64px] flex items-start justify-center mb-3 shrink-0">
                     <h3
                       style={{
                         fontFamily: "'Hedvig Letters Serif', serif",
                       }}
-                      className="
-                        services-card-title
-                        text-lg
-                        sm:text-xl
-                        lg:text-xl
-                        font-bold
-                        text-[#0f172a]
-                        leading-snug
-                        w-full
-                        text-center
-                        flex
-                        items-center
-                        justify-center
-                      "
+                      className="services-card-title text-xl sm:text-[22px] lg:text-[22px] font-bold text-[#0f172a] leading-snug w-full text-center flex items-start justify-center"
                     >
                       {service.title}
                     </h3>
                   </div>
 
-                  {/* =================================================
-                      DESCRIPTION
-                      SAME START + SAME HEIGHT
-                      JUSTIFIED TEXT
-                  ================================================= */}
-                  <div
-                    className="
-                      services-card-description-wrapper
-                      w-full
-                      h-[125px]
-                      sm:h-[125px]
-                      lg:h-[135px]
-                      min-[1440px]:h-[128px]
-                      min-[1920px]:h-[145px]
-                      min-[3840px]:h-[210px]
-                      flex
-                      items-start
-                      justify-center
-                      overflow-hidden
-                      mb-4
-                      shrink-0
-                    "
-                  >
+                  {/* DESCRIPTION */}
+                  <div className="services-card-description-wrapper w-full h-[125px] sm:h-[125px] lg:h-[135px] min-[1440px]:h-[128px] min-[1920px]:h-[145px] min-[3840px]:h-[210px] flex items-start justify-center overflow-hidden mb-7 shrink-0">
                     <p
                       style={{ fontFamily: "'Inter', sans-serif" }}
-                      className="
-                        services-card-desc
-                        w-full
-                        text-xs
-                        sm:text-sm
-                        text-slate-600
-                        leading-relaxed
-                        text-justify
-                        hyphens-auto
-                      "
+                      className="services-card-desc w-full text-xs sm:text-sm text-slate-600 leading-relaxed text-justify hyphens-auto"
                     >
                       {service.short}
                     </p>
                   </div>
 
-                  {/* =================================================
-                      READ MORE
-                      SAME HORIZONTAL LINE
-                  ================================================= */}
-                  <div
-                    className="
-                      w-full
-                      flex
-                      items-center
-                      justify-center
-                      mt-auto
-                      shrink-0
-                    "
-                  >
+                  {/* READ MORE */}
+                  <div className="services-read-more-wrapper w-full flex items-center justify-center mt-3 shrink-0">
                     <button
                       onClick={() =>
                         navigate(`/services?category=${service.slug}`)
                       }
                       style={{ fontFamily: "'Inter', sans-serif" }}
                       className={`
-                        services-btn
-                        inline-flex
-                        items-center
-                        justify-center
-                        gap-2
-                        border
-                        rounded-full
-                        px-5
-                        py-2
-                        text-xs
-                        sm:text-sm
-                        font-semibold
-                        transition-all
-                        duration-200
-                        cursor-pointer
-                        shadow-xs
-                        ${service.btnBorder}
+                        services-btn inline-flex items-center justify-center
+                        gap-2 border rounded-full px-5 py-2 text-xs sm:text-sm
+                        font-semibold transition-all duration-200 cursor-pointer
+                        shadow-xs ${service.btnBorder}
                       `}
                     >
                       <span>Read More</span>
@@ -591,49 +427,19 @@ const Services = () => {
                   </div>
                 </div>
 
-                {/* =================================================
-                    BOTTOM ICON
-                    SMALLER / NORMAL SIZE
-                ================================================= */}
-                <div
-                  className="
-                    services-icon-section
-                    flex
-                    items-center
-                    justify-center
-                    py-6
-                    sm:py-7
-                    lg:py-7
-                    shrink-0
-                  "
-                >
+                {/* BOTTOM ICON */}
+                <div className="services-icon-section flex items-center justify-center py-6 sm:py-7 lg:py-7 shrink-0">
                   <div
                     className={`
-                      services-icon-box
-                      w-14
-                      h-14
-                      sm:w-16
-                      sm:h-16
-                      lg:w-[68px]
-                      lg:h-[68px]
-                      rounded-2xl
-                      ${service.iconBg}
-                      flex
-                      items-center
-                      justify-center
-                      shadow-xs
-                      group-hover:scale-105
-                      transition-transform
-                      duration-300
+                      services-icon-box w-14 h-14 sm:w-16 sm:h-16
+                      lg:w-[60px] lg:h-[60px] rounded-2xl ${service.iconBg}
+                      flex items-center justify-center shadow-xs
+                      group-hover:scale-105 transition-transform duration-300
                     `}
                   >
                     <Icon
-                      size={30}
-                      className={`
-                        ${service.iconColor}
-                        transition-transform
-                        duration-300
-                      `}
+                      size={27}
+                      className={`${service.iconColor} transition-transform duration-300`}
                       strokeWidth={1.75}
                     />
                   </div>
