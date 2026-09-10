@@ -69,47 +69,74 @@ const SearchServices = ({ searchTerm, setSearchTerm }) => {
           }
         }
 
-        /* Standard Desktop (1440px) */
+        /* =================================================
+           STANDARD DESKTOP - 1440px
+        ================================================= */
         @media (min-width: 1440px) {
           .app-container {
-            max-width: 1440px !important;
-            padding-left: 5rem !important;
-            padding-right: 5rem !important;
+            max-width: 1380px !important;
+            padding-left: 2.5rem !important;
+            padding-right: 2.5rem !important;
           }
+
+          .search-services-section {
+            padding-top: 3rem !important;
+            padding-bottom: 3rem !important;
+          }
+
           .search-heading {
-            font-size: 2.25rem !important;
+            font-size: 2.5rem !important;
             line-height: 1.2 !important;
           }
+
+          .search-input-box {
+            margin-top: 1.5rem !important;
+          }
+
           .search-input {
             height: 3.5rem !important;
             font-size: 1rem !important;
+            padding-left: 3rem !important;
+          }
+
+          .search-icon {
+            left: 1rem !important;
+            width: 1.3rem !important;
+            height: 1.3rem !important;
           }
         }
 
-        /* Large Desktop (1920px Full HD) */
+        /* =================================================
+           LARGE DESKTOP - 1920px
+        ================================================= */
         @media (min-width: 1920px) {
           .app-container {
             max-width: 1800px !important;
-            padding-left: 6rem !important;
-            padding-right: 6rem !important;
+            padding-left: 4rem !important;
+            padding-right: 4rem !important;
           }
+
           .search-services-section {
             padding-top: 3.5rem !important;
             padding-bottom: 3.5rem !important;
           }
+
           .search-heading {
-            font-size: 2.75rem !important;
-            line-height: 1.2 !important;
+            font-size: 3.25rem !important;
+            line-height: 1.18 !important;
           }
+
           .search-input-box {
             margin-top: 2rem !important;
           }
+
           .search-input {
             height: 4rem !important;
             font-size: 1.1rem !important;
             padding-left: 3.5rem !important;
             border-radius: 0.95rem !important;
           }
+
           .search-icon {
             left: 1.25rem !important;
             width: 1.4rem !important;
@@ -117,24 +144,30 @@ const SearchServices = ({ searchTerm, setSearchTerm }) => {
           }
         }
 
-        /* 4K Ultra-Wide (3840px) */
+        /* =================================================
+           4K ULTRA-WIDE - 3840px
+        ================================================= */
         @media (min-width: 3840px) {
           .app-container {
-            max-width: 3400px !important;
-            padding-left: 10rem !important;
-            padding-right: 10rem !important;
+            max-width: 3200px !important;
+            padding-left: 6rem !important;
+            padding-right: 6rem !important;
           }
+
           .search-services-section {
-            padding-top: 6rem !important;
-            padding-bottom: 6rem !important;
+            padding-top: 5rem !important;
+            padding-bottom: 5rem !important;
           }
+
           .search-heading {
-            font-size: 4rem !important;
+            font-size: 5rem !important;
             line-height: 1.15 !important;
           }
+
           .search-input-box {
-            margin-top: 3.5rem !important;
+            margin-top: 2.75rem !important;
           }
+
           .search-input {
             height: 5.75rem !important;
             font-size: 1.65rem !important;
@@ -142,6 +175,7 @@ const SearchServices = ({ searchTerm, setSearchTerm }) => {
             border-radius: 1.5rem !important;
             border-width: 3px !important;
           }
+
           .search-icon {
             left: 1.85rem !important;
             width: 2.25rem !important;
@@ -155,10 +189,10 @@ const SearchServices = ({ searchTerm, setSearchTerm }) => {
             CONSISTENT HEADING & SUBTITLE
         ========================================== */}
         <div className="text-left">
-         
-             <h2
+          <h2
             style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
             className="
+              search-heading
               team-title
               text-2xl
               sm:text-3xl
@@ -172,14 +206,11 @@ const SearchServices = ({ searchTerm, setSearchTerm }) => {
               sm:mb-4
             "
           >
-          Explore Your  {" "}
+            Explore Your{" "}
             <span className="text-[#0B4EA2]">
-    Services
+              Services
             </span>
           </h2>
-
-
-        
         </div>
 
         {/* =========================================

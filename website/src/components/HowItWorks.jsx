@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -325,7 +326,7 @@ const ModernCardIcon = ({ type }) => {
 };
 
 // ─────────────────────────────────────────────
-// Solution Cards Data (Exact 2 lines per card)
+// Solution Cards Data
 // ─────────────────────────────────────────────
 const solutionCards = [
   {
@@ -382,20 +383,28 @@ const solutionCards = [
 // Solution Card Item
 // ─────────────────────────────────────────────
 const SolutionCardItem = ({ item }) => (
-  <div className="hiw-card group relative rounded-2xl hover:-translate-y-1.5 transition-all duration-300 w-full aspect-square flex">
+  <div className="hiw-card group relative rounded-2xl hover:-translate-y-1.5 transition-all duration-300 w-full aspect-square flex min-w-0">
     <div
       className="
-        w-full h-full
+        w-full
+        h-full
+        min-w-0
         bg-white
         border border-slate-200/90
         rounded-2xl
-        p-3.5 sm:p-4 lg:p-3 xl:p-4.5
-        flex flex-col
+        p-3
+        min-[375px]:p-3.5
+        sm:p-4
+        lg:p-3
+        xl:p-4.5
+        flex
+        flex-col
         items-center
         justify-center
         shadow-[0_2px_10px_-2px_rgba(0,0,0,0.04)]
         group-hover:shadow-[0_14px_28px_-6px_rgba(11,78,162,0.14)]
         transition-all duration-300
+        overflow-hidden
       "
       style={{
         clipPath:
@@ -403,53 +412,55 @@ const SolutionCardItem = ({ item }) => (
       }}
     >
       {/* ICON */}
-      <div className="hiw-card-icon mb-2 sm:mb-2.5 lg:mb-2 xl:mb-3 flex justify-center w-full group-hover:scale-105 transition-transform duration-300">
+      <div className="hiw-card-icon mb-2 min-[375px]:mb-2.5 sm:mb-2.5 lg:mb-2 xl:mb-3 flex justify-center w-full shrink-0 group-hover:scale-105 transition-transform duration-300">
         <ModernCardIcon type={item.iconType} />
       </div>
 
       {/* TEXT BLOCK */}
-      <div className="w-full flex flex-col items-center">
+      <div className="w-full min-w-0 flex flex-col items-center px-0.5 sm:px-1">
         <h3
           style={{
             fontFamily: "'Hedvig Letters Serif', serif",
           }}
           className="
             hiw-card-title
-            text-[13px]
+            text-[12px]
+            min-[375px]:text-[13px]
             sm:text-[14.5px]
             lg:text-[14px]
             xl:text-[16px]
             font-bold
             text-slate-900
             mb-1
-            leading-snug
+            leading-[1.25]
             w-full
+            min-w-0
             text-center
+            break-words
           "
         >
           {item.title}
         </h3>
 
-        {/* 2-LINE CENTERED DESCRIPTION */}
+        {/* RESPONSIVE DESCRIPTION */}
         <p
           style={{ fontFamily: "'Inter', sans-serif" }}
           className="
             hiw-card-desc
             w-full
-            max-w-[210px]
-            sm:max-w-[230px]
-            lg:max-w-[195px]
-            xl:max-w-[235px]
-            min-[1920px]:max-w-[320px]
-            min-[3840px]:max-w-[500px]
-            text-[10.5px]
+            max-w-full
+            min-w-0
+            text-[9.5px]
+            min-[375px]:text-[10.5px]
             sm:text-[11.5px]
             lg:text-[11px]
             xl:text-[12px]
             text-slate-600
-            leading-snug
+            leading-[1.35]
+            sm:leading-snug
             text-center
-            line-clamp-2
+            break-words
+            overflow-wrap-anywhere
           "
         >
           {item.desc}
@@ -462,7 +473,7 @@ const SolutionCardItem = ({ item }) => (
 );
 
 // ─────────────────────────────────────────────
-// Stepper Steps Data (UNTOUCHED)
+// Stepper Steps Data
 // ─────────────────────────────────────────────
 const steps = [
   {
@@ -498,7 +509,6 @@ const HowItWorks = () => {
   const [activeStep, setActiveStep] = useState(0);
   const navigate = useNavigate();
 
-  // Load fonts + step timer
   useEffect(() => {
     const fontId = "google-fonts-hedvig-inter";
 
@@ -531,28 +541,45 @@ const HowItWorks = () => {
         overflow-hidden
         bg-blue-50
         py-8
+        min-[375px]:py-9
         sm:py-10
+        md:py-12
         lg:py-14
         xl:py-16
         font-['Inter',sans-serif]
       "
     >
-      {/* UNIFIED RESPONSIVE SCALING FOR ALL DESKTOP STANDARDS */}
       <style>{`
-        /* UNIFIED APP-CONTAINER */
+        /* ─────────────────────────────────────────
+           UNIVERSAL APP CONTAINER
+        ───────────────────────────────────────── */
         .app-container {
           width: 100%;
           max-width: 1500px;
           margin-left: auto;
           margin-right: auto;
-          padding-left: 1.25rem;
-          padding-right: 1.25rem;
+          padding-left: 1rem;
+          padding-right: 1rem;
+        }
+
+        @media (min-width: 375px) {
+          .app-container {
+            padding-left: 1.15rem;
+            padding-right: 1.15rem;
+          }
         }
 
         @media (min-width: 640px) {
           .app-container {
             padding-left: 2rem;
             padding-right: 2rem;
+          }
+        }
+
+        @media (min-width: 768px) {
+          .app-container {
+            padding-left: 2.5rem;
+            padding-right: 2.5rem;
           }
         }
 
@@ -570,281 +597,625 @@ const HowItWorks = () => {
           }
         }
 
-        /* Standard Desktop (1440px x 900px) */
+        /* ─────────────────────────────────────────
+           VERY SMALL MOBILE
+        ───────────────────────────────────────── */
+        @media (max-width: 374px) {
+          .hiw-grid {
+            gap: 0.6rem !important;
+          }
+
+          .hiw-card {
+            min-width: 0 !important;
+          }
+
+          .hiw-featured-desc {
+            font-size: 0.72rem !important;
+            line-height: 1.5 !important;
+            max-width: 100% !important;
+          }
+
+          .hiw-card-title {
+            font-size: 0.72rem !important;
+          }
+
+          .hiw-card-desc {
+            font-size: 0.55rem !important;
+            line-height: 1.3 !important;
+          }
+
+          .hiw-step-text-wrapper {
+            max-width: 90% !important;
+          }
+
+          .hiw-step-text {
+            font-size: 0.72rem !important;
+            line-height: 1.45 !important;
+          }
+        }
+
+        /* ─────────────────────────────────────────
+           MOBILE
+        ───────────────────────────────────────── */
+        @media (min-width: 375px) and (max-width: 639px) {
+          .hiw-featured-desc {
+            font-size: 0.78rem !important;
+            line-height: 1.55 !important;
+            max-width: 100% !important;
+          }
+
+          .hiw-card-desc {
+            font-size: 0.62rem !important;
+            line-height: 1.35 !important;
+          }
+
+          .hiw-step-text-wrapper {
+            max-width: 86% !important;
+          }
+
+          .hiw-step-text {
+            font-size: 0.75rem !important;
+            line-height: 1.5 !important;
+          }
+        }
+
+        /* ─────────────────────────────────────────
+           TABLET
+        ───────────────────────────────────────── */
+        @media (min-width: 640px) and (max-width: 1023px) {
+          .hiw-featured-desc {
+            font-size: 0.95rem !important;
+            line-height: 1.65 !important;
+            max-width: 40rem !important;
+          }
+
+          .hiw-card-title {
+            font-size: 0.95rem !important;
+          }
+
+          .hiw-card-desc {
+            font-size: 0.72rem !important;
+            line-height: 1.45 !important;
+            max-width: 100% !important;
+          }
+
+          .hiw-step-text-wrapper {
+            max-width: 75% !important;
+          }
+
+          .hiw-step-text {
+            font-size: 0.82rem !important;
+            line-height: 1.55 !important;
+          }
+        }
+
+        /* ─────────────────────────────────────────
+           1024px
+        ───────────────────────────────────────── */
+        @media (min-width: 1024px) {
+          .hiw-featured-desc {
+            font-size: 0.9rem !important;
+            line-height: 1.6 !important;
+            max-width: 27rem !important;
+          }
+
+          .hiw-card-title {
+            font-size: 0.9rem !important;
+          }
+
+          .hiw-card-desc {
+            font-size: 0.7rem !important;
+            line-height: 1.45 !important;
+          }
+        }
+
+        /* ─────────────────────────────────────────
+           1280px
+        ───────────────────────────────────────── */
+        @media (min-width: 1280px) {
+          .hiw-featured-desc {
+            font-size: 0.93rem !important;
+            line-height: 1.62 !important;
+            max-width: 28rem !important;
+          }
+
+          .hiw-card-title {
+            font-size: 0.95rem !important;
+          }
+
+          .hiw-card-desc {
+            font-size: 0.76rem !important;
+            line-height: 1.5 !important;
+          }
+        }
+
+        /* ─────────────────────────────────────────
+           1440px
+        ───────────────────────────────────────── */
         @media (min-width: 1440px) {
           .app-container {
             max-width: 1440px !important;
             padding-left: 5rem !important;
             padding-right: 5rem !important;
           }
+
           .hiw-tagline {
             font-size: 0.85rem !important;
             margin-bottom: 1rem !important;
           }
+
           .hiw-featured-title {
             font-size: 2.25rem !important;
             line-height: 1.2 !important;
           }
+
           .hiw-featured-desc {
             font-size: 0.95rem !important;
             line-height: 1.65 !important;
             max-width: 28rem !important;
           }
+
           .hiw-featured-btn {
             font-size: 0.85rem !important;
           }
+
           .hiw-card-title {
             font-size: 1rem !important;
+            line-height: 1.25 !important;
           }
+
           .hiw-card-desc {
             font-size: 0.8rem !important;
             line-height: 1.5 !important;
+            max-width: 100% !important;
           }
+
           .hiw-stepper-box {
             margin-top: 3.5rem !important;
           }
+
           .hiw-step-text-wrapper {
             max-width: 260px !important;
           }
+
           .hiw-stepper-line {
             top: 36px !important;
           }
+
           .hiw-step-circle {
             width: 72px !important;
             height: 72px !important;
           }
+
           .hiw-step-title {
             font-size: 1.15rem !important;
           }
+
           .hiw-step-text {
             font-size: 0.875rem !important;
             line-height: 1.5 !important;
           }
         }
 
-        /* Large Desktop (1920px x 1080px Full HD) */
+        /* ─────────────────────────────────────────
+           1600px
+        ───────────────────────────────────────── */
+        @media (min-width: 1600px) {
+          .hiw-featured-desc {
+            font-size: 1rem !important;
+            line-height: 1.7 !important;
+            max-width: 31rem !important;
+          }
+
+          .hiw-card-title {
+            font-size: 1.08rem !important;
+          }
+
+          .hiw-card-desc {
+            font-size: 0.86rem !important;
+            line-height: 1.55 !important;
+          }
+
+          .hiw-step-text-wrapper {
+            max-width: 290px !important;
+          }
+        }
+
+        /* ─────────────────────────────────────────
+           1920px
+        ───────────────────────────────────────── */
         @media (min-width: 1920px) {
           .app-container {
             max-width: 1800px !important;
             padding-left: 6rem !important;
             padding-right: 6rem !important;
           }
+
           .hiw-section {
             padding-top: 4.5rem !important;
             padding-bottom: 4.5rem !important;
           }
+
           .hiw-tagline {
             font-size: 0.95rem !important;
             margin-bottom: 1.25rem !important;
           }
+
           .hiw-grid {
             gap: 1.5rem !important;
           }
+
           .hiw-featured-title {
             font-size: 2.75rem !important;
             line-height: 1.2 !important;
           }
+
           .hiw-featured-desc {
             font-size: 1.1rem !important;
             line-height: 1.7 !important;
             max-width: 34rem !important;
           }
+
           .hiw-featured-btn {
             font-size: 0.95rem !important;
           }
+
           .hiw-card-icon svg {
             width: 3.5rem !important;
             height: 3.5rem !important;
           }
+
           .hiw-card-title {
             font-size: 1.25rem !important;
             margin-bottom: 0.5rem !important;
           }
+
           .hiw-card-desc {
             font-size: 0.95rem !important;
             line-height: 1.6 !important;
+            max-width: 100% !important;
           }
+
           .hiw-stepper-box {
             margin-top: 4.5rem !important;
           }
+
           .hiw-step-text-wrapper {
             max-width: 340px !important;
           }
+
           .hiw-stepper-line {
             top: 42px !important;
           }
+
           .hiw-step-circle {
             width: 84px !important;
             height: 84px !important;
           }
+
           .hiw-step-icon {
             width: 1.6rem !important;
             height: 1.6rem !important;
           }
+
           .hiw-step-num {
             font-size: 0.95rem !important;
             margin-top: 0.75rem !important;
           }
+
           .hiw-step-title {
             font-size: 1.3rem !important;
           }
+
           .hiw-step-text {
             font-size: 1.05rem !important;
             line-height: 1.65 !important;
           }
+
           .hiw-step-badge {
             padding: 0.35rem 0.9rem !important;
             font-size: 0.85rem !important;
           }
         }
 
-        /* QHD / 2K Ultra-Wide (2560px Desktop) */
+        /* ─────────────────────────────────────────
+           2200px
+        ───────────────────────────────────────── */
+        @media (min-width: 2200px) {
+          .hiw-featured-desc {
+            font-size: 1.2rem !important;
+            line-height: 1.75 !important;
+            max-width: 39rem !important;
+          }
+
+          .hiw-card-title {
+            font-size: 1.38rem !important;
+          }
+
+          .hiw-card-desc {
+            font-size: 1.03rem !important;
+            line-height: 1.6 !important;
+          }
+
+          .hiw-step-text-wrapper {
+            max-width: 390px !important;
+          }
+
+          .hiw-step-title {
+            font-size: 1.45rem !important;
+          }
+
+          .hiw-step-text {
+            font-size: 1.12rem !important;
+          }
+        }
+
+        /* ─────────────────────────────────────────
+           2560px
+        ───────────────────────────────────────── */
         @media (min-width: 2560px) {
           .app-container {
             max-width: 2400px !important;
             padding-left: 8rem !important;
             padding-right: 8rem !important;
           }
+
           .hiw-section {
             padding-top: 5.5rem !important;
             padding-bottom: 5.5rem !important;
           }
+
           .hiw-tagline {
             font-size: 1.15rem !important;
             margin-bottom: 1.5rem !important;
           }
+
           .hiw-grid {
             gap: 2rem !important;
           }
+
           .hiw-featured-title {
             font-size: 3.5rem !important;
           }
+
           .hiw-featured-desc {
             font-size: 1.35rem !important;
             line-height: 1.8 !important;
             max-width: 44rem !important;
           }
+
           .hiw-featured-btn {
             font-size: 1.15rem !important;
           }
+
           .hiw-card-icon svg {
             width: 4.5rem !important;
             height: 4.5rem !important;
           }
+
           .hiw-card-title {
             font-size: 1.55rem !important;
           }
+
           .hiw-card-desc {
             font-size: 1.15rem !important;
             line-height: 1.65 !important;
           }
+
           .hiw-stepper-box {
             margin-top: 6rem !important;
           }
+
           .hiw-step-text-wrapper {
             max-width: 440px !important;
           }
+
           .hiw-stepper-line {
             top: 52px !important;
           }
+
           .hiw-step-circle {
             width: 104px !important;
             height: 104px !important;
           }
+
           .hiw-step-icon {
             width: 2.1rem !important;
             height: 2.1rem !important;
           }
+
           .hiw-step-num {
             font-size: 1.15rem !important;
           }
+
           .hiw-step-title {
             font-size: 1.6rem !important;
           }
+
           .hiw-step-text {
             font-size: 1.25rem !important;
             line-height: 1.7 !important;
           }
+
           .hiw-step-badge {
             padding: 0.45rem 1.15rem !important;
             font-size: 1rem !important;
           }
         }
 
-        /* 4K Ultra-Wide Desktop (3840px x 2160px) */
+        /* ─────────────────────────────────────────
+           3200px
+        ───────────────────────────────────────── */
+        @media (min-width: 3200px) {
+          .app-container {
+            max-width: 2900px !important;
+            padding-left: 9rem !important;
+            padding-right: 9rem !important;
+          }
+
+          .hiw-featured-desc {
+            font-size: 1.6rem !important;
+            line-height: 1.9 !important;
+            max-width: 52rem !important;
+          }
+
+          .hiw-card-title {
+            font-size: 1.85rem !important;
+          }
+
+          .hiw-card-desc {
+            font-size: 1.35rem !important;
+            line-height: 1.7 !important;
+          }
+
+          .hiw-step-text-wrapper {
+            max-width: 520px !important;
+          }
+
+          .hiw-step-title {
+            font-size: 1.9rem !important;
+          }
+
+          .hiw-step-text {
+            font-size: 1.45rem !important;
+            line-height: 1.75 !important;
+          }
+        }
+
+        /* ─────────────────────────────────────────
+           4K / 3840px
+        ───────────────────────────────────────── */
         @media (min-width: 3840px) {
           .app-container {
             max-width: 3400px !important;
             padding-left: 10rem !important;
             padding-right: 10rem !important;
           }
+
           .hiw-section {
             padding-top: 7.5rem !important;
             padding-bottom: 7.5rem !important;
           }
+
           .hiw-tagline {
             font-size: 1.5rem !important;
             margin-bottom: 2rem !important;
           }
+
           .hiw-grid {
             gap: 3rem !important;
           }
+
           .hiw-featured-title {
             font-size: 4.75rem !important;
           }
+
           .hiw-featured-desc {
             font-size: 1.85rem !important;
             line-height: 2.2rem !important;
             max-width: 60rem !important;
           }
+
           .hiw-featured-btn {
             font-size: 1.5rem !important;
           }
+
           .hiw-card-icon svg {
             width: 6.5rem !important;
             height: 6.5rem !important;
           }
+
           .hiw-card-title {
             font-size: 2.25rem !important;
             margin-bottom: 0.75rem !important;
           }
+
           .hiw-card-desc {
             font-size: 1.6rem !important;
             line-height: 1.75 !important;
           }
+
           .hiw-stepper-box {
             margin-top: 8.5rem !important;
           }
+
           .hiw-step-text-wrapper {
             max-width: 620px !important;
           }
+
           .hiw-stepper-line {
             top: 72px !important;
             height: 3px !important;
           }
+
           .hiw-step-circle {
             width: 144px !important;
             height: 144px !important;
             border-width: 6px !important;
           }
+
           .hiw-step-icon {
             width: 3rem !important;
             height: 3rem !important;
           }
+
           .hiw-step-num {
             font-size: 1.5rem !important;
             margin-top: 1.25rem !important;
           }
+
           .hiw-step-title {
             font-size: 2.25rem !important;
           }
+
           .hiw-step-text {
             font-size: 1.75rem !important;
             line-height: 1.8 !important;
           }
+
           .hiw-step-badge {
             padding: 0.6rem 1.6rem !important;
             font-size: 1.35rem !important;
+          }
+        }
+
+        /* ─────────────────────────────────────────
+           MOBILE STEPPER LINE
+           Horizontal line only on mobile
+        ───────────────────────────────────────── */
+        @media (max-width: 1023px) {
+          .hiw-mobile-stepper-line {
+            display: block !important;
+            position: absolute;
+            top: 42px;
+            left: 8%;
+            right: 8%;
+            height: 2px;
+            background: linear-gradient(
+              90deg,
+              rgba(147, 197, 253, 0.35),
+              rgba(191, 219, 254, 0.65),
+              rgba(134, 239, 172, 0.45)
+            );
+            z-index: 0;
+            pointer-events: none;
+          }
+        }
+
+        @media (max-width: 639px) {
+          .hiw-mobile-stepper-line {
+            top: 31px;
+            left: 10%;
+            right: 10%;
+            height: 1.5px;
+          }
+        }
+
+        @media (max-width: 374px) {
+          .hiw-mobile-stepper-line {
+            top: 29px;
+            left: 8%;
+            right: 8%;
           }
         }
       `}</style>
@@ -907,12 +1278,13 @@ const HowItWorks = () => {
               relative
               overflow-hidden
               text-left
+              min-w-0
             "
           >
             <div className="absolute -right-8 -bottom-8 w-44 h-44 rounded-full bg-blue-400/20 blur-2xl pointer-events-none" />
             <div className="absolute top-0 right-1/4 w-32 h-32 rounded-full bg-cyan-400/10 blur-xl pointer-events-none" />
 
-            <div className="relative z-10 text-left">
+            <div className="relative z-10 text-left min-w-0">
               <h2
                 style={{
                   fontFamily: "'Hedvig Letters Serif', serif",
@@ -928,6 +1300,7 @@ const HowItWorks = () => {
                   leading-[1.18]
                   text-white
                   text-left
+                  break-words
                 "
               >
                 Get Your{" "}
@@ -946,6 +1319,7 @@ const HowItWorks = () => {
                   text-justify
                   [text-align-last:left]
                   [text-wrap:pretty]
+                  break-words
                 "
               >
                 We provide a fast, transparent process to help businesses
@@ -1007,7 +1381,7 @@ const HowItWorks = () => {
           ))}
         </div>
 
-        {/* HOW IT WORKS STEPPER (UNTOUCHED) */}
+        {/* HOW IT WORKS STEPPER */}
         <div className="hiw-stepper-box mt-10 sm:mt-12 lg:mt-14 w-full relative">
           {/* DESKTOP CONNECTING LINE */}
           <div
@@ -1028,25 +1402,8 @@ const HowItWorks = () => {
             "
           />
 
-          {/* MOBILE CONNECTING LINE */}
-          <div
-            className="
-              block
-              lg:hidden
-              absolute
-              top-[36px]
-              bottom-[36px]
-              left-1/2
-              -translate-x-1/2
-              w-[2px]
-              bg-gradient-to-b
-              from-blue-300/35
-              via-blue-200/45
-              to-green-300/35
-              z-0
-              pointer-events-none
-            "
-          />
+          {/* MOBILE HORIZONTAL CONNECTING LINE */}
+          <div className="hiw-mobile-stepper-line hidden" />
 
           {/* STEPS GRID */}
           <div
@@ -1147,6 +1504,8 @@ const HowItWorks = () => {
                       font-bold
                       transition-colors
                       duration-300
+                      relative
+                      z-20
                       ${
                         isMobileActive
                           ? "max-lg:text-green-600"
@@ -1163,11 +1522,15 @@ const HowItWorks = () => {
                       hiw-step-text-wrapper
                       w-full
                       max-w-[240px]
+                      min-w-0
                       flex
                       flex-col
                       items-center
                       mt-1
                       sm:mt-1.5
+                      relative
+                      z-20
+                      px-2
                     "
                   >
                     {/* TITLE */}
@@ -1184,6 +1547,7 @@ const HowItWorks = () => {
                         leading-snug
                         w-full
                         text-center
+                        break-words
                       "
                     >
                       {item.title}
@@ -1201,6 +1565,7 @@ const HowItWorks = () => {
                         text-gray-600
                         text-center
                         px-1
+                        break-words
                       "
                     >
                       {item.text}
@@ -1208,7 +1573,7 @@ const HowItWorks = () => {
                   </div>
 
                   {/* BADGE */}
-                  <div 
+                  <div
                     className="
                       hiw-step-badge
                       mt-2.5
@@ -1224,12 +1589,15 @@ const HowItWorks = () => {
                       justify-center
                       gap-1
                       shadow-xs
+                      relative
+                      z-20
                     "
                   >
                     <Check
                       size={12}
                       className="text-green-600 shrink-0"
                     />
+
                     <span
                       className="
                         text-[10px]
@@ -1292,6 +1660,28 @@ const HowItWorks = () => {
             #ffffff 50%,
             #cbd5e1 100%
           );
+        }
+
+        /* Prevent long text from ever breaking the layout */
+        .hiw-card-desc,
+        .hiw-step-text,
+        .hiw-featured-desc {
+          overflow-wrap: anywhere;
+          word-break: normal;
+        }
+
+        /* Keep mobile horizontal line behind the stepper content */
+        @media (max-width: 1023px) {
+          .hiw-mobile-stepper-line {
+            pointer-events: none;
+          }
+
+          .hiw-step-circle,
+          .hiw-step-num,
+          .hiw-step-text-wrapper,
+          .hiw-step-badge {
+            isolation: isolate;
+          }
         }
       `}</style>
     </section>
