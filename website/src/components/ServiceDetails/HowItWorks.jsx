@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 
 const HowItWorks = ({ service }) => {
@@ -14,7 +13,9 @@ const HowItWorks = ({ service }) => {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@400;500;600;700&display=swap');
 
-        /* 1440px - Same responsive reference as Services.jsx */
+        /* =========================================================
+           1440px
+           ========================================================= */
         @media (min-width: 1440px) {
           .hiw-container {
             max-width: 1380px !important;
@@ -53,7 +54,9 @@ const HowItWorks = ({ service }) => {
           }
         }
 
-        /* 1920px - Same responsive reference as Services.jsx */
+        /* =========================================================
+           1920px
+           ========================================================= */
         @media (min-width: 1920px) {
           .hiw-container {
             max-width: 1800px !important;
@@ -92,7 +95,9 @@ const HowItWorks = ({ service }) => {
           }
         }
 
-        /* 2560px */
+        /* =========================================================
+           2560px
+           ========================================================= */
         @media (min-width: 2560px) {
           .hiw-container {
             max-width: 2300px !important;
@@ -131,7 +136,9 @@ const HowItWorks = ({ service }) => {
           }
         }
 
-        /* 3840px - Same responsive reference as Services.jsx */
+        /* =========================================================
+           3840px
+           ========================================================= */
         @media (min-width: 3840px) {
           .hiw-container {
             max-width: 3200px !important;
@@ -178,7 +185,9 @@ const HowItWorks = ({ service }) => {
           px-4 sm:px-6 min-[1440px]:px-10
         "
       >
-        {/* HEADING + DESCRIPTION */}
+        {/* =========================================================
+            HEADING + DESCRIPTION
+            ========================================================= */}
         <div className="mb-8 sm:mb-12 lg:mb-14 flex items-start justify-between">
           <div className="text-left">
             <p
@@ -231,8 +240,11 @@ const HowItWorks = ({ service }) => {
             </p>
           </div>
 
-          {/* Mobile Arrows */}
+          {/* =========================================================
+              MOBILE ARROWS
+              ========================================================= */}
           <div className="flex items-center gap-2 lg:hidden flex-shrink-0 mt-2">
+            {/* PREVIOUS */}
             <button
               onClick={() =>
                 setCurrentStep((p) => Math.max(0, p - 1))
@@ -265,6 +277,7 @@ const HowItWorks = ({ service }) => {
               </svg>
             </button>
 
+            {/* NEXT */}
             <button
               onClick={() =>
                 setCurrentStep((p) =>
@@ -301,13 +314,16 @@ const HowItWorks = ({ service }) => {
           </div>
         </div>
 
-        {/* MOBILE TIMELINE */}
+        {/* =========================================================
+            MOBILE TIMELINE
+            ========================================================= */}
         <div className="flex flex-col relative lg:hidden">
           {(() => {
             const step = service.process[currentStep];
 
             return (
               <div className="relative flex gap-4 sm:gap-5 items-start">
+                {/* STEP NUMBER */}
                 <div
                   className="
                     hiw-step-num
@@ -324,6 +340,7 @@ const HowItWorks = ({ service }) => {
                   {String(step.step || currentStep + 1).padStart(2, "0")}
                 </div>
 
+                {/* STEP CONTENT */}
                 <div className="pt-0.5 pb-2 text-left flex-1 min-w-0">
                   <p
                     style={{ fontFamily: "'Inter', sans-serif" }}
@@ -338,7 +355,9 @@ const HowItWorks = ({ service }) => {
                   </p>
 
                   <h3
-                    style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+                    style={{
+                      fontFamily: "'Hedvig Letters Serif', serif",
+                    }}
                     className="
                       text-lg sm:text-xl
                       font-bold text-gray-900
@@ -364,23 +383,11 @@ const HowItWorks = ({ service }) => {
               </div>
             );
           })()}
-
-          {/* Dot Indicators */}
-          <div className="flex justify-center gap-2 mt-6">
-            {service.process.map((_, i) => (
-              <span
-                key={i}
-                className={`h-2 rounded-full transition-all duration-300 ${
-                  i === currentStep
-                    ? "bg-[#0B4EA2] w-6"
-                    : "bg-blue-200 w-2"
-                }`}
-              />
-            ))}
-          </div>
         </div>
 
-        {/* DESKTOP TIMELINE */}
+        {/* =========================================================
+            DESKTOP TIMELINE
+            ========================================================= */}
         <div className="relative hidden lg:block">
           {/* Connecting Line */}
           <div
@@ -401,6 +408,7 @@ const HowItWorks = ({ service }) => {
                 key={index}
                 className="relative flex-1 min-w-0 text-left"
               >
+                {/* STEP NUMBER */}
                 <div
                   className="
                     hiw-step-num
@@ -419,6 +427,7 @@ const HowItWorks = ({ service }) => {
                   {String(step.step || index + 1).padStart(2, "0")}
                 </div>
 
+                {/* STEP CONTENT */}
                 <div className="pr-3">
                   <p
                     style={{ fontFamily: "'Inter', sans-serif" }}

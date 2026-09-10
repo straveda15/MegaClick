@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -442,7 +441,6 @@ const SolutionCardItem = ({ item }) => (
           {item.title}
         </h3>
 
-        {/* RESPONSIVE DESCRIPTION */}
         <p
           style={{ fontFamily: "'Inter', sans-serif" }}
           className="
@@ -1180,23 +1178,34 @@ const HowItWorks = () => {
         }
 
         /* ─────────────────────────────────────────
-           MOBILE STEPPER LINE
-           Horizontal line only on mobile
+           MOBILE VERTICAL STEPPER LINE
+           Only mobile/tablet
         ───────────────────────────────────────── */
         @media (max-width: 1023px) {
           .hiw-mobile-stepper-line {
             display: block !important;
             position: absolute;
-            top: 42px;
-            left: 8%;
-            right: 8%;
-            height: 2px;
+
+            /*
+             * Center of the stepper.
+             * The line stays behind the circles,
+             * numbers, titles and descriptions.
+             */
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+
+            width: 2px;
+            height: auto;
+
             background: linear-gradient(
-              90deg,
+              180deg,
               rgba(147, 197, 253, 0.35),
-              rgba(191, 219, 254, 0.65),
+              rgba(191, 219, 254, 0.70),
               rgba(134, 239, 172, 0.45)
             );
+
             z-index: 0;
             pointer-events: none;
           }
@@ -1204,18 +1213,86 @@ const HowItWorks = () => {
 
         @media (max-width: 639px) {
           .hiw-mobile-stepper-line {
-            top: 31px;
-            left: 10%;
-            right: 10%;
-            height: 1.5px;
+            left: 50%;
+            width: 1.5px;
           }
         }
 
         @media (max-width: 374px) {
           .hiw-mobile-stepper-line {
-            top: 29px;
-            left: 8%;
-            right: 8%;
+            left: 50%;
+            width: 1.5px;
+          }
+        }
+
+        /* ─────────────────────────────────────────
+           DEEP PAPER FOLD
+        ───────────────────────────────────────── */
+        .deep-peel-fold {
+          position: absolute;
+          top: 0;
+          right: 0;
+          width: 38px;
+          height: 38px;
+          pointer-events: none;
+          z-index: 20;
+          filter: drop-shadow(-2px 2px 4px rgba(0, 0, 0, 0.14));
+        }
+
+        .deep-peel-fold::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          right: 0;
+          width: 38px;
+          height: 38px;
+          background: linear-gradient(
+            225deg,
+            #cbd5e1 0%,
+            #f1f5f9 22%,
+            #ffffff 50%,
+            #e2e8f0 100%
+          );
+          clip-path: polygon(0 0, 0 100%, 100% 100%);
+          border-bottom-left-radius: 14px;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .group:hover .deep-peel-fold::after {
+          width: 42px;
+          height: 42px;
+          border-bottom-left-radius: 16px;
+          background: linear-gradient(
+            225deg,
+            #94a3b8 0%,
+            #e2e8f0 22%,
+            #ffffff 50%,
+            #cbd5e1 100%
+          );
+        }
+
+        /* Prevent long text from ever breaking the layout */
+        .hiw-card-desc,
+        .hiw-step-text,
+        .hiw-featured-desc {
+          overflow-wrap: anywhere;
+          word-break: normal;
+        }
+
+        /* Keep mobile vertical line behind the stepper content */
+        @media (max-width: 1023px) {
+          .hiw-mobile-stepper-line {
+            pointer-events: none;
+            z-index: 0;
+          }
+
+          .hiw-step-circle,
+          .hiw-step-num,
+          .hiw-step-text-wrapper,
+          .hiw-step-badge {
+            isolation: isolate;
+            position: relative;
+            z-index: 10;
           }
         }
       `}</style>
@@ -1282,6 +1359,7 @@ const HowItWorks = () => {
             "
           >
             <div className="absolute -right-8 -bottom-8 w-44 h-44 rounded-full bg-blue-400/20 blur-2xl pointer-events-none" />
+
             <div className="absolute top-0 right-1/4 w-32 h-32 rounded-full bg-cyan-400/10 blur-xl pointer-events-none" />
 
             <div className="relative z-10 text-left min-w-0">
@@ -1402,7 +1480,7 @@ const HowItWorks = () => {
             "
           />
 
-          {/* MOBILE HORIZONTAL CONNECTING LINE */}
+          {/* MOBILE VERTICAL CONNECTING LINE */}
           <div className="hiw-mobile-stepper-line hidden" />
 
           {/* STEPS GRID */}
@@ -1475,7 +1553,11 @@ const HowItWorks = () => {
                         group-hover:opacity-100
                         transition-opacity
                         duration-300
-                        ${isMobileActive ? "max-lg:opacity-100" : ""}
+                        ${
+                          isMobileActive
+                            ? "max-lg:opacity-100"
+                            : ""
+                        }
                       `}
                     />
 
@@ -1489,7 +1571,11 @@ const HowItWorks = () => {
                         group-hover:text-white
                         transition-colors
                         duration-300
-                        ${isMobileActive ? "max-lg:text-white" : ""}
+                        ${
+                          isMobileActive
+                            ? "max-lg:text-white"
+                            : ""
+                        }
                       `}
                     />
                   </div>
@@ -1516,7 +1602,7 @@ const HowItWorks = () => {
                     STEP {item.number}
                   </div>
 
-                  {/* TITLE & DESCRIPTION WRAPPER */}
+                  {/* TITLE & DESCRIPTION */}
                   <div
                     className="
                       hiw-step-text-wrapper
@@ -1533,7 +1619,6 @@ const HowItWorks = () => {
                       px-2
                     "
                   >
-                    {/* TITLE */}
                     <h4
                       style={{
                         fontFamily: "'Hedvig Letters Serif', serif",
@@ -1553,7 +1638,6 @@ const HowItWorks = () => {
                       {item.title}
                     </h4>
 
-                    {/* DESCRIPTION */}
                     <p
                       className="
                         hiw-step-text
@@ -1616,74 +1700,6 @@ const HowItWorks = () => {
           </div>
         </div>
       </div>
-
-      {/* DEEP PAPER FOLD STYLES */}
-      <style>{`
-        .deep-peel-fold {
-          position: absolute;
-          top: 0;
-          right: 0;
-          width: 38px;
-          height: 38px;
-          pointer-events: none;
-          z-index: 20;
-          filter: drop-shadow(-2px 2px 4px rgba(0, 0, 0, 0.14));
-        }
-
-        .deep-peel-fold::after {
-          content: '';
-          position: absolute;
-          top: 0;
-          right: 0;
-          width: 38px;
-          height: 38px;
-          background: linear-gradient(
-            225deg,
-            #cbd5e1 0%,
-            #f1f5f9 22%,
-            #ffffff 50%,
-            #e2e8f0 100%
-          );
-          clip-path: polygon(0 0, 0 100%, 100% 100%);
-          border-bottom-left-radius: 14px;
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .group:hover .deep-peel-fold::after {
-          width: 42px;
-          height: 42px;
-          border-bottom-left-radius: 16px;
-          background: linear-gradient(
-            225deg,
-            #94a3b8 0%,
-            #e2e8f0 22%,
-            #ffffff 50%,
-            #cbd5e1 100%
-          );
-        }
-
-        /* Prevent long text from ever breaking the layout */
-        .hiw-card-desc,
-        .hiw-step-text,
-        .hiw-featured-desc {
-          overflow-wrap: anywhere;
-          word-break: normal;
-        }
-
-        /* Keep mobile horizontal line behind the stepper content */
-        @media (max-width: 1023px) {
-          .hiw-mobile-stepper-line {
-            pointer-events: none;
-          }
-
-          .hiw-step-circle,
-          .hiw-step-num,
-          .hiw-step-text-wrapper,
-          .hiw-step-badge {
-            isolation: isolate;
-          }
-        }
-      `}</style>
     </section>
   );
 };
