@@ -165,8 +165,6 @@ const ContactInfo = () => {
           {/* ── MAP CARD ── */}
           <div className="lg:col-span-2 relative overflow-hidden rounded-2xl sm:rounded-[28px] min-[3840px]:rounded-[44px] border border-gray-200 min-[3840px]:border-2 bg-white shadow-[0_15px_45px_rgba(0,0,0,0.08)] hover:shadow-2xl transition-all duration-500 flex flex-col justify-between">
 
-            <div className="absolute top-0 left-0 h-1.5 min-[3840px]:h-3 w-full bg-gradient-to-r from-[#0B4EA2] to-green-500" />
-
             {/* Header */}
             <div className="flex items-center justify-between gap-4 p-5 sm:p-6 min-[1440px]:p-8 min-[1920px]:p-10 min-[3840px]:p-16">
               <div className="flex items-center gap-3 sm:gap-5 min-[3840px]:gap-8 min-w-0">
@@ -267,10 +265,10 @@ const ContactInfo = () => {
           </div>
 
           {/* ── RIGHT-SIDE CARDS ── */}
-          <div className="flex flex-col justify-between gap-5 sm:gap-6 min-[1920px]:gap-8 min-[3840px]:gap-12 w-full">
+          <div className="flex flex-col justify-start gap-5 sm:gap-6 min-[1920px]:gap-8 min-[3840px]:gap-12 w-full">
 
             {/* ----- WhatsApp ----- */}
-            <div className="group relative overflow-hidden rounded-2xl sm:rounded-[28px] min-[3840px]:rounded-[44px] bg-white border border-gray-200 min-[3840px]:border-2 p-5 sm:p-6 min-[1920px]:p-8 min-[3840px]:p-12 shadow-[0_15px_45px_rgba(0,0,0,0.08)] hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 w-full flex flex-col justify-between text-left">
+            <div className="group relative overflow-hidden rounded-2xl sm:rounded-[28px] min-[3840px]:rounded-[44px] bg-white border border-gray-200 min-[3840px]:border-2 p-5 sm:p-6 min-[1920px]:p-8 min-[3840px]:p-12 shadow-[0_15px_45px_rgba(0,0,0,0.08)] hover:shadow-2xl transition-all duration-500 w-full flex flex-col justify-between text-left">
 
               <div className="relative flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3 sm:gap-5 min-[3840px]:gap-8 min-w-0">
@@ -316,7 +314,7 @@ const ContactInfo = () => {
             </div>
 
             {/* ----- Call ----- */}
-            <div className="group relative overflow-hidden rounded-2xl sm:rounded-[28px] min-[3840px]:rounded-[44px] bg-white border border-gray-200 min-[3840px]:border-2 p-5 sm:p-6 min-[1920px]:p-8 min-[3840px]:p-12 shadow-[0_15px_45px_rgba(0,0,0,0.08)] hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 w-full flex flex-col justify-between text-left">
+            <div className="group relative overflow-hidden rounded-2xl sm:rounded-[28px] min-[3840px]:rounded-[44px] bg-white border border-gray-200 min-[3840px]:border-2 p-5 sm:p-6 min-[1920px]:p-8 min-[3840px]:p-12 shadow-[0_15px_45px_rgba(0,0,0,0.08)] hover:shadow-2xl transition-all duration-500 w-full flex flex-col justify-between text-left">
 
               <div className="relative flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3 sm:gap-5 min-[3840px]:gap-8 min-w-0">
@@ -360,7 +358,7 @@ const ContactInfo = () => {
             </div>
 
             {/* ----- Email ----- */}
-            <div className="group relative overflow-hidden rounded-2xl sm:rounded-[28px] min-[3840px]:rounded-[44px] bg-white border border-gray-200 min-[3840px]:border-2 p-5 sm:p-6 min-[1920px]:p-8 min-[3840px]:p-12 shadow-[0_15px_45px_rgba(0,0,0,0.08)] hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 w-full flex flex-col justify-between text-left">
+            <div className="group relative overflow-hidden rounded-2xl sm:rounded-[28px] min-[3840px]:rounded-[44px] bg-white border border-gray-200 min-[3840px]:border-2 p-5 sm:p-6 min-[1920px]:p-8 min-[3840px]:p-12 shadow-[0_15px_45px_rgba(0,0,0,0.08)] hover:shadow-2xl transition-all duration-500 w-full flex flex-col justify-between text-left">
 
               <div className="relative flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3 sm:gap-5 min-[3840px]:gap-8 min-w-0">

@@ -65,7 +65,10 @@ const VisionMission = () => {
             HEADER (Consistent Typography)
         ========================================== */}
         <div className="vm-header mb-8 sm:mb-10 min-[1920px]:mb-12 min-[3840px]:mb-16 text-left">
-          <p className="vm-tagline text-xs sm:text-sm font-semibold tracking-[0.25em] uppercase text-[#0B4EA2] mb-2 sm:mb-2.5">
+          <p
+            style={{ fontFamily: "'Inter', sans-serif" }}
+            className="vm-tagline text-xs sm:text-sm font-semibold tracking-[0.25em] uppercase text-[#0B4EA2] mb-2 sm:mb-2.5"
+          >
             Our Purpose
           </p>
 

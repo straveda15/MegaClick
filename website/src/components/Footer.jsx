@@ -24,6 +24,8 @@ const FOOTER_LINKS = {
     { label: "Business Registration", path: "/services" },
     { label: "Tax & Compliance Services", path: "/services" },
     { label: "Financial & Legal Solutions", path: "/services" },
+    { label: "Privacy Policy", path: "/privacy-policy" },
+    { label: "Terms of Service", path: "/terms-of-service" },
   ],
 };
 

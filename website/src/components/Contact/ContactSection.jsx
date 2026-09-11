@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Select from "react-select";
 import {
   ShieldCheck,
@@ -9,16 +9,8 @@ import {
   Mail,
   Briefcase,
   ArrowRight,
-  ArrowUpRight,
   CheckCircle2,
 } from "lucide-react";
-import {
-  FaFacebookF,
-  FaLinkedinIn,
-  FaWhatsapp,
-  FaInstagram,
-} from "react-icons/fa";
-
 import serviceCategories from "../../data/servicesData";
 import { submitContactForm } from "../../lib/api";
 
@@ -45,6 +37,47 @@ const filterServiceOption = (option, rawInput) => {
   if (!input) return true;
   const haystack = `${option.data.title} ${option.data.category}`.toLowerCase();
   return input.split(/\s+/).every((term) => haystack.includes(term));
+};
+
+// ─────────────────────────────────────────────
+// COUNT-UP ON SCROLL INTO VIEW
+// ─────────────────────────────────────────────
+const CountUp = ({ end, suffix = "", duration = 900 }) => {
+  const [count, setCount] = useState(0);
+  const ref = useRef(null);
+  const started = useRef(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !started.current) {
+          started.current = true;
+          let startTime = null;
+
+          const tick = (timestamp) => {
+            if (!startTime) startTime = timestamp;
+            const progress = Math.min((timestamp - startTime) / duration, 1);
+            setCount(Math.ceil(progress * end));
+            if (progress < 1) requestAnimationFrame(tick);
+          };
+
+          requestAnimationFrame(tick);
+        }
+      },
+      { threshold: 0.3 }
+    );
+
+    const el = ref.current;
+    if (el) observer.observe(el);
+    return () => observer.disconnect();
+  }, [end, duration]);
+
+  return (
+    <span ref={ref} style={{ fontVariantNumeric: "tabular-nums" }}>
+      {count}
+      {suffix}
+    </span>
+  );
 };
 
 const benefits = [
@@ -516,37 +549,6 @@ const ContactSection = () => {
                 </div>
               </div>
 
-              {/* SOCIAL */}
-              <div className="mt-5 sm:mt-7 min-[3840px]:mt-10 border-t border-gray-200 pt-5 sm:pt-6 min-[3840px]:pt-8">
-                <h3
-                  style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
-                  className="text-lg sm:text-xl min-[1920px]:text-2xl min-[3840px]:text-3xl font-bold text-gray-900 text-left"
-                >
-                  Connect With Us
-                </h3>
-                <p
-                  style={{ fontFamily: "'Inter', sans-serif" }}
-                  className="mt-1.5 text-xs sm:text-sm min-[1920px]:text-base min-[3840px]:text-2xl text-gray-600 text-left"
-                >
-                  Follow us for updates, business tips and latest services.
-                </p>
-
-                <div className="mt-4 sm:mt-5 min-[3840px]:mt-6 flex flex-wrap gap-3 sm:gap-4 min-[3840px]:gap-6">
-                  <a href="#" aria-label="Facebook" className="flex h-10 w-10 sm:h-12 sm:w-12 min-[3840px]:h-18 min-[3840px]:w-18 items-center justify-center rounded-full bg-blue-100 text-[#0B4EA2] transition hover:bg-[#0B4EA2] hover:text-white">
-                    <FaFacebookF size={18} className="min-[3840px]:w-7 min-[3840px]:h-7" />
-                  </a>
-                  <a href="#" aria-label="LinkedIn" className="flex h-10 w-10 sm:h-12 sm:w-12 min-[3840px]:h-18 min-[3840px]:w-18 items-center justify-center rounded-full bg-blue-100 text-[#0B4EA2] transition hover:bg-[#0B4EA2] hover:text-white">
-                    <FaLinkedinIn size={18} className="min-[3840px]:w-7 min-[3840px]:h-7" />
-                  </a>
-                  <a href="https://wa.me/919921611911" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="flex h-10 w-10 sm:h-12 sm:w-12 min-[3840px]:h-18 min-[3840px]:w-18 items-center justify-center rounded-full bg-green-100 text-green-600 transition hover:bg-green-600 hover:text-white">
-                    <FaWhatsapp size={20} className="min-[3840px]:w-8 min-[3840px]:h-8" />
-                  </a>
-                  <a href="#" aria-label="Instagram" className="flex h-10 w-10 sm:h-12 sm:w-12 min-[3840px]:h-18 min-[3840px]:w-18 items-center justify-center rounded-full bg-pink-100 text-pink-600 transition hover:bg-pink-600 hover:text-white">
-                    <FaInstagram size={20} className="min-[3840px]:w-8 min-[3840px]:h-8" />
-                  </a>
-                </div>
-              </div>
-
             </form>
           </div>
 
@@ -574,14 +576,6 @@ const ContactSection = () => {
                 Let's Build Your <span className="text-[#0B4EA2]">Business Together</span>
               </h2>
 
-              {/* DESCRIPTION */}
-              <p
-                style={{ fontFamily: "'Inter', sans-serif" }}
-                className="contact-desc mt-3 sm:mt-4 text-slate-600 font-normal text-xs sm:text-sm lg:text-base leading-relaxed text-left w-full"
-              >
-                MegaClick simplifies business registration, taxation, legal compliance and financial services with expert guidance and end-to-end support.
-              </p>
-
               {/* BENEFITS LIST */}
               <div className="mt-6 sm:mt-8 min-[1920px]:mt-9 min-[3840px]:mt-14 space-y-4 sm:space-y-5 min-[3840px]:space-y-8">
                 {benefits.map((item, index) => {
@@ -597,15 +591,12 @@ const ContactSection = () => {
                         </div>
 
                         <div className="min-w-0 flex-1 text-left">
-                          <div className="flex items-start justify-between gap-2">
-                            <h3
-                              style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
-                              className="benefit-title min-w-0 text-base sm:text-lg min-[1920px]:text-xl min-[3840px]:text-3xl font-bold text-gray-900 leading-snug"
-                            >
-                              {item.title}
-                            </h3>
-                            <ArrowUpRight size={18} className="mt-1 flex-shrink-0 text-gray-300 transition group-hover:rotate-45 group-hover:text-[#0B4EA2] min-[3840px]:w-7 min-[3840px]:h-7" />
-                          </div>
+                          <h3
+                            style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+                            className="benefit-title min-w-0 text-base sm:text-lg min-[1920px]:text-xl min-[3840px]:text-3xl font-bold text-gray-900 leading-snug"
+                          >
+                            {item.title}
+                          </h3>
                           <p
                             style={{ fontFamily: "'Inter', sans-serif" }}
                             className="benefit-desc mt-1.5 sm:mt-2 text-xs sm:text-sm min-[1920px]:text-base min-[3840px]:text-2xl text-gray-600 leading-relaxed"
@@ -626,7 +617,7 @@ const ContactSection = () => {
                     style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
                     className="text-xl sm:text-3xl min-[1920px]:text-4xl min-[3840px]:text-6xl font-extrabold text-[#0B4EA2]"
                   >
-                    15K+
+                    <CountUp end={15} suffix="K+" />
                   </h3>
                   <p
                     style={{ fontFamily: "'Inter', sans-serif" }}
@@ -641,7 +632,7 @@ const ContactSection = () => {
                     style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
                     className="text-xl sm:text-3xl min-[1920px]:text-4xl min-[3840px]:text-6xl font-extrabold text-green-600"
                   >
-                    25+
+                    <CountUp end={25} suffix="+" />
                   </h3>
                   <p
                     style={{ fontFamily: "'Inter', sans-serif" }}
@@ -656,7 +647,7 @@ const ContactSection = () => {
                     style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
                     className="text-xl sm:text-3xl min-[1920px]:text-4xl min-[3840px]:text-6xl font-extrabold text-[#0B4EA2]"
                   >
-                    10+
+                    <CountUp end={10} suffix="+" />
                   </h3>
                   <p
                     style={{ fontFamily: "'Inter', sans-serif" }}
@@ -664,22 +655,6 @@ const ContactSection = () => {
                   >
                     Years
                   </p>
-                </div>
-              </div>
-
-              {/* TRUST LINE */}
-              <div className="mt-5 sm:mt-7 min-[1920px]:mt-8 min-[3840px]:mt-12 flex flex-wrap gap-x-4 sm:gap-x-5 min-[3840px]:gap-x-8 gap-y-2">
-                <div className="flex items-center gap-1.5 text-xs sm:text-sm min-[1920px]:text-base min-[3840px]:text-xl font-medium text-gray-700">
-                  <CheckCircle2 size={16} className="flex-shrink-0 text-green-600 min-[3840px]:w-6 min-[3840px]:h-6" />
-                  Trusted Professionals
-                </div>
-                <div className="flex items-center gap-1.5 text-xs sm:text-sm min-[1920px]:text-base min-[3840px]:text-xl font-medium text-gray-700">
-                  <CheckCircle2 size={16} className="flex-shrink-0 text-green-600 min-[3840px]:w-6 min-[3840px]:h-6" />
-                  Fast Processing
-                </div>
-                <div className="flex items-center gap-1.5 text-xs sm:text-sm min-[1920px]:text-base min-[3840px]:text-xl font-medium text-gray-700">
-                  <CheckCircle2 size={16} className="flex-shrink-0 text-green-600 min-[3840px]:w-6 min-[3840px]:h-6" />
-                  Transparent Pricing
                 </div>
               </div>
 
