@@ -84,7 +84,7 @@ const ServiceBenefits = ({ service }) => {
         <div className="mb-6 sm:mb-8 text-left">
           <p
             style={{ fontFamily: "'Inter', sans-serif" }}
-            className="text-xs sm:text-sm font-semibold text-[#0B4EA2] uppercase tracking-[0.15em] mb-1.5 text-left"
+            className="text-xs sm:text-sm font-semibold text-[#0B4EA2] uppercase tracking-[0.25em] mb-1.5 text-left"
           >
             Key Advantages
           </p>

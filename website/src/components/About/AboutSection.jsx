@@ -1,5 +1,46 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Users, Building2, ShieldCheck, BadgeCheck } from "lucide-react";
+
+// ─────────────────────────────────────────────
+// COUNT-UP ON SCROLL INTO VIEW
+// ─────────────────────────────────────────────
+const CountUp = ({ end, suffix = "", duration = 900 }) => {
+  const [count, setCount] = useState(0);
+  const ref = useRef(null);
+  const started = useRef(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !started.current) {
+          started.current = true;
+          let startTime = null;
+
+          const tick = (timestamp) => {
+            if (!startTime) startTime = timestamp;
+            const progress = Math.min((timestamp - startTime) / duration, 1);
+            setCount(Math.ceil(progress * end));
+            if (progress < 1) requestAnimationFrame(tick);
+          };
+
+          requestAnimationFrame(tick);
+        }
+      },
+      { threshold: 0.3 }
+    );
+
+    const el = ref.current;
+    if (el) observer.observe(el);
+    return () => observer.disconnect();
+  }, [end, duration]);
+
+  return (
+    <span ref={ref} style={{ fontVariantNumeric: "tabular-nums" }}>
+      {count}
+      {suffix}
+    </span>
+  );
+};
 
 const About = () => {
   return (
@@ -54,7 +95,10 @@ const About = () => {
             HEADING (Consistent Typography)
         ========================================== */}
         <div className="mb-6 sm:mb-8 min-[1920px]:mb-12 min-[3840px]:mb-16 text-left">
-          <p className="about-tagline text-xs sm:text-sm font-semibold tracking-[0.25em] uppercase text-[#0B4EA2] mb-2 sm:mb-2.5">
+          <p
+            style={{ fontFamily: "'Inter', sans-serif" }}
+            className="about-tagline text-xs sm:text-sm font-semibold tracking-[0.25em] uppercase text-[#0B4EA2] mb-2 sm:mb-2.5"
+          >
             About Us
           </p>
 
@@ -134,7 +178,8 @@ const About = () => {
               {
                 icon: <Users />,
                 color: "text-[#0B4EA2]",
-                num: "15K+",
+                end: 15,
+                suffix: "K+",
                 label: "Happy Clients",
                 borderClass:
                   "border-b border-r lg:border-b-0 lg:border-r border-white/10",
@@ -142,7 +187,8 @@ const About = () => {
               {
                 icon: <Building2 />,
                 color: "text-green-500",
-                num: "25+",
+                end: 25,
+                suffix: "+",
                 label: "Business Services",
                 borderClass:
                   "border-b lg:border-b-0 lg:border-r border-white/10",
@@ -150,14 +196,16 @@ const About = () => {
               {
                 icon: <ShieldCheck />,
                 color: "text-emerald-500",
-                num: "100%",
+                end: 100,
+                suffix: "%",
                 label: "Trusted Process",
                 borderClass: "border-r border-white/10",
               },
               {
                 icon: <BadgeCheck />,
                 color: "text-[#0B4EA2]",
-                num: "10+",
+                end: 10,
+                suffix: "+",
                 label: "Years Experience",
                 borderClass: "",
               },
@@ -175,7 +223,7 @@ const About = () => {
                   style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
                   className="about-stat-num text-2xl sm:text-3xl lg:text-4xl font-bold text-white"
                 >
-                  {stat.num}
+                  <CountUp end={stat.end} suffix={stat.suffix} />
                 </h3>
                 <p className="about-stat-label text-xs sm:text-sm text-white/90 mt-1 sm:mt-2 font-medium">
                   {stat.label}

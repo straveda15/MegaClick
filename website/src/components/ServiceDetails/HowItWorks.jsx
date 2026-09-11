@@ -49,7 +49,7 @@ const HowItWorks = ({ service }) => {
               style={{ fontFamily: "'Inter', sans-serif" }}
               className="
                 text-xs sm:text-sm
-                font-semibold text-[#0B4EA2] uppercase tracking-[0.15em] mb-2 sm:mb-2.5
+                font-semibold text-[#0B4EA2] uppercase tracking-[0.25em] mb-2 sm:mb-2.5
               "
             >
               Simple Process

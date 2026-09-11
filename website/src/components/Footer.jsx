@@ -23,6 +23,8 @@ const FOOTER_LINKS = {
     { label: "Business Registration", path: "/services" },
     { label: "Tax & Compliance Services", path: "/services" },
     { label: "Financial & Legal Solutions", path: "/services" },
+    { label: "Privacy Policy", path: "/privacy-policy" },
+    { label: "Terms of Service", path: "/terms-of-service" },
   ],
 };
 
@@ -408,21 +410,21 @@ const Footer = () => {
             <p className="text-[11px] font-bold uppercase tracking-wider text-blue-100/70 text-left">
               &copy; {new Date().getFullYear()} MegaClick. All rights reserved.
             </p>
-
-            <div className="flex items-center gap-5">
-              <a
-                href="/privacy-policy"
-                className="text-[11px] font-bold uppercase tracking-wider text-blue-100/70 hover:text-green-400 transition-colors"
-              >
-                Privacy Policy
-              </a>
-              <a
-                href="/terms-of-service"
-                className="text-[11px] font-bold uppercase tracking-wider text-blue-100/70 hover:text-green-400 transition-colors"
-              >
-                Terms of Service
-              </a>
-            </div>
+            <a
+              href="https://stravedatech.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex flex-col items-start gap-1"
+            >
+              <img
+                src="/straveda-logo-cropped.png"
+                alt="Straveda"
+                className="h-3.5 w-auto opacity-90 group-hover:opacity-100 transition-opacity"
+              />
+              <span className="text-[9px] font-bold uppercase tracking-wider text-blue-100/60 group-hover:text-green-400 transition-colors">
+                Tech Partner
+              </span>
+            </a>
           </div>
         </div>
 
@@ -598,20 +600,21 @@ const Footer = () => {
               &copy; {new Date().getFullYear()} MegaClick. All rights reserved.
             </p>
 
-            <div className="flex gap-6 min-[3840px]:gap-10">
-              <a
-                href="/privacy-policy"
-                className="text-[11px] min-[1920px]:text-xs min-[3840px]:text-lg font-bold text-white/50 uppercase tracking-[0.15em] hover:text-green-400 transition-colors"
-              >
-                Privacy Policy
-              </a>
-              <a
-                href="/terms-of-service"
-                className="text-[11px] min-[1920px]:text-xs min-[3840px]:text-lg font-bold text-white/50 uppercase tracking-[0.15em] hover:text-green-400 transition-colors"
-              >
-                Terms of Service
-              </a>
-            </div>
+            <a
+              href="https://stravedatech.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex flex-col items-end gap-1"
+            >
+              <img
+                src="/straveda-logo-cropped.png"
+                alt="Straveda"
+                className="h-4 min-[1920px]:h-5 min-[3840px]:h-9 w-auto opacity-90 group-hover:opacity-100 transition-opacity"
+              />
+              <span className="text-[10px] min-[1920px]:text-xs min-[3840px]:text-lg font-bold uppercase tracking-[0.15em] text-white/50 group-hover:text-green-400 transition-colors">
+                Tech Partner
+              </span>
+            </a>
           </div>
         </div>
 

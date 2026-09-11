@@ -159,7 +159,7 @@ const SearchServices = ({ searchTerm, setSearchTerm }) => {
              <h2
             style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
             className="
-              team-title
+              search-heading
               text-2xl
               sm:text-3xl
               md:text-3xl
