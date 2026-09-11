@@ -4,18 +4,20 @@ import Testimonial from "./testimonial.model.js";
 const defaultSeedData = [
   {
     name: "Rajesh Sharma",
-    service: "Income Tax Registration",
+    service: "Income Tax Services",
+    services: ["Income Tax Services"],
     location: "Nashik, Maharashtra",
-    review: "MegaClick provided exceptional support during our company registration process. Their team handled every document professionally and ensured a hassle-free experience.",
+    review: "Filing our corporate Income Tax returns was completely stress-free. The deductions were accurately calculated, compliance was verified thoroughly, and our ITR acknowledgment came through well before the deadline.",
     rating: 5,
     status: "APPROVED",
     isActive: true,
   },
   {
     name: "Priya Enterprises",
-    service: "GST Registration",
+    service: "GST Registration & Filing",
+    services: ["GST Registration & Filing"],
     location: "Pune, Maharashtra",
-    review: "The entire process was smooth and transparent. We received regular updates and expert guidance throughout the business registration journey.",
+    review: "Our GST registration and monthly return compliance were set up seamlessly. Expert guidance ensured all input tax credit reconciliations were error-free.",
     rating: 5,
     status: "APPROVED",
     isActive: true,
@@ -23,17 +25,19 @@ const defaultSeedData = [
   {
     name: "Amit Patil",
     service: "Trademark Registration",
+    services: ["Trademark Registration"],
     location: "Mumbai, Maharashtra",
-    review: "Excellent service with outstanding customer support. Every query was answered promptly and the team completed our work on time.",
+    review: "Outstanding legal expertise for our brand trademark registration. All classification searches and application filings were handled with precision and zero delays.",
     rating: 5,
     status: "APPROVED",
     isActive: true,
   },
   {
     name: "Sneha Kulkarni",
-    service: "MSME Registration",
+    service: "Marriage Registration, Partnership Deed (Notary & Registration of Firm)",
+    services: ["Marriage Registration", "Partnership Deed (Notary & Registration of Firm)"],
     location: "Nagpur, Maharashtra",
-    review: "MegaClick made the documentation process incredibly simple. Their professional approach exceeded our expectations.",
+    review: "Both our marriage registration and partnership deed drafting were completed seamlessly under one roof. The legal documentation was thorough, and the entire process was quick and hassle-free.",
     rating: 5,
     status: "APPROVED",
     isActive: true,
@@ -49,6 +53,14 @@ export const getAllTestimonials = async (req, res) => {
     }
 
     const filter = req.query.all === "true" ? {} : { isActive: true };
+    if (req.query.service) {
+      const escapedService = req.query.service.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const serviceRegex = new RegExp(escapedService, "i");
+      filter.$or = [
+        { services: { $regex: serviceRegex } },
+        { service: serviceRegex },
+      ];
+    }
     const testimonials = await Testimonial.find(filter).sort({ createdAt: -1 });
 
     res.status(200).json({
@@ -61,10 +73,27 @@ export const getAllTestimonials = async (req, res) => {
   }
 };
 
+// Helper to sync services array and service string
+const syncServicesPayload = (body) => {
+  const payload = { ...body };
+  if (Array.isArray(payload.services) && payload.services.length > 0) {
+    if (!payload.service) {
+      payload.service = payload.services.join(", ");
+    }
+  } else if (payload.service && (!payload.services || payload.services.length === 0)) {
+    payload.services = payload.service
+      .split(/[,•|]/)
+      .map((s) => s.trim())
+      .filter(Boolean);
+  }
+  return payload;
+};
+
 // CREATE Testimonial
 export const createTestimonial = async (req, res) => {
   try {
-    const testimonial = await Testimonial.create(req.body);
+    const payload = syncServicesPayload(req.body);
+    const testimonial = await Testimonial.create(payload);
     res.status(201).json({
       success: true,
       message: "Created successfully",
@@ -82,7 +111,8 @@ export const createTestimonial = async (req, res) => {
 // UPDATE Testimonial
 export const updateTestimonial = async (req, res) => {
   try {
-    const updated = await Testimonial.findByIdAndUpdate(req.params.id, req.body, {
+    const payload = syncServicesPayload(req.body);
+    const updated = await Testimonial.findByIdAndUpdate(req.params.id, payload, {
       new: true,
       runValidators: true,
     });

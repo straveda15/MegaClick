@@ -126,7 +126,7 @@ const About = () => {
             PARAGRAPHS (Inter font)
         ========================================== */}
         <div className="about-para-gap w-full flex flex-col space-y-4 sm:space-y-6 min-[1920px]:space-y-8">
-          <p className="about-para text-sm sm:text-base lg:text-lg text-gray-700 text-left sm:text-justify leading-relaxed font-normal">
+          <p className="about-para text-sm sm:text-base lg:text-lg text-gray-700 text-justify leading-relaxed sm:leading-[1.8] font-normal">
             <span className="font-bold">
               <span className="text-[#0B4EA2]">Mega</span>
               <span className="text-green-500">Click</span>
@@ -141,7 +141,7 @@ const About = () => {
             unwavering commitment to excellence.
           </p>
 
-          <p className="about-para text-sm sm:text-base lg:text-lg text-gray-700 text-left sm:text-justify leading-relaxed font-normal">
+          <p className="about-para text-sm sm:text-base lg:text-lg text-gray-700 text-justify leading-relaxed sm:leading-[1.8] font-normal">
             By bringing together legal, financial, banking, real estate, and
             business support professional services under one seamlessly
             integrated ecosystem,{" "}

@@ -1,6 +1,12 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, Scale, BarChart3, ClipboardList } from "lucide-react";
+import {
+  ArrowRight,
+  Scale,
+  BarChart3,
+  ClipboardList,
+  Laptop,
+} from "lucide-react";
 
 const services = [
   {
@@ -28,6 +34,18 @@ const services = [
       "border-purple-500 text-purple-600 hover:bg-purple-500 hover:text-white",
   },
   {
+    title: "IT Services",
+    slug: "it-services",
+    icon: Laptop,
+    short:
+      "Advanced technology solutions including AI, software development, cloud infrastructure, cybersecurity, data analytics and digital experiences designed to modernize your business and accelerate growth.",
+    gradient: "from-white via-amber-50 to-amber-200",
+    iconBg: "bg-amber-100",
+    iconColor: "text-amber-600",
+    btnBorder:
+      "border-amber-500 text-amber-600 hover:bg-amber-500 hover:text-white",
+  },
+  {
     title: "Other Services",
     slug: "other-services",
     icon: ClipboardList,
@@ -37,7 +55,7 @@ const services = [
     iconBg: "bg-emerald-100",
     iconColor: "text-emerald-600",
     btnBorder:
-      "border-emerald-500 text-emerald-600 hover:bg-emerald-500 hover:text-white",
+      "border-emerald-500 text-emerald-600 hover:bg-emerald-600 hover:text-white",
   },
 ];
 
@@ -45,137 +63,457 @@ const Services = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="w-full py-8 sm:py-12 lg:py-16 min-[1920px]:py-20 min-[3840px]:py-32 bg-white font-['Inter',sans-serif]">
-      {/* DIRECT CSS RULES FOR 1440px, 1920px & 3840px RESPONSIVENESS */}
+    <section className="w-full bg-white font-['Inter',sans-serif] py-8 sm:py-12 lg:py-16 min-[1920px]:py-20 min-[3840px]:py-28">
       <style>{`
-        /* Standard Desktop (1440px) */
-        @media (min-width: 1440px) {
+        /* =========================================================
+           MOBILE OPTIMIZATION
+           ========================================================= */
+
+        @media (max-width: 639px) {
           .services-container {
-            max-width: 1380px !important;
-            padding-left: 2.5rem !important;  /* px-10 */
-            padding-right: 2.5rem !important; /* px-10 */
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
           }
+
+          .services-header {
+            margin-bottom: 1.5rem !important;
+          }
+
           .services-tagline {
-            font-size: 0.85rem !important;
-            margin-bottom: 0.75rem !important;
+            font-size: 0.7rem !important;
+            margin-bottom: 0.5rem !important;
+            letter-spacing: 0.18em !important;
           }
+
           .services-title {
-            font-size: 2.5rem !important;
+            font-size: 1.65rem !important;
             line-height: 1.2 !important;
+            margin-bottom: 0.5rem !important;
           }
+
           .services-desc {
-            font-size: 0.95rem !important;
-            line-height: 1.65 !important;
+            font-size: 0.82rem !important;
+            line-height: 1.6 !important;
+            margin-top: 0.5rem !important;
           }
+
+          .services-grid {
+            gap: 1rem !important;
+          }
+
+          /*
+            Compact mobile cards
+          */
+          .services-card {
+            border-radius: 1.25rem !important;
+          }
+
+          .services-card-content {
+            padding: 1.15rem 1rem 0.75rem !important;
+          }
+
+          /*
+            Smaller title area so button comes upward
+          */
+          .services-card-title-wrapper {
+            height: 3.25rem !important;
+            min-height: 3.25rem !important;
+            margin-bottom: 0.35rem !important;
+          }
+
           .services-card-title {
-            font-size: 1.35rem !important;
+            font-size: 1.05rem !important;
+            line-height: 1.25 !important;
+            min-height: auto !important;
           }
+
+          /*
+            Paragraph slightly bigger and more readable,
+            but with reduced height to keep card compact
+          */
+          .services-card-description-wrapper {
+            height: 6.9rem !important;
+            min-height: 6.9rem !important;
+            margin-bottom: 0.65rem !important;
+          }
+
           .services-card-desc {
             font-size: 0.875rem !important;
-            line-height: 1.6 !important;
+            line-height: 1.55 !important;
           }
+
+          /*
+            Read More moves upward
+          */
+          .services-read-more-wrapper {
+            margin-top: 0 !important;
+          }
+
           .services-btn {
-            font-size: 0.85rem !important;
-            padding: 0.5rem 1.25rem !important;
+            font-size: 0.75rem !important;
+            padding: 0.4rem 1rem !important;
+            gap: 0.4rem !important;
+          }
+
+          .services-btn svg {
+            width: 13px !important;
+            height: 13px !important;
+          }
+
+          /*
+            Compact bottom icon section
+          */
+          .services-icon-section {
+            padding-top: 0.75rem !important;
+            padding-bottom: 1rem !important;
+          }
+
+          .services-icon-box {
+            width: 3.25rem !important;
+            height: 3.25rem !important;
+            border-radius: 0.85rem !important;
+          }
+
+          .services-icon-box svg {
+            width: 1.45rem !important;
+            height: 1.45rem !important;
           }
         }
 
-        /* Large Desktop (1920px Full HD) */
-        @media (min-width: 1920px) {
-          .services-container {
-            max-width: 1800px !important;
-            padding-left: 4rem !important;   /* px-16 */
-            padding-right: 4rem !important;  /* px-16 */
-          }
-          .services-tagline {
-            font-size: 1rem !important;
-            letter-spacing: 0.3em !important;
-            margin-bottom: 1rem !important;
-          }
+        /* =========================================================
+           SMALL PHONES
+           ========================================================= */
+
+        @media (max-width: 374px) {
           .services-title {
-            font-size: 3.25rem !important;
-            line-height: 1.18 !important;
+            font-size: 1.5rem !important;
           }
+
           .services-desc {
-            font-size: 1.15rem !important;
-            line-height: 1.8 !important;
+            font-size: 0.78rem !important;
           }
+
+          .services-card-content {
+            padding: 1rem 0.85rem 0.65rem !important;
+          }
+
+          .services-card-title-wrapper {
+            height: 3rem !important;
+            min-height: 3rem !important;
+          }
+
           .services-card-title {
-            font-size: 1.65rem !important;
+            font-size: 1rem !important;
           }
+
+          .services-card-description-wrapper {
+            height: 7rem !important;
+            min-height: 7rem !important;
+          }
+
           .services-card-desc {
-            font-size: 1rem !important;
-            line-height: 1.7 !important;
+            font-size: 0.84rem !important;
+            line-height: 1.5 !important;
           }
+
           .services-btn {
-            font-size: 1rem !important;
-            padding: 0.65rem 1.65rem !important;
+            font-size: 0.72rem !important;
+            padding: 0.38rem 0.9rem !important;
           }
+
+          .services-icon-section {
+            padding-top: 0.65rem !important;
+            padding-bottom: 0.85rem !important;
+          }
+
           .services-icon-box {
-            width: 6rem !important;
-            height: 6rem !important;
-            border-radius: 1.25rem !important;
-          }
-          .services-icon-box svg {
             width: 3rem !important;
             height: 3rem !important;
           }
         }
 
-        /* 4K Ultra-Wide Desktop (3840px) */
+        /* =========================================================
+           DESKTOP 1440+
+           ORIGINAL DESKTOP STYLING
+           ========================================================= */
+
+        @media (min-width: 1440px) {
+          .services-container {
+            max-width: 1380px !important;
+            padding-left: 2.5rem !important;
+            padding-right: 2.5rem !important;
+          }
+
+          .services-header {
+            margin-bottom: 2.75rem !important;
+          }
+
+          .services-tagline {
+            font-size: 0.85rem !important;
+            margin-bottom: 0.75rem !important;
+          }
+
+          .services-title {
+            font-size: 2.5rem !important;
+            line-height: 1.2 !important;
+          }
+
+          .services-desc {
+            font-size: 0.95rem !important;
+            line-height: 1.65 !important;
+            margin-top: 0.9rem !important;
+          }
+
+          .services-grid {
+            gap: 1.5rem !important;
+          }
+
+          .services-card-content {
+            padding: 2rem 1.5rem 1.25rem !important;
+          }
+
+          .services-card-title-wrapper {
+            height: 4.5rem !important;
+            min-height: 4.5rem !important;
+            display: flex !important;
+            align-items: flex-start !important;
+            justify-content: center !important;
+          }
+
+          .services-card-title {
+            font-size: 1.4rem !important;
+            line-height: 1.3 !important;
+            min-height: 3.5rem !important;
+            margin-bottom: 0 !important;
+            display: flex !important;
+            align-items: flex-start !important;
+            justify-content: center !important;
+          }
+
+          .services-card-description-wrapper {
+            height: 8rem !important;
+            margin-bottom: 1.75rem !important;
+          }
+
+          .services-card-desc {
+            font-size: 0.875rem !important;
+            line-height: 1.6 !important;
+          }
+
+          .services-btn {
+            font-size: 0.85rem !important;
+            padding: 0.5rem 1.25rem !important;
+          }
+
+          .services-read-more-wrapper {
+            margin-top: 0.75rem !important;
+          }
+
+          .services-icon-section {
+            padding-top: 1.25rem !important;
+            padding-bottom: 1.5rem !important;
+          }
+
+          .services-icon-box {
+            width: 3.75rem !important;
+            height: 3.75rem !important;
+            border-radius: 1rem !important;
+          }
+
+          .services-icon-box svg {
+            width: 1.75rem !important;
+            height: 1.75rem !important;
+          }
+        }
+
+        /* =========================================================
+           DESKTOP 1920+
+           ========================================================= */
+
+        @media (min-width: 1920px) {
+          .services-container {
+            max-width: 1800px !important;
+            padding-left: 4rem !important;
+            padding-right: 4rem !important;
+          }
+
+          .services-header {
+            margin-bottom: 3.5rem !important;
+          }
+
+          .services-tagline {
+            font-size: 1rem !important;
+            letter-spacing: 0.3em !important;
+            margin-bottom: 1rem !important;
+          }
+
+          .services-title {
+            font-size: 3.25rem !important;
+            line-height: 1.18 !important;
+          }
+
+          .services-desc {
+            font-size: 1.15rem !important;
+            line-height: 1.8 !important;
+            margin-top: 1rem !important;
+          }
+
+          .services-grid {
+            gap: 2rem !important;
+          }
+
+          .services-card-content {
+            padding: 2.5rem 2rem 1.5rem !important;
+          }
+
+          .services-card-title-wrapper {
+            height: 5rem !important;
+            min-height: 5rem !important;
+          }
+
+          .services-card-title {
+            font-size: 1.65rem !important;
+            line-height: 1.3 !important;
+            min-height: 4rem !important;
+          }
+
+          .services-card-description-wrapper {
+            height: 8.5rem !important;
+            margin-bottom: 2rem !important;
+          }
+
+          .services-card-desc {
+            font-size: 0.98rem !important;
+            line-height: 1.7 !important;
+          }
+
+          .services-btn {
+            font-size: 0.95rem !important;
+            padding: 0.6rem 1.5rem !important;
+          }
+
+          .services-read-more-wrapper {
+            margin-top: 0.85rem !important;
+          }
+
+          .services-icon-section {
+            padding-top: 1.5rem !important;
+            padding-bottom: 2rem !important;
+          }
+
+          .services-icon-box {
+            width: 4rem !important;
+            height: 4rem !important;
+            border-radius: 1.1rem !important;
+          }
+
+          .services-icon-box svg {
+            width: 2rem !important;
+            height: 2rem !important;
+          }
+        }
+
+        /* =========================================================
+           DESKTOP 3840+
+           ========================================================= */
+
         @media (min-width: 3840px) {
           .services-container {
             max-width: 3200px !important;
-            padding-left: 6rem !important;   /* px-24 */
-            padding-right: 6rem !important;  /* px-24 */
+            padding-left: 6rem !important;
+            padding-right: 6rem !important;
           }
+
+          .services-header {
+            margin-bottom: 5rem !important;
+          }
+
           .services-tagline {
-            font-size: 1.75rem !important;
+            font-size: 1.5rem !important;
             letter-spacing: 0.35em !important;
-            margin-bottom: 1.75rem !important;
+            margin-bottom: 1.5rem !important;
           }
+
           .services-title {
-            font-size: 5.5rem !important;
+            font-size: 5rem !important;
             line-height: 1.15 !important;
           }
+
           .services-desc {
-            font-size: 2rem !important;
-            line-height: 3.25rem !important;
+            font-size: 1.75rem !important;
+            line-height: 1.8 !important;
             margin-top: 1.5rem !important;
           }
-          .services-card-title {
-            font-size: 2.75rem !important;
-            margin-bottom: 1rem !important;
+
+          .services-grid {
+            gap: 3rem !important;
           }
-          .services-card-desc {
-            font-size: 1.65rem !important;
-            line-height: 2.6rem !important;
-          }
-          .services-btn {
-            font-size: 1.65rem !important;
-            padding: 1rem 2.5rem !important;
-            margin-top: 2rem !important;
-          }
-          .services-btn svg {
-            width: 1.5rem !important;
-            height: 1.5rem !important;
-          }
-          .services-icon-box {
-            width: 10rem !important;
-            height: 10rem !important;
+
+          .services-card {
             border-radius: 2rem !important;
           }
-          .services-icon-box svg {
+
+          .services-card-content {
+            padding: 4rem 3rem 2rem !important;
+          }
+
+          .services-card-title-wrapper {
+            height: 7rem !important;
+            min-height: 7rem !important;
+          }
+
+          .services-card-title {
+            font-size: 2.5rem !important;
+            line-height: 1.25 !important;
+            min-height: 6rem !important;
+          }
+
+          .services-card-description-wrapper {
+            height: 12rem !important;
+            margin-bottom: 2.5rem !important;
+          }
+
+          .services-card-desc {
+            font-size: 1.4rem !important;
+            line-height: 2.15rem !important;
+          }
+
+          .services-btn {
+            font-size: 1.35rem !important;
+            padding: 0.85rem 2rem !important;
+          }
+
+          .services-btn svg {
+            width: 1.4rem !important;
+            height: 1.4rem !important;
+          }
+
+          .services-read-more-wrapper {
+            margin-top: 1rem !important;
+          }
+
+          .services-icon-section {
+            padding-top: 1.75rem !important;
+            padding-bottom: 2.5rem !important;
+          }
+
+          .services-icon-box {
             width: 5rem !important;
             height: 5rem !important;
+            border-radius: 1.35rem !important;
+          }
+
+          .services-icon-box svg {
+            width: 2.25rem !important;
+            height: 2.25rem !important;
           }
         }
       `}</style>
 
-      <div className="services-container w-full max-w-[1380px] mx-auto px-4 sm:px-6 min-[1440px]:px-10">
-        
-        {/* HEADER */}
-        <div className="mb-8 sm:mb-10 lg:mb-12 w-full text-left">
+      <div className="services-container w-full max-w-[1380px] mx-auto px-4 sm:px-6 lg:px-8 min-[1440px]:px-10">
+
+        {/* SECTION HEADER */}
+        <div className="services-header mb-8 sm:mb-10 lg:mb-12 w-full text-left">
           <p
             style={{ fontFamily: "'Inter', sans-serif" }}
             className="services-tagline text-xs sm:text-sm font-semibold tracking-[0.25em] uppercase text-[#0B4EA2] mb-2.5 sm:mb-3 text-left"
@@ -183,29 +521,14 @@ const Services = () => {
             WHAT WE OFFER
           </p>
 
-             <h2
+          <h2
             style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
-            className="
-              team-title
-              text-2xl
-              sm:text-3xl
-              md:text-3xl
-              lg:text-4xl
-              font-bold
-              leading-[1.18]
-              text-black
-              text-left
-              mb-2.5
-              sm:mb-4
-            "
+            className="services-title text-2xl sm:text-3xl md:text-3xl lg:text-4xl font-bold leading-[1.18] text-black text-left mb-2.5 sm:mb-4"
           >
-          Complete Business{" "}
-            <span className="text-[#0B4EA2]">
-      Solutions
-            </span>
+            Complete Business{" "}
+            <span className="text-[#0B4EA2]">Solutions</span>
           </h2>
 
-          {/* SPREAD 100% FULL WIDTH FROM LEFT CARD TO RIGHT CARD */}
           <p
             style={{ fontFamily: "'Inter', sans-serif" }}
             className="services-desc mt-3 sm:mt-4 text-slate-600 font-normal text-xs sm:text-sm lg:text-base leading-relaxed text-left w-full"
@@ -216,53 +539,115 @@ const Services = () => {
           </p>
         </div>
 
-        {/* 3 SERVICES CARDS GRID */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7 lg:gap-8 min-[1920px]:gap-10 min-[3840px]:gap-16 items-stretch w-full">
+        {/* SERVICE CARDS */}
+        <div className="services-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6 lg:gap-6 min-[1920px]:gap-8 min-[3840px]:gap-12 items-stretch w-full">
           {services.map((service, index) => {
             const Icon = service.icon;
 
             return (
               <div
                 key={index}
-                className={`group flex flex-col justify-between rounded-3xl min-[3840px]:rounded-[40px] overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1.5 cursor-pointer bg-gradient-to-b ${service.gradient}`}
+                className={`
+                  services-card
+                  group flex flex-col h-full rounded-3xl overflow-hidden
+                  border border-slate-100 shadow-sm hover:shadow-xl
+                  transition-all duration-300 hover:-translate-y-1.5
+                  cursor-pointer bg-gradient-to-b ${service.gradient}
+                `}
               >
-                <div className="flex flex-col items-center text-center px-6 pt-8 pb-4 sm:px-7 sm:pt-9 min-[1920px]:px-8 min-[1920px]:pt-10 min-[3840px]:px-12 min-[3840px]:pt-16">
+                <div
+                  className="
+                    services-card-content
+                    flex flex-col items-center text-center
+                    px-5 pt-7 pb-4
+                    sm:px-6 sm:pt-8
+                    min-[1920px]:px-8 min-[1920px]:pt-10
+                    min-[3840px]:px-12 min-[3840px]:pt-16
+                    flex-1
+                  "
+                >
+
                   {/* CARD TITLE */}
-                  <h3
-                    style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
-                    className="services-card-title text-xl sm:text-2xl font-bold text-[#0f172a] leading-snug mb-3 min-h-[56px] flex items-center justify-center text-center"
-                  >
-                    {service.title}
-                  </h3>
+                  <div className="services-card-title-wrapper w-full h-[64px] sm:h-[64px] lg:h-[64px] flex items-start justify-center mb-3 shrink-0">
+                    <h3
+                      style={{
+                        fontFamily: "'Hedvig Letters Serif', serif",
+                      }}
+                      className="
+                        services-card-title
+                        text-xl sm:text-[22px] lg:text-[22px]
+                        font-bold text-[#0f172a]
+                        leading-snug w-full text-center
+                        flex items-start justify-center
+                      "
+                    >
+                      {service.title}
+                    </h3>
+                  </div>
 
-                  {/* CARD DESCRIPTION */}
-                  <p
-                    style={{ fontFamily: "'Inter', sans-serif" }}
-                    className="services-card-desc text-xs sm:text-sm text-slate-600 leading-relaxed text-center min-h-[80px]"
-                  >
-                    {service.short}
-                  </p>
+                  {/* DESCRIPTION */}
+                  <div className="services-card-description-wrapper w-full h-[125px] sm:h-[125px] lg:h-[135px] min-[1440px]:h-[128px] min-[1920px]:h-[145px] min-[3840px]:h-[210px] flex items-start justify-center overflow-hidden mb-7 shrink-0">
+                    <p
+                      style={{ fontFamily: "'Inter', sans-serif" }}
+                      className="
+                        services-card-desc
+                        w-full text-xs sm:text-sm
+                        text-slate-600
+                        leading-relaxed
+                        text-justify
+                        hyphens-auto
+                      "
+                    >
+                      {service.short}
+                    </p>
+                  </div>
 
-                  {/* READ MORE BUTTON */}
-                  <button
-                    onClick={() =>
-                      navigate(`/services?category=${service.slug}`)
-                    }
-                    style={{ fontFamily: "'Inter', sans-serif" }}
-                    className={`services-btn mt-5 inline-flex items-center justify-center gap-2 border rounded-full px-5 py-2 text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer shadow-xs ${service.btnBorder}`}
-                  >
-                    <span>Read More</span>
-                    <ArrowRight size={15} />
-                  </button>
+                  {/* READ MORE */}
+                  <div className="services-read-more-wrapper w-full flex items-center justify-center mt-3 shrink-0">
+                    <button
+                      onClick={() =>
+                        navigate(`/services?category=${service.slug}`)
+                      }
+                      style={{ fontFamily: "'Inter', sans-serif" }}
+                      className={`
+                        services-btn
+                        inline-flex items-center justify-center
+                        gap-2 border rounded-full
+                        px-5 py-2
+                        text-xs sm:text-sm
+                        font-semibold
+                        transition-all duration-200
+                        cursor-pointer
+                        shadow-xs
+                        ${service.btnBorder}
+                      `}
+                    >
+                      <span>Read More</span>
+
+                      <ArrowRight
+                        size={15}
+                        className="shrink-0"
+                      />
+                    </button>
+                  </div>
                 </div>
 
-                {/* BOTTOM ICON CONTAINER */}
-                <div className="flex items-center justify-center py-7 sm:py-8 min-[3840px]:py-14">
+                {/* BOTTOM ICON */}
+                <div className="services-icon-section flex items-center justify-center py-6 sm:py-7 lg:py-7 shrink-0">
                   <div
-                    className={`services-icon-box w-16 h-16 sm:w-20 sm:h-20 rounded-2xl ${service.iconBg} flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform duration-300`}
+                    className={`
+                      services-icon-box
+                      w-14 h-14 sm:w-16 sm:h-16
+                      lg:w-[60px] lg:h-[60px]
+                      rounded-2xl ${service.iconBg}
+                      flex items-center justify-center
+                      shadow-xs
+                      group-hover:scale-105
+                      transition-transform duration-300
+                    `}
                   >
                     <Icon
-                      size={36}
+                      size={27}
                       className={`${service.iconColor} transition-transform duration-300`}
                       strokeWidth={1.75}
                     />

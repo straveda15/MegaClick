@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+
+import React, { useState, useEffect } from "react";
 
 const categories = [
   {
     name: "All Services",
     icon: "🌐",
-    count: 36,
+    count: 42,
   },
   {
     name: "Legal Services",
@@ -45,6 +46,19 @@ const categories = [
     ],
   },
   {
+    name: "IT Services",
+    icon: "💻",
+    count: 6,
+    services: [
+      "AI & Business Automation",
+      "Custom Software & Systems",
+      "AI-Powered CRM Solutions",
+      "Dashboards & Data Systems",
+      "Workflow & System Integration",
+      "Ongoing Optimization & Scale",
+    ],
+  },
+  {
     name: "Other Services",
     icon: "🏢",
     count: 12,
@@ -65,7 +79,9 @@ const categories = [
   },
 ];
 
-const serviceCategories = categories.filter((cat) => cat.name !== "All Services");
+const serviceCategories = categories.filter(
+  (cat) => cat.name !== "All Services"
+);
 
 const CategoriesSidebar = ({
   selectedCategory,
@@ -73,30 +89,167 @@ const CategoriesSidebar = ({
   setSelectedService,
   selectedService,
 }) => {
-  const [openCategory, setOpenCategory] = useState("");
+  const [openCategory, setOpenCategory] = useState(
+    selectedCategory && selectedCategory !== "All Services"
+      ? selectedCategory
+      : ""
+  );
+
+  useEffect(() => {
+    if (selectedCategory && selectedCategory !== "All Services") {
+      setOpenCategory(selectedCategory);
+    }
+  }, [selectedCategory]);
 
   return (
     <aside className="cat-sidebar sticky top-24 bg-white rounded-3xl border border-slate-200/80 shadow-sm p-4 sm:p-5 w-full font-['Inter',sans-serif]">
-      {/* GOOGLE FONTS */}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@400;500;600;700&display=swap');
 
-        /* Large Desktop (1920px Full HD) */
-        @media (min-width: 1920px) {
-          .cat-sidebar { padding: 1.5rem !important; border-radius: 1.5rem !important; }
-          .cat-header-title { font-size: 1.05rem !important; }
-          .cat-btn { padding: 0.85rem 1rem !important; }
-          .cat-btn-text { font-size: 1rem !important; }
-          .cat-badge { font-size: 0.85rem !important; padding: 0.25rem 0.85rem !important; }
+        /* =========================================================
+           STANDARD DESKTOP — 1440px
+           Matching Services.jsx responsive scale
+        ========================================================= */
+        @media (min-width: 1440px) {
+          .cat-sidebar {
+            padding: 1.25rem !important;
+            border-radius: 1.5rem !important;
+          }
+
+          .cat-header-title {
+            font-size: 1rem !important;
+          }
+
+          .cat-btn {
+            padding: 0.75rem 0.9rem !important;
+            border-radius: 0.9rem !important;
+          }
+
+          .cat-btn-text {
+            font-size: 0.9rem !important;
+          }
+
+          .cat-badge {
+            font-size: 0.8rem !important;
+            padding: 0.25rem 0.7rem !important;
+          }
+
+          .cat-sub-btn {
+            font-size: 0.8rem !important;
+          }
+
+          .cat-group-header {
+            padding: 0.55rem 0.7rem !important;
+          }
         }
 
-        /* 4K Ultra-Wide (3840px) */
+        /* =========================================================
+           LARGE DESKTOP — 1920px
+           Matching Services.jsx 1920px scale
+        ========================================================= */
+        @media (min-width: 1920px) {
+          .cat-sidebar {
+            padding: 1.5rem !important;
+            border-radius: 1.5rem !important;
+          }
+
+          .cat-header-title {
+            font-size: 1.05rem !important;
+          }
+
+          .cat-header-icon {
+            width: 2.25rem !important;
+            height: 2.25rem !important;
+            font-size: 0.9rem !important;
+          }
+
+          .cat-btn {
+            padding: 0.85rem 1rem !important;
+            border-radius: 1rem !important;
+          }
+
+          .cat-btn-text {
+            font-size: 1rem !important;
+          }
+
+          .cat-badge {
+            font-size: 0.85rem !important;
+            padding: 0.25rem 0.85rem !important;
+          }
+
+          .cat-sub-btn {
+            font-size: 0.85rem !important;
+            padding-top: 0.55rem !important;
+            padding-bottom: 0.55rem !important;
+          }
+
+          .cat-group-header {
+            padding: 0.65rem 0.8rem !important;
+          }
+        }
+
+        /* =========================================================
+           4K ULTRA-WIDE — 3840px
+           Matching Services.jsx 3840px scale
+        ========================================================= */
         @media (min-width: 3840px) {
-          .cat-sidebar { padding: 2.5rem !important; border-radius: 2.25rem !important; }
-          .cat-header-title { font-size: 1.5rem !important; }
-          .cat-btn { padding: 1.35rem 1.6rem !important; border-radius: 1.25rem !important; }
-          .cat-btn-text { font-size: 1.45rem !important; }
-          .cat-badge { font-size: 1.25rem !important; padding: 0.35rem 1.25rem !important; }
+          .cat-sidebar {
+            padding: 2.5rem !important;
+            border-radius: 2.25rem !important;
+          }
+
+          .cat-header-title {
+            font-size: 1.5rem !important;
+          }
+
+          .cat-header-icon {
+            width: 3rem !important;
+            height: 3rem !important;
+            border-radius: 1rem !important;
+            font-size: 1.25rem !important;
+          }
+
+          .cat-btn {
+            padding: 1.35rem 1.6rem !important;
+            border-radius: 1.25rem !important;
+          }
+
+          .cat-btn-text {
+            font-size: 1.45rem !important;
+          }
+
+          .cat-btn > div:first-child {
+            gap: 1rem !important;
+          }
+
+          .cat-btn > div:first-child > span:first-child {
+            font-size: 1.5rem !important;
+          }
+
+          .cat-badge {
+            font-size: 1.25rem !important;
+            padding: 0.35rem 1.25rem !important;
+          }
+
+          .cat-sub-btn {
+            font-size: 1.15rem !important;
+            padding-top: 0.75rem !important;
+            padding-bottom: 0.75rem !important;
+            gap: 0.75rem !important;
+          }
+
+          .cat-group-header {
+            padding: 0.9rem 1.1rem !important;
+            border-radius: 1.1rem !important;
+          }
+
+          .cat-group-header span {
+            font-size: 1.15rem !important;
+          }
+
+          .cat-group-header > span {
+            font-size: 1rem !important;
+          }
         }
       `}</style>
 
@@ -105,6 +258,7 @@ const CategoriesSidebar = ({
         <div className="cat-header-icon w-8 h-8 rounded-xl bg-blue-50 text-[#0B4EA2] border border-blue-100 flex items-center justify-center text-sm shadow-2xs">
           📁
         </div>
+
         <h3
           style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
           className="cat-header-title font-bold text-sm tracking-wider text-slate-900 uppercase"
@@ -151,10 +305,15 @@ const CategoriesSidebar = ({
                 `}
               >
                 <div className="flex items-center gap-3 pr-2">
-                  <span className="text-lg shrink-0">{category.icon}</span>
+                  <span className="text-lg shrink-0">
+                    {category.icon}
+                  </span>
+
                   <span
                     className={`cat-btn-text text-xs sm:text-sm font-semibold leading-tight ${
-                      isSelected ? "text-[#0B4EA2] font-bold" : "text-slate-700"
+                      isSelected
+                        ? "text-[#0B4EA2] font-bold"
+                        : "text-slate-700"
                     }`}
                   >
                     {category.name}
@@ -182,7 +341,7 @@ const CategoriesSidebar = ({
                 </span>
               </button>
 
-              {/* SUB-SERVICES UNDER "ALL SERVICES" */}
+              {/* SUB-SERVICES UNDER ALL SERVICES */}
               {isAllServices && isOpen && (
                 <div className="my-3 ml-3 pl-3 border-l-2 border-blue-200 space-y-5 transition-all">
                   {serviceCategories.map((group) => (
@@ -196,14 +355,21 @@ const CategoriesSidebar = ({
                         className="cat-group-header w-full flex items-center justify-between bg-gradient-to-r from-blue-50 to-emerald-50/50 hover:from-blue-100/80 hover:to-emerald-100/60 border border-blue-200 text-slate-900 px-3 py-2 rounded-xl text-left transition-all duration-200 shadow-xs cursor-pointer"
                       >
                         <div className="flex items-center gap-2">
-                          <span className="text-sm shrink-0">{group.icon}</span>
+                          <span className="text-sm shrink-0">
+                            {group.icon}
+                          </span>
+
                           <span
-                            style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+                            style={{
+                              fontFamily:
+                                "'Hedvig Letters Serif', serif",
+                            }}
                             className="font-bold text-xs sm:text-[13px] text-slate-900 tracking-wide"
                           >
                             {group.name}
                           </span>
                         </div>
+
                         <span className="text-[10px] font-extrabold bg-white text-[#0B4EA2] border border-blue-200 px-2 py-0.5 rounded-full shadow-2xs">
                           {group.count}
                         </span>
@@ -212,7 +378,8 @@ const CategoriesSidebar = ({
                       {/* SUB-ITEMS */}
                       <div className="space-y-1 pl-1">
                         {group.services.map((service) => {
-                          const isServiceSelected = selectedService === service;
+                          const isServiceSelected =
+                            selectedService === service;
 
                           return (
                             <button
@@ -246,10 +413,15 @@ const CategoriesSidebar = ({
                             >
                               <span
                                 className={`w-1.5 h-1.5 rounded-full shrink-0 ${
-                                  isServiceSelected ? "bg-[#0B4EA2] ring-2 ring-blue-200" : "bg-slate-300"
+                                  isServiceSelected
+                                    ? "bg-[#0B4EA2] ring-2 ring-blue-200"
+                                    : "bg-slate-300"
                                 }`}
                               />
-                              <span className="truncate">{service}</span>
+
+                              <span className="truncate">
+                                {service}
+                              </span>
                             </button>
                           );
                         })}
@@ -263,7 +435,8 @@ const CategoriesSidebar = ({
               {!isAllServices && isOpen && (
                 <div className="my-2 ml-4 pl-3 border-l-2 border-blue-200 space-y-1 transition-all">
                   {category.services.map((service) => {
-                    const isServiceSelected = selectedService === service;
+                    const isServiceSelected =
+                      selectedService === service;
 
                     return (
                       <button
@@ -297,9 +470,12 @@ const CategoriesSidebar = ({
                       >
                         <span
                           className={`w-1.5 h-1.5 rounded-full shrink-0 ${
-                            isServiceSelected ? "bg-[#0B4EA2]" : "bg-slate-300"
+                            isServiceSelected
+                              ? "bg-[#0B4EA2]"
+                              : "bg-slate-300"
                           }`}
                         />
+
                         <span>{service}</span>
                       </button>
                     );

@@ -12,7 +12,7 @@ import HowItWorks from "../components/ServiceDetails/HowItWorks";
 import ServiceBenefits from "../components/ServiceDetails/ServiceBenefits";
 import ServiceFAQ from "../components/ServiceDetails/ServiceFAQ";
 import Testimonials from "../components/ServiceDetails/Testimonials";
-import UdyamRegistrationFAQ from "../components/ServiceDetails/UdyamRegistrationFAQ";
+
 
 const ServiceDetails = () => {
   const { slug } = useParams();
@@ -140,13 +140,7 @@ const ServiceDetails = () => {
 
       <ServiceFAQ service={service} />
 
-      {/* =================================
-          UDYAM / MSME FAQ
-      ================================= */}
 
-      {isUdyamService && (
-        <UdyamRegistrationFAQ />
-      )}
 
       {/* =================================
           TESTIMONIALS

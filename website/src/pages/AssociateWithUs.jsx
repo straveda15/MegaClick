@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import {
   Mail,
@@ -73,26 +74,32 @@ const AssociateWithUs = () => {
   const [selectedState, setSelectedState] = useState("");
   const [expertiseTags, setExpertiseTags] = useState(expertiseOptions);
   const [selectedExpertise, setSelectedExpertise] = useState([]);
-  const [showCustomExpertiseInput, setShowCustomExpertiseInput] = useState(false);
+  const [showCustomExpertiseInput, setShowCustomExpertiseInput] =
+    useState(false);
   const [customExpertise, setCustomExpertise] = useState("");
 
   const toggleExpertise = (tag) => {
     setSelectedExpertise((prev) =>
-      prev.includes(tag) ? prev.filter((item) => item !== tag) : [...prev, tag]
+      prev.includes(tag)
+        ? prev.filter((item) => item !== tag)
+        : [...prev, tag]
     );
   };
 
   const addCustomExpertise = () => {
     const value = customExpertise.trim();
+
     if (value && !expertiseTags.includes(value)) {
       setExpertiseTags((prev) => [...prev, value]);
       setSelectedExpertise((prev) => [...prev, value]);
     }
+
     setCustomExpertise("");
     setShowCustomExpertiseInput(false);
   };
 
-  // Scaled Input Styles: 1440px -> 1920px -> 3840px
+  // Same scaling pattern as Services:
+  // 1440px -> 1920px -> 3840px
   const inputBaseStyle = `
     w-full
     max-w-full
@@ -126,7 +133,6 @@ const AssociateWithUs = () => {
     transition-all
   `;
 
-  // Scaled Select Styles: 1440px -> 1920px -> 3840px
   const getSelectStyle = (value) => `
     w-full
     max-w-full
@@ -173,13 +179,65 @@ const AssociateWithUs = () => {
 
   return (
     <section className="w-full bg-gray-50 pt-8 sm:pt-10 min-[1440px]:pt-12 min-[1920px]:pt-16 min-[3840px]:pt-28 pb-12 sm:pb-16 min-[1440px]:pb-20 min-[1920px]:pb-24 min-[3840px]:pb-36 overflow-hidden font-['Inter',sans-serif]">
-      {/* Dynamic Container Width: 1440px -> 1920px -> 3840px */}
-      <div className="w-full max-w-[1380px] min-[1920px]:max-w-[1800px] min-[3840px]:max-w-[3200px] mx-auto px-4 sm:px-6 min-[1440px]:px-10 min-[1920px]:px-16 min-[3840px]:px-24">
+
+      {/* =====================================================
+          SAME CONTAINER ALIGNMENT AS SERVICES
+          1440px -> 1380px
+          1920px -> 1800px
+          4K    -> 3200px
+      ====================================================== */}
+
+      <style>{`
+        /* Standard Desktop - 1440px */
+        @media (min-width: 1440px) {
+          .services-container {
+            max-width: 1380px !important;
+            padding-left: 2.5rem !important;
+            padding-right: 2.5rem !important;
+          }
+        }
+
+        /* Large Desktop - 1920px */
+        @media (min-width: 1920px) {
+          .services-container {
+            max-width: 1800px !important;
+            padding-left: 4rem !important;
+            padding-right: 4rem !important;
+          }
+        }
+
+        /* 4K Ultra-Wide - 3840px */
+        @media (min-width: 3840px) {
+          .services-container {
+            max-width: 3200px !important;
+            padding-left: 6rem !important;
+            padding-right: 6rem !important;
+          }
+        }
+      `}</style>
+
+      {/* SAME CONTAINER AS SERVICES */}
+      <div
+        className="
+          services-container
+          w-full
+          max-w-[1380px]
+          mx-auto
+          px-4
+          sm:px-6
+          min-[1440px]:px-10
+          min-[1920px]:max-w-[1800px]
+          min-[1920px]:px-16
+          min-[3840px]:max-w-[3200px]
+          min-[3840px]:px-24
+        "
+      >
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-8 min-[1920px]:gap-12 min-[3840px]:gap-20 items-stretch">
-          
+
           {/* =====================================================
               LEFT SECTION
           ====================================================== */}
+
           <div className="lg:col-span-2 w-full flex">
             <div
               className="
@@ -207,7 +265,8 @@ const AssociateWithUs = () => {
               "
             >
               <div>
-                {/* Heading */}
+
+                {/* HEADING */}
                 <h2
                   className="
                     text-xl
@@ -220,7 +279,9 @@ const AssociateWithUs = () => {
                     leading-snug
                     min-[3840px]:leading-tight
                   "
-                  style={{ fontFamily: '"Hedvig Letters Serif", Georgia, serif' }}
+                  style={{
+                    fontFamily: '"Hedvig Letters Serif", Georgia, serif',
+                  }}
                 >
                   We are currently onboarding a limited number of
                   professionals as part of{" "}
@@ -229,7 +290,7 @@ const AssociateWithUs = () => {
                   's founding network.
                 </h2>
 
-                {/* Description */}
+                {/* DESCRIPTION */}
                 <p
                   className="
                     mt-4
@@ -250,9 +311,10 @@ const AssociateWithUs = () => {
                   you.
                 </p>
 
-                {/* Contact Details List */}
+                {/* CONTACT DETAILS */}
                 <div className="mt-8 sm:mt-10 min-[1920px]:mt-12 min-[3840px]:mt-20 space-y-6 sm:space-y-7 min-[1920px]:space-y-8 min-[3840px]:space-y-14">
-                  {/* Email */}
+
+                  {/* EMAIL */}
                   <div className="flex items-start gap-3 sm:gap-4 min-[1920px]:gap-5 min-[3840px]:gap-8">
                     <div
                       className="
@@ -285,13 +347,14 @@ const AssociateWithUs = () => {
                       <strong className="block text-gray-900 font-semibold text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl">
                         Email
                       </strong>
+
                       <span className="block mt-0.5 text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl text-gray-600 font-normal break-all">
                         megaclickofficial@gmail.com
                       </span>
                     </div>
                   </div>
 
-                  {/* Coverage */}
+                  {/* COVERAGE */}
                   <div className="flex items-start gap-3 sm:gap-4 min-[1920px]:gap-5 min-[3840px]:gap-8">
                     <div
                       className="
@@ -324,13 +387,14 @@ const AssociateWithUs = () => {
                       <strong className="block text-gray-900 font-semibold text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl">
                         Coverage
                       </strong>
+
                       <span className="block mt-0.5 text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl text-gray-600 font-normal">
                         Building India-wide professional network
                       </span>
                     </div>
                   </div>
 
-                  {/* Status */}
+                  {/* STATUS */}
                   <div className="flex items-start gap-3 sm:gap-4 min-[1920px]:gap-5 min-[3840px]:gap-8">
                     <div
                       className="
@@ -363,11 +427,13 @@ const AssociateWithUs = () => {
                       <strong className="block text-gray-900 font-semibold text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl">
                         Status
                       </strong>
+
                       <span className="block mt-0.5 text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl text-gray-600 font-normal">
                         The MegaClick platform is currently being built
                       </span>
                     </div>
                   </div>
+
                 </div>
               </div>
             </div>
@@ -376,6 +442,7 @@ const AssociateWithUs = () => {
           {/* =====================================================
               RIGHT FORM SECTION
           ====================================================== */}
+
           <div className="lg:col-span-3 w-full min-w-0">
             <div
               className="
@@ -402,12 +469,13 @@ const AssociateWithUs = () => {
                 id="contactForm"
               >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 min-[1920px]:gap-7 min-[3840px]:gap-12">
-                  
-                  {/* Name */}
+
+                  {/* NAME */}
                   <div className="w-full">
                     <label className="block mb-2 text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl font-bold text-gray-900">
                       Name <span className="text-red-500">*</span>
                     </label>
+
                     <input
                       type="text"
                       name="full_name"
@@ -417,11 +485,12 @@ const AssociateWithUs = () => {
                     />
                   </div>
 
-                  {/* Mobile */}
+                  {/* MOBILE */}
                   <div className="w-full">
                     <label className="block mb-2 text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl font-bold text-gray-900">
                       Mobile <span className="text-red-500">*</span>
                     </label>
+
                     <input
                       type="tel"
                       name="phone"
@@ -431,11 +500,12 @@ const AssociateWithUs = () => {
                     />
                   </div>
 
-                  {/* Email */}
+                  {/* EMAIL */}
                   <div className="w-full">
                     <label className="block mb-2 text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl font-bold text-gray-900">
                       Email <span className="text-red-500">*</span>
                     </label>
+
                     <input
                       type="email"
                       name="email"
@@ -445,11 +515,12 @@ const AssociateWithUs = () => {
                     />
                   </div>
 
-                  {/* Profession */}
+                  {/* PROFESSION */}
                   <div className="w-full">
                     <label className="block mb-2 text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl font-bold text-gray-900">
                       Select Profession <span className="text-red-500">*</span>
                     </label>
+
                     <select
                       name="profession"
                       required
@@ -458,9 +529,13 @@ const AssociateWithUs = () => {
                       className={getSelectStyle(selectedProfession)}
                       style={{ backgroundImage: dropdownArrowSvg }}
                     >
-                      <option value="" className="text-gray-400 font-normal bg-white">
+                      <option
+                        value=""
+                        className="text-gray-400 font-normal bg-white"
+                      >
                         Select Profession
                       </option>
+
                       {professions.map((profession) => (
                         <option
                           key={profession}
@@ -473,11 +548,12 @@ const AssociateWithUs = () => {
                     </select>
                   </div>
 
-                  {/* Firm Name */}
+                  {/* FIRM NAME */}
                   <div className="w-full">
                     <label className="block mb-2 text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl font-bold text-gray-900">
                       Firm Name <span className="text-red-500">*</span>
                     </label>
+
                     <input
                       type="text"
                       name="firm_name"
@@ -487,11 +563,13 @@ const AssociateWithUs = () => {
                     />
                   </div>
 
-                  {/* Experience */}
+                  {/* EXPERIENCE */}
                   <div className="w-full">
                     <label className="block mb-2 text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl font-bold text-gray-900">
-                      Years of Experience <span className="text-red-500">*</span>
+                      Years of Experience{" "}
+                      <span className="text-red-500">*</span>
                     </label>
+
                     <input
                       type="text"
                       name="experience_years"
@@ -501,11 +579,12 @@ const AssociateWithUs = () => {
                     />
                   </div>
 
-                  {/* LinkedIn */}
+                  {/* LINKEDIN */}
                   <div className="w-full">
                     <label className="block mb-2 text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl font-bold text-gray-900">
                       LinkedIn Profile
                     </label>
+
                     <input
                       type="url"
                       name="linkedin_profile"
@@ -514,11 +593,12 @@ const AssociateWithUs = () => {
                     />
                   </div>
 
-                  {/* Website */}
+                  {/* WEBSITE */}
                   <div className="w-full">
                     <label className="block mb-2 text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl font-bold text-gray-900">
                       Website
                     </label>
+
                     <input
                       type="url"
                       name="website"
@@ -527,13 +607,15 @@ const AssociateWithUs = () => {
                     />
                   </div>
 
-                  {/* Pincode / City / State */}
+                  {/* PINCODE / CITY / STATE */}
                   <div className="col-span-1 md:col-span-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-6 min-[1920px]:gap-7 min-[3840px]:gap-12">
-                    {/* Pincode */}
+
+                    {/* PINCODE */}
                     <div className="w-full">
                       <label className="block mb-2 text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl font-bold text-gray-900">
                         Pincode <span className="text-red-500">*</span>
                       </label>
+
                       <input
                         type="text"
                         name="pincode"
@@ -545,11 +627,12 @@ const AssociateWithUs = () => {
                       />
                     </div>
 
-                    {/* City */}
+                    {/* CITY */}
                     <div className="w-full">
                       <label className="block mb-2 text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl font-bold text-gray-900">
                         City <span className="text-red-500">*</span>
                       </label>
+
                       <input
                         type="text"
                         name="city"
@@ -559,11 +642,12 @@ const AssociateWithUs = () => {
                       />
                     </div>
 
-                    {/* State */}
+                    {/* STATE */}
                     <div className="w-full sm:col-span-2 md:col-span-1">
                       <label className="block mb-2 text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl font-bold text-gray-900">
                         State <span className="text-red-500">*</span>
                       </label>
+
                       <select
                         name="state"
                         required
@@ -572,9 +656,13 @@ const AssociateWithUs = () => {
                         className={getSelectStyle(selectedState)}
                         style={{ backgroundImage: dropdownArrowSvg }}
                       >
-                        <option value="" className="text-gray-400 font-normal bg-white">
+                        <option
+                          value=""
+                          className="text-gray-400 font-normal bg-white"
+                        >
                           Select State
                         </option>
+
                         {states.map((state) => (
                           <option
                             key={state}
@@ -588,10 +676,11 @@ const AssociateWithUs = () => {
                     </div>
                   </div>
 
-                  {/* Area of Expertise */}
+                  {/* AREA OF EXPERTISE */}
                   <div className="col-span-1 md:col-span-2 w-full">
                     <label className="block mb-3 text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl font-bold text-gray-900">
-                      Area of Expertise <span className="text-red-500">*</span>
+                      Area of Expertise{" "}
+                      <span className="text-red-500">*</span>
                     </label>
 
                     <input
@@ -623,7 +712,8 @@ const AssociateWithUs = () => {
                       "
                     >
                       {expertiseTags.map((tag) => {
-                        const isSelected = selectedExpertise.includes(tag);
+                        const isSelected =
+                          selectedExpertise.includes(tag);
 
                         return (
                           <button
@@ -661,17 +751,32 @@ const AssociateWithUs = () => {
                             `}
                           >
                             {tag}
-                            {isSelected && <X className="w-3.5 h-3.5 min-[1920px]:w-4 min-[1920px]:h-4 min-[3840px]:w-7 min-[3840px]:h-7" />}
+
+                            {isSelected && (
+                              <X
+                                className="
+                                  w-3.5
+                                  h-3.5
+                                  min-[1920px]:w-4
+                                  min-[1920px]:h-4
+                                  min-[3840px]:w-7
+                                  min-[3840px]:h-7
+                                "
+                              />
+                            )}
                           </button>
                         );
                       })}
 
+                      {/* CUSTOM EXPERTISE */}
                       {showCustomExpertiseInput ? (
                         <input
                           type="text"
                           autoFocus
                           value={customExpertise}
-                          onChange={(e) => setCustomExpertise(e.target.value)}
+                          onChange={(e) =>
+                            setCustomExpertise(e.target.value)
+                          }
                           onKeyDown={(e) => {
                             if (e.key === "Enter") {
                               e.preventDefault();
@@ -708,7 +813,9 @@ const AssociateWithUs = () => {
                       ) : (
                         <button
                           type="button"
-                          onClick={() => setShowCustomExpertiseInput(true)}
+                          onClick={() =>
+                            setShowCustomExpertiseInput(true)
+                          }
                           aria-label="Add custom area of expertise"
                           className="
                             w-9
@@ -731,13 +838,22 @@ const AssociateWithUs = () => {
                             cursor-pointer
                           "
                         >
-                          <Plus className="w-4 h-4 min-[1920px]:w-5 min-[1920px]:h-5 min-[3840px]:w-8 min-[3840px]:h-8" />
+                          <Plus
+                            className="
+                              w-4
+                              h-4
+                              min-[1920px]:w-5
+                              min-[1920px]:h-5
+                              min-[3840px]:w-8
+                              min-[3840px]:h-8
+                            "
+                          />
                         </button>
                       )}
                     </div>
                   </div>
 
-                  {/* Submit Button */}
+                  {/* SUBMIT BUTTON */}
                   <div className="col-span-1 md:col-span-2 w-full">
                     <button
                       type="submit"
@@ -774,8 +890,22 @@ const AssociateWithUs = () => {
                         cursor-pointer
                       "
                     >
-                      <span id="contactSubmitText">Submit Interest</span>
-                      <Send className="w-4 h-4 sm:w-5 sm:h-5 min-[1920px]:w-6 min-[1920px]:h-6 min-[3840px]:w-9 min-[3840px]:h-9" />
+                      <span id="contactSubmitText">
+                        Submit Interest
+                      </span>
+
+                      <Send
+                        className="
+                          w-4
+                          h-4
+                          sm:w-5
+                          sm:h-5
+                          min-[1920px]:w-6
+                          min-[1920px]:h-6
+                          min-[3840px]:w-9
+                          min-[3840px]:h-9
+                        "
+                      />
                     </button>
                   </div>
 

@@ -532,14 +532,16 @@ const HeroSection = () => {
                 max-w-full
                 font-bold
                 tracking-tight
-                leading-[1.15]
+                leading-[1.2]
+                sm:leading-[1.15]
               "
             >
               <span
                 className="
                   hero-heading-1
                   block
-                  text-3xl
+                  text-2xl
+                  xs:text-[26px]
                   sm:text-4xl
                   md:text-5xl
                   lg:text-5xl
@@ -555,10 +557,11 @@ const HeroSection = () => {
                 className="
                   hero-heading-2
                   block
-                  mt-2
+                  mt-1.5
                   sm:mt-2.5
                   text-green-300
-                  text-2xl
+                  text-xl
+                  xs:text-[22px]
                   sm:text-3xl
                   md:text-4xl
                   lg:text-4xl
@@ -573,7 +576,7 @@ const HeroSection = () => {
             {/* QUOTE / TAGLINE */}
             <div
               className="
-                mt-5
+                mt-4
                 sm:mt-6
                 lg:mt-7
                 w-full
@@ -588,7 +591,8 @@ const HeroSection = () => {
                   hero-quote
                   text-emerald-200
                   font-semibold
-                  text-sm
+                  text-xs
+                  xs:text-sm
                   sm:text-base
                   md:text-lg
                   lg:text-xl
@@ -600,8 +604,8 @@ const HeroSection = () => {
                   break-words
                 "
               >
-                “One Platform Complete Solutions For 
-                <br/> Businesses &amp; Individuals”
+                “One Platform Complete Solutions
+                <br className="hidden xs:inline" />  For <br/> Businesses &amp; Individuals”
               </p>
             </div>
           </div>

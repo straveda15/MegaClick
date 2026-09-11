@@ -1,35 +1,110 @@
+
 import React from "react";
 import { Link } from "react-router-dom";
 
 const ServiceCard = ({ service }) => {
   if (!service) return null;
 
-  const title = typeof service === "string" ? service : service.title;
+  const title =
+    typeof service === "string" ? service : service.title;
+
   const categoryName = service.category || "Service";
+
   const slug =
     service.slug ||
     title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
 
   return (
-    <Link to={`/services/${slug}`} className="group block h-full font-['Inter',sans-serif]">
-      {/* GOOGLE FONTS */}
+    <Link
+      to={`/services/${slug}`}
+      className="group block h-full font-['Inter',sans-serif]"
+    >
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@400;500;600;700&display=swap');
 
-        /* 1920px Full HD */
-        @media (min-width: 1920px) {
-          .service-item-card { min-height: 230px !important; padding: 1.5rem !important; }
-          .service-item-image-box { width: 4.5rem !important; height: 4.5rem !important; margin-bottom: 1rem !important; }
-          .service-item-title { font-size: 1.1rem !important; }
-          .service-item-tag { font-size: 0.8rem !important; padding: 0.45rem 0.85rem !important; }
+        /* =========================================================
+           STANDARD DESKTOP — 1440px
+           Same responsive scaling approach as Services.jsx
+        ========================================================= */
+        @media (min-width: 1440px) {
+          .service-item-card {
+            min-height: 210px !important;
+            padding: 1.25rem !important;
+            border-radius: 1.25rem !important;
+          }
+
+          .service-item-image-box {
+            width: 3.75rem !important;
+            height: 3.75rem !important;
+            margin-bottom: 0.85rem !important;
+          }
+
+          .service-item-title {
+            font-size: 1rem !important;
+            line-height: 1.3 !important;
+          }
+
+          .service-item-tag {
+            font-size: 0.75rem !important;
+            padding: 0.4rem 0.75rem !important;
+          }
         }
 
-        /* 3840px 4K */
+        /* =========================================================
+           LARGE DESKTOP — 1920px
+           Same responsive scaling approach as Services.jsx
+        ========================================================= */
+        @media (min-width: 1920px) {
+          .service-item-card {
+            min-height: 230px !important;
+            padding: 1.5rem !important;
+            border-radius: 1.35rem !important;
+          }
+
+          .service-item-image-box {
+            width: 4.5rem !important;
+            height: 4.5rem !important;
+            margin-bottom: 1rem !important;
+          }
+
+          .service-item-title {
+            font-size: 1.1rem !important;
+            line-height: 1.35 !important;
+          }
+
+          .service-item-tag {
+            font-size: 0.8rem !important;
+            padding: 0.45rem 0.85rem !important;
+          }
+        }
+
+        /* =========================================================
+           4K ULTRA-WIDE — 3840px
+           Same responsive scaling approach as Services.jsx
+        ========================================================= */
         @media (min-width: 3840px) {
-          .service-item-card { min-height: 380px !important; padding: 2.25rem !important; border-radius: 1.5rem !important; }
-          .service-item-image-box { width: 7.5rem !important; height: 7.5rem !important; margin-bottom: 1.75rem !important; }
-          .service-item-title { font-size: 1.75rem !important; }
-          .service-item-tag { font-size: 1.25rem !important; padding: 0.75rem 1.35rem !important; }
+          .service-item-card {
+            min-height: 380px !important;
+            padding: 2.25rem !important;
+            border-radius: 1.5rem !important;
+          }
+
+          .service-item-image-box {
+            width: 7.5rem !important;
+            height: 7.5rem !important;
+            margin-bottom: 1.75rem !important;
+          }
+
+          .service-item-title {
+            font-size: 1.75rem !important;
+            line-height: 1.3 !important;
+          }
+
+          .service-item-tag {
+            font-size: 1.25rem !important;
+            padding: 0.75rem 1.35rem !important;
+            border-radius: 0.75rem !important;
+          }
         }
       `}</style>
 
@@ -115,9 +190,11 @@ const ServiceCard = ({ service }) => {
           )}
         </div>
 
-        {/* TITLE (Hedvig Letters Serif) */}
+        {/* TITLE */}
         <h3
-          style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+          style={{
+            fontFamily: "'Hedvig Letters Serif', serif",
+          }}
           className="
             service-item-title
             font-bold
@@ -132,9 +209,11 @@ const ServiceCard = ({ service }) => {
           {title}
         </h3>
 
-        {/* CATEGORY TAG PILL (Inter) */}
+        {/* CATEGORY TAG */}
         <div
-          style={{ fontFamily: "'Inter', sans-serif" }}
+          style={{
+            fontFamily: "'Inter', sans-serif",
+          }}
           className="
             service-item-tag
             w-full

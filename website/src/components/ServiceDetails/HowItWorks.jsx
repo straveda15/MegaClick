@@ -13,23 +13,168 @@ const HowItWorks = ({ service }) => {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@400;500;600;700&display=swap');
 
-        @media (min-width: 1920px) {
-          .hiw-container { max-width: 1800px !important; padding-left: 4rem !important; padding-right: 4rem !important; }
-          .hiw-heading   { font-size: 3rem !important; }
-          .hiw-desc      { font-size: 1.2rem !important; }
-          .hiw-step-num  { width: 3.5rem !important; height: 3.5rem !important; font-size: 1rem !important; }
-          .hiw-step-title { font-size: 1.5rem !important; }
-          .hiw-step-desc  { font-size: 1.1rem !important; }
-          .hiw-line { top: 1.75rem !important; }
+        /* =========================================================
+           1440px
+           ========================================================= */
+        @media (min-width: 1440px) {
+          .hiw-container {
+            max-width: 1380px !important;
+            padding-left: 2.5rem !important;
+            padding-right: 2.5rem !important;
+          }
+
+          .hiw-heading {
+            font-size: 2.5rem !important;
+            line-height: 1.2 !important;
+          }
+
+          .hiw-desc {
+            font-size: 0.95rem !important;
+            line-height: 1.65 !important;
+          }
+
+          .hiw-step-num {
+            width: 3.75rem !important;
+            height: 3.75rem !important;
+            font-size: 0.9rem !important;
+          }
+
+          .hiw-step-title {
+            font-size: 1.4rem !important;
+            line-height: 1.3 !important;
+          }
+
+          .hiw-step-desc {
+            font-size: 0.875rem !important;
+            line-height: 1.6 !important;
+          }
+
+          .hiw-line {
+            top: 1.875rem !important;
+          }
         }
+
+        /* =========================================================
+           1920px
+           ========================================================= */
+        @media (min-width: 1920px) {
+          .hiw-container {
+            max-width: 1800px !important;
+            padding-left: 4rem !important;
+            padding-right: 4rem !important;
+          }
+
+          .hiw-heading {
+            font-size: 3.25rem !important;
+            line-height: 1.18 !important;
+          }
+
+          .hiw-desc {
+            font-size: 1.15rem !important;
+            line-height: 1.8 !important;
+          }
+
+          .hiw-step-num {
+            width: 4rem !important;
+            height: 4rem !important;
+            font-size: 1rem !important;
+          }
+
+          .hiw-step-title {
+            font-size: 1.65rem !important;
+            line-height: 1.3 !important;
+          }
+
+          .hiw-step-desc {
+            font-size: 0.98rem !important;
+            line-height: 1.7 !important;
+          }
+
+          .hiw-line {
+            top: 2rem !important;
+          }
+        }
+
+        /* =========================================================
+           2560px
+           ========================================================= */
+        @media (min-width: 2560px) {
+          .hiw-container {
+            max-width: 2300px !important;
+            padding-left: 5rem !important;
+            padding-right: 5rem !important;
+          }
+
+          .hiw-heading {
+            font-size: 3.75rem !important;
+            line-height: 1.18 !important;
+          }
+
+          .hiw-desc {
+            font-size: 1.35rem !important;
+            line-height: 1.8 !important;
+          }
+
+          .hiw-step-num {
+            width: 4.5rem !important;
+            height: 4.5rem !important;
+            font-size: 1.15rem !important;
+          }
+
+          .hiw-step-title {
+            font-size: 2rem !important;
+            line-height: 1.3 !important;
+          }
+
+          .hiw-step-desc {
+            font-size: 1.15rem !important;
+            line-height: 1.8 !important;
+          }
+
+          .hiw-line {
+            top: 2.25rem !important;
+          }
+        }
+
+        /* =========================================================
+           3840px
+           ========================================================= */
         @media (min-width: 3840px) {
-          .hiw-container { max-width: 3200px !important; padding-left: 6rem !important; padding-right: 6rem !important; }
-          .hiw-heading   { font-size: 5rem !important; }
-          .hiw-desc      { font-size: 2rem !important; line-height: 3rem !important; }
-          .hiw-step-num  { width: 5.5rem !important; height: 5.5rem !important; font-size: 1.6rem !important; }
-          .hiw-step-title { font-size: 2.5rem !important; }
-          .hiw-step-desc  { font-size: 1.75rem !important; line-height: 2.8rem !important; }
-          .hiw-line { top: 2.75rem !important; }
+          .hiw-container {
+            max-width: 3200px !important;
+            padding-left: 6rem !important;
+            padding-right: 6rem !important;
+          }
+
+          .hiw-heading {
+            font-size: 5rem !important;
+            line-height: 1.15 !important;
+          }
+
+          .hiw-desc {
+            font-size: 1.75rem !important;
+            line-height: 1.8 !important;
+          }
+
+          .hiw-step-num {
+            width: 5rem !important;
+            height: 5rem !important;
+            font-size: 1.35rem !important;
+          }
+
+          .hiw-step-title {
+            font-size: 2.5rem !important;
+            line-height: 1.25 !important;
+          }
+
+          .hiw-step-desc {
+            font-size: 1.4rem !important;
+            line-height: 2.15rem !important;
+          }
+
+          .hiw-line {
+            top: 2.5rem !important;
+          }
         }
       `}</style>
 
@@ -40,16 +185,18 @@ const HowItWorks = ({ service }) => {
           px-4 sm:px-6 min-[1440px]:px-10
         "
       >
-        {/* =========================================
-            HEADING + DESCRIPTION (Directly on section background)
-        ========================================== */}
+        {/* =========================================================
+            HEADING + DESCRIPTION
+            ========================================================= */}
         <div className="mb-8 sm:mb-12 lg:mb-14 flex items-start justify-between">
           <div className="text-left">
             <p
               style={{ fontFamily: "'Inter', sans-serif" }}
               className="
                 text-xs sm:text-sm
-                font-semibold text-[#0B4EA2] uppercase tracking-[0.25em] mb-2 sm:mb-2.5
+                font-semibold text-[#0B4EA2] uppercase
+                tracking-[0.15em]
+                mb-2 sm:mb-2.5
               "
             >
               Simple Process
@@ -84,52 +231,105 @@ const HowItWorks = ({ service }) => {
                 text-gray-600
                 font-normal
                 leading-relaxed
-                max-w-2xl
+                max-w-full
                 text-left
               "
             >
-              Our process is designed to make the entire service simple, transparent, and hassle-free.
+              Our process is designed to make the entire service simple,
+              transparent, and hassle-free.
             </p>
           </div>
 
-          {/* Mobile Arrows */}
+          {/* =========================================================
+              MOBILE ARROWS
+              ========================================================= */}
           <div className="flex items-center gap-2 lg:hidden flex-shrink-0 mt-2">
+            {/* PREVIOUS */}
             <button
-              onClick={() => setCurrentStep((p) => Math.max(0, p - 1))}
+              onClick={() =>
+                setCurrentStep((p) => Math.max(0, p - 1))
+              }
               disabled={currentStep === 0}
-              className="w-10 h-10 rounded-full border border-blue-200 flex items-center justify-center text-gray-700 transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed active:scale-95 bg-white shadow-xs"
+              className="
+                w-10 h-10 rounded-full
+                border border-blue-200
+                flex items-center justify-center
+                text-gray-700
+                transition-all duration-200
+                disabled:opacity-30
+                disabled:cursor-not-allowed
+                active:scale-95
+                bg-white shadow-xs
+              "
               aria-label="Previous step"
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
                 <polyline points="15 18 9 12 15 6" />
               </svg>
             </button>
+
+            {/* NEXT */}
             <button
-              onClick={() => setCurrentStep((p) => Math.min(totalSteps - 1, p + 1))}
+              onClick={() =>
+                setCurrentStep((p) =>
+                  Math.min(totalSteps - 1, p + 1)
+                )
+              }
               disabled={currentStep === totalSteps - 1}
-              className="w-10 h-10 rounded-full border border-blue-200 flex items-center justify-center text-gray-700 transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed active:scale-95 bg-white shadow-xs"
+              className="
+                w-10 h-10 rounded-full
+                border border-blue-200
+                flex items-center justify-center
+                text-gray-700
+                transition-all duration-200
+                disabled:opacity-30
+                disabled:cursor-not-allowed
+                active:scale-95
+                bg-white shadow-xs
+              "
               aria-label="Next step"
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
                 <polyline points="9 18 15 12 9 6" />
               </svg>
             </button>
           </div>
         </div>
 
-        {/* =========================================
-            MOBILE TIMELINE (Single Step View)
-        ========================================== */}
+        {/* =========================================================
+            MOBILE TIMELINE
+            ========================================================= */}
         <div className="flex flex-col relative lg:hidden">
           {(() => {
             const step = service.process[currentStep];
+
             return (
               <div className="relative flex gap-4 sm:gap-5 items-start">
+                {/* STEP NUMBER */}
                 <div
                   className="
                     hiw-step-num
                     relative z-10 flex-shrink-0
-                    w-11 h-11 sm:w-12 sm:h-12 rounded-full
+                    w-11 h-11 sm:w-12 sm:h-12
+                    rounded-full
                     bg-[#0B4EA2] text-white
                     flex items-center justify-center
                     text-sm font-bold
@@ -139,22 +339,43 @@ const HowItWorks = ({ service }) => {
                 >
                   {String(step.step || currentStep + 1).padStart(2, "0")}
                 </div>
-                <div className="pt-0.5 pb-2 text-left">
+
+                {/* STEP CONTENT */}
+                <div className="pt-0.5 pb-2 text-left flex-1 min-w-0">
                   <p
                     style={{ fontFamily: "'Inter', sans-serif" }}
-                    className="text-xs font-semibold uppercase tracking-[0.12em] text-[#0B4EA2] mb-1"
+                    className="
+                      text-xs font-semibold uppercase
+                      tracking-[0.12em]
+                      text-[#0B4EA2]
+                      mb-1
+                    "
                   >
                     Step {String(currentStep + 1).padStart(2, "0")}
                   </p>
+
                   <h3
-                    style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
-                    className="text-lg sm:text-xl font-bold text-gray-900 leading-snug mb-2"
+                    style={{
+                      fontFamily: "'Hedvig Letters Serif', serif",
+                    }}
+                    className="
+                      text-lg sm:text-xl
+                      font-bold text-gray-900
+                      leading-snug mb-2
+                    "
                   >
                     {step.title}
                   </h3>
+
                   <p
                     style={{ fontFamily: "'Inter', sans-serif" }}
-                    className="text-xs sm:text-sm text-gray-700 leading-relaxed font-normal"
+                    className="
+                      text-xs sm:text-sm
+                      text-gray-700
+                      leading-relaxed
+                      font-normal
+                      text-justify
+                    "
                   >
                     {step.description}
                   </p>
@@ -162,37 +383,38 @@ const HowItWorks = ({ service }) => {
               </div>
             );
           })()}
-
-          {/* Dot Indicators */}
-          <div className="flex justify-center gap-2 mt-6">
-            {service.process.map((_, i) => (
-              <span
-                key={i}
-                className={`h-2 rounded-full transition-all duration-300 ${
-                  i === currentStep ? "bg-[#0B4EA2] w-6" : "bg-blue-200 w-2"
-                }`}
-              />
-            ))}
-          </div>
         </div>
 
-        {/* =========================================
-            DESKTOP TIMELINE (Horizontal Connected Steps Direct Layout)
-        ========================================== */}
+        {/* =========================================================
+            DESKTOP TIMELINE
+            ========================================================= */}
         <div className="relative hidden lg:block">
           {/* Connecting Line */}
           <div
-            className="hiw-line absolute top-6 left-6 right-6 h-px bg-blue-200/80"
+            className="
+              hiw-line
+              absolute
+              top-6
+              left-6
+              right-6
+              h-px
+              bg-blue-200/80
+            "
           />
 
           <div className="flex gap-6 min-[1920px]:gap-10 min-[3840px]:gap-16">
             {service.process.map((step, index) => (
-              <div key={index} className="relative flex-1 min-w-0 text-left">
+              <div
+                key={index}
+                className="relative flex-1 min-w-0 text-left"
+              >
+                {/* STEP NUMBER */}
                 <div
                   className="
                     hiw-step-num
                     relative z-10
-                    w-12 h-12 rounded-full
+                    w-12 h-12
+                    rounded-full
                     bg-[#0B4EA2] text-white
                     flex items-center justify-center
                     text-sm font-bold
@@ -204,22 +426,47 @@ const HowItWorks = ({ service }) => {
                 >
                   {String(step.step || index + 1).padStart(2, "0")}
                 </div>
+
+                {/* STEP CONTENT */}
                 <div className="pr-3">
                   <p
                     style={{ fontFamily: "'Inter', sans-serif" }}
-                    className="text-xs min-[1920px]:text-sm font-semibold uppercase tracking-[0.12em] text-[#0B4EA2] mb-1.5"
+                    className="
+                      text-xs
+                      min-[1920px]:text-sm
+                      font-semibold uppercase
+                      tracking-[0.12em]
+                      text-[#0B4EA2]
+                      mb-1.5
+                    "
                   >
                     Step {String(index + 1).padStart(2, "0")}
                   </p>
+
                   <h3
-                    style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
-                    className="hiw-step-title text-lg sm:text-xl font-bold text-gray-900 leading-snug mb-2.5"
+                    style={{
+                      fontFamily: "'Hedvig Letters Serif', serif",
+                    }}
+                    className="
+                      hiw-step-title
+                      text-lg sm:text-xl
+                      font-bold text-gray-900
+                      leading-snug
+                      mb-2.5
+                    "
                   >
                     {step.title}
                   </h3>
+
                   <p
                     style={{ fontFamily: "'Inter', sans-serif" }}
-                    className="hiw-step-desc text-xs sm:text-sm text-gray-700 leading-relaxed font-normal"
+                    className="
+                      hiw-step-desc
+                      text-xs sm:text-sm
+                      text-gray-700
+                      leading-relaxed
+                      font-normal
+                    "
                   >
                     {step.description}
                   </p>
