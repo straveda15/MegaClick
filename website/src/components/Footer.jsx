@@ -10,6 +10,7 @@ import {
 import { useNavigate } from "react-router-dom";
 
 import logo from "../assets/LOGO.png";
+import stravedalogo from "/straveda-logo-cropped.png";
 
 const FOOTER_LINKS = {
   EXPLORE: [
@@ -1563,54 +1564,55 @@ const Footer = () => {
               &copy; {new Date().getFullYear()} MegaClick. All rights reserved.
             </p>
 
-            <div
+            {/* Straveda Tech Partner Badge */}
+            <a
+              href="https://stravedatech.com/"
+              target="_blank"
+              rel="noopener noreferrer"
               className="
                 flex
-                flex-wrap
-                justify-center
-                md:justify-end
-                gap-x-6
-                gap-y-2
-                min-[1920px]:gap-x-8
-                min-[2560px]:gap-x-10
+                flex-col
+                items-center
+                gap-1
+                group
+                transition-opacity
+                hover:opacity-80
               "
+              aria-label="Straveda Tech - Tech Partner"
             >
-              <a
-                href="/privacy-policy"
+              {/* Straveda logo image (contains the STRAVEDA wordmark in full color) */}
+              <img
+                src={stravedalogo}
+                alt="Straveda"
                 className="
-                  text-[11px]
-                  min-[1920px]:text-xs
-                  min-[2560px]:text-sm
-                  min-[3840px]:text-lg
-                  font-bold
+                  h-6
+                  min-[1920px]:h-8
+                  min-[2560px]:h-10
+                  min-[3840px]:h-14
+                  w-auto
+                  object-contain
+                  opacity-95
+                  group-hover:opacity-100
+                  transition-opacity
+                "
+              />
+              <span
+                className="
+                  text-[9px]
+                  min-[1920px]:text-[11px]
+                  min-[2560px]:text-xs
+                  min-[3840px]:text-sm
+                  font-semibold
                   text-white/50
                   uppercase
-                  tracking-[0.15em]
-                  hover:text-green-400
+                  tracking-[0.25em]
+                  group-hover:text-white/70
                   transition-colors
                 "
               >
-                Privacy Policy
-              </a>
-
-              <a
-                href="/terms-of-service"
-                className="
-                  text-[11px]
-                  min-[1920px]:text-xs
-                  min-[2560px]:text-sm
-                  min-[3840px]:text-lg
-                  font-bold
-                  text-white/50
-                  uppercase
-                  tracking-[0.15em]
-                  hover:text-green-400
-                  transition-colors
-                "
-              >
-                Terms of Service
-              </a>
-            </div>
+                TECH PARTNER
+              </span>
+            </a>
           </div>
         </div>
       </div>
