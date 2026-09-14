@@ -13,21 +13,20 @@ import logo from "../assets/LOGO.png";
 import stravedalogo from "/straveda-logo-cropped.png";
 
 const FOOTER_LINKS = {
-  EXPLORE: [
-    { label: "Home", path: "/" },
-    { label: "About Us", path: "/about" },
-    { label: "Services", path: "/services" },
-    { label: "Associate With Us", path: "/associate-with-us" },
-    { label: "Contact Us", path: "/contact" },
-  ],
+ EXPLORE: [
+  { label: "Home", path: "/" },
+  { label: "About Us", path: "/about" },
+  { label: "Associate With Us", path: "/associate-with-us" },
+  { label: "Privacy Policy", path: "/privacy-policy" },
+  { label: "Terms of Service", path: "/terms-of-service" },
+],
 
   SERVICES: [
-    { label: "Business Registration", path: "/services" },
-    { label: "Tax & Compliance Services", path: "/services" },
-    { label: "Financial & Legal Solutions", path: "/services" },
-    { label: "Privacy Policy", path: "/privacy-policy" },
-    { label: "Terms of Service", path: "/terms-of-service" },
-  ],
+  { label: "Legal Services", path: "/services?category=legal-services" },
+  { label: "Business & Financial Services", path: "/services?category=business-financial-services" },
+  { label: "IT Services", path: "/services?category=it-services" },
+  { label: "Other Services", path: "/services?category=other-services" },
+],
 };
 
 /* =========================================================
@@ -876,59 +875,42 @@ const Footer = () => {
             </h3>
 
             <div className="flex flex-col items-start gap-2.5">
-              {FOOTER_LINKS.EXPLORE.map((link) => (
-                <button
-                  key={link.label}
-                  type="button"
-                  onClick={() => handleNavigation(link.path)}
-                  className="
-                    text-[13.5px]
-                    sm:text-sm
-                    font-semibold
-                    text-blue-100/90
-                    hover:text-white
-                    transition-colors
-                    text-left
-                    cursor-pointer
-                    p-0
-                    bg-transparent
-                    border-none
-                  "
-                >
-                  {link.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* SERVICES */}
-          <div className="w-full text-left">
-            <h3 className="text-[11px] sm:text-xs font-black uppercase tracking-widest text-green-400 mb-2.5">
-              SERVICES
-            </h3>
-
-            <div className="flex flex-col items-start gap-2.5">
-              {FOOTER_LINKS.SERVICES.map((link) => (
-                <button
-                  key={link.label}
-                  type="button"
-                  onClick={() => handleNavigation(link.path)}
-                  className="
-                    text-[13.5px]
-                    sm:text-sm
-                    font-semibold
-                    text-blue-100/90
-                    hover:text-white
-                    transition-colors
-                    text-left
-                    cursor-pointer
-                    p-0
-                    bg-transparent
-                    border-none
-                  "
-                >
-                  {link.label}
-                </button>
+              {FOOTER_LINKS.EXPLORE.map((link) =>
+  link.label === "Privacy Policy" || link.label === "Terms of Service" ? (
+    <span
+      key={link.label}
+      className="
+        text-[13.5px]
+        sm:text-sm
+        font-semibold
+        text-blue-100/90
+        text-left
+      "
+    >
+      {link.label}
+    </span>
+  ) : (
+    <button
+      key={link.label}
+      type="button"
+      onClick={() => handleNavigation(link.path)}
+      className="
+        text-[13.5px]
+        sm:text-sm
+        font-semibold
+        text-blue-100/90
+        hover:text-white
+        transition-colors
+        text-left
+        cursor-pointer
+        p-0
+        bg-transparent
+        border-none
+      "
+    >
+      {link.label}
+    </button>
+  
               ))}
             </div>
           </div>
@@ -1380,29 +1362,43 @@ const Footer = () => {
                 </h3>
 
                 <ul className="space-y-1.5 min-[1920px]:space-y-2">
-                  {FOOTER_LINKS.EXPLORE.map((link) => (
-                    <li key={link.label}>
-                      <button
-                        type="button"
-                        onClick={() => handleNavigation(link.path)}
-                        className="
-                          footer-link-text
-                          text-[13px]
-                          font-semibold
-                          text-blue-100/90
-                          hover:text-white
-                          transition-colors
-                          text-left
-                          cursor-pointer
-                          p-0
-                          bg-transparent
-                          border-none
-                        "
-                      >
-                        {link.label}
-                      </button>
-                    </li>
-                  ))}
+                 {FOOTER_LINKS.EXPLORE.map((link) => (
+  <li key={link.label}>
+    {link.label === "Privacy Policy" || link.label === "Terms of Service" ? (
+      <span
+        className="
+          footer-link-text
+          text-[13px]
+          font-semibold
+          text-blue-100/90
+          text-left
+        "
+      >
+        {link.label}
+      </span>
+    ) : (
+      <button
+        type="button"
+        onClick={() => handleNavigation(link.path)}
+        className="
+          footer-link-text
+          text-[13px]
+          font-semibold
+          text-blue-100/90
+          hover:text-white
+          transition-colors
+          text-left
+          cursor-pointer
+          p-0
+          bg-transparent
+          border-none
+        "
+      >
+        {link.label}
+      </button>
+    )}
+  </li>
+))}
                 </ul>
               </div>
 
