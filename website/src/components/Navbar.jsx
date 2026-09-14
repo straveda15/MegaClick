@@ -8,7 +8,7 @@ import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 
 import logo from "../assets/LOGO.png";
 
-function Navbar({ showTopBar = false }) {
+function Navbar({ showTopBar = true }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -47,7 +47,7 @@ function Navbar({ showTopBar = false }) {
 
   return (
     <>
-      {showTopBar && <TopBar />}
+       <TopBar />
 
       <header
         className={`sticky top-0 z-50 bg-white transition-all duration-300 font-['Inter',sans-serif] ${

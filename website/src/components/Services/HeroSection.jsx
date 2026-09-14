@@ -10,13 +10,13 @@ const HeroSection = () => {
         overflow-hidden
         bg-[#073FA8]
         min-h-[460px]
-        sm:min-h-[500px]
-        lg:min-h-[560px]
+        sm:min-h-[300px]
+        lg:min-h-[360px]
         flex
         items-center
         py-8
-        sm:py-10
-        lg:py-12
+        sm:py-6
+        lg:py-6
         font-['Inter',sans-serif]
       "
     >
@@ -70,9 +70,9 @@ const HeroSection = () => {
           }
 
           .hero-section {
-            min-height: 620px !important;
-            padding-top: 4rem !important;
-            padding-bottom: 4rem !important;
+            min-height: 440px !important;
+            padding-top: 1.5rem !important;
+            padding-bottom: 1.5rem !important;
           }
 
           .hero-image-outer {
@@ -365,10 +365,10 @@ const HeroSection = () => {
                 sm:h-[240px]
                 md:w-[280px]
                 md:h-[280px]
-                lg:w-[320px]
-                lg:h-[320px]
-                xl:w-[350px]
-                xl:h-[350px]
+                lg:w-[280px]
+                lg:h-[280px]
+                xl:w-[300px]
+                xl:h-[300px]
               "
             >
               {/* OUTER GLOW */}

@@ -361,9 +361,9 @@ const ServiceOverview = ({ service }) => {
               {/* Text */}
               <div className="text-left min-w-0">
                 <h3
-                  style={{
-                    fontFamily: "'Inter', sans-serif",
-                  }}
+  style={{
+    fontFamily: "'Hedvig Letters Serif', serif",
+  }}
                   className="
                     so-card-title
                     text-sm

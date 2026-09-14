@@ -34,7 +34,7 @@ const HeroSection = () => {
             padding-right: 2.5rem !important;
           }
           .about-hero-wrap {
-            min-height: 480px !important;
+            min-height: 360px !important;
           }
           .about-hero-h1 {
             font-size: 3.1rem !important;
@@ -143,7 +143,7 @@ const HeroSection = () => {
 
       {/* CONTENT (Shifted Upwards) */}
       <div className="about-hero-container">
-        <div className="about-hero-wrap flex items-start pt-5 sm:pt-8 lg:pt-14 pb-6 sm:pb-8 lg:pb-12 min-h-0 sm:min-h-[300px] lg:min-h-[480px]">
+        <div className="about-hero-wrap flex items-start pt-5 sm:pt-8 lg:pt-14 pb-6 sm:pb-8 lg:pb-12 min-h-0 sm:min-h-[300px] lg:min-h-[380px]">
           <div className="relative z-30 w-full lg:w-[50%] xl:w-[52%] text-left">
             {/* MAIN TITLE (Hedvig Letters Serif) */}
             <h1
