@@ -1070,6 +1070,53 @@ const Footer = () => {
               );
             })}
           </div>
+          {/* MOBILE TECH PARTNER */}
+<a
+  href="https://stravedatech.com/"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="
+    flex
+    flex-col
+    items-start
+    justify-center
+    gap-1
+    w-full
+    pt-1
+    pb-1
+    group
+    transition-opacity
+    hover:opacity-80
+  "
+  aria-label="Straveda Tech - Tech Partner"
+>
+  <img
+    src={stravedalogo}
+    alt="Straveda"
+    className="
+      h-7
+      w-auto
+      object-contain
+      opacity-95
+      group-hover:opacity-100
+      transition-opacity
+    "
+  />
+
+  <span
+    className="
+      text-[9px]
+      font-semibold
+      text-white/50
+      uppercase
+      tracking-[0.25em]
+      group-hover:text-white/70
+      transition-colors
+    "
+  >
+    TECH PARTNER
+  </span>
+</a>
 
           {/* MOBILE BOTTOM BAR */}
           <div

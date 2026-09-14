@@ -1427,7 +1427,7 @@ const Hero = () => {
             >
               {/* GET STARTED */}
               <button
-                onClick={scrollToHowItWorks}
+                onClick={handleContactRedirect}
                 className="
                   hero-btn
                   group
@@ -1536,10 +1536,10 @@ const Hero = () => {
                   hero-card-stage
                   relative
                   w-full
-                  min-h-[360px]
-                  sm:min-h-[380px]
-                  md:min-h-[400px]
-                  lg:min-h-[390px]
+                  min-h-[300px]
+                  sm:min-h-[320px]
+                  md:min-h-[340px]
+                  lg:min-h-[350px]
                 "
               >
                 {services.map((service, index) => {
