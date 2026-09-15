@@ -167,7 +167,7 @@ const About = () => {
 
             {/* HEADING (Hedvig Letters Serif) */}
              <h2
-            style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+            style={{ fontFamily: "'Poppins', serif" }}
             className="
               team-title
               text-2xl

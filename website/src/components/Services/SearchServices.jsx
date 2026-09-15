@@ -37,7 +37,7 @@ const SearchServices = ({ searchTerm, setSearchTerm }) => {
     <section className="bg-blue-50/70 py-8 sm:py-10 lg:py-12 search-services-section font-['Inter',sans-serif]">
       {/* GOOGLE FONTS & RESPONSIVE SCALING */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
 
         .app-container {
           width: 100%;
@@ -190,7 +190,7 @@ const SearchServices = ({ searchTerm, setSearchTerm }) => {
         ========================================== */}
         <div className="text-left">
           <h2
-            style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+            style={{ fontFamily: "'Poppins', serif" }}
             className="
               search-heading
               team-title

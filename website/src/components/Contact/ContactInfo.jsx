@@ -144,7 +144,7 @@ const ContactInfo = () => {
 
           {/* ONE-LINE HEADING – Hedvig Letters Serif */}
           <h2
-            style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+            style={{ fontFamily: "'Poppins', serif" }}
             className="contact-info-title text-2xl sm:text-3xl md:text-3xl lg:text-4xl font-bold leading-[1.18] text-black text-left mb-2.5 sm:mb-4"
           >
             Get In <span className="text-[#0B4EA2]">Touch With Us</span>
@@ -177,7 +177,7 @@ const ContactInfo = () => {
 
                 <div className="min-w-0 text-left">
                   <h3
-                    style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+                    style={{ fontFamily: "'Poppins', serif" }}
                     className="card-title text-lg sm:text-xl min-[1440px]:text-2xl min-[1920px]:text-3xl min-[3840px]:text-5xl font-bold text-gray-900"
                   >
                     Visit Our Office
@@ -216,7 +216,7 @@ const ContactInfo = () => {
             <div className="p-5 sm:p-6 min-[1440px]:p-8 min-[1920px]:p-10 min-[3840px]:p-16 text-left">
 
               <h4
-                style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+                style={{ fontFamily: "'Poppins', serif" }}
                 className="text-lg sm:text-xl min-[1920px]:text-2xl min-[3840px]:text-4xl font-bold text-gray-900"
               >
                 MegaClick Office
@@ -281,7 +281,7 @@ const ContactInfo = () => {
 
                   <div className="min-w-0">
                     <h3
-                      style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+                      style={{ fontFamily: "'Poppins', serif" }}
                       className="card-title text-lg sm:text-xl min-[1920px]:text-2xl min-[3840px]:text-4xl font-bold text-gray-900"
                     >
                       WhatsApp Us
@@ -327,7 +327,7 @@ const ContactInfo = () => {
 
                   <div className="min-w-0">
                     <h3
-                      style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+                      style={{ fontFamily: "'Poppins', serif" }}
                       className="card-title text-lg sm:text-xl min-[1920px]:text-2xl min-[3840px]:text-4xl font-bold text-gray-900"
                     >
                       Call Us
@@ -371,7 +371,7 @@ const ContactInfo = () => {
 
                   <div className="min-w-0">
                     <h3
-                      style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+                      style={{ fontFamily: "'Poppins', serif" }}
                       className="card-title text-lg sm:text-xl min-[1920px]:text-2xl min-[3840px]:text-4xl font-bold text-gray-900"
                     >
                       Email Us

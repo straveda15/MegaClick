@@ -22,7 +22,7 @@ const HeroSection = () => {
     >
       {/* GOOGLE FONTS & ULTRA-WIDE MEDIA QUERIES */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
 
         .app-container {
           width: 100%;
@@ -526,7 +526,7 @@ const HeroSection = () => {
           >
             {/* MAIN HEADING */}
             <h1
-              style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+              style={{ fontFamily: "'Poppins', serif" }}
               className="
                 w-full
                 max-w-full

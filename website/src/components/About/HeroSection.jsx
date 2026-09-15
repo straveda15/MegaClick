@@ -6,7 +6,7 @@ const HeroSection = () => {
     <section className="about-hero relative w-full overflow-hidden bg-[#0B4EA2] font-['Inter',sans-serif]">
       {/* GOOGLE FONTS */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap');
 
         .about-hero-container {
           width: 100%;
@@ -148,7 +148,7 @@ const HeroSection = () => {
             {/* MAIN TITLE (Hedvig Letters Serif) */}
             <h1
               style={{
-                fontFamily: "'Hedvig Letters Serif', serif",
+                fontFamily: "'Poppins', serif",
               }}
               className="about-hero-h1 text-[22px] xs:text-2xl sm:text-4xl lg:text-[44px] xl:text-[48px] font-bold leading-[1.25] sm:leading-[1.18] text-green-300"
             >
@@ -162,7 +162,7 @@ const HeroSection = () => {
             {/* SUBTITLE */}
             <p
               style={{
-                fontFamily: "'Hedvig Letters Serif', serif",
+                fontFamily: "'Poppins', serif",
               }}
               className="about-hero-sub text-white font-semibold mt-2.5 sm:mt-4 text-base xs:text-lg sm:text-2xl lg:text-[32px] xl:text-[36px] leading-tight"
             >

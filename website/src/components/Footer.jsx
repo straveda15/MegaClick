@@ -846,12 +846,14 @@ const Footer = () => {
                 "
               />
 
-              <h2 className="text-2xl sm:text-[1.7rem] font-bold tracking-tight">
+              <h2 className=
+              
+              "text-2xl sm:text-[1.7rem] font-bold tracking-tight">
                 <span className="text-white">Mega</span>
                 <span className="text-green-400">Click</span>
               </h2>
             </div>
-
+                 style={{ fontFamily: "'Poppins', sans-serif" }}
             <p className="text-[13px] sm:text-sm text-blue-100/90 font-medium text-left leading-relaxed">
               Exceptional value. Cost effective solutions.
             </p>
@@ -859,6 +861,7 @@ const Footer = () => {
 
           {/* EXPLORE */}
           <div className="w-full text-left">
+             style={{ fontFamily: "'Poppins', sans-serif" }}
             <h3 className="text-[11px] sm:text-xs font-black uppercase tracking-widest text-green-400 mb-2.5">
               EXPLORE
             </h3>
@@ -1346,6 +1349,7 @@ const Footer = () => {
                     tracking-widest
                     text-green-400
                   "
+                   style={{ fontFamily: "'Poppins', sans-serif" }}
                 >
                   EXPLORE
                 </h3>
@@ -1402,6 +1406,7 @@ const Footer = () => {
                     tracking-widest
                     text-green-400
                   "
+                   style={{ fontFamily: "'Poppins', sans-serif" }}
                 >
                   SERVICES
                 </h3>
@@ -1444,6 +1449,7 @@ const Footer = () => {
                     tracking-widest
                     text-green-400
                   "
+                   style={{ fontFamily: "'Poppins', sans-serif" }}
                 >
                   CONTACT US
                 </h3>

@@ -192,7 +192,7 @@ const Team = () => {
 
           {/* ----- HEADING ----- */}
           <h2
-            style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+            style={{ fontFamily: "'Poppins', serif" }}
             className="
               team-title
               text-2xl
@@ -243,7 +243,7 @@ const Team = () => {
                 {/* Name & role */}
                 <div className="px-0.5 text-left">
                   <h3
-                    style={{ fontFamily: "'Inter', sans-serif" }}
+                    style={{ fontFamily: "'Poppins', sans-serif" }}
                     className="team-name text-xs sm:text-sm font-bold text-[#0B4EA2] leading-snug"
                   >
                     {member.name}

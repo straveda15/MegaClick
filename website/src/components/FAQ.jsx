@@ -135,7 +135,7 @@ const FAQ = () => {
           {/* LEFT: STICKY HEADING (EXACT FONT-BOLD WEIGHT) */}
           <div className="lg:sticky  lg:self-start text-left">
                <h2
-            style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+            style={{ fontFamily: "'Poppins', serif" }}
             className="
               team-title
               text-2xl

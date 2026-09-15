@@ -419,7 +419,7 @@ const SolutionCardItem = ({ item }) => (
       <div className="w-full min-w-0 flex flex-col items-center px-0.5 sm:px-1">
         <h3
           style={{
-            fontFamily: "'Hedvig Letters Serif', serif",
+            fontFamily: "'Poppins', serif",
           }}
           className="
             hiw-card-title
@@ -508,14 +508,14 @@ const HowItWorks = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fontId = "google-fonts-hedvig-inter";
+    const fontId = "google-fonts-poppins-inter";
 
     if (!document.getElementById(fontId)) {
       const link = document.createElement("link");
       link.id = fontId;
       link.rel = "stylesheet";
       link.href =
-        "https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@400;500;600;700;800&display=swap";
+        "https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap";
       document.head.appendChild(link);
     }
 
@@ -1365,7 +1365,7 @@ const HowItWorks = () => {
             <div className="relative z-10 text-left min-w-0">
               <h2
                 style={{
-                  fontFamily: "'Hedvig Letters Serif', serif",
+                  fontFamily: "'Poppins', serif",
                 }}
                 className="
                   hiw-featured-title
@@ -1621,7 +1621,7 @@ const HowItWorks = () => {
                   >
                     <h4
                       style={{
-                        fontFamily: "'Hedvig Letters Serif', serif",
+                        fontFamily: "'Poppins', serif",
                       }}
                       className="
                         hiw-step-title

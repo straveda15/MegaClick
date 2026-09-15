@@ -11,7 +11,7 @@ const HowItWorks = ({ service }) => {
     <section className="w-full bg-blue-100/60 font-['Inter',sans-serif] py-10 sm:py-14 lg:py-16">
       {/* GOOGLE FONTS */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
 
         /* =========================================================
            1440px
@@ -203,7 +203,7 @@ const HowItWorks = ({ service }) => {
             </p>
 
             <h2
-              style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+              style={{ fontFamily: "'Poppins', serif" }}
               className="
                 hiw-heading
                 text-2xl
@@ -356,7 +356,7 @@ const HowItWorks = ({ service }) => {
 
                   <h3
                     style={{
-                      fontFamily: "'Hedvig Letters Serif', serif",
+                      fontFamily: "'Poppins', serif",
                     }}
                     className="
                       text-lg sm:text-xl
@@ -445,7 +445,7 @@ const HowItWorks = ({ service }) => {
 
                   <h3
                     style={{
-                      fontFamily: "'Hedvig Letters Serif', serif",
+                      fontFamily: "'Poppins', serif",
                     }}
                     className="
                       hiw-step-title

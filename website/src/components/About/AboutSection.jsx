@@ -47,7 +47,7 @@ const About = () => {
     <section className="about-section relative overflow-hidden py-10 sm:py-14 min-[1440px]:py-16 min-[1920px]:py-20 min-[3840px]:py-32 bg-white font-['Inter',sans-serif]">
       {/* GOOGLE FONTS */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap');
 
         /* ── Standard Desktop 1440px ── */
         @media (min-width: 1440px) {
@@ -103,7 +103,7 @@ const About = () => {
           </p>
 
           <h2
-            style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+            style={{ fontFamily: "'Poppins', serif" }}
             className="
               about-heading
               text-2xl
@@ -220,7 +220,7 @@ const About = () => {
                   })}
                 </div>
                 <h3
-                  style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+                  style={{ fontFamily: "'Poppins', serif" }}
                   className="about-stat-num text-2xl sm:text-3xl lg:text-4xl font-bold text-white"
                 >
                   <CountUp end={stat.end} suffix={stat.suffix} />

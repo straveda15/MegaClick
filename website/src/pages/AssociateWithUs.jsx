@@ -280,7 +280,7 @@ const AssociateWithUs = () => {
                     min-[3840px]:leading-tight
                   "
                   style={{
-                    fontFamily: '"Hedvig Letters Serif", Georgia, serif',
+                    fontFamily: '"Poppins", Georgia, serif',
                   }}
                 >
                   We are currently onboarding a limited number of

@@ -77,7 +77,7 @@ const PopularServices = ({ onSelectService }) => {
   return (
     <section className="py-6 sm:py-8 bg-slate-50/60 popular-section font-['Inter',sans-serif]">
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
 
         /* =========================================================
            STANDARD DESKTOP — 1440px
@@ -196,7 +196,7 @@ const PopularServices = ({ onSelectService }) => {
         <div className="mb-5 sm:mb-6 flex items-center justify-between">
           <h2
             style={{
-              fontFamily: "'Hedvig Letters Serif', serif",
+              fontFamily: "'Poppins', serif",
             }}
             className="popular-heading text-lg sm:text-xl font-bold text-black flex items-center gap-2 text-left"
           >
