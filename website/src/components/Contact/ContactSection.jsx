@@ -614,7 +614,7 @@ const ContactSection = () => {
               <div className="mt-6 sm:mt-8 min-[1920px]:mt-9 min-[3840px]:mt-14 grid grid-cols-3 gap-2 sm:gap-4 min-[3840px]:gap-8">
                 <div className="min-w-0 rounded-xl sm:rounded-3xl min-[3840px]:rounded-[32px] bg-white p-3 sm:p-5 min-[3840px]:p-8 text-center shadow-lg">
                   <h3
-                    style={{ fontFamily: "'Popins', serif" }}
+                    style={{ fontFamily: "'Poppins', serif" }}
                     className="text-xl sm:text-3xl min-[1920px]:text-4xl min-[3840px]:text-6xl font-extrabold text-[#0B4EA2]"
                   >
                     <CountUp end={15} suffix="K+" />
