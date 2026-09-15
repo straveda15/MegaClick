@@ -1205,6 +1205,7 @@ const Hero = () => {
               sm:space-y-6
               md:space-y-7
               w-full
+              max-w-[620px]
               flex
               flex-col
               items-start
@@ -1250,13 +1251,14 @@ const Hero = () => {
                 text-slate-600
                 leading-relaxed
                 sm:leading-7
-                max-w-xl
+                max-w-[600]
                 text-left
                 font-normal
                 w-full
               "
             >
               Complete business solutions to simplify your registrations, tax
+              <br />
               compliance, and financial growth with trusted expert guidance.
             </p>
 

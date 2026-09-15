@@ -53,7 +53,7 @@ const About = () => {
         @media (min-width: 1440px) {
           .about-container        { max-width: 1380px !important; padding-left: 2.5rem !important; padding-right: 2.5rem !important; }
           .about-heading          { font-size: 2.5rem !important; }
-          .about-para             { font-size: 1.15rem !important; line-height: 1.85 !important; }
+          .about-para             { font-size: 1.rem !important; line-height: 1.75 !important; }
           .about-stat-icon        { width: 3.5rem !important; height: 3.5rem !important; }
           .about-stat-icon svg    { width: 1.5rem !important; height: 1.5rem !important; }
           .about-stat-num         { font-size: 2.5rem !important; }
@@ -65,7 +65,7 @@ const About = () => {
           .about-container        { max-width: 1800px !important; padding-left: 4rem !important; padding-right: 4rem !important; }
           .about-tagline          { font-size: 0.95rem !important; letter-spacing: 0.3em !important; }
           .about-heading          { font-size: 3.25rem !important; }
-          .about-para             { font-size: 1.35rem !important; line-height: 1.95 !important; }
+          .about-para             { font-size: 1.25rem !important; line-height: 2rem !important; }
           .about-stat-icon        { width: 4.25rem !important; height: 4.25rem !important; margin-bottom: 1rem !important; }
           .about-stat-icon svg    { width: 1.85rem !important; height: 1.85rem !important; }
           .about-stat-num         { font-size: 3.25rem !important; }
@@ -78,7 +78,7 @@ const About = () => {
           .about-container        { max-width: 3200px !important; padding-left: 6rem !important; padding-right: 6rem !important; }
           .about-tagline          { font-size: 1.75rem !important; letter-spacing: 0.35em !important; margin-bottom: 1.5rem !important; }
           .about-heading          { font-size: 5.5rem !important; line-height: 1.15 !important; }
-          .about-para             { font-size: 2.25rem !important; line-height: 2.1 !important; }
+          .about-para             { font-size: 2.25rem !important; line-height: 3.5rem !important; }
           .about-para-gap         { gap: 3.5rem !important; }
           .about-stats-wrap       { margin-top: 4.5rem !important; border-radius: 2.5rem !important; }
           .about-stat-icon        { width: 7rem !important; height: 7rem !important; margin-bottom: 1.75rem !important; }

@@ -36,7 +36,7 @@ const FOOTER_LINKS = {
 const SOCIAL_LINKS = [
   {
     icon: FaFacebookF,
-    href: "#",
+    href: "YOUR_FACEBOOK_URL",
     label: "Facebook",
     iconColor: "text-[#1877F2]",
     bgColor: "bg-[#E8F1FF]",
@@ -44,7 +44,7 @@ const SOCIAL_LINKS = [
   },
   {
     icon: FaLinkedinIn,
-    href: "#",
+    href: "YOUR_LINKEDIN_URL",
     label: "LinkedIn",
     iconColor: "text-[#0077B5]",
     bgColor: "bg-[#E8F1FF]",
@@ -60,7 +60,7 @@ const SOCIAL_LINKS = [
   },
   {
     icon: FaInstagram,
-    href: "#",
+    href: "YOUR_INSTAGRAM_URL",
     label: "Instagram",
     iconColor: "text-[#E1306C]",
     bgColor: "bg-[#FCE7F3]",
@@ -92,22 +92,11 @@ const Footer = () => {
      BACK TO TOP
   ========================================================= */
   const scrollToTop = () => {
-    if (window.location.pathname !== "/") {
-      navigate("/");
-
-      setTimeout(() => {
-        window.scrollTo({
-          top: 0,
-          behavior: "smooth",
-        });
-      }, 300);
-    } else {
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
-    }
-  };
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+};
 
   /* =========================================================
      NAVIGATION
