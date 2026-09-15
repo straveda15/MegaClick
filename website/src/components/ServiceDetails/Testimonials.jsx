@@ -702,7 +702,9 @@ const Testimonials = ({ service: propService }) => {
       ===================================================== */}
 
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@400;500;600;700&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+        
+
 
         /* ── 1440px ──────────────────────────────────────── */
         @media (min-width: 1440px) {
@@ -1045,7 +1047,7 @@ const Testimonials = ({ service: propService }) => {
 
           {/* TITLE */}
           <h2
-            style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+            style={{ fontFamily: "'Poppins', serif" }}
             className="
               testimonials-title
               text-2xl

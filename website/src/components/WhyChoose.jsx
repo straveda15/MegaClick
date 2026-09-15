@@ -151,7 +151,7 @@ const WhyChoose = () => {
   return (
     <section className="w-full bg-blue-50 py-8 sm:py-12 lg:py-16 min-[1920px]:py-20 min-[3840px]:py-32 overflow-hidden font-['Inter',sans-serif]">
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap');
 
         /* =====================================================
            STANDARD DESKTOP - 1440px
@@ -504,7 +504,7 @@ const WhyChoose = () => {
 
             {/* HEADING */}
             <h2
-              style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+              style={{ fontFamily: "'Poppins', serif" }}
               className="
                 why-title
                 text-2xl
@@ -641,7 +641,7 @@ const WhyChoose = () => {
               {/* 25+ SERVICES */}
               <div className="min-w-[75px]">
                 <h3
-                  style={{ fontFamily: "'Inter', sans-serif" }}
+                  style={{ fontFamily: "'Poppins', sans-serif" }}
                   className="
                     why-stat-num
                     text-2xl

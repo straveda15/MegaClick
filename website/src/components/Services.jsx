@@ -522,7 +522,7 @@ const Services = () => {
           </p>
 
           <h2
-            style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+            style={{ fontFamily: "'Poppins', serif" }}
             className="services-title text-2xl sm:text-3xl md:text-3xl lg:text-4xl font-bold leading-[1.18] text-black text-left mb-2.5 sm:mb-4"
           >
             Complete Business{" "}
@@ -571,7 +571,7 @@ const Services = () => {
                   <div className="services-card-title-wrapper w-full h-[64px] sm:h-[64px] lg:h-[64px] flex items-start justify-center mb-3 shrink-0">
                     <h3
                       style={{
-                        fontFamily: "'Hedvig Letters Serif', serif",
+                        fontFamily: "'Poppins', serif",
                       }}
                       className="
                         services-card-title

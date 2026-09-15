@@ -13,7 +13,7 @@ const VisionMission = () => {
     >
       {/* GOOGLE FONTS */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap');
 
         /* ── Standard Desktop 1440px ── */
         @media (min-width: 1440px) {
@@ -73,7 +73,7 @@ const VisionMission = () => {
           </p>
 
           <h2
-            style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+            style={{ fontFamily: "'Poppins', serif" }}
             className="
               vm-heading
               text-2xl
@@ -122,7 +122,7 @@ const VisionMission = () => {
                       Our
                     </p>
                     <h3
-                      style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+                      style={{ fontFamily: "'Poppins', serif" }}
                       className="vm-card-heading text-2xl sm:text-3xl font-bold text-[#0B4EA2]"
                     >
                       Vision
@@ -168,7 +168,7 @@ const VisionMission = () => {
                       Our
                     </p>
                     <h3
-                      style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+                      style={{ fontFamily: "'Poppins', serif" }}
                       className="vm-card-heading text-2xl sm:text-3xl font-bold text-green-600"
                     >
                       Mission

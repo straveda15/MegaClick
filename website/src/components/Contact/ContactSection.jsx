@@ -308,7 +308,7 @@ const ContactSection = () => {
 
             {/* HEADING (Single Line) */}
             <h2
-              style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+              style={{ fontFamily: "'Poppins', serif" }}
               className="contact-title text-2xl sm:text-3xl md:text-3xl lg:text-4xl font-bold leading-[1.18] text-black text-left mb-2.5 sm:mb-4"
             >
               Request Your Free <span className="text-[#0B4EA2]">Consultation</span>
@@ -570,7 +570,7 @@ const ContactSection = () => {
 
               {/* HEADING (Single Line) */}
               <h2
-                style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+                style={{ fontFamily: "'Poppins', serif" }}
                 className="contact-title text-2xl sm:text-3xl md:text-3xl lg:text-4xl font-bold leading-[1.18] text-black text-left mb-2.5 sm:mb-4"
               >
                 Let's Build Your <span className="text-[#0B4EA2]">Business Together</span>
@@ -592,7 +592,7 @@ const ContactSection = () => {
 
                         <div className="min-w-0 flex-1 text-left">
                           <h3
-                            style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+                            style={{ fontFamily: "'Poppins', serif" }}
                             className="benefit-title min-w-0 text-base sm:text-lg min-[1920px]:text-xl min-[3840px]:text-3xl font-bold text-gray-900 leading-snug"
                           >
                             {item.title}
@@ -614,7 +614,7 @@ const ContactSection = () => {
               <div className="mt-6 sm:mt-8 min-[1920px]:mt-9 min-[3840px]:mt-14 grid grid-cols-3 gap-2 sm:gap-4 min-[3840px]:gap-8">
                 <div className="min-w-0 rounded-xl sm:rounded-3xl min-[3840px]:rounded-[32px] bg-white p-3 sm:p-5 min-[3840px]:p-8 text-center shadow-lg">
                   <h3
-                    style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+                    style={{ fontFamily: "'Popins', serif" }}
                     className="text-xl sm:text-3xl min-[1920px]:text-4xl min-[3840px]:text-6xl font-extrabold text-[#0B4EA2]"
                   >
                     <CountUp end={15} suffix="K+" />

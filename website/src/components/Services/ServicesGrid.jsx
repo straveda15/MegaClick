@@ -91,7 +91,7 @@ const ServicesGrid = ({
     <div className="space-y-6 font-['Inter',sans-serif]">
       {/* GOOGLE FONTS */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
 
         /* Large Desktop (1920px Full HD) */
         @media (min-width: 1920px) {
@@ -158,7 +158,7 @@ const ServicesGrid = ({
                     {category.emoji || "📋"}
                   </div>
                   <h2
-                    style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+                    style={{ fontFamily: "'Poppins', serif" }}
                     className="grid-category-title text-base sm:text-lg font-bold text-gray-900 truncate"
                   >
                     {category.title}

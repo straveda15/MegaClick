@@ -104,7 +104,7 @@ const CategoriesSidebar = ({
   return (
     <aside className="cat-sidebar sticky top-24 bg-white rounded-3xl border border-slate-200/80 shadow-sm p-4 sm:p-5 w-full font-['Inter',sans-serif]">
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
 
         /* =========================================================
            STANDARD DESKTOP — 1440px
@@ -260,7 +260,7 @@ const CategoriesSidebar = ({
         </div>
 
         <h3
-          style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+          style={{ fontFamily: "'Poppins', serif" }}
           className="cat-header-title font-bold text-sm tracking-wider text-slate-900 uppercase"
         >
           Categories
@@ -362,7 +362,7 @@ const CategoriesSidebar = ({
                           <span
                             style={{
                               fontFamily:
-                                "'Hedvig Letters Serif', serif",
+                                "'Poppins', serif",
                             }}
                             className="font-bold text-xs sm:text-[13px] text-slate-900 tracking-wide"
                           >

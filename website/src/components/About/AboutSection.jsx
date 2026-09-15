@@ -47,13 +47,13 @@ const About = () => {
     <section className="about-section relative overflow-hidden py-10 sm:py-14 min-[1440px]:py-16 min-[1920px]:py-20 min-[3840px]:py-32 bg-white font-['Inter',sans-serif]">
       {/* GOOGLE FONTS */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap');
 
         /* ── Standard Desktop 1440px ── */
         @media (min-width: 1440px) {
           .about-container        { max-width: 1380px !important; padding-left: 2.5rem !important; padding-right: 2.5rem !important; }
           .about-heading          { font-size: 2.5rem !important; }
-          .about-para             { font-size: 1.15rem !important; line-height: 1.85 !important; }
+          .about-para             { font-size: 1.rem !important; line-height: 1.75 !important; }
           .about-stat-icon        { width: 3.5rem !important; height: 3.5rem !important; }
           .about-stat-icon svg    { width: 1.5rem !important; height: 1.5rem !important; }
           .about-stat-num         { font-size: 2.5rem !important; }
@@ -65,7 +65,7 @@ const About = () => {
           .about-container        { max-width: 1800px !important; padding-left: 4rem !important; padding-right: 4rem !important; }
           .about-tagline          { font-size: 0.95rem !important; letter-spacing: 0.3em !important; }
           .about-heading          { font-size: 3.25rem !important; }
-          .about-para             { font-size: 1.35rem !important; line-height: 1.95 !important; }
+          .about-para             { font-size: 1.25rem !important; line-height: 2rem !important; }
           .about-stat-icon        { width: 4.25rem !important; height: 4.25rem !important; margin-bottom: 1rem !important; }
           .about-stat-icon svg    { width: 1.85rem !important; height: 1.85rem !important; }
           .about-stat-num         { font-size: 3.25rem !important; }
@@ -78,7 +78,7 @@ const About = () => {
           .about-container        { max-width: 3200px !important; padding-left: 6rem !important; padding-right: 6rem !important; }
           .about-tagline          { font-size: 1.75rem !important; letter-spacing: 0.35em !important; margin-bottom: 1.5rem !important; }
           .about-heading          { font-size: 5.5rem !important; line-height: 1.15 !important; }
-          .about-para             { font-size: 2.25rem !important; line-height: 2.1 !important; }
+          .about-para             { font-size: 2.25rem !important; line-height: 3.5rem !important; }
           .about-para-gap         { gap: 3.5rem !important; }
           .about-stats-wrap       { margin-top: 4.5rem !important; border-radius: 2.5rem !important; }
           .about-stat-icon        { width: 7rem !important; height: 7rem !important; margin-bottom: 1.75rem !important; }
@@ -103,7 +103,7 @@ const About = () => {
           </p>
 
           <h2
-            style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+            style={{ fontFamily: "'Poppins', serif" }}
             className="
               about-heading
               text-2xl
@@ -220,7 +220,7 @@ const About = () => {
                   })}
                 </div>
                 <h3
-                  style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+                  style={{ fontFamily: "'Poppins', serif" }}
                   className="about-stat-num text-2xl sm:text-3xl lg:text-4xl font-bold text-white"
                 >
                   <CountUp end={stat.end} suffix={stat.suffix} />

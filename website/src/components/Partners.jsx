@@ -95,7 +95,7 @@ const Partners = () => {
         {/* HEADING (EXACT FONT-BOLD WEIGHT) */}
         <div className="text-center mb-6 sm:mb-8">
              <h2
-            style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+            style={{ fontFamily: "'Poppins', serif" }}
             className="
               team-title
               text-2xl

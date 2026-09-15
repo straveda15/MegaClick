@@ -215,7 +215,7 @@ const Hero = () => {
       "
     >
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@400;500;600;700;800&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap');
 
         /* =====================================================
            BASE / SMALL MOBILE
@@ -1205,6 +1205,7 @@ const Hero = () => {
               sm:space-y-6
               md:space-y-7
               w-full
+              max-w-[620px]
               flex
               flex-col
               items-start
@@ -1215,7 +1216,7 @@ const Hero = () => {
             {/* HEADING */}
             <h1
               style={{
-                fontFamily: "'Hedvig Letters Serif', serif",
+                fontFamily: "'Poppins', serif",
               }}
               className="
                 hero-title
@@ -1250,13 +1251,14 @@ const Hero = () => {
                 text-slate-600
                 leading-relaxed
                 sm:leading-7
-                max-w-xl
+                max-w-[600]
                 text-left
                 font-normal
                 w-full
               "
             >
               Complete business solutions to simplify your registrations, tax
+              <br />
               compliance, and financial growth with trusted expert guidance.
             </p>
 
@@ -1669,7 +1671,7 @@ const Hero = () => {
                         <h3
                           style={{
                             fontFamily:
-                              "'Hedvig Letters Serif', serif",
+                              "'Poppins', serif",
                           }}
                           className="
                             hero-card-title

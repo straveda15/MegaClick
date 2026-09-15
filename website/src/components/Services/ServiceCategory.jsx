@@ -8,7 +8,7 @@ const ServiceCategory = ({ category }) => {
     <section className="mb-8 sm:mb-10 font-['Inter',sans-serif]">
       {/* GOOGLE FONTS */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
       `}</style>
 
       <div
@@ -62,7 +62,7 @@ const ServiceCategory = ({ category }) => {
 
             <div>
               <h2
-                style={{ fontFamily: "'Hedvig Letters Serif', serif" }}
+                style={{ fontFamily: "'Poppins', serif" }}
                 className="
                   text-xl
                   sm:text-2xl

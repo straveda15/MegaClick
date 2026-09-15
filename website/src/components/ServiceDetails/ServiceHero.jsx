@@ -14,7 +14,7 @@ const ServiceHero = ({ service }) => {
     <section className="w-full bg-slate-50 pt-0 pb-6 sm:pb-8 font-['Inter',sans-serif]">
       {/* GOOGLE FONTS & RESPONSIVE STYLES */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
 
         .service-hero-title {
           word-spacing: 0.18em;
@@ -211,7 +211,7 @@ const ServiceHero = ({ service }) => {
             <div className="flex-1 min-w-0 text-left">
               <h1
                 style={{
-                  fontFamily: "'Hedvig Letters Serif', serif",
+                  fontFamily: "'Poppins', serif",
                   wordSpacing: "0.18em",
                 }}
                 className="

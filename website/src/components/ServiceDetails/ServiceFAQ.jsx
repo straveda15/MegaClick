@@ -288,8 +288,7 @@ const ServiceFAQ = ({ service }) => {
       "
     >
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Inter:wght@400;500;600;700&display=swap');
-
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
         .service-faq-container {
           width: 100%;
           max-width: 1380px;
@@ -486,7 +485,7 @@ const ServiceFAQ = ({ service }) => {
         <div className="mb-7 sm:mb-9 lg:mb-10 text-left">
           <h2
             style={{
-              fontFamily: "'Hedvig Letters Serif', serif",
+              fontFamily: "'Poppins', serif",
             }}
             className="
               service-faq-heading

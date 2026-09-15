@@ -36,7 +36,7 @@ const FOOTER_LINKS = {
 const SOCIAL_LINKS = [
   {
     icon: FaFacebookF,
-    href: "#",
+    href: "YOUR_FACEBOOK_URL",
     label: "Facebook",
     iconColor: "text-[#1877F2]",
     bgColor: "bg-[#E8F1FF]",
@@ -44,7 +44,7 @@ const SOCIAL_LINKS = [
   },
   {
     icon: FaLinkedinIn,
-    href: "#",
+    href: "YOUR_LINKEDIN_URL",
     label: "LinkedIn",
     iconColor: "text-[#0077B5]",
     bgColor: "bg-[#E8F1FF]",
@@ -60,7 +60,7 @@ const SOCIAL_LINKS = [
   },
   {
     icon: FaInstagram,
-    href: "#",
+    href: "YOUR_INSTAGRAM_URL",
     label: "Instagram",
     iconColor: "text-[#E1306C]",
     bgColor: "bg-[#FCE7F3]",
@@ -92,22 +92,11 @@ const Footer = () => {
      BACK TO TOP
   ========================================================= */
   const scrollToTop = () => {
-    if (window.location.pathname !== "/") {
-      navigate("/");
-
-      setTimeout(() => {
-        window.scrollTo({
-          top: 0,
-          behavior: "smooth",
-        });
-      }, 300);
-    } else {
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
-    }
-  };
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+};
 
   /* =========================================================
      NAVIGATION
@@ -857,20 +846,28 @@ const Footer = () => {
                 "
               />
 
-              <h2 className="text-2xl sm:text-[1.7rem] font-bold tracking-tight">
+              <h2 className=
+              
+              "text-2xl sm:text-[1.7rem] font-bold tracking-tight"
+              style={{ fontFamily: "'Poppins', sans-serif" }}
+              >
                 <span className="text-white">Mega</span>
                 <span className="text-green-400">Click</span>
               </h2>
             </div>
-
+                 
             <p className="text-[13px] sm:text-sm text-blue-100/90 font-medium text-left leading-relaxed">
               Exceptional value. Cost effective solutions.
             </p>
           </div>
 
           {/* EXPLORE */}
-          <div className="w-full text-left">
-            <h3 className="text-[11px] sm:text-xs font-black uppercase tracking-widest text-green-400 mb-2.5">
+          <div className="w-full text-left"
+          >
+              
+            <h3 className="text-[11px] sm:text-xs font-black uppercase tracking-widest text-green-400 mb-2.5"
+            style={{ fontFamily: "'Poppins', sans-serif"}}
+            >
               EXPLORE
             </h3>
 
@@ -1357,6 +1354,7 @@ const Footer = () => {
                     tracking-widest
                     text-green-400
                   "
+                   style={{ fontFamily: "'Poppins', sans-serif" }}
                 >
                   EXPLORE
                 </h3>
@@ -1413,6 +1411,7 @@ const Footer = () => {
                     tracking-widest
                     text-green-400
                   "
+                   style={{ fontFamily: "'Poppins', sans-serif" }}
                 >
                   SERVICES
                 </h3>
@@ -1455,6 +1454,7 @@ const Footer = () => {
                     tracking-widest
                     text-green-400
                   "
+                   style={{ fontFamily: "'Poppins', sans-serif" }}
                 >
                   CONTACT US
                 </h3>
