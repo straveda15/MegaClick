@@ -1,10 +1,10 @@
-import React from "react";
+import { Link } from "react-router-dom";
 
 // =====================================================
 // EXACT IMAGE IMPORTS MATCHING YOUR ASSETS
 // =====================================================
-import marriageRegImg from "../../assets/marrige_registration_logo.png";
-import gstRegistrationImg from "../../assets/gst-registration.jpg";
+import marriageRegImg from "../../assets/icon-marriage-registration.svg";
+import gstRegistrationImg from "../../assets/icon-gst-registration.svg";
 import trademarkImg from "../../assets/trademark-registration.png";
 import companyRegImg from "../../assets/company-registration.png";
 import incomeTaxImg from "../../assets/income-tax.png";
@@ -22,6 +22,7 @@ import accountingAuditImg from "../../assets/accounting-audit.png";
 const popularServices = [
   {
     title: "Marriage Registration",
+    slug: "marriage-registration",
     description: "Complete assistance with marriage registration and documentation.",
     image: marriageRegImg,
     description:
@@ -29,6 +30,7 @@ const popularServices = [
   },
   {
     title: "GST Registration & Filing",
+    slug: "gst-registration-filing",
     description: "GST registration and filing support for businesses.",
     image: gstRegistrationImg,
     description:
@@ -36,6 +38,7 @@ const popularServices = [
   },
   {
     title: "Trademark Registration",
+    slug: "trademark-registration",
     description: "Professional assistance for trademark registration.",
     image: trademarkImg,
     description:
@@ -43,6 +46,7 @@ const popularServices = [
   },
   {
     title: "Company Registration & Annual Compliance",
+    slug: "company-registration-compliance",
     description: "Company incorporation and annual compliance support.",
     image: companyRegImg,
     description:
@@ -50,6 +54,7 @@ const popularServices = [
   },
   {
     title: "Income Tax Services",
+    slug: "income-tax-services",
     description: "Income tax filing and compliance assistance.",
     image: incomeTaxImg,
     description:
@@ -57,6 +62,7 @@ const popularServices = [
   },
   {
     title: "MSME / UDYAM Registration",
+    slug: "msme-registration",
     description: "Assistance with MSME and UDYAM registration.",
     image: msmeUdyamImg,
     description:
@@ -64,6 +70,7 @@ const popularServices = [
   },
   {
     title: "Leave & Licence / Rent Agreement",
+    slug: "leave-licence-rent-agreement",
     description: "Rental agreement preparation and registration support.",
     image: rentAgreementImg,
     description:
@@ -71,6 +78,7 @@ const popularServices = [
   },
   {
     title: "Digital Marketing",
+    slug: "digital-marketing",
     description: "Digital marketing support to grow your online presence.",
     image: digitalMarketingImg,
     description:
@@ -78,6 +86,7 @@ const popularServices = [
   },
   {
     title: "Passport Services",
+    slug: "passport-services",
     description: "Assistance with passport applications and documentation.",
     image: passportImg,
     description:
@@ -85,22 +94,7 @@ const popularServices = [
   },
 ];
 
-const PopularServices = ({ onSelectService }) => {
-  const handleServiceClick = (serviceTitle) => {
-    if (onSelectService) {
-      onSelectService(serviceTitle);
-    }
-
-    const servicesSection =
-      document.getElementById("services-section");
-
-    if (servicesSection) {
-      servicesSection.scrollIntoView({
-        behavior: "smooth",
-      });
-    }
-  };
-
+const PopularServices = () => {
   return (
 <section className="py-6 sm:py-8 popular-section font-['Inter',sans-serif]">      <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
@@ -288,12 +282,11 @@ const PopularServices = ({ onSelectService }) => {
             sm:gap-6
           "
         >
-          {popularServices.map((service, index) => (
-            <div
-              key={index}
-              onClick={() =>
-                handleServiceClick(service.title)
-              }
+          {popularServices.map((service) => (
+            <Link
+              key={service.slug}
+              to={`/services/${service.slug}`}
+              aria-label={`${service.title} - view service details`}
               className="
                 group
                 flex
@@ -384,7 +377,7 @@ const PopularServices = ({ onSelectService }) => {
                   {service.description}
                 </p>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>

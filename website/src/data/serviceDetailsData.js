@@ -1,7 +1,7 @@
 // =============================================================================
 // 1. LEGAL SERVICES IMAGE IMPORTS (12 Images)
 // =============================================================================
-import marriageRegImg from "../assets/marrige_registration_logo.png";
+import marriageRegImg from "../assets/icon-marriage-registration.svg";
 import rentAgreementImg from "../assets/rent-agreement.png";
 import tenantVerificationImg from "../assets/tenant-police-verification.png";
 import govtGazetteImg from "../assets/govt-gazette.png";
@@ -11,14 +11,14 @@ import mortgageDeedImg from "../assets/mortgage-release-deed.png";
 import titleSearchImg from "../assets/title-search-report.png";
 import trademarkImg from "../assets/trademark-registration.png";
 import patentCopyrightImg from "../assets/patent-copyright.png";
-import digital712Img from "../assets/digital.webp";
+import digital712Img from "../assets/icon-digital-land-record.svg";
 import characterCertificateImg from "../assets/character-certificate.png";
 
 // =============================================================================
 // 2. BUSINESS & FINANCIAL SERVICES IMAGE IMPORTS (12 Images)
 // =============================================================================
 import incomeTaxImg from "../assets/income-tax.png";
-import gstRegistrationImg from "../assets/gst-registration.jpg";
+import gstRegistrationImg from "../assets/icon-gst-registration.svg";
 import bankLoanImg from "../assets/bank-loan.png";
 import govtLiaisoningImg from "../assets/govt-liaisoning.png";
 import tenderConsultancyImg from "../assets/tender-consultancy.png";
@@ -27,8 +27,8 @@ import llpRegImg from "../assets/llp-registration.png";
 import accountingAuditImg from "../assets/accounting-audit.png";
 import projectReportImg from "../assets/project-report.png";
 import trustRegImg from "../assets/trust-registration.png";
-import iecCodeImg from "../assets/growth.jpg";
-import dscImg from "../assets/digital.webp";
+import iecCodeImg from "../assets/icon-import-export.svg";
+import dscImg from "../assets/icon-digital-signature-certificate.svg";
 
 // =============================================================================
 // 3. OTHER SERVICES IMAGE IMPORTS (12 Images)
@@ -43,7 +43,7 @@ import msmeUdyamImg from "../assets/msme.png";
 import shopActImg from "../assets/shop-act-license.png";
 import fssaiImg from "../assets/fssai-license.png";
 import passportImg from "../assets/passport-services.png";
-import voterPanTanImg from "../assets/hero2.jpg";
+import voterPanTanImg from "../assets/icon-voter-pan-tan.svg";
 import liquorLicenseImg from "../assets/liquor-license.png";
 
 // =============================================================================
@@ -70,6 +70,22 @@ const serviceDetailsData = [
     heroTitle: "Marriage Registration Online – Complete Legal Assistance",
     description:
       "Get complete assistance for marriage registration with document guidance, application support and hassle-free processing.",
+    // Shown under the service name at the top of the service page.
+    // (A single string or an array of sentences; an array is joined into one paragraph.)
+    overview: [
+      "Get complete assistance for marriage registration with reliable support throughout the entire registration process.",
+      "We guide you through the required documents and help ensure that all necessary paperwork is properly prepared.",
+      "Our team assists with document verification and provides clear guidance on the applicable registration requirements.",
+      "We help you understand the application process and the formalities involved in registering your marriage.",
+      "From preparing the application to completing the required procedures, we provide step-by-step assistance.",
+      "We also help coordinate the registration appointment and guide you through the necessary formalities.",
+      "Our support helps reduce confusion, delays, and errors during the registration process.",
+      "We ensure that the documentation is organized properly before submission.",
+      "You receive clear information about each stage of the registration process and the documents required.",
+      "Our goal is to make the marriage registration process simple, transparent, and convenient for you.",
+      "Whether you need guidance with documentation or registration formalities, our team is available to assist you.",
+      "With end-to-end support, we help make your marriage registration experience smooth, convenient, and hassle-free.",
+    ],
     highlights: [
       {
         title: "Easy Registration",

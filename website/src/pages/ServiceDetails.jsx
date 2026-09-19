@@ -14,7 +14,7 @@ import businessServices from "../data/Services/businessServices";
 // COMPONENTS
 // =========================================
 
-import ServiceHero from "../components/ServiceDetails/ServiceHero";
+import ServiceIntro from "../components/ServiceDetails/ServiceIntro";
 import HowItWorks from "../components/ServiceDetails/HowItWorks";
 import ServiceBenefits from "../components/ServiceDetails/ServiceBenefits";
 import ServiceFAQ from "../components/ServiceDetails/ServiceFAQ";
@@ -136,10 +136,10 @@ const ServiceDetails = () => {
   return (
     <div className="w-full overflow-hidden">
       {/* =========================================
-          SERVICE HERO
+          SERVICE INTRO (service name + about paragraph)
       ========================================= */}
 
-      <ServiceHero service={service} />
+      <ServiceIntro service={service} />
 
       {/* =========================================
           SERVICE OVERVIEW

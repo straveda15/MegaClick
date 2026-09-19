@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="30.4 24.4 451.1 451.1" role="img" aria-label="Globe with import and export arrows">
+  <defs>
+    <clipPath id="globe"><circle cx="256" cy="250" r="138"/></clipPath>
+  </defs>
+  <!-- globe -->
+  <circle cx="256" cy="250" r="138" fill="#5CC7FF"/>
+  <g clip-path="url(#globe)">
+    <path d="M300 100A150 150 0 0 1 300 400A96 150 0 0 0 300 100z" fill="#2AA6EA"/>
+    <path d="M196 158c22-14 48-8 56 12s-8 32-26 42-40 6-48-10 2-34 18-44z" fill="#3DBE80"/>
+    <path d="M272 252c26-10 56 6 58 30s-18 46-40 52-34-16-32-38 4-36 14-44z" fill="#3DBE80"/>
+    <path d="M150 268c14-6 30 2 32 16s-10 26-24 28-24-10-22-22 6-18 14-22z" fill="#3DBE80"/>
+  </g>
+  <g fill="none" stroke="#FFFFFF" stroke-width="7" stroke-linecap="round" opacity=".7">
+    <ellipse cx="256" cy="250" rx="62" ry="138"/>
+    <path d="M118 250h276"/>
+    <path d="M136 186h240M136 314h240"/>
+  </g>
+  <!-- export arrow (top, orange) -->
+  <path d="M77.5 185A190 190 0 0 1 401.6 127.9" fill="none" stroke="#FF9F1A" stroke-width="26" stroke-linecap="round"/>
+  <path d="M426 156L421.5 111.2 381.7 144.6z" fill="#FF9F1A" stroke="#FF9F1A" stroke-width="10" stroke-linejoin="round"/>
+  <!-- import arrow (bottom, green) -->
+  <path d="M434.5 315A190 190 0 0 1 110.4 372.1" fill="none" stroke="#22B573" stroke-width="26" stroke-linecap="round"/>
+  <path d="M86 344L90.5 388.8 130.3 355.4z" fill="#22B573" stroke="#22B573" stroke-width="10" stroke-linejoin="round"/>
+</svg>

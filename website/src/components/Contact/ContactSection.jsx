@@ -260,7 +260,7 @@ const ContactSection = () => {
 
       {/* UNIFIED CONTAINER */}
       <div className="contact-container relative z-10 w-full max-w-[1380px] mx-auto px-4 sm:px-6 min-[1440px]:px-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 lg:grid-rows-[auto_auto_auto_1fr] gap-x-8 min-[1440px]:gap-x-10 min-[1920px]:gap-x-12 min-[3840px]:gap-x-20 gap-y-0 items-start w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-2 lg:grid-rows-[auto_auto_auto_auto_1fr] gap-x-8 min-[1440px]:gap-x-10 min-[1920px]:gap-x-12 min-[3840px]:gap-x-20 gap-y-0 items-start w-full">
           
           {/* =====================================================
               TAGLINE (small heading above the title)
@@ -277,7 +277,7 @@ const ContactSection = () => {
           {/* =====================================================
               HEADING + DESCRIPTION (left on desktop, first on mobile)
           ====================================================== */}
-          <div className="relative min-w-0 w-full mb-8 lg:mb-0 lg:col-start-1 lg:row-start-2">
+          <div className="relative min-w-0 w-full lg:col-start-1 lg:row-start-2">
             <div className="pointer-events-none absolute -right-10 -top-10 h-48 w-48 sm:h-60 sm:w-60 min-[3840px]:h-96 min-[3840px]:w-96 rounded-full bg-blue-200/40 blur-3xl" />
 
             <div className="relative z-10 w-full min-w-0 text-left">
@@ -288,28 +288,32 @@ const ContactSection = () => {
               >
                 Request Your Free <span className="text-[#0B4EA2]">Consultation</span>
               </h2>
-
-              {/* DESCRIPTION */}
-              <p
-                style={{ fontFamily: "'Inter', sans-serif" }}
-                className="contact-desc mt-3 sm:mt-4 text-slate-600 font-normal text-xs sm:text-sm lg:text-base leading-relaxed text-left w-full"
-              >
-                Tell us about your business requirements and our experts will contact you with the best legal, financial and compliance solutions.
-              </p>
             </div>
+          </div>
+
+          {/* =====================================================
+              DESCRIPTION (sits between the heading and the social links)
+          ====================================================== */}
+          <div className="relative min-w-0 w-full mb-8 lg:mb-0 lg:col-start-1 lg:row-start-3">
+            <p
+              style={{ fontFamily: "'Inter', sans-serif" }}
+              className="contact-desc mt-3 sm:mt-4 lg:mt-1 text-slate-600 font-normal text-xs sm:text-sm lg:text-base leading-relaxed text-left w-full"
+            >
+              Tell us about your business requirements and our experts will contact you with the best legal, financial and compliance solutions.
+            </p>
           </div>
 
           {/* =====================================================
               FORM (right on desktop)
           ====================================================== */}
-          <div className="relative min-w-0 w-full mb-8 lg:mb-0 lg:col-start-2 lg:row-start-2 lg:row-span-3 overflow-hidden rounded-2xl sm:rounded-[26px] min-[1440px]:rounded-[30px] min-[1920px]:rounded-[36px] min-[3840px]:rounded-[50px] bg-white/95 p-5 sm:p-7 min-[1440px]:p-9 min-[1920px]:p-12 min-[3840px]:p-20 shadow-[0_15px_50px_rgba(0,0,0,0.08)] backdrop-blur-xl border border-white/40">
+          <div className="relative min-w-0 w-full mb-8 lg:mb-0 lg:col-start-2 lg:row-start-1 lg:row-span-5 overflow-hidden rounded-2xl sm:rounded-[26px] min-[1440px]:rounded-[30px] min-[1920px]:rounded-[36px] min-[3840px]:rounded-[50px] bg-white/95 p-4 sm:p-6 min-[1440px]:p-7 min-[1920px]:p-9 min-[3840px]:p-16 lg:max-w-[520px] min-[1440px]:max-w-[560px] min-[1920px]:max-w-[680px] min-[3840px]:max-w-[1200px] lg:justify-self-end shadow-[0_15px_50px_rgba(0,0,0,0.08)] backdrop-blur-xl border border-white/40">
             <div className="pointer-events-none absolute -right-16 -top-16 h-32 w-32 min-[3840px]:h-60 min-[3840px]:w-60 rounded-full bg-blue-100 blur-3xl" />
 
             {/* FORM */}
-            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5 min-[1920px]:space-y-6 min-[3840px]:space-y-10">
+            <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-3.5 min-[1920px]:space-y-5 min-[3840px]:space-y-8">
               
               {/* NAME + PHONE */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 min-[1920px]:gap-6 min-[3840px]:gap-10">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-3.5 min-[1920px]:gap-5 min-[3840px]:gap-8">
                 {/* NAME */}
                 <div className="relative min-w-0">
                   <User size={18} className="pointer-events-none absolute left-4 min-[3840px]:left-6 top-1/2 -translate-y-1/2 z-10 text-gray-400 min-[3840px]:w-8 min-[3840px]:h-8" />
@@ -318,13 +322,13 @@ const ContactSection = () => {
                     name="name"
                     required
                     placeholder="Full Name *"
-                    className="h-12 sm:h-14 min-[1920px]:h-16 min-[3840px]:h-24 w-full min-w-0 rounded-xl min-[3840px]:rounded-2xl border border-gray-200 min-[3840px]:border-2 bg-gray-50 pl-11 sm:pl-12 min-[3840px]:pl-16 pr-4 min-[3840px]:pr-8 text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#0B4EA2] focus:bg-white focus:ring-4 min-[3840px]:focus:ring-8 focus:ring-blue-100"
+                    className="h-11 sm:h-12 min-[1920px]:h-14 min-[3840px]:h-20 w-full min-w-0 rounded-xl min-[3840px]:rounded-2xl border border-gray-200 min-[3840px]:border-2 bg-gray-50 pl-11 sm:pl-12 min-[3840px]:pl-16 pr-4 min-[3840px]:pr-8 text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#0B4EA2] focus:bg-white focus:ring-4 min-[3840px]:focus:ring-8 focus:ring-blue-100"
                   />
                 </div>
 
                 {/* PHONE */}
                 <div className="relative min-w-0">
-                  <div className="pointer-events-none absolute left-0 top-0 z-10 flex h-12 sm:h-14 min-[1920px]:h-16 min-[3840px]:h-24 items-center gap-1.5 border-r border-gray-200 pl-4 pr-2 text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl font-medium text-gray-500">
+                  <div className="pointer-events-none absolute left-0 top-0 z-10 flex h-11 sm:h-12 min-[1920px]:h-14 min-[3840px]:h-20 items-center gap-1.5 border-r border-gray-200 pl-4 pr-2 text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl font-medium text-gray-500">
                     <Phone size={18} className="text-gray-400 min-[3840px]:w-8 min-[3840px]:h-8" />
                     +91
                   </div>
@@ -340,13 +344,13 @@ const ContactSection = () => {
                     }
                     maxLength={10}
                     placeholder="Phone Number *"
-                    className="h-12 sm:h-14 min-[1920px]:h-16 min-[3840px]:h-24 w-full min-w-0 rounded-xl min-[3840px]:rounded-2xl border border-gray-200 min-[3840px]:border-2 bg-gray-50 pl-24 min-[3840px]:pl-36 pr-4 min-[3840px]:pr-8 text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#0B4EA2] focus:bg-white focus:ring-4 min-[3840px]:focus:ring-8 focus:ring-blue-100"
+                    className="h-11 sm:h-12 min-[1920px]:h-14 min-[3840px]:h-20 w-full min-w-0 rounded-xl min-[3840px]:rounded-2xl border border-gray-200 min-[3840px]:border-2 bg-gray-50 pl-24 min-[3840px]:pl-36 pr-4 min-[3840px]:pr-8 text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#0B4EA2] focus:bg-white focus:ring-4 min-[3840px]:focus:ring-8 focus:ring-blue-100"
                   />
                 </div>
               </div>
 
               {/* EMAIL + SERVICE (one full-width line each) */}
-              <div className="grid grid-cols-1 gap-4 sm:gap-5 min-[1920px]:gap-6 min-[3840px]:gap-10">
+              <div className="grid grid-cols-1 gap-3 sm:gap-3.5 min-[1920px]:gap-5 min-[3840px]:gap-8">
                 {/* EMAIL */}
                 <div className="relative min-w-0">
                   <Mail size={18} className="pointer-events-none absolute left-4 min-[3840px]:left-6 top-1/2 -translate-y-1/2 z-10 text-gray-400 min-[3840px]:w-8 min-[3840px]:h-8" />
@@ -354,7 +358,7 @@ const ContactSection = () => {
                     type="email"
                     name="email"
                     placeholder="Email Address (Optional)"
-                    className="h-12 sm:h-14 min-[1920px]:h-16 min-[3840px]:h-24 w-full min-w-0 rounded-xl min-[3840px]:rounded-2xl border border-gray-200 min-[3840px]:border-2 bg-gray-50 pl-11 sm:pl-12 min-[3840px]:pl-16 pr-4 min-[3840px]:pr-8 text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#0B4EA2] focus:bg-white focus:ring-4 min-[3840px]:focus:ring-8 focus:ring-blue-100"
+                    className="h-11 sm:h-12 min-[1920px]:h-14 min-[3840px]:h-20 w-full min-w-0 rounded-xl min-[3840px]:rounded-2xl border border-gray-200 min-[3840px]:border-2 bg-gray-50 pl-11 sm:pl-12 min-[3840px]:pl-16 pr-4 min-[3840px]:pr-8 text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#0B4EA2] focus:bg-white focus:ring-4 min-[3840px]:focus:ring-8 focus:ring-blue-100"
                   />
                 </div>
 
@@ -436,8 +440,8 @@ const ContactSection = () => {
                         minWidth: 0,
                         paddingLeft: "4px",
                         paddingRight: "8px",
-                        paddingTop: "6px",
-                        paddingBottom: "6px",
+                        paddingTop: "2px",
+                        paddingBottom: "2px",
                         gap: "4px",
                       }),
                       singleValue: (base) => ({
@@ -475,10 +479,10 @@ const ContactSection = () => {
               {/* MESSAGE */}
               <textarea
                 name="message"
-                rows={4}
+                rows={3}
                 required
                 placeholder="Tell us about your requirements *"
-                className="min-h-[120px] min-[1920px]:min-h-[150px] min-[3840px]:min-h-[220px] w-full resize-none rounded-xl min-[3840px]:rounded-2xl border border-gray-200 min-[3840px]:border-2 bg-gray-50 p-4 min-[3840px]:p-8 text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#0B4EA2] focus:bg-white focus:ring-4 min-[3840px]:focus:ring-8 focus:ring-blue-100"
+                className="min-h-[88px] min-[1920px]:min-h-[120px] min-[3840px]:min-h-[190px] w-full resize-none rounded-xl min-[3840px]:rounded-2xl border border-gray-200 min-[3840px]:border-2 bg-gray-50 p-3.5 sm:p-4 min-[3840px]:p-7 text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#0B4EA2] focus:bg-white focus:ring-4 min-[3840px]:focus:ring-8 focus:ring-blue-100"
               />
 
               {/* SUBMIT BUTTON */}
@@ -486,7 +490,7 @@ const ContactSection = () => {
                 type="submit"
                 disabled={submitting}
                 style={{ fontFamily: "'Inter', sans-serif" }}
-                className="group -mt-3 flex h-11 sm:h-13 min-[1920px]:h-16 min-[3840px]:h-24 w-full items-center justify-center rounded-xl min-[3840px]:rounded-2xl bg-[#0B4EA2] text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl font-semibold text-white transition-all duration-300 hover:-translate-y-1 hover:bg-green-600 hover:shadow-xl disabled:pointer-events-none disabled:opacity-60 cursor-pointer"
+                className="group flex h-11 sm:h-12 min-[1920px]:h-14 min-[3840px]:h-20 w-full items-center justify-center rounded-xl min-[3840px]:rounded-2xl bg-[#0B4EA2] text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl font-semibold text-white transition-all duration-300 hover:-translate-y-1 hover:bg-green-600 hover:shadow-xl disabled:pointer-events-none disabled:opacity-60 cursor-pointer"
               >
                 <span className="flex items-center justify-center gap-2 min-[3840px]:gap-4">
                   {submitting ? "Sending…" : "Send Message"}
@@ -523,10 +527,10 @@ const ContactSection = () => {
           {/* =====================================================
               SOCIAL LINKS (left on desktop, last on mobile)
           ====================================================== */}
-          <div className="relative z-10 min-w-0 w-full lg:col-start-1 lg:row-start-3 lg:mt-8 min-[1440px]:mt-10 min-[1920px]:mt-12 min-[3840px]:mt-20">
+          <div className="relative z-10 min-w-0 w-full lg:col-start-1 lg:row-start-4 lg:mt-6 min-[1440px]:mt-8 min-[1920px]:mt-10 min-[3840px]:mt-16">
               {/* SOCIAL LINKS */}
               <div>
-                <ul className="w-full space-y-4 sm:space-y-5 min-[3840px]:space-y-8">
+                <ul className="flex w-full flex-col gap-3 min-[3840px]:gap-6">
                   {SOCIAL_ROWS.map((item) => {
                     const Icon = item.icon;
                     const address = socialAddress(item);
