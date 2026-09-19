@@ -12,30 +12,31 @@ const ServicesGrid = ({
   const [openCategories, setOpenCategories] = useState({});
 
   const categoriesList = useMemo(() => {
-    if (Array.isArray(categoriesData) && categoriesData.length > 0) {
-      return categoriesData;
-    }
-    if (Array.isArray(services) && services.length > 0) {
-      const grouped = services.reduce((acc, service) => {
-        const catName =
-          typeof service === "string"
-            ? "Legal Services"
-            : service.category || "Other Services";
+  if (Array.isArray(services) && services.length > 0) {
+    const grouped = services.reduce((acc, service) => {
+      const catName = service.category || "Other Services";
 
-        if (!acc[catName]) {
-          acc[catName] = { title: catName, emoji: "📋", services: [] };
-        }
-        acc[catName].services.push(
-          typeof service === "string"
-            ? { title: service, category: catName }
-            : service
+      if (!acc[catName]) {
+        const originalCategory = categoriesData.find(
+          (cat) => cat.title === catName
         );
-        return acc;
-      }, {});
-      return Object.values(grouped);
-    }
-    return [];
-  }, [categoriesData, services]);
+
+        acc[catName] = {
+          ...(originalCategory || {}),
+          title: catName,
+          services: [],
+        };
+      }
+
+      acc[catName].services.push(service);
+      return acc;
+    }, {});
+
+    return Object.values(grouped);
+  }
+
+  return [];
+}, [services, categoriesData]);
 
   const toggleCategory = (catTitle) => {
     setOpenCategories((prev) => ({

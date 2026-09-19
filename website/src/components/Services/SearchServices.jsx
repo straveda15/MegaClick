@@ -34,7 +34,7 @@ const SearchServices = ({ searchTerm, setSearchTerm }) => {
   }, []);
 
   return (
-    <section className="bg-blue-50/70 py-8 sm:py-10 lg:py-12 search-services-section font-['Inter',sans-serif]">
+    <section className=" py-8 sm:py-10 lg:py-12 search-services-section font-['Inter',sans-serif]">
       {/* GOOGLE FONTS & RESPONSIVE SCALING */}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
@@ -185,38 +185,12 @@ const SearchServices = ({ searchTerm, setSearchTerm }) => {
       `}</style>
 
       <div className="app-container">
-        {/* =========================================
-            CONSISTENT HEADING & SUBTITLE
-        ========================================== */}
-        <div className="text-left">
-          <h2
-            style={{ fontFamily: "'Poppins', serif" }}
-            className="
-              search-heading
-              team-title
-              text-2xl
-              sm:text-3xl
-              md:text-3xl
-              lg:text-4xl
-              font-bold
-              leading-[1.18]
-              text-black
-              text-left
-              mb-2.5
-              sm:mb-4
-            "
-          >
-            Explore Your{" "}
-            <span className="text-[#0B4EA2]">
-              Services
-            </span>
-          </h2>
-        </div>
+        
 
         {/* =========================================
             SEARCH INPUT BOX
         ========================================== */}
-        <div className="search-input-box mt-4 sm:mt-5">
+        <div className="search-input-box mt-0">
           <div className="relative">
             <Search
               size={21}

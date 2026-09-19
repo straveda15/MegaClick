@@ -1,6 +1,6 @@
 import HeroSection from "../components/About/HeroSection";
 import AboutSection from "../components/About/AboutSection";
-import VisionMission from "../components/About/VisionMission";
+
 
 
 const About = () => {
@@ -8,7 +8,7 @@ const About = () => {
     <>
       <HeroSection />
       <AboutSection />
-      <VisionMission />
+      
  
     </>
   );

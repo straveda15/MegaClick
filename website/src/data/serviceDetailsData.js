@@ -1,7 +1,7 @@
 // =============================================================================
 // 1. LEGAL SERVICES IMAGE IMPORTS (12 Images)
 // =============================================================================
-import marriageRegImg from "../assets/marriage-registration.png";
+import marriageRegImg from "../assets/marrige_registration_logo.png";
 import rentAgreementImg from "../assets/rent-agreement.png";
 import tenantVerificationImg from "../assets/tenant-police-verification.png";
 import govtGazetteImg from "../assets/govt-gazette.png";

@@ -42,38 +42,81 @@ const filterServiceOption = (option, rawInput) => {
 // ─────────────────────────────────────────────
 // COUNT-UP ON SCROLL INTO VIEW
 // ─────────────────────────────────────────────
-const CountUp = ({ end, suffix = "", duration = 900 }) => {
+const CountUp = ({ end, suffix = "", duration = 1800 }) => {
   const [count, setCount] = useState(0);
   const ref = useRef(null);
-  const started = useRef(false);
+  const wasVisible = useRef(false);
+  const animationFrameRef = useRef(null);
 
   useEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && !started.current) {
-          started.current = true;
-          let startTime = null;
+        // Reset when the number leaves the viewport.
+        if (!entry.isIntersecting) {
+          wasVisible.current = false;
 
-          const tick = (timestamp) => {
-            if (!startTime) startTime = timestamp;
-            const progress = Math.min((timestamp - startTime) / duration, 1);
-            setCount(Math.ceil(progress * end));
-            if (progress < 1) requestAnimationFrame(tick);
-          };
+          if (animationFrameRef.current) {
+            cancelAnimationFrame(animationFrameRef.current);
+            animationFrameRef.current = null;
+          }
 
-          requestAnimationFrame(tick);
+          setCount(0);
+          return;
         }
+
+        // Start again every time it enters the viewport.
+        if (wasVisible.current) return;
+
+        wasVisible.current = true;
+
+        let startTime = null;
+
+        const tick = (timestamp) => {
+          if (!startTime) startTime = timestamp;
+
+          const elapsed = timestamp - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+
+          // Smooth ease-out
+          const easedProgress = 1 - Math.pow(1 - progress, 3);
+
+          setCount(Math.floor(easedProgress * end));
+
+          if (progress < 1) {
+            animationFrameRef.current = requestAnimationFrame(tick);
+          } else {
+            setCount(end);
+            animationFrameRef.current = null;
+          }
+        };
+
+        animationFrameRef.current = requestAnimationFrame(tick);
       },
-      { threshold: 0.3 }
+      { threshold: 0.5 }
     );
 
-    const el = ref.current;
-    if (el) observer.observe(el);
-    return () => observer.disconnect();
+    observer.observe(element);
+
+    return () => {
+      observer.disconnect();
+
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+    };
   }, [end, duration]);
 
   return (
-    <span ref={ref} style={{ fontVariantNumeric: "tabular-nums" }}>
+    <span
+      ref={ref}
+      style={{
+        fontVariantNumeric: "tabular-nums",
+        display: "inline-block",
+      }}
+    >
       {count}
       {suffix}
     </span>
@@ -286,7 +329,7 @@ const ContactSection = () => {
 
       {/* BACKGROUND GLOWS */}
       <div className="pointer-events-none absolute -left-24 -top-24 h-48 w-48 sm:h-64 sm:w-64 min-[1920px]:h-80 min-[1920px]:w-80 min-[3840px]:h-[30rem] min-[3840px]:w-[30rem] rounded-full bg-blue-300/30 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-24 -right-24 h-52 w-52 sm:h-72 sm:w-72 min-[1920px]:h-96 min-[1920px]:w-96 min-[3840px]:h-[35rem] min-[3840px]:w-[35rem] rounded-full bg-green-300/30 blur-3xl" />
+      
 
       {/* UNIFIED CONTAINER */}
       <div className="contact-container relative z-10 w-full max-w-[1380px] mx-auto px-4 sm:px-6 min-[1440px]:px-10">
@@ -503,7 +546,7 @@ const ContactSection = () => {
                 type="submit"
                 disabled={submitting}
                 style={{ fontFamily: "'Inter', sans-serif" }}
-                className="group flex h-12 sm:h-14 min-[1920px]:h-16 min-[3840px]:h-24 w-full items-center justify-center rounded-xl min-[3840px]:rounded-2xl bg-[#0B4EA2] text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl font-semibold text-white transition-all duration-300 hover:-translate-y-1 hover:bg-green-600 hover:shadow-xl disabled:pointer-events-none disabled:opacity-60 cursor-pointer"
+                className="group -mt-3 flex h-11 sm:h-13 min-[1920px]:h-16 min-[3840px]:h-24 w-full items-center justify-center rounded-xl min-[3840px]:rounded-2xl bg-[#0B4EA2] text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl font-semibold text-white transition-all duration-300 hover:-translate-y-1 hover:bg-green-600 hover:shadow-xl disabled:pointer-events-none disabled:opacity-60 cursor-pointer"
               >
                 <span className="flex items-center justify-center gap-2 min-[3840px]:gap-4">
                   {submitting ? "Sending…" : "Send Message"}
@@ -533,21 +576,6 @@ const ContactSection = () => {
                 </div>
               )}
 
-              {/* TRUST POINTS */}
-              <div className="flex flex-wrap items-center justify-center gap-x-4 sm:gap-x-5 min-[3840px]:gap-x-8 gap-y-2 pt-1 min-[3840px]:pt-4">
-                <div className="flex items-center gap-1.5 text-xs sm:text-sm min-[1920px]:text-base min-[3840px]:text-xl text-gray-700">
-                  <CheckCircle2 size={15} className="flex-shrink-0 text-green-600 min-[3840px]:w-6 min-[3840px]:h-6" />
-                  100% Secure
-                </div>
-                <div className="flex items-center gap-1.5 text-xs sm:text-sm min-[1920px]:text-base min-[3840px]:text-xl text-gray-700">
-                  <CheckCircle2 size={15} className="flex-shrink-0 text-green-600 min-[3840px]:w-6 min-[3840px]:h-6" />
-                  Expert Guidance
-                </div>
-                <div className="flex items-center gap-1.5 text-xs sm:text-sm min-[1920px]:text-base min-[3840px]:text-xl text-gray-700">
-                  <CheckCircle2 size={15} className="flex-shrink-0 text-green-600 min-[3840px]:w-6 min-[3840px]:h-6" />
-                  Quick Response
-                </div>
-              </div>
 
             </form>
           </div>
@@ -557,7 +585,7 @@ const ContactSection = () => {
           ====================================================== */}
           <div className="relative min-w-0 w-full self-stretch lg:pt-2 xl:pt-4">
             <div className="pointer-events-none absolute -right-10 -top-10 h-48 w-48 sm:h-60 sm:w-60 min-[3840px]:h-96 min-[3840px]:w-96 rounded-full bg-blue-200/40 blur-3xl" />
-            <div className="pointer-events-none absolute -bottom-10 -left-10 h-44 w-44 sm:h-52 sm:w-52 min-[3840px]:h-80 min-[3840px]:w-80 rounded-full bg-green-200/40 blur-3xl" />
+            
 
             <div className="relative z-10 w-full min-w-0 text-left">
               {/* TAGLINE */}
@@ -577,37 +605,105 @@ const ContactSection = () => {
               </h2>
 
               {/* BENEFITS LIST */}
-              <div className="mt-6 sm:mt-8 min-[1920px]:mt-9 min-[3840px]:mt-14 space-y-4 sm:space-y-5 min-[3840px]:space-y-8">
-                {benefits.map((item, index) => {
-                  const Icon = item.icon;
-                  return (
-                    <div
-                      key={index}
-                      className="group w-full min-w-0 rounded-2xl sm:rounded-3xl min-[3840px]:rounded-[36px] bg-white/95 p-4 sm:p-5 min-[1440px]:p-6 min-[1920px]:p-7 min-[3840px]:p-10 shadow-[0_10px_35px_rgba(0,0,0,0.07)] backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl border border-white/60 text-left"
-                    >
-                      <div className="flex min-w-0 items-start gap-3 sm:gap-5 min-[3840px]:gap-8">
-                        <div className="flex h-11 w-11 sm:h-14 sm:w-14 min-[1920px]:h-16 min-[1920px]:w-16 min-[3840px]:h-24 min-[3840px]:w-24 flex-shrink-0 items-center justify-center rounded-xl sm:rounded-2xl min-[3840px]:rounded-3xl bg-blue-100 transition duration-300 group-hover:bg-[#0B4EA2]">
-                          <Icon className="w-5 h-5 sm:w-6 sm:h-6 min-[1920px]:w-7 min-[1920px]:h-7 min-[3840px]:w-12 min-[3840px]:h-12 text-[#0B4EA2] transition group-hover:text-white" />
-                        </div>
+              <div className="mt-6 sm:mt-8 min-[1920px]:mt-9 min-[3840px]:mt-14">
+                <div
+                  className="
+                    w-full
+                    rounded-3xl
+                    bg-white/80
+                    border border-white/60
+                    p-5 sm:p-6 min-[1920px]:p-7 min-[3840px]:p-10
+                    shadow-[0_10px_35px_rgba(0,0,0,0.06)]
+                    backdrop-blur-xl
+                  "
+                >
+                  <div className="space-y-5 sm:space-y-6 min-[3840px]:space-y-10">
+                    {benefits.map((item, index) => {
+                      const Icon = item.icon;
 
-                        <div className="min-w-0 flex-1 text-left">
-                          <h3
-                            style={{ fontFamily: "'Poppins', serif" }}
-                            className="benefit-title min-w-0 text-base sm:text-lg min-[1920px]:text-xl min-[3840px]:text-3xl font-bold text-gray-900 leading-snug"
+                      return (
+                        <div
+                          key={index}
+                          className={`
+                            group
+                            flex
+                            min-w-0
+                            items-start
+                            gap-4 sm:gap-5 min-[1920px]:gap-6 min-[3840px]:gap-8
+                            ${
+                              index < benefits.length - 1
+                                ? "pb-5 sm:pb-6 min-[3840px]:pb-10 border-b border-slate-200/70"
+                                : ""
+                            }
+                          `}
+                        >
+                          {/* Icon */}
+                          <div
+                            className="
+                              flex
+                              h-11 w-11
+                              sm:h-12 sm:w-12
+                              min-[1920px]:h-14 min-[1920px]:w-14
+                              min-[3840px]:h-20 min-[3840px]:w-20
+                              shrink-0
+                              items-center justify-center
+                              rounded-full
+                              bg-blue-100
+                              transition-all duration-300
+                              group-hover:bg-[#0B4EA2]
+                              group-hover:scale-105
+                            "
                           >
-                            {item.title}
-                          </h3>
-                          <p
-                            style={{ fontFamily: "'Inter', sans-serif" }}
-                            className="benefit-desc mt-1.5 sm:mt-2 text-xs sm:text-sm min-[1920px]:text-base min-[3840px]:text-2xl text-gray-600 leading-relaxed"
-                          >
-                            {item.text}
-                          </p>
+                            <Icon
+                              className="
+                                w-5 h-5
+                                sm:w-6 sm:h-6
+                                min-[1920px]:w-7 min-[1920px]:h-7
+                                min-[3840px]:w-10 min-[3840px]:h-10
+                                text-[#0B4EA2]
+                                transition-colors duration-300
+                                group-hover:text-white
+                              "
+                            />
+                          </div>
+
+                          {/* Text */}
+                          <div className="min-w-0 flex-1">
+                            <h3
+                              style={{ fontFamily: "'Poppins', serif" }}
+                              className="
+                                benefit-title
+                                text-base sm:text-lg
+                                min-[1920px]:text-xl
+                                min-[3840px]:text-3xl
+                                font-bold
+                                text-gray-900
+                                leading-snug
+                              "
+                            >
+                              {item.title}
+                            </h3>
+
+                            <p
+                              style={{ fontFamily: "'Inter', sans-serif" }}
+                              className="
+                                benefit-desc
+                                mt-1 sm:mt-1.5
+                                text-xs sm:text-sm
+                                min-[1920px]:text-base
+                                min-[3840px]:text-2xl
+                                text-gray-600
+                                leading-relaxed
+                              "
+                            >
+                              {item.text}
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                    </div>
-                  );
-                })}
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
 
               {/* STATS */}

@@ -390,23 +390,22 @@ const HowItWorks = ({ service }) => {
             ========================================================= */}
         <div className="relative hidden lg:block">
           {/* Connecting Line */}
-          <div
-            className="
-              hiw-line
-              absolute
-              top-6
-              left-6
-              right-6
-              h-px
-              bg-blue-200/80
-            "
-          />
+         <div
+  className="
+    hiw-line
+    absolute
+    top-6
+    left-[calc(50%-350px)]
+    right-[calc(50%-350px)]
+    h-px
+    bg-blue-200/80
+  "
+/>
 
-          <div className="flex gap-6 min-[1920px]:gap-10 min-[3840px]:gap-16">
-            {service.process.map((step, index) => (
+<div className="flex justify-center gap-16 min-[1920px]:gap-20 min-[3840px]:gap-24">            {service.process.map((step, index) => (
               <div
                 key={index}
-                className="relative flex-1 min-w-0 text-left"
+className="relative w-[300px] min-w-0 text-center"
               >
                 {/* STEP NUMBER */}
                 <div
@@ -414,6 +413,7 @@ const HowItWorks = ({ service }) => {
                     hiw-step-num
                     relative z-10
                     w-12 h-12
+                    mx-auto
                     rounded-full
                     bg-[#0B4EA2] text-white
                     flex items-center justify-center

@@ -2,32 +2,21 @@ import React from "react";
 import { useParams, Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 
-// Data
 import serviceDetailsData from "../data/serviceDetailsData";
 
-// Components
 import ServiceHero from "../components/ServiceDetails/ServiceHero";
-import ServiceOverview from "../components/ServiceDetails/ServiceOverview";
 import HowItWorks from "../components/ServiceDetails/HowItWorks";
 import ServiceBenefits from "../components/ServiceDetails/ServiceBenefits";
 import ServiceFAQ from "../components/ServiceDetails/ServiceFAQ";
 import Testimonials from "../components/ServiceDetails/Testimonials";
-
+import ServiceHighlights from "../components/Services/ServiceHighlights";
 
 const ServiceDetails = () => {
   const { slug } = useParams();
 
-  // =========================================
-  // FIND SERVICE USING URL SLUG
-  // =========================================
-
   const service = serviceDetailsData.find(
     (item) => item.slug === slug
   );
-
-  // =========================================
-  // SERVICE NOT FOUND
-  // =========================================
 
   if (!service) {
     return (
@@ -46,40 +35,22 @@ const ServiceDetails = () => {
             w-full
           "
         >
-          <h1
-            className="
-              text-3xl
-              md:text-4xl
-              font-bold
-              text-gray-900
-              mb-4
-            "
-          >
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
             Service Not Found
           </h1>
 
-          <p
-            className="
-              text-gray-600
-              mb-8
-              leading-7
-            "
-          >
-            Sorry, the service you are looking for does not
-            exist or has been removed.
+          <p className="text-gray-600 mb-8 leading-7">
+            Sorry, the service you are looking for does not exist or has been removed.
           </p>
 
           <Link
             to="/services"
             className="
-              inline-flex
-              items-center
-              gap-2
+              inline-flex items-center gap-2
               bg-[#0B4EA2]
               hover:bg-blue-700
               text-white
-              px-6
-              py-3
+              px-6 py-3
               rounded-xl
               font-semibold
               transition
@@ -93,61 +64,19 @@ const ServiceDetails = () => {
     );
   }
 
-  // =========================================
-  // UDYAM / MSME SERVICE CHECK
-  // =========================================
-
-  const isUdyamService =
-    service.slug === "udyam-registration" ||
-    service.slug === "udyam-registration-online" ||
-    service.slug === "msme-udyam-registration" ||
-    service.slug === "msme-registration";
-
-  // =========================================
-  // SERVICE DETAILS PAGE
-  // =========================================
-
   return (
     <div className="w-full overflow-hidden">
-
-      {/* =================================
-          SERVICE HERO
-      ================================= */}
-
       <ServiceHero service={service} />
-
-      {/* =================================
-          SERVICE OVERVIEW
-      ================================= */}
-
-      <ServiceOverview service={service} />
-
-      {/* =================================
-          HOW IT WORKS
-      ================================= */}
 
       <HowItWorks service={service} />
 
-      {/* =================================
-          BENEFITS
-      ================================= */}
+      <ServiceHighlights service={service} />
 
       <ServiceBenefits service={service} />
 
-      {/* =================================
-          NORMAL FAQ
-      ================================= */}
-
       <ServiceFAQ service={service} />
 
-
-
-      {/* =================================
-          TESTIMONIALS
-      ================================= */}
-
       <Testimonials />
-
     </div>
   );
 };

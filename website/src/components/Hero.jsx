@@ -12,6 +12,7 @@ import hero1 from "../assets/hero1.jpg";
 import hero2 from "../assets/hero2.jpg";
 import hero4 from "../assets/hero4.png";
 import hero3 from "../assets/hero3.webp";
+import PopularServices from "./Services/PopularServices";
 
 // =========================================================
 // PERFECT LINEAR COUNT-UP
@@ -1758,6 +1759,7 @@ const Hero = () => {
           </div>
         </div>
       </div>
+      <PopularServices />
     </section>
   );
 };

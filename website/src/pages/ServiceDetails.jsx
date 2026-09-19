@@ -15,7 +15,6 @@ import businessServices from "../data/Services/businessServices";
 // =========================================
 
 import ServiceHero from "../components/ServiceDetails/ServiceHero";
-import ServiceOverview from "../components/ServiceDetails/ServiceOverview";
 import HowItWorks from "../components/ServiceDetails/HowItWorks";
 import ServiceBenefits from "../components/ServiceDetails/ServiceBenefits";
 import ServiceFAQ from "../components/ServiceDetails/ServiceFAQ";
@@ -146,7 +145,7 @@ const ServiceDetails = () => {
           SERVICE OVERVIEW
       ========================================= */}
 
-      <ServiceOverview service={service} />
+      
 
       {/* =========================================
           HOW IT WORKS

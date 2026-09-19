@@ -1,7 +1,7 @@
 // =====================================================
 // 1. LEGAL SERVICES ICONS (All 12 Images Imported)
 // =====================================================
-import marriageRegImg from "../assets/marriage-registration.png";
+import marriageRegImg from "../assets/marrige_registration_logo.png";
 import rentAgreementImg from "../assets/rent-agreement.png";
 import tenantVerificationImg from "../assets/tenant-police-verification.png";
 import govtGazetteImg from "../assets/govt-gazette.png";
