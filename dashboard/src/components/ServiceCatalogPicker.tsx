@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Check, Loader2, RefreshCcw, Search, X } from 'lucide-react';
+import { Check, Loader2, Pencil, RefreshCcw, Search, Trash2, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useServiceCatalog, type CatalogService } from '@/hooks/useServiceCatalog';
@@ -18,6 +18,13 @@ interface ServiceCatalogPickerProps {
   height?: string;
   /** Shows a "clear selection" control when a service is picked. */
   clearable?: boolean;
+  /**
+   * When given, each row gets an edit / delete control (single-select only).
+   * Shown on hover or focus, and always on the selected row so touch screens can
+   * reach them.
+   */
+  onEdit?: (service: CatalogService) => void;
+  onDelete?: (service: CatalogService) => void;
 }
 
 /**
@@ -32,11 +39,14 @@ export function ServiceCatalogPicker({
   onToggle,
   height = 'h-[360px]',
   clearable = false,
+  onEdit,
+  onDelete,
 }: ServiceCatalogPickerProps) {
   const [query, setQuery] = useState('');
   const { data, isLoading, isError, error, refetch } = useServiceCatalog();
 
   const multiple = Array.isArray(selectedSlugs);
+  const hasRowActions = !multiple && Boolean(onEdit || onDelete);
   const chosen = new Set(selectedSlugs ?? (selectedSlug ? [selectedSlug] : []));
 
   const services = data?.services ?? [];
@@ -99,35 +109,74 @@ export function ServiceCatalogPicker({
             const selected = chosen.has(service.slug);
 
             return (
-              <button
-                key={`${service.categorySlug}-${service.slug}`}
-                type="button"
-                onClick={() => (multiple ? onToggle?.(service) : onSelect?.(service))}
-                className={`w-full text-left rounded-md border px-3 py-2.5 transition-colors ${
-                  selected
-                    ? 'border-blue-500 bg-blue-50 text-blue-950'
-                    : 'border-border bg-card hover:bg-muted/50 text-foreground'
-                }`}
-              >
-                <span className="flex items-start justify-between gap-3">
-                  {multiple && (
+              <div key={`${service.categorySlug}-${service.slug}`} className="group relative">
+                <button
+                  type="button"
+                  onClick={() => (multiple ? onToggle?.(service) : onSelect?.(service))}
+                  className={`w-full text-left rounded-md border px-3 py-2.5 transition-colors ${
+                    selected
+                      ? 'border-blue-500 bg-blue-50 text-blue-950'
+                      : 'border-border bg-card hover:bg-muted/50 text-foreground'
+                  }`}
+                >
+                  <span className="flex items-start justify-between gap-3">
+                    {multiple && (
+                      <span
+                        className={`shrink-0 mt-0.5 w-4 h-4 rounded border flex items-center justify-center ${
+                          selected ? 'border-blue-600 bg-blue-600 text-white' : 'border-border bg-card'
+                        }`}
+                      >
+                        {selected && <Check className="w-3 h-3" />}
+                      </span>
+                    )}
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-sm font-semibold leading-5 truncate">{service.title}</span>
+                      <span className="block text-xs text-muted-foreground mt-0.5 truncate">{service.category}</span>
+                    </span>
+                    {/* The category badge makes way for the row's controls. */}
                     <span
-                      className={`shrink-0 mt-0.5 w-4 h-4 rounded border flex items-center justify-center ${
-                        selected ? 'border-blue-600 bg-blue-600 text-white' : 'border-border bg-card'
+                      className={`text-[11px] rounded-full bg-muted px-2 py-0.5 text-muted-foreground shrink-0 ${
+                        hasRowActions
+                          ? (selected ? 'invisible' : 'group-hover:invisible group-focus-within:invisible')
+                          : ''
                       }`}
                     >
-                      {selected && <Check className="w-3 h-3" />}
+                      {service.categorySlug.replace(/-/g, ' ')}
                     </span>
-                  )}
-                  <span className="min-w-0 flex-1">
-                    <span className="block text-sm font-semibold leading-5 truncate">{service.title}</span>
-                    <span className="block text-xs text-muted-foreground mt-0.5 truncate">{service.category}</span>
                   </span>
-                  <span className="text-[11px] rounded-full bg-muted px-2 py-0.5 text-muted-foreground shrink-0">
-                    {service.categorySlug.replace(/-/g, ' ')}
-                  </span>
-                </span>
-              </button>
+                </button>
+
+                {hasRowActions && (
+                  <div
+                    className={`absolute right-2 top-2.5 flex items-center gap-0.5 transition-opacity ${
+                      selected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 focus-within:opacity-100'
+                    }`}
+                  >
+                    {onEdit && (
+                      <button
+                        type="button"
+                        onClick={() => onEdit(service)}
+                        title={`Edit "${service.title}"`}
+                        aria-label={`Edit ${service.title}`}
+                        className="h-6 w-6 flex items-center justify-center rounded text-muted-foreground hover:bg-muted hover:text-foreground"
+                      >
+                        <Pencil className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                    {onDelete && (
+                      <button
+                        type="button"
+                        onClick={() => onDelete(service)}
+                        title={`Delete "${service.title}"`}
+                        aria-label={`Delete ${service.title}`}
+                        className="h-6 w-6 flex items-center justify-center rounded text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
+                )}
+              </div>
             );
           })
         )}

@@ -188,13 +188,14 @@ const VisionMission = () => {
             <div className="mcx-env-promise">
               <span className="mcx-env-promise-tag">Our Promise</span>
               <span className="mcx-env-promise-text">
-                Simple. Reliable.
+                Simple & Reliable
                 <br />
-                All in one place.
+                All in one place
               </span>
             </div>
           </div>
         </div>
+
       </div>
 
       <style>{`

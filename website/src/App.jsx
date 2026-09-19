@@ -10,6 +10,7 @@ import ServiceDetails from "./pages/ServiceDetails";
 
 // Components
 import WhatsAppButton from "./components/WhatsAppButton";
+import BackToTop from "./components/BackToTop";
 import ScrollToTop from "./components/ScrollToTop";
 
 // Layout
@@ -63,6 +64,9 @@ function App() {
 
         </Route>
       </Routes>
+
+      {/* ================= FLOATING BACK TO TOP (above WhatsApp) ================= */}
+      <BackToTop />
 
       {/* ================= FLOATING WHATSAPP ================= */}
       <WhatsAppButton />

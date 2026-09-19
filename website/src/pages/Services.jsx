@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
-import SearchServices from "../components/Services/SearchServices";
 import CategoriesSidebar from "../components/Services/CategoriesSidebar";
 import ServicesGrid from "../components/Services/ServicesGrid";
-import PopularServices from "../components/Services/PopularServices";
+
 
 import serviceCategories from "../data/servicesData";
 
@@ -125,12 +124,14 @@ const Services = () => {
 
     // Search filter
     if (searchTerm.trim() !== "") {
-      result = result.filter((service) =>
-        service.title
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase())
-      );
-    }
+  const search = searchTerm.toLowerCase().trim();
+
+  result = result.filter((service) =>
+    service.title.toLowerCase().includes(search) ||
+    service.description?.toLowerCase().includes(search) ||
+    service.category?.toLowerCase().includes(search)
+  );
+}
 
     return result;
   };
@@ -279,19 +280,11 @@ const Services = () => {
           SEARCH
           ===================================================== */}
 
-      <SearchServices
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-      />
 
 
       {/* =====================================================
           POPULAR SERVICES
           ===================================================== */}
-
-      <PopularServices
-        onSelectService={handlePopularServiceSelect}
-      />
 
 
       {/* =====================================================
@@ -361,7 +354,7 @@ const Services = () => {
                 lg:col-span-1
 
                 lg:sticky
-                lg:top-24
+                lg:top-19
 
                 h-fit
                 min-w-0

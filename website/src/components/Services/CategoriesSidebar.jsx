@@ -102,7 +102,7 @@ const CategoriesSidebar = ({
   }, [selectedCategory]);
 
   return (
-    <aside className="cat-sidebar sticky top-24 bg-white rounded-3xl border border-slate-200/80 shadow-sm p-4 sm:p-5 w-full font-['Inter',sans-serif]">
+    <aside className="cat-sidebar sticky  bg-white rounded-3xl border border-slate-200/80 shadow-sm p-4 sm:p-5 w-full font-['Inter',sans-serif]">
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
 
@@ -197,6 +197,26 @@ const CategoriesSidebar = ({
             padding: 2.5rem !important;
             border-radius: 2.25rem !important;
           }
+            .cat-btn {
+  transition: all 0.25s ease !important;
+}
+
+.cat-btn:hover {
+  background: #eff6ff !important;
+  border-color: #bfdbfe !important;
+  color: #0B4EA2 !important;
+  transform: translateX(3px) !important;
+  box-shadow: 0 2px 8px rgba(11, 78, 162, 0.08) !important;
+}
+
+.cat-btn:hover .cat-btn-text {
+  color: #0B4EA2 !important;
+}
+
+.cat-btn:hover .cat-badge {
+  background: #dbeafe !important;
+  color: #0B4EA2 !important;
+}
 
           .cat-header-title {
             font-size: 1.5rem !important;
@@ -297,11 +317,11 @@ const CategoriesSidebar = ({
                   duration-200
                   text-left
                   cursor-pointer
-                  ${
-                    isSelected
-                      ? "bg-blue-50/80 border border-[#0B4EA2]/30 text-[#0B4EA2] shadow-xs"
-                      : "bg-transparent hover:bg-slate-50 border border-transparent text-slate-700"
-                  }
+                 ${
+  isSelected
+    ? "bg-blue-50/80 border border-[#0B4EA2]/30 text-[#0B4EA2] shadow-xs"
+    : "bg-transparent hover:bg-blue-50 hover:border-blue-200 hover:text-[#0B4EA2] border border-transparent text-slate-700 hover:shadow-xs"
+}
                 `}
               >
                 <div className="flex items-center gap-3 pr-2">

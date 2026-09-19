@@ -1,8 +1,7 @@
 import { useMemo, useState } from 'react';
 import {
-  Building2, CalendarClock, CalendarDays, Check, Circle, FileDown, History, Loader2, Mail, Phone, User,
+  Building2, CalendarClock, CalendarDays, Check, Circle, FileText, History, Mail, Phone, User,
 } from 'lucide-react';
-import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import {
   Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle,
@@ -12,9 +11,10 @@ import { TASK_STATUS_LABELS, TASK_STATUS_STYLES } from '@/data/clientStatus';
 import { TEMPERATURE_LABELS, TEMPERATURE_STYLES } from '@/data/leadTemperature';
 import FollowUpHistoryDialog from '@/components/followups/FollowUpHistoryDialog';
 import LogFollowUpDialog from '@/components/followups/LogFollowUpDialog';
+import InvoicePreviewDialog from '@/components/clients/InvoicePreviewDialog';
 import type { Client, ClientService } from '@/hooks/useClients';
-import { buildParticulars } from '@/lib/invoiceParticulars';
-import { generateInvoicePdf, invoiceNumber, type InvoiceData } from '@/lib/invoicePdf';
+import { buildClientInvoice } from '@/lib/clientInvoice';
+import type { InvoiceData } from '@/lib/invoicePdf';
 
 /* ── Display constants ──────────────────────────────────────────────────────── */
 
@@ -144,7 +144,9 @@ interface ClientDetailsDialogProps {
 export function ClientDetailsDialog({ client, open, onOpenChange }: ClientDetailsDialogProps) {
   const [historyOpen, setHistoryOpen] = useState(false);
   const [logOpen, setLogOpen] = useState(false);
-  const [downloading, setDownloading] = useState(false);
+  // Held as state so the preview's edits survive the board refetching underneath it.
+  const [invoicePreview, setInvoicePreview] = useState<InvoiceData | null>(null);
+  const [invoiceOpen, setInvoiceOpen] = useState(false);
 
   // The whole engagement in money terms, straight off the account.
   const totals = useMemo(() => ({
@@ -154,30 +156,11 @@ export function ClientDetailsDialog({ client, open, onOpenChange }: ClientDetail
     credit: client?.credit ?? 0,
   }), [client]);
 
-  const handleDownloadInvoice = async () => {
+  // Every service on the account; the preview is where it gets edited and downloaded.
+  const openInvoice = () => {
     if (!client) return;
-    setDownloading(true);
-    try {
-      const particulars = client.services.flatMap(s => buildParticulars(s));
-      const data: InvoiceData = {
-        invoiceNumber: invoiceNumber(client.clientId),
-        invoiceDate: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: '2-digit' }).replace(/ /g, '-'),
-        consigneeName: client.name,
-        consigneeAddress: client.address || 'N/A',
-        consigneeState: client.state || 'N/A',
-        consigneeCode: 'N/A',
-        buyerName: client.name,
-        buyerAddress: client.address || 'N/A',
-        buyerState: client.state || 'N/A',
-        buyerCode: 'N/A',
-        particulars
-      };
-      await generateInvoicePdf(data);
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Could not build the invoice.');
-    } finally {
-      setDownloading(false);
-    }
+    setInvoicePreview(buildClientInvoice(client, client.services));
+    setInvoiceOpen(true);
   };
 
   return (
@@ -214,9 +197,9 @@ export function ClientDetailsDialog({ client, open, onOpenChange }: ClientDetail
           )}
           {client && client.services.length > 0 && (
             <div className="pt-2">
-              <Button variant="outline" size="sm" onClick={handleDownloadInvoice} disabled={downloading}>
-                {downloading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <FileDown className="w-3.5 h-3.5" />}
-                Download Invoice
+              <Button variant="outline" size="sm" onClick={openInvoice}>
+                <FileText className="w-3.5 h-3.5" />
+                Invoice
               </Button>
             </div>
           )}
@@ -282,6 +265,12 @@ export function ClientDetailsDialog({ client, open, onOpenChange }: ClientDetail
           )}
         </div>
       </DialogContent>
+
+      <InvoicePreviewDialog
+        invoice={invoicePreview}
+        open={invoiceOpen}
+        onOpenChange={setInvoiceOpen}
+      />
 
       <FollowUpHistoryDialog
         open={historyOpen}

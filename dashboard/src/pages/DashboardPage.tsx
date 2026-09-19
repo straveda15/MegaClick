@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
 import KpiStrip from '@/components/dashboard/KpiStrip';
 import RevenueCard from '@/components/dashboard/RevenueCard';
 import ServiceChargeCard from '@/components/dashboard/ServiceChargeCard';
@@ -8,23 +8,19 @@ import TodaysTasksCard from '@/components/dashboard/TodaysTasksCard';
 import UpcomingDeadlinesCard from '@/components/dashboard/UpcomingDeadlinesCard';
 import RecentActivityCard from '@/components/dashboard/RecentActivityCard';
 import RecentClientsCard from '@/components/dashboard/RecentClientsCard';
-import DateRangeFilter, { type DateRange } from '@/components/DateRangeFilter';
+import { useDashboardFilterStore } from '@/store/dashboardFilterStore';
 
 const DashboardPage = () => {
-  const [dateRange, setDateRange] = useState<DateRange | undefined>();
+  // The calendar filter itself sits in the top bar, next to the user menu.
+  const dateRange = useDashboardFilterStore((state) => state.dateRange);
+  const setDateRange = useDashboardFilterStore((state) => state.setDateRange);
+
+  // The filter is only reachable from this page, so leaving it clears the range
+  // rather than leaving a hidden filter behind for next time.
+  useEffect(() => () => setDateRange(undefined), [setDateRange]);
 
   return (
     <div className="space-y-6">
-      {/* ── Page header with calendar filter ────────────────────────────── */}
-      <div className="flex items-center justify-end gap-4 flex-wrap">
-        <DateRangeFilter
-          value={dateRange}
-          onChange={setDateRange}
-          label="Filter dashboard by date"
-          align="end"
-        />
-      </div>
-
       {/* Live counts, read off the same endpoints the boards use. */}
       <KpiStrip />
 

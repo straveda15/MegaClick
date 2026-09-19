@@ -257,7 +257,7 @@ const ServiceOverview = ({ service }) => {
               sm:mb-4
             "
           >
-            {renderStyledTitle(service.title)}
+            {renderStyledTitle(`Complete Support for ${service.title}`)}
           </h2>
 
           {service.description && (

@@ -1,7 +1,7 @@
 
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Star } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
 const ServiceHero = ({ service }) => {
   const navigate = useNavigate();
@@ -219,103 +219,36 @@ const ServiceHero = ({ service }) => {
               </h1>
 
               {service.description && (
-                <p
-                  style={{ fontFamily: "'Inter', sans-serif" }}
-                  className="
-                    service-hero-desc
-                    mt-3 sm:mt-4
-                    text-sm sm:text-base lg:text-[1.05rem]
-                    text-blue-50/90
-                    font-normal
-                    leading-7 sm:leading-8
-                    max-w-none
-                    w-full
-                    break-words
-                  "
-                >
-                  {service.description}
-                </p>
-              )}
+  <p
+    style={{ fontFamily: "'Inter', sans-serif" }}
+    className="
+      service-hero-desc
+      mt-3 sm:mt-4
+      text-sm sm:text-base lg:text-[1.05rem]
+      text-blue-50/90
+      font-normal
+      leading-7 sm:leading-8
+      max-w-none
+      w-full
+      break-words
+    "
+  >
+    {service.description}
+  </p>
+)}
 
-              {/* GOOGLE RATING BADGE */}
-              <div
-                className="
-                  mt-5 sm:mt-6
-                  inline-flex items-center gap-3
-                  bg-white/10
-                  backdrop-blur-md
-                  border border-white/15
-                  rounded-xl
-                  px-3 py-2
-                  sm:px-4 sm:py-2.5
-                  shadow-md
-                "
-              >
-                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-md bg-white flex items-center justify-center shrink-0">
-                  <span
-                    style={{ fontFamily: "'Inter', sans-serif" }}
-                    className="
-                      text-sm
-                      font-extrabold
-                      text-blue-800
-                    "
-                  >
-                    G
-                  </span>
-                </div>
+</div>
 
-                <div>
-                  <div className="flex items-center gap-1.5">
-                    <span
-                      style={{ fontFamily: "'Inter', sans-serif" }}
-                      className="
-                        text-sm
-                        font-extrabold
-                        text-white
-                      "
-                    >
-                      4.9
-                    </span>
-
-                    <div className="flex items-center gap-0.5">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          size={12}
-                          className="
-                            fill-emerald-400
-                            text-emerald-400
-                          "
-                        />
-                      ))}
-                    </div>
-                  </div>
-
-                  <p
-                    style={{ fontFamily: "'Inter', sans-serif" }}
-                    className="
-                      text-[10px] sm:text-xs
-                      text-blue-200/90
-                      font-medium
-                      mt-0.5
-                    "
-                  >
-                    Google Rating
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* RIGHT — IMAGE */}
-            <div
-              className="
-                service-hero-img-wrap
-                hidden lg:flex
-                items-center justify-center
-                shrink-0
-                w-56 xl:w-64
-              "
-            >
+{/* RIGHT — IMAGE */}
+<div
+  className="
+    service-hero-img-wrap
+    hidden lg:flex
+    items-center justify-center
+    shrink-0
+    w-56 xl:w-64
+  "
+>
               {service.image ? (
                 <img
                   src={service.image}

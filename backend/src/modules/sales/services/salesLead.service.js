@@ -1371,13 +1371,29 @@ export const addLeadPayment = async (leadId, entry, actorId) => {
 };
 
 /**
- * Removes a wrongly recorded payment. Looks on the account first, then falls
- * back to the per-service ledgers so receipts recorded before payments moved to
- * the account can still be corrected.
+ * Removes a wrongly recorded payment. The advance taken at confirmation comes
+ * first — it is not a ledger entry but a single figure on the lead, listed with
+ * the receipts under a synthetic id — then the account's payments, then the
+ * per-service ledgers, so receipts recorded before payments moved to the account
+ * can still be corrected.
  */
 export const deleteLeadPayment = async (leadId, paymentId, actorId) => {
     const lead = await SalesLead.findById(leadId);
     if (!lead) throw new Error("Lead not found");
+
+    if (String(paymentId) === `advance-${String(lead._id)}`) {
+        if (!lead.advancePayment?.amount) throw new Error("Payment not found");
+
+        const { amount } = lead.advancePayment;
+        lead.advancePayment = null;
+        lead.statusHistory.push({
+            status: lead.status,
+            changedBy: actorId,
+            note: `Advance payment of ${amount} removed.`,
+        });
+        await lead.save();
+        return await getLeadDetail(lead._id);
+    }
 
     const existing = lead.payments.id(paymentId);
     if (existing) {

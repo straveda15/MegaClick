@@ -1,14 +1,15 @@
 
 import React from "react";
-import { Phone, Mail, MapPin, ArrowUp } from "lucide-react";
+import { Phone, Mail, MapPin } from "lucide-react";
 import {
   FaFacebookF,
   FaInstagram,
-  FaLinkedinIn,
   FaWhatsapp,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
+import { SOCIAL_PROFILES } from "../data/socialLinks";
+import { openWhatsApp } from "../lib/whatsapp";
 import logo from "../assets/LOGO.png";
 import stravedalogo from "/straveda-logo-cropped.png";
 
@@ -36,23 +37,16 @@ const FOOTER_LINKS = {
 const SOCIAL_LINKS = [
   {
     icon: FaFacebookF,
-    href: "YOUR_FACEBOOK_URL",
+    href: SOCIAL_PROFILES.facebook.url || "#",
     label: "Facebook",
     iconColor: "text-[#1877F2]",
     bgColor: "bg-[#E8F1FF]",
     hoverColor: "hover:bg-[#DCEAFF]",
   },
   {
-    icon: FaLinkedinIn,
-    href: "YOUR_LINKEDIN_URL",
-    label: "LinkedIn",
-    iconColor: "text-[#0077B5]",
-    bgColor: "bg-[#E8F1FF]",
-    hoverColor: "hover:bg-[#DCEAFF]",
-  },
-  {
     icon: FaWhatsapp,
-    href: "https://wa.me/919921611911",
+    href: SOCIAL_PROFILES.whatsapp.url,
+    onClick: openWhatsApp,
     label: "WhatsApp",
     iconColor: "text-[#16A34A]",
     bgColor: "bg-[#E2F9EA]",
@@ -60,7 +54,7 @@ const SOCIAL_LINKS = [
   },
   {
     icon: FaInstagram,
-    href: "YOUR_INSTAGRAM_URL",
+    href: SOCIAL_PROFILES.instagram.url || "#",
     label: "Instagram",
     iconColor: "text-[#E1306C]",
     bgColor: "bg-[#FCE7F3]",
@@ -87,16 +81,6 @@ const Footer = () => {
 
     window.open(gmailComposeUrl, "_blank");
   };
-
-  /* =========================================================
-     BACK TO TOP
-  ========================================================= */
-  const scrollToTop = () => {
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth",
-  });
-};
 
   /* =========================================================
      NAVIGATION
@@ -791,33 +775,6 @@ const Footer = () => {
             space-y-6
           "
         >
-          {/* BACK TO TOP */}
-          <button
-            type="button"
-            onClick={scrollToTop}
-            className="
-              ml-auto
-              flex
-              items-center
-              gap-1.5
-              text-[11px]
-              sm:text-xs
-              font-black
-              text-white/70
-              uppercase
-              tracking-[0.15em]
-              hover:text-green-400
-              transition-colors
-              cursor-pointer
-              p-0
-              bg-transparent
-              border-none
-            "
-          >
-            <ArrowUp size={13} className="shrink-0" />
-            Back to Top
-          </button>
-
           {/* LOGO & BRAND INFO */}
           <div className="w-full min-w-0">
             <div className="flex items-center justify-start gap-3 mb-2">
@@ -1021,6 +978,7 @@ const Footer = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={social.label}
+                  onClick={social.onClick}
                   className={`
                     w-10
                     h-10
@@ -1149,47 +1107,7 @@ const Footer = () => {
             DESKTOP & LAPTOP VIEW
         =================================================== */}
         <div className="hidden md:block footer-desktop-content">
-          {/* BACK TO TOP */}
-          <div
-            className="
-              flex
-              justify-end
-              mb-3
-              min-[1440px]:mb-4
-              min-[1920px]:mb-5
-            "
-          >
-            <button
-              type="button"
-              onClick={scrollToTop}
-              className="
-                flex
-                items-center
-                gap-1.5
-                text-[11px]
-                min-[1440px]:text-xs
-                min-[1920px]:text-sm
-                font-black
-                text-white/70
-                uppercase
-                tracking-[0.2em]
-                hover:text-green-400
-                transition-colors
-                cursor-pointer
-                p-0
-                bg-transparent
-                border-none
-              "
-            >
-              <ArrowUp
-                size={13}
-                className="shrink-0 min-[1920px]:w-4 min-[1920px]:h-4"
-              />
-
-              Back to Top
-            </button>
-          </div>
-
+          <div className="mx-auto w-full md:max-w-[1080px] min-[1440px]:max-w-[1200px] min-[1920px]:max-w-[1500px] min-[2560px]:max-w-[2000px] min-[3840px]:max-w-[3000px]">
           {/* MAIN DESKTOP ROW */}
           <div
             className="
@@ -1197,6 +1115,7 @@ const Footer = () => {
               flex-col
               lg:flex-row
               lg:items-start
+              lg:justify-between
               gap-y-7
               gap-x-8
               min-[1440px]:gap-x-10
@@ -1292,6 +1211,7 @@ const Footer = () => {
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={social.label}
+                  onClick={social.onClick}
                       className={`
                         footer-social-btn
                         w-9
@@ -1328,9 +1248,7 @@ const Footer = () => {
                 grid
                 grid-cols-2
                 sm:grid-cols-3
-                lg:flex
-                lg:flex-1
-                lg:justify-between
+                lg:contents
                 gap-y-8
                 gap-x-6
                 lg:gap-x-10
@@ -1651,6 +1569,7 @@ const Footer = () => {
                 TECH PARTNER
               </span>
             </a>
+          </div>
           </div>
         </div>
       </div>

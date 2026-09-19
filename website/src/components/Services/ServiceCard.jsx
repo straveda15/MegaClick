@@ -124,9 +124,8 @@ const ServiceCard = ({ service }) => {
           sm:p-5
           flex
           flex-col
-          items-start
-          justify-between
-          text-left
+          items-center
+          text-center
           shadow-xs
           transition-all
           duration-300
@@ -146,6 +145,7 @@ const ServiceCard = ({ service }) => {
             h-12
             sm:w-14
             sm:h-14
+            mx-auto
             flex
             items-center
             justify-center
@@ -177,43 +177,21 @@ const ServiceCard = ({ service }) => {
           }}
           className="
             service-item-title
-            font-bold
+            font-medium
             text-gray-900
             text-xs
             sm:text-sm
             leading-snug
             line-clamp-2
-            my-auto
+            mt-5
+            text-center
+            w-full
           "
         >
           {title}
         </h3>
 
-        {/* CATEGORY TAG */}
-        <div
-          style={{
-            fontFamily: "'Inter', sans-serif",
-          }}
-          className="
-            service-item-tag
-            w-full
-            mt-3
-            bg-slate-100
-            text-[10px]
-            sm:text-[11px]
-            font-semibold
-            text-gray-600
-            py-1.5
-            px-3
-            rounded-lg
-            uppercase
-            tracking-wider
-            truncate
-            text-left
-          "
-        >
-          {categoryName}
-        </div>
+        
       </div>
     </Link>
   );
