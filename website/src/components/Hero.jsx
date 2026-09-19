@@ -201,7 +201,6 @@ const Hero = () => {
       id="home"
       className="
         relative
-        overflow-hidden
         bg-white
         font-['Inter',sans-serif]
         py-6
@@ -1792,7 +1791,9 @@ const Hero = () => {
         </div>
       </div>
     </section>
+    
   );
+  <PopularServices />
 };
 
 export default Hero;

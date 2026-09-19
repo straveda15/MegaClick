@@ -8,7 +8,6 @@ const HeroSection = () => {
         hero-section
         relative
         overflow-hidden
-        bg-[#073FA8]
         min-h-[460px]
         sm:min-h-[300px]
         lg:min-h-[360px]
@@ -178,17 +177,6 @@ const HeroSection = () => {
       `}</style>
 
       {/* BLUE BACKGROUND */}
-      <div
-        className="
-          absolute
-          inset-0
-          bg-gradient-to-br
-          from-[#053285]
-          via-[#0747C9]
-          to-[#053BA1]
-          pointer-events-none
-        "
-      />
 
       {/* LEFT GREEN SLANT */}
       <div
@@ -202,7 +190,6 @@ const HeroSection = () => {
           md:w-[110px]
           lg:w-[160px]
           xl:w-[190px]
-          bg-[#00A86B]
           pointer-events-none
           z-[1]
           opacity-90
@@ -233,6 +220,7 @@ const HeroSection = () => {
           clipPath: "polygon(42% 0, 100% 0, 100% 100%, 0 100%)",
         }}
       />
+      
 
       {/* TOP LEFT DOTS */}
       <div

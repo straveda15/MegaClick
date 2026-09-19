@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 
 import CategoriesSidebar from "../components/Services/CategoriesSidebar";
 import ServicesGrid from "../components/Services/ServicesGrid";
-
+import PopularServices from "../components/Services/PopularServices";
 
 import serviceCategories from "../data/servicesData";
 
@@ -280,11 +280,16 @@ const Services = () => {
           SEARCH
           ===================================================== */}
 
+      
 
 
       {/* =====================================================
           POPULAR SERVICES
           ===================================================== */}
+
+      <PopularServices
+        onSelectService={handlePopularServiceSelect}
+      />
 
 
       {/* =====================================================
@@ -385,13 +390,14 @@ const Services = () => {
               "
             >
 
-              <ServicesGrid
-                services={getFilteredServices()}
-                categoriesData={serviceCategories}
-                searchTerm={searchTerm}
-                selectedCategory={selectedCategory}
-                selectedService={selectedService}
-              />
+             <ServicesGrid
+  services={getFilteredServices()}
+  categoriesData={serviceCategories}
+  searchTerm={searchTerm}
+  setSearchTerm={setSearchTerm}
+  selectedCategory={selectedCategory}
+  selectedService={selectedService}
+/>
 
             </div>
 
