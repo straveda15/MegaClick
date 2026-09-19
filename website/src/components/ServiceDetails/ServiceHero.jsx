@@ -11,7 +11,7 @@ const ServiceHero = ({ service }) => {
   const title = service.heroTitle || service.title || "Service Details";
 
   return (
-    <section className="w-full bg-slate-50 pt-0 pb-6 sm:pb-8 font-['Inter',sans-serif]">
+  <section className="w-full bg-gradient-to-r from-[#0B4EA2] via-[#093e82] to-[#0A8F55] pt-0 pb-6 sm:pb-8 font-['Inter',sans-serif]">
       {/* GOOGLE FONTS & RESPONSIVE STYLES */}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
@@ -149,14 +149,12 @@ const ServiceHero = ({ service }) => {
       `}</style>
 
       <div
-        className="
-          service-hero-container
-          max-w-[1380px]
-          mx-auto
-          px-4 sm:px-6 min-[1440px]:px-10
-          pt-1
-        "
-      >
+  className="
+    service-hero-container
+    w-full
+    pt-1
+  "
+>
         {/* OUTSIDE BACK ARROW */}
         <div className="flex items-center justify-start mb-2">
           <button
@@ -186,29 +184,23 @@ const ServiceHero = ({ service }) => {
 
         {/* HERO CARD */}
         <div
-          className="
-            service-hero-card
-            relative overflow-hidden
-            rounded-2xl sm:rounded-3xl
-            bg-gradient-to-r
-            from-[#0B4EA2]
-            via-[#093e82]
-            to-[#0A8F55]
-            px-6 sm:px-10 lg:px-12
-            py-6 sm:py-9 lg:py-11
-            shadow-xl
-            border border-blue-900/40
-          "
-        >
+  className="
+  service-hero-card
+  relative
+  w-full
+  overflow-hidden
+  bg-transparent
+  py-8 sm:py-10 lg:py-12
+"
+>
           {/* Background Blobs */}
           <div className="absolute -left-20 -top-20 w-72 h-72 rounded-full bg-white/5 blur-3xl pointer-events-none" />
 
           <div className="absolute left-1/3 bottom-0 w-64 h-64 rounded-full bg-emerald-400/10 blur-3xl pointer-events-none" />
 
           {/* CONTENT ROW */}
-          <div className="relative z-10 flex flex-col lg:flex-row lg:items-center gap-8 lg:gap-10">
-            {/* LEFT — TEXT */}
-            <div className="flex-1 min-w-0 text-left">
+<div className="relative z-10 w-full px-6 sm:px-10 lg:px-16 flex flex-col lg:flex-row lg:items-center gap-8 lg:gap-10">       
+       <div className="flex-1 min-w-0 text-left">
               <h1
                 style={{
                   fontFamily: "'Poppins', serif",

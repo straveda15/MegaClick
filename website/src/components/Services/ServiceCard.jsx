@@ -137,26 +137,6 @@ const ServiceCard = ({ service }) => {
           cursor-pointer
         "
       >
-        {/* GREEN/BLUE ASYMMETRIC BORDER OVERLAY */}
-        <div
-          className="
-            pointer-events-none
-            absolute
-            inset-0
-            rounded-2xl
-            border-t-[1.5px]
-            border-r-[1.5px]
-            border-l-[3.5px]
-            border-b-[3.5px]
-            border-[#0B4EA2]
-            opacity-0
-            transition-opacity
-            duration-300
-            group-hover:opacity-100
-            group-active:opacity-100
-            z-10
-          "
-        />
 
         {/* IMAGE / ICON BOX */}
         <div

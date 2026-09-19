@@ -1148,6 +1148,38 @@ const Hero = () => {
         }
 
         /* =====================================================
+           DESKTOP ALIGNMENT
+           The card fills exactly the height of the left column
+           (heading -> buttons), so its bottom edge lines up with the
+           buttons. The dots sit just underneath it, and the section's
+           bottom padding is trimmed so there is no dead space below.
+        ===================================================== */
+
+        @media (min-width: 1024px) {
+          #home {
+            padding-bottom: clamp(2.5rem, 2.4vw, 4.5rem) !important;
+          }
+
+          #home .hero-cards-grid {
+            position: relative;
+            height: 100%;
+          }
+
+          #home .hero-card-stage {
+            flex: 1 1 0%;
+            min-height: 300px !important;
+          }
+
+          #home .hero-indicators {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            margin-top: 0.9rem;
+          }
+        }
+
+        /* =====================================================
            REDUCED MOTION
         ===================================================== */
 
@@ -1723,6 +1755,7 @@ const Hero = () => {
                 role="tablist"
                 aria-label="Featured services"
                 className="
+                  hero-indicators
                   flex
                   items-center
                   justify-center

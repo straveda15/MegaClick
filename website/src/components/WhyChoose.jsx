@@ -1,6 +1,7 @@
-
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import {
+  ArrowRight,
   Users,
   Lightbulb,
   FileCheck2,
@@ -69,78 +70,44 @@ const FastCountUp = ({
 };
 
 // =========================================================
-// HEXAGON / FEATURE ITEMS
+// CONTENT
 // =========================================================
-const hexagonItems = [
+const STATS = [
+  { end: 15, suffix: "K+", label: "Happy Clients", duration: 650 },
+  { end: 99, suffix: "%", label: "Success Rate", duration: 750, stepSize: 3 },
+  { end: 25, suffix: "+", label: "Services", duration: 700 },
+];
+
+const FEATURES = [
   {
-    title: (
-      <>
-        EXPERT
-        <br />
-        PROFESSIONAL
-        <br />
-        NETWORK
-      </>
-    ),
+    title: "Expert Professional Network",
+    desc: "Experienced CAs, advocates and consultants ready to guide you at every step.",
     icon: Users,
-    color: "green",
   },
   {
-    title: (
-      <>
-        ONE-STOP
-        <br />
-        SOLUTION
-      </>
-    ),
+    title: "One-Stop Solution",
+    desc: "Registrations, compliance, taxation and legal services under a single roof.",
     icon: Lightbulb,
-    color: "blue",
   },
   {
-    title: (
-      <>
-        END-TO-END
-        <br />
-        PROFESSIONAL
-        <br />
-        SERVICE
-      </>
-    ),
+    title: "End-to-End Professional Service",
+    desc: "From the first consultation to the final filing, we handle the complete process.",
     icon: FileCheck2,
-    color: "green",
   },
   {
-    title: (
-      <>
-        TIME &amp; COST
-        <br />
-        EFFICIENCY
-      </>
-    ),
+    title: "Time & Cost Efficiency",
+    desc: "Streamlined processes that save your time and keep costs predictable.",
     icon: WalletCards,
-    color: "blue",
   },
   {
-    title: (
-      <>
-        TRANSPARENCY &amp;
-        <br />
-        ACCOUNTABILITY
-      </>
-    ),
+    title: "Transparency & Accountability",
+    desc: "Clear updates, honest pricing and full accountability at every stage.",
     icon: ShieldCheck,
-    color: "green",
   },
   {
-    title: (
-      <>
-        BUILT FOR
-        <br />
-        EVERYONE
-      </>
-    ),
+    title: "Built for Everyone",
+    desc: "Simple solutions for startups, growing businesses and individuals alike.",
     icon: Handshake,
-    color: "blue",
   },
 ];
 
@@ -148,675 +115,382 @@ const hexagonItems = [
 // WHY CHOOSE US
 // =========================================================
 const WhyChoose = () => {
+  const navigate = useNavigate();
+
+  const handleContact = () => {
+    navigate("/contact");
+    window.scrollTo(0, 0);
+  };
+
   return (
-    <section className="w-full bg-blue-50 py-8 sm:py-12 lg:py-16 min-[1920px]:py-20 min-[3840px]:py-32 overflow-hidden font-['Inter',sans-serif]">
+    <section className="why-section w-full overflow-hidden font-['Inter',sans-serif]">
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap');
 
-        /* =====================================================
-           STANDARD DESKTOP - 1440px
-        ===================================================== */
+        .why-section {
+          background: #f3f7fd;
+          padding: 2rem 0;
+        }
+
+        .why-container {
+          width: 100%;
+          max-width: 1380px;
+          margin: 0 auto;
+          padding: 0 1rem;
+        }
+
+        .why-grid {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr);
+          gap: 1.5rem;
+        }
+
+        /* ---------- Left panel ---------- */
+
+        .why-panel {
+          position: relative;
+          overflow: hidden;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          gap: 2rem;
+          padding: 1.75rem 1.5rem;
+          border-radius: 1.5rem;
+          color: #ffffff;
+          background: linear-gradient(160deg, #0B4EA2 0%, #083A7A 100%);
+          box-shadow: 0 24px 48px -24px rgba(8, 58, 122, 0.55);
+        }
+
+        /* soft rings, echoing the About section */
+        .why-panel::before,
+        .why-panel::after {
+          content: "";
+          position: absolute;
+          border-radius: 50%;
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          pointer-events: none;
+        }
+        .why-panel::before {
+          width: 22rem;
+          height: 22rem;
+          right: -9rem;
+          bottom: -9rem;
+        }
+        .why-panel::after {
+          width: 34rem;
+          height: 34rem;
+          right: -15rem;
+          bottom: -15rem;
+        }
+
+        .why-panel > * {
+          position: relative;
+          z-index: 1;
+        }
+
+        .why-tagline {
+          margin: 0 0 0.75rem;
+          font-size: 0.75rem;
+          font-weight: 600;
+          letter-spacing: 0.2em;
+          text-transform: uppercase;
+          color: #a9cdf7;
+        }
+
+        .why-title {
+          margin: 0;
+          font-family: 'Poppins', sans-serif;
+          font-size: clamp(1.9rem, 5vw, 2.5rem);
+          font-weight: 700;
+          line-height: 1.15;
+          letter-spacing: -0.02em;
+        }
+
+        .why-title span {
+          color: #9fd0ff;
+        }
+
+        .why-stats {
+          display: flex;
+          margin-top: 1.5rem;
+        }
+
+        .why-stat {
+          padding-right: 0.9rem;
+          margin-right: 0.9rem;
+          border-right: 1px solid rgba(255, 255, 255, 0.16);
+        }
+        .why-stat:last-child {
+          padding-right: 0;
+          margin-right: 0;
+          border-right: 0;
+        }
+
+        .why-stat-num {
+          margin: 0;
+          font-family: 'Poppins', sans-serif;
+          font-size: 1.75rem;
+          font-weight: 700;
+          line-height: 1;
+          color: #ffffff;
+        }
+
+        .why-stat-label {
+          margin: 0.4rem 0 0;
+          font-size: 0.75rem;
+          font-weight: 500;
+          white-space: nowrap;
+          color: #b7d3f6;
+        }
+
+        .why-desc {
+          margin: 0;
+          max-width: 28rem;
+          font-size: 0.9rem;
+          line-height: 1.7;
+          color: #d3e4fa;
+        }
+
+        .why-btn {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.5rem;
+          width: 100%;
+          margin-top: 1.25rem;
+          padding: 0.95rem 1.5rem;
+          border: 0;
+          border-radius: 0.9rem;
+          font-family: 'Inter', sans-serif;
+          font-size: 0.95rem;
+          font-weight: 600;
+          color: #0B4EA2;
+          background: #ffffff;
+          cursor: pointer;
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .why-btn:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.4);
+        }
+        .why-btn:focus-visible {
+          outline: 2px solid #ffffff;
+          outline-offset: 3px;
+        }
+        .why-btn svg {
+          transition: transform 0.2s ease;
+        }
+        .why-btn:hover svg {
+          transform: translateX(3px);
+        }
+
+        /* ---------- Right list ---------- */
+
+        .why-list {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr);
+          grid-auto-rows: 1fr;
+          column-gap: 2.5rem;
+        }
+
+        .why-item {
+          display: flex;
+          align-items: flex-start;
+          gap: 1rem;
+          padding: 1.15rem 0;
+          border-bottom: 1px solid rgba(11, 78, 162, 0.12);
+        }
+
+        .why-item:last-child {
+          border-bottom: 0;
+        }
+
+        .why-icon {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+          width: 3.25rem;
+          height: 3.25rem;
+          border-radius: 0.9rem;
+          color: #0B4EA2;
+          background: #dfeafb;
+          transition: background 0.25s ease, color 0.25s ease, transform 0.25s ease;
+        }
+        .why-icon svg {
+          width: 1.4rem;
+          height: 1.4rem;
+        }
+
+        .why-item-title {
+          margin: 0;
+          font-family: 'Poppins', sans-serif;
+          font-size: 1rem;
+          font-weight: 600;
+          line-height: 1.3;
+          color: #0f1f3d;
+          transition: color 0.25s ease;
+        }
+
+        .why-item-desc {
+          margin: 0.4rem 0 0;
+          font-size: 0.85rem;
+          line-height: 1.6;
+          color: #566379;
+        }
+
+        .why-item:hover .why-icon {
+          color: #ffffff;
+          background: #0B4EA2;
+          transform: translateY(-2px);
+        }
+        .why-item:hover .why-item-title {
+          color: #0B4EA2;
+        }
+
+        /* ---------- Breakpoints ---------- */
+
+        @media (min-width: 640px) {
+          .why-section { padding: 3rem 0; }
+          .why-container { padding: 0 1.5rem; }
+          .why-panel { padding: 2.25rem 2rem; }
+          .why-stat { padding-right: 1.5rem; margin-right: 1.5rem; }
+          .why-stat-num { font-size: 2rem; }
+          .why-stat-label { font-size: 0.8rem; }
+          .why-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+          /* two columns: the last row (two items) loses its divider */
+          .why-item:nth-last-child(-n + 2) { border-bottom: 0; }
+        }
+
+        @media (min-width: 1024px) {
+          .why-section { padding: 4rem 0; }
+          .why-grid {
+            grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.6fr);
+            gap: 2.5rem;
+            align-items: stretch;
+          }
+          .why-panel { padding: 2.5rem 2.25rem; }
+          .why-stat-num { font-size: 2.15rem; }
+          .why-list { padding: 0.25rem 0; }
+          .why-item { padding: 1.9rem 0 1.2rem; }
+        }
+
         @media (min-width: 1440px) {
-          .why-container {
-            max-width: 1380px !important;
-            padding-left: 2.5rem !important;
-            padding-right: 2.5rem !important;
-          }
-
-          /*
-            Both left and right sections begin from
-            the exact same horizontal/top alignment.
-          */
-          .why-main-grid {
-            align-items: start !important;
-          }
-
-          .why-left-content {
-            padding-top: 0 !important;
-          }
-
-          .why-right-content {
-            padding-top: 0 !important;
-          }
-
-          .why-tagline {
-            font-size: 0.85rem !important;
-            margin-bottom: 0.75rem !important;
-          }
-
-          .why-title {
-            font-size: 2.5rem !important;
-            line-height: 1.2 !important;
-          }
-
-          .why-desc {
-            font-size: 0.95rem !important;
-            line-height: 1.65 !important;
-            max-width: 32rem !important;
-          }
-
-          .why-stats-wrapper {
-            margin-top: 2.25rem !important;
-            gap: 2.75rem !important;
-          }
-
-          .why-stat-num {
-            font-size: 2.5rem !important;
-          }
-
-          .why-stat-label {
-            font-size: 0.85rem !important;
-          }
-
-          /*
-            RIGHT CARDS
-          */
-          .why-cards-box {
-            max-width: 700px !important;
-            gap: 1.25rem !important;
-          }
-
-          .why-card {
-            min-height: 145px !important;
-            padding: 1.5rem 1rem !important;
-            border-radius: 1.25rem !important;
-          }
-
-          .why-card-icon {
-            width: 3.5rem !important;
-            height: 3.5rem !important;
-            margin-bottom: 0.85rem !important;
-          }
-
-          .why-card-icon svg {
-            width: 1.7rem !important;
-            height: 1.7rem !important;
-          }
-
-          .why-card-title {
-            min-height: 3.5rem !important;
-            font-size: 0.8rem !important;
-            line-height: 1.45 !important;
-            letter-spacing: 0.07em !important;
-          }
-
-          .why-card-bar {
-            margin-top: 0.8rem !important;
-            width: 2rem !important;
-            height: 0.25rem !important;
-          }
+          .why-container { padding: 0 2.5rem; }
+          .why-grid { gap: 3rem; }
+          .why-item { padding: 2.1rem 0 1.4rem; }
+          .why-item-title { font-size: 1.05rem; }
+          .why-item-desc { font-size: 0.9rem; }
         }
 
-        /* =====================================================
-           LARGE DESKTOP - 1920px
-        ===================================================== */
         @media (min-width: 1920px) {
-          .why-container {
-            max-width: 1800px !important;
-            padding-left: 4rem !important;
-            padding-right: 4rem !important;
-          }
-
-          .why-main-grid {
-            align-items: start !important;
-            gap: 4rem !important;
-          }
-
-          .why-tagline {
-            font-size: 1rem !important;
-            letter-spacing: 0.3em !important;
-            margin-bottom: 1rem !important;
-          }
-
-          .why-title {
-            font-size: 3.25rem !important;
-            line-height: 1.18 !important;
-          }
-
-          .why-desc {
-            font-size: 1.15rem !important;
-            line-height: 1.85 !important;
-            max-width: 40rem !important;
-          }
-
-          .why-stats-wrapper {
-            margin-top: 2.75rem !important;
-            gap: 3.5rem !important;
-          }
-
-          .why-stat-num {
-            font-size: 3.25rem !important;
-          }
-
-          .why-stat-label {
-            font-size: 1rem !important;
-          }
-
-          /*
-            RIGHT CARD AREA
-          */
-          .why-right-content {
-            justify-content: flex-end !important;
-          }
-
-          .why-cards-box {
-            max-width: 800px !important;
-            gap: 1.5rem !important;
-          }
-
-          .why-card {
-            min-height: 175px !important;
-            padding: 1.75rem 1.25rem !important;
-            border-radius: 1.35rem !important;
-          }
-
-          .why-card-icon {
-            width: 4.25rem !important;
-            height: 4.25rem !important;
-            margin-bottom: 1rem !important;
-          }
-
-          .why-card-icon svg {
-            width: 2rem !important;
-            height: 2rem !important;
-          }
-
-          .why-card-title {
-            min-height: 4rem !important;
-            font-size: 0.95rem !important;
-            line-height: 1.5 !important;
-            letter-spacing: 0.08em !important;
-          }
-
-          .why-card-bar {
-            margin-top: 1rem !important;
-            width: 2.5rem !important;
-            height: 0.28rem !important;
-          }
+          .why-section { padding: 5rem 0; }
+          .why-container { max-width: 1800px; padding: 0 4rem; }
+          .why-grid { gap: 4rem; }
+          .why-panel { padding: 3.25rem 3rem; border-radius: 2rem; }
+          .why-tagline { font-size: 1rem; }
+          .why-title { font-size: 3.25rem; }
+          .why-stat-num { font-size: 2.75rem; }
+          .why-stat-label { font-size: 1rem; }
+          .why-desc { font-size: 1.1rem; max-width: 34rem; }
+          .why-btn { font-size: 1.1rem; padding: 1.15rem 1.75rem; }
+          .why-icon { width: 4rem; height: 4rem; border-radius: 1.1rem; }
+          .why-icon svg { width: 1.75rem; height: 1.75rem; }
+          .why-item { gap: 1.4rem; padding: 1.75rem 0; }
+          .why-item-title { font-size: 1.3rem; }
+          .why-item-desc { font-size: 1.05rem; }
         }
 
-        /* =====================================================
-           4K ULTRA-WIDE - 3840px
-        ===================================================== */
         @media (min-width: 3840px) {
-          .why-container {
-            max-width: 3200px !important;
-            padding-left: 6rem !important;
-            padding-right: 6rem !important;
-          }
-
-          .why-main-grid {
-            align-items: start !important;
-            gap: 6rem !important;
-          }
-
-          .why-tagline {
-            font-size: 1.75rem !important;
-            letter-spacing: 0.35em !important;
-            margin-bottom: 1.5rem !important;
-          }
-
-          .why-title {
-            font-size: 5.5rem !important;
-            line-height: 1.15 !important;
-          }
-
-          .why-desc {
-            font-size: 2rem !important;
-            line-height: 3.25rem !important;
-            max-width: 65rem !important;
-          }
-
-          .why-stats-wrapper {
-            margin-top: 4rem !important;
-            gap: 5rem !important;
-          }
-
-          .why-stat-num {
-            font-size: 5.5rem !important;
-          }
-
-          .why-stat-label {
-            font-size: 1.75rem !important;
-          }
-
-          /*
-            RIGHT CARDS - scaled proportionally
-          */
-          .why-cards-box {
-            max-width: 1450px !important;
-            gap: 2rem !important;
-          }
-
-          .why-card {
-            min-height: 285px !important;
-            padding: 3rem 1.75rem !important;
-            border-radius: 2rem !important;
-          }
-
-          .why-card-icon {
-            width: 6rem !important;
-            height: 6rem !important;
-            margin-bottom: 1.5rem !important;
-          }
-
-          .why-card-icon svg {
-            width: 2.75rem !important;
-            height: 2.75rem !important;
-          }
-
-          .why-card-title {
-            min-height: 6rem !important;
-            font-size: 1.45rem !important;
-            line-height: 1.55 !important;
-            letter-spacing: 0.09em !important;
-          }
-
-          .why-card-bar {
-            margin-top: 1.5rem !important;
-            width: 3.5rem !important;
-            height: 0.4rem !important;
-          }
+          .why-section { padding: 8rem 0; }
+          .why-container { max-width: 3200px; padding: 0 6rem; }
+          .why-grid { gap: 6rem; }
+          .why-panel { padding: 5rem 4.5rem; border-radius: 3rem; }
+          .why-tagline { font-size: 1.75rem; }
+          .why-title { font-size: 5.5rem; }
+          .why-stat-num { font-size: 4.75rem; }
+          .why-stat-label { font-size: 1.75rem; }
+          .why-desc { font-size: 1.9rem; max-width: 60rem; }
+          .why-btn { font-size: 1.9rem; padding: 1.75rem 3rem; border-radius: 1.5rem; }
+          .why-icon { width: 6.5rem; height: 6.5rem; border-radius: 1.6rem; }
+          .why-icon svg { width: 2.9rem; height: 2.9rem; }
+          .why-item { gap: 2.25rem; padding: 3rem 0; }
+          .why-item-title { font-size: 2.1rem; }
+          .why-item-desc { font-size: 1.7rem; }
         }
 
-        /* =====================================================
-           TABLET
-        ===================================================== */
-        @media (min-width: 768px) and (max-width: 1023px) {
-          .why-main-grid {
-            align-items: start !important;
-          }
-
-          .why-card {
-            min-height: 150px !important;
-          }
-
-          .why-card-icon {
-            width: 3.25rem !important;
-            height: 3.25rem !important;
-          }
-
-          .why-card-icon svg {
-            width: 1.5rem !important;
-            height: 1.5rem !important;
-          }
-
-          .why-card-title {
-            font-size: 0.72rem !important;
-          }
-        }
-
-        /* =====================================================
-           MOBILE
-        ===================================================== */
-        @media (max-width: 767px) {
-          .why-main-grid {
-            align-items: start !important;
-          }
-
-          .why-left-content,
-          .why-right-content {
-            padding-top: 0 !important;
-          }
-
-          .why-card {
-            min-height: 145px !important;
-          }
-
-          .why-card-icon {
-            width: 3.25rem !important;
-            height: 3.25rem !important;
-          }
-
-          .why-card-icon svg {
-            width: 1.55rem !important;
-            height: 1.55rem !important;
-          }
-
-          .why-card-title {
-            min-height: 3.25rem !important;
-            font-size: 0.68rem !important;
-            line-height: 1.4 !important;
-            letter-spacing: 0.055em !important;
-          }
+        @media (prefers-reduced-motion: reduce) {
+          .why-btn,
+          .why-btn svg,
+          .why-icon,
+          .why-item-title { transition: none; }
         }
       `}</style>
 
-      <div className="why-container w-full max-w-[1380px] mx-auto px-4 sm:px-6 min-[1440px]:px-10">
-
-        {/* =====================================================
-            MAIN GRID
-        ===================================================== */}
-        <div className="why-main-grid grid grid-cols-1 lg:grid-cols-[1.1fr_1.2fr] items-start gap-8 sm:gap-10 lg:gap-12 min-[1920px]:gap-16 min-[3840px]:gap-24">
+      <div className="why-container">
+        <div className="why-grid">
 
           {/* ===================================================
-              LEFT CONTENT
+              LEFT — PANEL
           =================================================== */}
-          <div className="why-left-content text-left w-full pt-0">
+          <div className="why-panel">
+            <div>
+              <p className="why-tagline">Why Choose Us</p>
 
-            {/* TAGLINE */}
-            <p
-              style={{ fontFamily: "'Inter', sans-serif" }}
-              className="why-tagline text-xs sm:text-sm font-semibold tracking-[0.2em] uppercase text-[#0B4EA2] mb-2 sm:mb-2.5 text-left w-full"
-            >
-              WHY CHOOSE US
-            </p>
+              <h2 className="why-title">
+                Your Trusted <span>Partner</span>
+              </h2>
 
-            {/* HEADING */}
-            <h2
-              style={{ fontFamily: "'Poppins', serif" }}
-              className="
-                why-title
-                text-2xl
-                sm:text-3xl
-                md:text-3xl
-                lg:text-4xl
-                font-bold
-                leading-[1.18]
-                text-black
-                text-left
-                mb-2.5
-                sm:mb-4
-              "
-            >
-              Your Trusted{" "}
-              <span className="text-[#0B4EA2]">
-                Partner
-              </span>
-            </h2>
-
-            {/* DESCRIPTION */}
-            <p
-              style={{ fontFamily: "'Inter', sans-serif" }}
-              className="
-                why-desc
-                text-slate-600
-                font-normal
-                text-xs
-                sm:text-sm
-                lg:text-base
-                leading-relaxed
-                text-left
-                max-w-xl
-              "
-            >
-              MegaClick brings together trusted professionals, complete
-              business solutions and reliable support to simplify every step
-              of your business journey.
-            </p>
-
-            {/* =================================================
-                STATS
-            ================================================= */}
-            <div
-              className="
-                why-stats-wrapper
-                mt-6
-                sm:mt-8
-                lg:mt-10
-                flex
-                justify-start
-                gap-7
-                sm:gap-10
-                lg:gap-10
-                min-[1920px]:gap-14
-              "
-            >
-
-              {/* 15K+ HAPPY CLIENTS */}
-              <div className="min-w-[95px]">
-                <h3
-                  style={{ fontFamily: "'Inter', sans-serif" }}
-                  className="
-                    why-stat-num
-                    text-2xl
-                    sm:text-3xl
-                    lg:text-4xl
-                    font-extrabold
-                    text-[#0B4EA2]
-                    tracking-tight
-                    leading-none
-                  "
-                >
-                  <FastCountUp
-                    end={15}
-                    suffix="K+"
-                    totalDuration={650}
-                  />
-                </h3>
-
-                <p
-                  style={{ fontFamily: "'Inter', sans-serif" }}
-                  className="
-                    why-stat-label
-                    mt-1.5
-                    text-xs
-                    sm:text-sm
-                    font-medium
-                    text-slate-600
-                  "
-                >
-                  Happy Clients
-                </p>
-              </div>
-
-              {/* 99% SUCCESS RATE */}
-              <div className="min-w-[85px]">
-                <h3
-                  style={{ fontFamily: "'Inter', sans-serif" }}
-                  className="
-                    why-stat-num
-                    text-2xl
-                    sm:text-3xl
-                    lg:text-4xl
-                    font-extrabold
-                    text-emerald-600
-                    tracking-tight
-                    leading-none
-                  "
-                >
-                  <FastCountUp
-                    end={99}
-                    suffix="%"
-                    totalDuration={750}
-                    stepSize={3}
-                  />
-                </h3>
-
-                <p
-                  style={{ fontFamily: "'Inter', sans-serif" }}
-                  className="
-                    why-stat-label
-                    mt-1.5
-                    text-xs
-                    sm:text-sm
-                    font-medium
-                    text-slate-600
-                  "
-                >
-                  Success Rate
-                </p>
-              </div>
-
-              {/* 25+ SERVICES */}
-              <div className="min-w-[75px]">
-                <h3
-                  style={{ fontFamily: "'Poppins', sans-serif" }}
-                  className="
-                    why-stat-num
-                    text-2xl
-                    sm:text-3xl
-                    lg:text-4xl
-                    font-extrabold
-                    text-[#0B4EA2]
-                    tracking-tight
-                    leading-none
-                  "
-                >
-                  <FastCountUp
-                    end={25}
-                    suffix="+"
-                    totalDuration={700}
-                  />
-                </h3>
-
-                <p
-                  style={{ fontFamily: "'Inter', sans-serif" }}
-                  className="
-                    why-stat-label
-                    mt-1.5
-                    text-xs
-                    sm:text-sm
-                    font-medium
-                    text-slate-600
-                  "
-                >
-                  Services
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* ===================================================
-              RIGHT CONTENT
-          =================================================== */}
-          <div className="why-right-content w-full flex justify-center lg:justify-end items-start pt-0">
-
-            <div
-              className="
-                why-cards-box
-                w-full
-                max-w-[620px]
-                grid
-                grid-cols-2
-                sm:grid-cols-3
-                gap-3.5
-                sm:gap-4
-                lg:gap-4.5
-              "
-            >
-              {hexagonItems.map((item, index) => {
-                const Icon = item.icon;
-                const isBlue = item.color === "blue";
-
-                return (
-                  <div
-                    key={index}
-                    className="group relative h-full"
-                  >
-                    <div
-                      className="
-                        why-card
-                        relative
-                        h-full
-                        min-h-[135px]
-                        flex
-                        flex-col
-                        items-center
-                        justify-between
-                        text-center
-                        bg-white
-                        rounded-2xl
-                        border
-                        border-gray-100/80
-                        shadow-[0_8px_24px_rgba(11,78,162,0.06)]
-                        px-3
-                        py-5
-                        sm:px-4
-                        sm:py-6
-                        transition-all
-                        duration-300
-                        group-hover:-translate-y-1.5
-                        group-hover:shadow-[0_12px_28px_rgba(11,78,162,0.12)]
-                      "
-                    >
-
-                      {/* ICON */}
-                      <div
-                        className={`
-                          why-card-icon
-                          w-12
-                          h-12
-                          sm:w-13
-                          sm:h-13
-                          rounded-full
-                          flex
-                          items-center
-                          justify-center
-                          mb-2.5
-                          sm:mb-3
-                          shrink-0
-                          transition-transform
-                          duration-300
-                          group-hover:scale-105
-                          ${
-                            isBlue
-                              ? "bg-blue-100"
-                              : "bg-emerald-100"
-                          }
-                        `}
-                      >
-                        <Icon
-                          size={22}
-                          strokeWidth={2}
-                          className={
-                            isBlue
-                              ? "text-[#0B4EA2]"
-                              : "text-emerald-600"
-                          }
-                        />
-                      </div>
-
-                      {/* CARD TITLE */}
-                      <h3
-                        style={{
-                          fontFamily: "'Inter', sans-serif",
-                        }}
-                        className="
-                          why-card-title
-                          min-h-[3rem]
-                          sm:min-h-[3.25rem]
-                          flex
-                          items-center
-                          justify-center
-                          text-[10.5px]
-                          sm:text-xs
-                          font-extrabold
-                          text-slate-900
-                          uppercase
-                          leading-snug
-                          tracking-wide
-                        "
-                      >
-                        {item.title}
-                      </h3>
-
-                      {/* BOTTOM BAR */}
-                      <div
-                        className={`
-                          why-card-bar
-                          mt-2.5
-                          sm:mt-3
-                          h-1
-                          w-7
-                          rounded-full
-                          shrink-0
-                          transition-all
-                          duration-300
-                          group-hover:w-10
-                          ${
-                            isBlue
-                              ? "bg-[#0B4EA2]"
-                              : "bg-emerald-600"
-                          }
-                        `}
+              {/* NUMBERS — directly under the title */}
+              <div className="why-stats">
+                {STATS.map((stat) => (
+                  <div key={stat.label} className="why-stat">
+                    <h3 className="why-stat-num">
+                      <FastCountUp
+                        end={stat.end}
+                        suffix={stat.suffix}
+                        totalDuration={stat.duration}
+                        stepSize={stat.stepSize}
                       />
-                    </div>
+                    </h3>
+                    <p className="why-stat-label">{stat.label}</p>
                   </div>
-                );
-              })}
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <p className="why-desc">
+                MegaClick brings together trusted professionals, complete
+                business solutions and reliable support to simplify every step
+                of your business journey.
+              </p>
+
+              <button type="button" className="why-btn" onClick={handleContact}>
+                Get Started
+                <ArrowRight size={18} strokeWidth={2.2} />
+              </button>
             </div>
           </div>
+
+          {/* ===================================================
+              RIGHT — FEATURE LIST
+          =================================================== */}
+          <div className="why-list">
+            {FEATURES.map(({ title, desc, icon: Icon }) => (
+              <div key={title} className="why-item">
+                <span className="why-icon" aria-hidden="true">
+                  <Icon strokeWidth={2} />
+                </span>
+
+                <div>
+                  <h3 className="why-item-title">{title}</h3>
+                  <p className="why-item-desc">{desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
         </div>
       </div>
     </section>

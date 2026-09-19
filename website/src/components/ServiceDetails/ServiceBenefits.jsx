@@ -342,70 +342,160 @@ const ServiceBenefits = ({ service }) => {
           className="
             sb-grid
             grid
-            grid-cols-2
-            sm:grid-cols-3
-            lg:grid-cols-6
-            gap-3.5
-            sm:gap-4
+            grid-cols-1
+            sm:grid-cols-2
+            lg:grid-cols-3
+            gap-5
+            lg:gap-6
           "
         >
           {benefitsList.map((item, index) => (
             <div
               key={index}
-              className={`
-                sb-card
-                group relative
-                ${item.bgGradient}
-                border ${item.border}
-                rounded-2xl sm:rounded-3xl
-                p-4 sm:p-5
-                flex flex-col
-                items-center
-                text-center
-                justify-between
-                shadow-xs
-                hover:shadow-md
-                hover:-translate-y-1.5
-                transition-all duration-300
-                min-h-[160px]
-                sm:min-h-[175px]
-              `}
+              className="
+                group
+                relative
+                h-[145px]
+                sm:h-[155px]
+                [perspective:1200px]
+              "
             >
-              <h3
-                style={{
-                  fontFamily: "'Poppins', serif",
-                }}
+              {/* Back Paper */}
+              <div
                 className={`
-                  sb-card-title
-                  text-sm sm:text-base
-                  font-bold
-                  text-slate-900
-                  ${item.titleHover}
-                  transition-colors
-                  leading-snug
-                  pt-1
+                  absolute
+                  inset-0
+                  translate-x-2
+                  translate-y-3
+                  rounded-[24px]
+                  border
+                  ${item.border}
+                  ${item.bgGradient}
+                  opacity-50
+                  transition-all
+                  duration-500
+                  group-hover:translate-x-4
+                  group-hover:translate-y-5
+                `}
+              />
+
+              {/* Middle Paper */}
+              <div
+                className={`
+                  absolute
+                  inset-0
+                  translate-x-1
+                  translate-y-1.5
+                  rounded-[24px]
+                  border
+                  ${item.border}
+                  ${item.bgGradient}
+                  opacity-80
+                  transition-all
+                  duration-500
+                  group-hover:translate-x-2
+                  group-hover:translate-y-3
+                `}
+              />
+
+              {/* Main Paper */}
+              <div
+                className={`
+                  sb-card
+                  relative
+                  z-10
+                  h-full
+                  overflow-hidden
+                  rounded-[24px]
+                  border
+                  ${item.border}
+                  ${item.bgGradient}
+                  p-3 sm:p-4
+                  shadow-[0_8px_25px_rgba(15,23,42,0.07)]
+                  transition-all
+                  duration-500
+                  group-hover:-translate-y-3
+                  group-hover:shadow-[0_20px_40px_rgba(15,23,42,0.14)]
                 `}
               >
-                {item.title}
-              </h3>
-
-              <div className="mt-3">
+                {/* Top number */}
                 <div
-                  className={`
-                    sb-card-icon
-                    w-13 h-13
-                    sm:w-14 sm:h-14
-                    rounded-2xl
-                    ${item.iconBg}
-                    border
-                    flex items-center justify-center
-                    group-hover:scale-110
-                    group-hover:shadow-md
-                    transition-all duration-300
-                  `}
+                  className="
+                    absolute
+                    right-5
+                    top-4
+                    text-xs
+                    font-semibold
+                    tracking-[0.18em]
+                    text-slate-400
+                  "
                 >
-                  {item.icon}
+                  0{index + 1}
                 </div>
+
+                {/* Content */}
+                <div className="relative z-10 flex h-full flex-col">
+
+                  {/* Icon */}
+                  <div
+                    className={`
+                      sb-card-icon
+                      w-10 h-10
+                      sm:w-12 sm:h-12
+                      rounded-lg
+                      ${item.iconBg}
+                      border
+                      flex
+                      items-center
+                      justify-center
+                      shadow-sm
+                      transition-all
+                      duration-500
+                      group-hover:scale-110
+                      group-hover:rotate-[-4deg]
+                    `}
+                  >
+                    {item.icon}
+                  </div>
+
+                  {/* Title */}
+                  <h3
+                    style={{
+                      fontFamily: "'Poppins', serif",
+                    }}
+                    className={`
+                      sb-card-title
+                      mt-auto
+                      pr-8
+                      text-sm
+                      sm:text-base
+                      font-bold
+                      text-slate-900
+                      ${item.titleHover}
+                      transition-colors
+                      duration-300
+                      leading-snug
+                    `}
+                  >
+                    {item.title}
+                  </h3>
+                </div>
+
+                {/* Bottom paper edge */}
+                <div
+                  className="
+                    absolute
+                    bottom-0
+                    left-0
+                    right-0
+                    h-1
+                    bg-white/60
+                    opacity-0
+                    transition-opacity
+                    duration-500
+                    group-hover:opacity-100
+                  "
+                />
               </div>
             </div>
           ))}

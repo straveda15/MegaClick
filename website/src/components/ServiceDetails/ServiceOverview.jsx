@@ -320,20 +320,6 @@ const ServiceOverview = ({ service }) => {
                 hover:shadow-[0_10px_30px_rgba(11,78,162,0.08)]
               "
             >
-              {/* Green left strip */}
-              <span
-                className="
-                  absolute
-                  left-0
-                  top-0
-                  bottom-0
-                  w-1
-                  bg-green-600
-                  transition-all
-                  duration-300
-                  group-hover:w-1.5
-                "
-              />
 
               {/* Icon */}
               <div

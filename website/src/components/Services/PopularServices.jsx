@@ -4,7 +4,7 @@ import React from "react";
 // =====================================================
 // EXACT IMAGE IMPORTS MATCHING YOUR ASSETS
 // =====================================================
-import marriageRegImg from "../../assets/marriage-registration.png";
+import marriageRegImg from "../../assets/marrige_registration_logo.png";
 import gstRegistrationImg from "../../assets/gst-registration.jpg";
 import trademarkImg from "../../assets/trademark-registration.png";
 import companyRegImg from "../../assets/company-registration.png";
@@ -17,9 +17,9 @@ import accountingAuditImg from "../../assets/accounting-audit.png";
 
 const popularServices = [
   {
-    title: "Marriage Registration",
-    image: marriageRegImg,
-  },
+  title: "Marriage Registration",
+  image: marriageRegImg,
+},
   {
     title: "GST Registration & Filing",
     image: gstRegistrationImg,
@@ -200,9 +200,6 @@ const PopularServices = ({ onSelectService }) => {
             }}
             className="popular-heading text-lg sm:text-xl font-bold text-black flex items-center gap-2 text-left"
           >
-            <span className="text-amber-500 text-lg">
-              ⚡
-            </span>
 
             Popular{" "}
             <span className="text-[#0B4EA2]">

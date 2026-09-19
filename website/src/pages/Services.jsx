@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
-import HeroSection from "../components/Services/HeroSection";
 import SearchServices from "../components/Services/SearchServices";
 import CategoriesSidebar from "../components/Services/CategoriesSidebar";
 import ServicesGrid from "../components/Services/ServicesGrid";
@@ -273,11 +272,7 @@ const Services = () => {
       `}</style>
 
 
-      {/* =====================================================
-          HERO
-          ===================================================== */}
-
-      <HeroSection />
+     
 
 
       {/* =====================================================
