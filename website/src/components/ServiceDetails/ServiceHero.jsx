@@ -1,7 +1,7 @@
 
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Star } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
 const ServiceHero = ({ service }) => {
   const navigate = useNavigate();
@@ -11,7 +11,7 @@ const ServiceHero = ({ service }) => {
   const title = service.heroTitle || service.title || "Service Details";
 
   return (
-    <section className="w-full bg-slate-50 pt-0 pb-6 sm:pb-8 font-['Inter',sans-serif]">
+  <section className="w-full bg-gradient-to-r from-[#0B4EA2] via-[#093e82] to-[#0A8F55] pt-0 pb-6 sm:pb-8 font-['Inter',sans-serif]">
       {/* GOOGLE FONTS & RESPONSIVE STYLES */}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
@@ -149,14 +149,12 @@ const ServiceHero = ({ service }) => {
       `}</style>
 
       <div
-        className="
-          service-hero-container
-          max-w-[1380px]
-          mx-auto
-          px-4 sm:px-6 min-[1440px]:px-10
-          pt-1
-        "
-      >
+  className="
+    service-hero-container
+    w-full
+    pt-1
+  "
+>
         {/* OUTSIDE BACK ARROW */}
         <div className="flex items-center justify-start mb-2">
           <button
@@ -186,29 +184,23 @@ const ServiceHero = ({ service }) => {
 
         {/* HERO CARD */}
         <div
-          className="
-            service-hero-card
-            relative overflow-hidden
-            rounded-2xl sm:rounded-3xl
-            bg-gradient-to-r
-            from-[#0B4EA2]
-            via-[#093e82]
-            to-[#0A8F55]
-            px-6 sm:px-10 lg:px-12
-            py-6 sm:py-9 lg:py-11
-            shadow-xl
-            border border-blue-900/40
-          "
-        >
+  className="
+  service-hero-card
+  relative
+  w-full
+  overflow-hidden
+  bg-transparent
+  py-8 sm:py-10 lg:py-12
+"
+>
           {/* Background Blobs */}
           <div className="absolute -left-20 -top-20 w-72 h-72 rounded-full bg-white/5 blur-3xl pointer-events-none" />
 
           <div className="absolute left-1/3 bottom-0 w-64 h-64 rounded-full bg-emerald-400/10 blur-3xl pointer-events-none" />
 
           {/* CONTENT ROW */}
-          <div className="relative z-10 flex flex-col lg:flex-row lg:items-center gap-8 lg:gap-10">
-            {/* LEFT — TEXT */}
-            <div className="flex-1 min-w-0 text-left">
+<div className="relative z-10 w-full px-6 sm:px-10 lg:px-16 flex flex-col lg:flex-row lg:items-center gap-8 lg:gap-10">       
+       <div className="flex-1 min-w-0 text-left">
               <h1
                 style={{
                   fontFamily: "'Poppins', serif",
@@ -227,103 +219,36 @@ const ServiceHero = ({ service }) => {
               </h1>
 
               {service.description && (
-                <p
-                  style={{ fontFamily: "'Inter', sans-serif" }}
-                  className="
-                    service-hero-desc
-                    mt-3 sm:mt-4
-                    text-sm sm:text-base lg:text-[1.05rem]
-                    text-blue-50/90
-                    font-normal
-                    leading-7 sm:leading-8
-                    max-w-none
-                    w-full
-                    break-words
-                  "
-                >
-                  {service.description}
-                </p>
-              )}
+  <p
+    style={{ fontFamily: "'Inter', sans-serif" }}
+    className="
+      service-hero-desc
+      mt-3 sm:mt-4
+      text-sm sm:text-base lg:text-[1.05rem]
+      text-blue-50/90
+      font-normal
+      leading-7 sm:leading-8
+      max-w-none
+      w-full
+      break-words
+    "
+  >
+    {service.description}
+  </p>
+)}
 
-              {/* GOOGLE RATING BADGE */}
-              <div
-                className="
-                  mt-5 sm:mt-6
-                  inline-flex items-center gap-3
-                  bg-white/10
-                  backdrop-blur-md
-                  border border-white/15
-                  rounded-xl
-                  px-3 py-2
-                  sm:px-4 sm:py-2.5
-                  shadow-md
-                "
-              >
-                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-md bg-white flex items-center justify-center shrink-0">
-                  <span
-                    style={{ fontFamily: "'Inter', sans-serif" }}
-                    className="
-                      text-sm
-                      font-extrabold
-                      text-blue-800
-                    "
-                  >
-                    G
-                  </span>
-                </div>
+</div>
 
-                <div>
-                  <div className="flex items-center gap-1.5">
-                    <span
-                      style={{ fontFamily: "'Inter', sans-serif" }}
-                      className="
-                        text-sm
-                        font-extrabold
-                        text-white
-                      "
-                    >
-                      4.9
-                    </span>
-
-                    <div className="flex items-center gap-0.5">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          size={12}
-                          className="
-                            fill-emerald-400
-                            text-emerald-400
-                          "
-                        />
-                      ))}
-                    </div>
-                  </div>
-
-                  <p
-                    style={{ fontFamily: "'Inter', sans-serif" }}
-                    className="
-                      text-[10px] sm:text-xs
-                      text-blue-200/90
-                      font-medium
-                      mt-0.5
-                    "
-                  >
-                    Google Rating
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* RIGHT — IMAGE */}
-            <div
-              className="
-                service-hero-img-wrap
-                hidden lg:flex
-                items-center justify-center
-                shrink-0
-                w-56 xl:w-64
-              "
-            >
+{/* RIGHT — IMAGE */}
+<div
+  className="
+    service-hero-img-wrap
+    hidden lg:flex
+    items-center justify-center
+    shrink-0
+    w-56 xl:w-64
+  "
+>
               {service.image ? (
                 <img
                   src={service.image}
