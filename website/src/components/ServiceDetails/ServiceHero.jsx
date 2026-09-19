@@ -11,7 +11,7 @@ const ServiceHero = ({ service }) => {
   const title = service.heroTitle || service.title || "Service Details";
 
   return (
-  <section className="w-full bg-gradient-to-r from-[#0B4EA2] via-[#093e82] to-[#0A8F55] pt-0 pb-6 sm:pb-8 font-['Inter',sans-serif]">
+  <section className="w-full bg-white pt-0 pb-6 sm:pb-8 font-['Inter',sans-serif]">
       {/* GOOGLE FONTS & RESPONSIVE STYLES */}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
@@ -210,13 +210,37 @@ const ServiceHero = ({ service }) => {
                   service-hero-title
                   text-2xl sm:text-3xl md:text-3xl lg:text-4xl
                   font-bold
-                  text-white
+                  text-black
                   leading-[1.28]
                   tracking-normal
                 "
               >
                 {title}
               </h1>
+              <button
+  type="button"
+  onClick={() => navigate("/contact")}
+  className="
+    mt-6
+    inline-flex
+    items-center
+    gap-2
+    rounded-full
+    bg-[#0B4EA2]
+    px-6
+    py-3
+    text-sm
+    font-semibold
+    text-white
+    transition-all
+    duration-300
+    hover:bg-[#093e82]
+    hover:shadow-lg
+  "
+>
+  Contact Us
+  <span>→</span>
+</button>
 
               {service.description && (
   <p
