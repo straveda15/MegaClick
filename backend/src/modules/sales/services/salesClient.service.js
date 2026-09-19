@@ -61,9 +61,10 @@ const accountReceipts = (lead) => {
       mode: lead.advancePayment.mode ?? "cash",
       note: lead.advancePayment.note || "Advance Payment",
       paidAt: lead.advancePayment.recordedAt ?? lead.createdAt ?? null,
-      // The advance is captured when the quotation is confirmed, so it is
-      // corrected there rather than deleted from the ledger.
-      removable: false,
+      // Like any receipt it can be deleted here (see deleteLeadPayment, which
+      // recognises this synthetic id), or corrected when the quotation is
+      // re-confirmed.
+      removable: true,
     });
   }
 

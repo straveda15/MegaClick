@@ -3,12 +3,16 @@ import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useSidebarStore } from "@/store/sidebarStore";
 import { useAuth } from "@/context/AuthContext";
+import DateRangeFilter from "@/components/DateRangeFilter";
+import { useDashboardFilterStore } from "@/store/dashboardFilterStore";
 
 const Topbar = () => {
   const { toggleSidebar, toggleMobileSidebar } = useSidebarStore();
   const { user, logout, switchRole } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const dashboardRange = useDashboardFilterStore((state) => state.dateRange);
+  const setDashboardRange = useDashboardFilterStore((state) => state.setDateRange);
   const [menuOpen, setMenuOpen] = useState(false);
   const [roleMenuOpen, setRoleMenuOpen] = useState(false);
   const [switchingRole, setSwitchingRole] = useState<string | null>(null);
@@ -194,6 +198,16 @@ const Topbar = () => {
             <Plus className="w-4 h-4" />
             Add Client
           </button>
+        )}
+
+        {/* Dashboard date filter — narrows the dashboard's cards, so it sits with the user menu */}
+        {location.pathname === '/dashboard' && (
+          <DateRangeFilter
+            value={dashboardRange}
+            onChange={setDashboardRange}
+            label="Filter dashboard by date"
+            align="end"
+          />
         )}
 
         {/* User Menu */}

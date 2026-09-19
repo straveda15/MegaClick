@@ -6,8 +6,14 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import AddServiceDialog from '@/components/AddServiceDialog';
 import ServiceCatalogPicker from '@/components/ServiceCatalogPicker';
-import type { CatalogService } from '@/hooks/useServiceCatalog';
+import { DeleteConfirmationDialog } from '@/components/ui/DeleteConfirmationDialog';
+import {
+  useDeleteCatalogService,
+  useServiceCatalog,
+  type CatalogService,
+} from '@/hooks/useServiceCatalog';
 import {
   useDeleteServiceSteps,
   useSaveServiceSteps,
@@ -38,11 +44,20 @@ const ServiceStepsPage = () => {
   const [selected, setSelected] = useState<CatalogService | null>(null);
   const [draft, setDraft] = useState<DraftStep[]>([]);
   const [dirty, setDirty] = useState(false);
+  const [addServiceOpen, setAddServiceOpen] = useState(false);
+  // The service being edited stays set while the dialog fades out, so its title
+  // doesn't flip back to "New service" mid-close.
+  const [editService, setEditService] = useState<CatalogService | null>(null);
+  const [editOpen, setEditOpen] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<CatalogService | null>(null);
+  const [deleteOpen, setDeleteOpen] = useState(false);
 
   const { data: templates = [], isLoading: templatesLoading } = useServiceStepTemplates();
   const { data: template, isFetching: templateLoading } = useServiceStepTemplate(selected?.slug);
   const saveSteps = useSaveServiceSteps();
   const deleteSteps = useDeleteServiceSteps();
+  const deleteService = useDeleteCatalogService();
+  const { data: catalog } = useServiceCatalog();
 
   // Clear draft when selection changes so we don't accidentally keep the previous
   // service's dirty state when switching services.
@@ -70,6 +85,34 @@ const ServiceStepsPage = () => {
     () => new Set(templates.map((t) => t.serviceSlug)),
     [templates]
   );
+
+  // A deleted service keeps its checklist (work already in flight still needs
+  // it) but is no longer part of the list, so it isn't advertised here either.
+  const catalogSlugs = useMemo(
+    () => new Set((catalog?.services ?? []).map((service) => service.slug)),
+    [catalog]
+  );
+  const visibleTemplates = useMemo(
+    () => (catalog ? templates.filter((t) => catalogSlugs.has(t.serviceSlug)) : templates),
+    [templates, catalog, catalogSlugs]
+  );
+
+  const openEdit = (service: CatalogService) => {
+    setEditService(service);
+    setEditOpen(true);
+  };
+
+  const confirmDelete = () => {
+    if (!deleteTarget) return;
+    deleteService.mutate(deleteTarget.slug, {
+      onSuccess: () => {
+        toast.success(`Deleted "${deleteTarget.title}" from the services list.`);
+        if (selected?.slug === deleteTarget.slug) setSelected(null);
+        setDeleteOpen(false);
+      },
+      onError: (err: Error) => toast.error(err.message || 'Could not delete the service.'),
+    });
+  };
 
   const updateStep = (key: string, field: 'title' | 'description', value: string) => {
     setDraft((current) => current.map((step) => (step.key === key ? { ...step, [field]: value } : step)));
@@ -141,13 +184,54 @@ const ServiceStepsPage = () => {
     <div className="grid lg:grid-cols-[minmax(0,340px)_minmax(0,1fr)] gap-6 items-start">
       {/* ── Pick a service ────────────────────────────────────────────────── */}
       <div>
+        <Button variant="outline" size="sm" onClick={() => setAddServiceOpen(true)} className="w-full mb-3">
+          <Plus className="w-4 h-4" />
+          New service
+        </Button>
         <ServiceCatalogPicker
           selectedSlug={selected?.slug ?? ''}
           onSelect={setSelected}
-          height="h-[520px]"
+          height="h-[480px]"
           clearable
+          onEdit={openEdit}
+          onDelete={(service) => { setDeleteTarget(service); setDeleteOpen(true); }}
         />
       </div>
+
+      {/* A new service goes straight into the shared catalog — the Add Lead and
+          Add Client dropdowns read it from there — and is selected here so its
+          steps can be set up immediately. */}
+      <AddServiceDialog
+        open={addServiceOpen}
+        onOpenChange={setAddServiceOpen}
+        onSaved={setSelected}
+      />
+
+      {/* Renaming or moving a service. The website is not touched — these edits
+          apply to the dashboard's own list only. */}
+      <AddServiceDialog
+        open={editOpen}
+        onOpenChange={setEditOpen}
+        service={editService}
+        onSaved={(saved) => {
+          if (selected?.slug === saved.slug) setSelected(saved);
+        }}
+      />
+
+      <DeleteConfirmationDialog
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        onConfirm={confirmDelete}
+        isDeleting={deleteService.isPending}
+        title="Delete service?"
+        question={`Are you sure you want to delete "${deleteTarget?.title ?? ''}"?`}
+        removalIntro="This will:"
+        bullets={[
+          'Remove it from the service list when adding a lead or a client',
+          'Leave leads and clients that already have it untouched, along with its steps',
+        ]}
+        confirmLabel="Delete service"
+      />
 
       {/* ── Edit its steps ────────────────────────────────────────────────── */}
       <div className="lg:border-l lg:border-border lg:pl-6 min-h-[400px]">
@@ -157,9 +241,9 @@ const ServiceStepsPage = () => {
               <p className="text-xs text-muted-foreground max-w-xs">
                 Services with a checklist already configured are marked below.
               </p>
-              {templates.length > 0 && (
+              {visibleTemplates.length > 0 && (
                 <div className="flex flex-wrap gap-1.5 justify-center mt-3 max-w-md">
-                  {templates.map((t) => (
+                  {visibleTemplates.map((t) => (
                     <span
                       key={t.serviceSlug}
                       className="inline-flex items-center gap-1 text-[11px] rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 px-2 py-0.5"

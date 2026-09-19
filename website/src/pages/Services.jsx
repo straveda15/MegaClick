@@ -52,39 +52,6 @@ const Services = () => {
   }, [searchParams]);
 
   // =========================================================
-  // HANDLE POPULAR SERVICE CLICK
-  // =========================================================
-
-  const handlePopularServiceSelect = (serviceTitle) => {
-    const foundCategory = serviceCategories.find((category) =>
-      category.services.some(
-        (service) => service.title === serviceTitle
-      )
-    );
-
-    if (foundCategory) {
-      setSelectedCategory(foundCategory.title);
-    } else {
-      setSelectedCategory("All Services");
-    }
-
-    setSelectedService(serviceTitle);
-    setSearchTerm("");
-
-    setTimeout(() => {
-      const section =
-        document.getElementById("services-section");
-
-      if (section) {
-        section.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-      }
-    }, 100);
-  };
-
-  // =========================================================
   // CREATE COMPLETE SERVICES LIST
   // =========================================================
 
@@ -287,9 +254,7 @@ const Services = () => {
           POPULAR SERVICES
           ===================================================== */}
 
-      <PopularServices
-        onSelectService={handlePopularServiceSelect}
-      />
+      <PopularServices />
 
 
       {/* =====================================================

@@ -1,1091 +1,584 @@
-"use client";
-
-import React, { useLayoutEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Eye, Target } from "lucide-react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-gsap.registerPlugin(ScrollTrigger);
+const clamp01 = (n) => Math.min(1, Math.max(0, n));
 
 const VisionMission = () => {
   const sectionRef = useRef(null);
-  const visionRef = useRef(null);
-  const missionRef = useRef(null);
+  const envRef = useRef(null);
+  const [inView, setInView] = useState(
+    () => typeof IntersectionObserver === "undefined"
+  );
 
-  useLayoutEffect(() => {
-    const ctx = gsap.context(() => {
-      const vision = visionRef.current;
-      const mission = missionRef.current;
+  // Fade the headline / envelope in once the section reaches the viewport
+  useEffect(() => {
+    const node = sectionRef.current;
+    if (!node || typeof IntersectionObserver === "undefined") return undefined;
 
-      if (!vision || !mission) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.05 }
+    );
 
-      // Initial position
-      gsap.set(vision, {
-        y: 180,
-        rotation: -5,
-        scale: 0.97,
-        zIndex: 10,
-      });
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
 
-      gsap.set(mission, {
-        y: 180,
-        rotation: 5,
-        scale: 0.97,
-        zIndex: 11,
-      });
+  // Scroll-linked progress (--p: 0 → 1) that lifts the cards out of the envelope
+  useEffect(() => {
+    const env = envRef.current;
+    if (!env) return undefined;
 
-      // Cards come UP only while scrolling
-      const timeline = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 85%",
-          end: "top 35%",
-          scrub: 1,
-          invalidateOnRefresh: true,
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      env.style.setProperty("--p", "1");
+      return undefined;
+    }
 
-         onUpdate: (self) => {
-  if (self.progress < 0.5) {
-    vision.style.zIndex = "10";
-    mission.style.zIndex = "11";
-  } else {
-    sectionRef.current
-      ?.querySelector(".vm-cards")
-      ?.style.setProperty("z-index", "60");
-  }
-},
-        },
-      });
+    let target = 0;
+    let current = 0;
+    let raf = 0;
 
-      timeline
-        .to(
-          vision,
-          {
-            y:-100,
-            rotation: -5,
-            scale: 1,
-            ease: "none",
-            duration: 1,
-          },
-          0
-        )
-        .to(
-          mission,
-          {
-            y: -100,
-            rotation: 5,
-            scale: 1,
-            ease: "none",
-            duration: 1,
-          },
-          0
-        );
-    }, sectionRef);
+    const tick = () => {
+      current += (target - current) * 0.14;
+      if (Math.abs(target - current) < 0.001) current = target;
+      env.style.setProperty("--p", current.toFixed(4));
+      raf = current === target ? 0 : requestAnimationFrame(tick);
+    };
 
-    return () => ctx.revert();
+    const update = () => {
+      const { top } = env.getBoundingClientRect();
+      const vh = window.innerHeight;
+      // 0 while the envelope's top edge is at the bottom of the screen,
+      // 1 once it has travelled up to roughly a third of the way down.
+      const start = vh * 0.95;
+      const end = vh * 0.3;
+      target = clamp01((start - top) / (start - end));
+      if (!raf) raf = requestAnimationFrame(tick);
+    };
+
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+      cancelAnimationFrame(raf);
+    };
   }, []);
 
   return (
     <section
       ref={sectionRef}
-      className="vision-mission-section"
+      className={`mcx-vm ${inView ? "is-in" : ""}`}
+      aria-labelledby="mcx-vm-heading"
     >
-      {/* =========================================
-          HEADING
-      ========================================= */}
-
-      <div className="vm-heading">
-        <h2>
-          <span style={{ color: "#0B4EA2" }}>Vision</span>{" "}
-          <span style={{ color: "#08A957" }}>Mission</span>
-        </h2>
+      {/* Decorative background */}
+      <div className="mcx-vm-bg" aria-hidden="true">
+        <span className="mcx-ring mcx-ring-1" />
+        <span className="mcx-ring mcx-ring-2" />
+        <span className="mcx-ring mcx-ring-3" />
+        <span className="mcx-orb mcx-orb-blue" />
+        <span className="mcx-orb mcx-orb-green" />
       </div>
 
-      {/* =========================================
-          SCENE
-      ========================================= */}
+      <div className="mcx-vm-wrap">
+        {/* ---------- HEADLINE ---------- */}
+        <header className="mcx-vm-head">
+          <h2 id="mcx-vm-heading" className="mcx-vm-title">
+            <span className="mcx-line mcx-line-1">
+              Simplifying Needs
+            </span>
+            <span className="mcx-line">and Problems For</span>
+            <span className="mcx-line">
+              <span className="mcx-hl-blue">Businesses</span> &amp;{" "}
+              <span className="mcx-hl-green">Individuals</span>
+            </span>
+          </h2>
 
-      <div className="vm-scene">
+          <p className="mcx-vm-sub">
+            Business solutions. Individual services.{" "}
+            <strong>All under one roof.</strong>
+          </p>
+        </header>
 
-        {/* Soft background glow */}
-        <div className="vm-glow" />
-
-        {/* =========================================
-            OPEN ENVELOPE BACK
-        ========================================= */}
-
-        <div className="vm-open-envelope">
-          <div className="vm-open-flap" />
-        </div>
-
-        {/* =========================================
-            CARDS
-        ========================================= */}
-
-        <div className="vm-cards">
-
-          {/* VISION CARD */}
-
-          <div
-            ref={visionRef}
-            className="vm-card vm-vision"
-          >
-            <div className="vm-card-icon">
-              <Eye
-                size={23}
-                strokeWidth={2}
+        {/* ---------- ENVELOPE ---------- */}
+        <div className="mcx-stage">
+          <div ref={envRef} className="mcx-env">
+            {/* back flap */}
+            <svg className="mcx-env-back" viewBox="0 0 780 260" aria-hidden="true">
+              <defs>
+                <linearGradient id="mcx-back-g" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stopColor="#f6faff" />
+                  <stop offset="1" stopColor="#dfeafb" />
+                </linearGradient>
+              </defs>
+              <path
+                d="M0 260 L350 26 Q390 0 430 26 L780 260 Z"
+                fill="url(#mcx-back-g)"
+                stroke="rgba(11,78,162,0.14)"
+                strokeWidth="1.5"
+                strokeLinejoin="round"
               />
-            </div>
+            </svg>
 
-            <div className="vm-card-content">
+            {/* Vision */}
+            <article className="mcx-card mcx-card-vision">
+              <div className="mcx-card-inner">
+                <div className="mcx-card-top">
+                  <span className="mcx-card-icon">
+                    <Eye strokeWidth={2} />
+                  </span>
+                  <span className="mcx-card-tag">Our Vision</span>
+                </div>
+                <p className="mcx-card-text">
+                  Building a trusted ecosystem where businesses and individuals
+                  can find the solutions they need.
+                </p>
+              </div>
+            </article>
 
-              <span className="vm-label">
-                OUR
-              </span>
+            {/* Mission */}
+            <article className="mcx-card mcx-card-mission">
+              <div className="mcx-card-inner">
+                <div className="mcx-card-top">
+                  <span className="mcx-card-icon">
+                    <Target strokeWidth={2} />
+                  </span>
+                  <span className="mcx-card-tag">Our Mission</span>
+                </div>
+                <p className="mcx-card-text">
+                  Making complex needs simpler through reliable services and
+                  customer-focused solutions.
+                </p>
+              </div>
+            </article>
 
-              <h3>
-                Vision
-              </h3>
-
-              <p>
-                To become India's most trusted platform
-                for legal, business and financial services.
-              </p>
-
-            </div>
-          </div>
-
-
-          {/* MISSION CARD */}
-
-          <div
-            ref={missionRef}
-            className="vm-card vm-mission"
-          >
-            <div className="vm-card-icon">
-              <Target
-                size={23}
-                strokeWidth={2}
+            {/* envelope front */}
+            <svg className="mcx-env-front" viewBox="0 0 780 340" aria-hidden="true">
+              <defs>
+                <linearGradient id="mcx-front-g" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stopColor="#ffffff" />
+                  <stop offset="1" stopColor="#edf4ff" />
+                </linearGradient>
+              </defs>
+              <path
+                d="M0 70 Q0 48 22 52 L390 150 L758 52 Q780 48 780 70 L780 340 L0 340 Z"
+                fill="url(#mcx-front-g)"
+                stroke="rgba(11,78,162,0.16)"
+                strokeWidth="1.5"
+                strokeLinejoin="round"
               />
-            </div>
+              <polygon points="0,56 390,150 0,340" fill="rgba(205,224,252,0.38)" />
+              <polygon points="780,56 390,150 780,340" fill="rgba(222,235,254,0.42)" />
+              <polygon points="0,340 390,150 780,340" fill="rgba(255,255,255,0.75)" />
+              <path
+                d="M0 340 L390 150 L780 340"
+                fill="none"
+                stroke="rgba(11,78,162,0.12)"
+                strokeWidth="1.5"
+              />
+            </svg>
 
-            <div className="vm-card-content">
-
-              <span className="vm-label">
-                OUR
+            {/* promise, printed on the envelope */}
+            <div className="mcx-env-promise">
+              <span className="mcx-env-promise-tag">Our Promise</span>
+              <span className="mcx-env-promise-text">
+                Simple & Reliable
+                <br />
+                All in one place
               </span>
-
-              <h3>
-                Mission
-              </h3>
-
-              <p>
-                Deliver affordable, reliable technology-driven
-                legal and compliance services with transparency.
-              </p>
-
             </div>
           </div>
-
-        </div>
-
-
-        {/* =========================================
-            MAIN ENVELOPE
-        ========================================= */}
-
-        <div className="vm-envelope">
-
-          <div className="vm-envelope-body">
-
-            <div className="vm-left-fold" />
-
-            <div className="vm-right-fold" />
-
-          </div>
-
-          {/* Front V flap */}
-          <div className="vm-front-flap" />
-
         </div>
 
       </div>
-
 
       <style>{`
+/* =========================================================
+   MegaClick — Vision / Mission
+   (all selectors prefixed with .mcx- to stay scoped)
+========================================================= */
 
-/* =========================================
-   RESET
-========================================= */
-
-.vision-mission-section,
-.vision-mission-section * {
+.mcx-vm,
+.mcx-vm * {
   box-sizing: border-box;
 }
 
+.mcx-vm {
+  --mcx-blue: #0B4EA2;
+  --mcx-navy: #083A7A;
+  --mcx-green: #08A957;
+  --mcx-green-dark: #079c4d;
+  --mcx-ink: #0b1f3f;
+  --mcx-muted: #475569;
 
-/* =========================================
-   SECTION
-========================================= */
-
-.vision-mission-section {
   position: relative;
   width: 100%;
-  height: 760px;
-
   overflow: hidden;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  background:
-    radial-gradient(
-      ellipse at center,
-      #eef6ff 0%,
-      #f5faff 45%,
-      #fbfdff 75%,
-      #ffffff 100%
-    );
+  padding: 64px 0 0;
+  font-family: "Inter", sans-serif;
+  color: var(--mcx-ink);
+  background: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #f6faff 38%,
+    #eef5ff 72%,
+    #ffffff 100%
+  );
 }
 
-
-/* =========================================
-   HEADING
-========================================= */
-
-.vm-heading {
-  position: absolute;
-
-  top: 125px;
-  left: 7%;
-
-  z-index: 10;
-
-  margin: 0;
-  padding: 0;
-}
-
-.vm-heading h2 {
-  margin: 0;
-  padding: 0;
-
-  white-space: nowrap;
-
-  font-family: "Poppins", sans-serif;
-
-  font-size: 2.5rem;
-  line-height: 1.18;
-  font-weight: 700;
-}
-
-
-/* =========================================
-   SCENE
-========================================= */
-
-.vm-scene {
-  position: sticky;
-  top: 176px;
-
-  width: 900px;
-  height: 620px;
-
-  z-index: 1;
-
-  margin: 0 auto;
-}
-
-
-/* =========================================
-   SOFT GLOW
-========================================= */
-
-.vm-glow {
-  position: absolute;
-
-  left: 50%;
-  top: 55%;
-
-  width: 850px;
-  height: 520px;
-
-  transform: translate(-50%, -50%);
-
-  border-radius: 50%;
-
-  background:
-    radial-gradient(
-      ellipse at center,
-      rgba(198, 222, 255, 0.60) 0%,
-      rgba(220, 237, 255, 0.38) 40%,
-      rgba(240, 248, 255, 0.14) 65%,
-      transparent 80%
-    );
-
-  filter: blur(30px);
-
-  z-index: 0;
-
-  pointer-events: none;
-}
-
-
-/* =========================================
-   OPEN ENVELOPE BACK
-========================================= */
-
-.vm-open-envelope {
-  position: absolute;
-
-  left: 50%;
-  top: 125px;
-
-  width: 720px;
-  height: 410px;
-
-  transform: translateX(-50%);
-
+.mcx-vm-wrap {
+  position: relative;
   z-index: 2;
-
-  pointer-events: none;
-}
-
-.vm-open-flap {
-  position: absolute;
-
-  left: 0;
-  top: 0;
-
   width: 100%;
-  height: 400px;
-
-  background:
-    linear-gradient(
-      145deg,
-      rgba(248, 251, 255, 0.98) 0%,
-      rgba(229, 239, 255, 0.97) 48%,
-      rgba(208, 226, 252, 0.95) 100%
-    );
-
-  clip-path:
-    polygon(
-      0 100%,
-      50% 0,
-      100% 100%
-    );
-
-  border-radius:
-    40px
-    40px
-    0
-    0;
-
-  box-shadow:
-    0 10px 30px
-    rgba(80, 110, 150, 0.08);
-
-  opacity: 0.95;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 16px;
 }
 
+/* ---------- Background decoration ---------- */
 
-/* =========================================
-   CARDS AREA
-========================================= */
-
-.vm-cards {
+.mcx-vm-bg {
   position: absolute;
-
-  left: 50%;
-  top: 265px;
-
-  width: 700px;
-  height: 260px;
-
-  transform: translateX(-50%);
-
-  z-index: 20;
-
+  inset: 0;
+  z-index: 0;
   pointer-events: none;
 }
 
-
-/* =========================================
-   COMMON CARD
-========================================= */
-
-.vm-card {
+.mcx-ring {
   position: absolute;
+  left: 50%;
+  bottom: -420px;
+  border-radius: 50%;
+  border: 1px solid rgba(11, 78, 162, 0.09);
+  transform: translateX(-50%);
+}
+.mcx-ring-1 { width: 820px;  height: 820px; }
+.mcx-ring-2 { width: 1240px; height: 1240px; bottom: -640px; border-color: rgba(11, 78, 162, 0.07); }
+.mcx-ring-3 { width: 1700px; height: 1700px; bottom: -860px; border-color: rgba(11, 78, 162, 0.05); }
 
-  width: 330px;
-  height: 175px;
+.mcx-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+}
+.mcx-orb-blue {
+  top: 22%;
+  left: -6%;
+  width: clamp(200px, 30vw, 380px);
+  height: clamp(200px, 30vw, 380px);
+  background: rgba(11, 78, 162, 0.10);
+}
+.mcx-orb-green {
+  top: 34%;
+  right: -6%;
+  width: clamp(180px, 27vw, 340px);
+  height: clamp(180px, 27vw, 340px);
+  background: rgba(8, 169, 87, 0.10);
+}
 
-  padding: 19px 20px;
+/* ---------- Headline ---------- */
 
+.mcx-vm-head {
+  text-align: center;
+}
+
+.mcx-vm-title {
+  margin: 0 auto;
   display: flex;
-  align-items: flex-start;
-
-  gap: 13px;
-
-  border-radius: 17px;
-
-  border:
-    1px solid
-    rgba(255, 255, 255, 0.96);
-
-  box-shadow:
-    0 25px 45px
-    rgba(40, 64, 98, 0.16),
-
-    0 8px 18px
-    rgba(40, 64, 98, 0.08);
-
-  overflow: hidden;
-
-  will-change: transform;
-
-  font-family: "Inter", sans-serif;
+  flex-direction: column;
+  align-items: center;
+  font-family: "Poppins", sans-serif;
+  font-weight: 700;
+  font-size: clamp(2.1rem, 6.4vw, 4.5rem);
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+  color: transparent;
+  background: linear-gradient(180deg, #0b1f3f 0%, #29405f 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
 }
 
-
-/* =========================================
-   VISION CARD
-========================================= */
-
-.vm-vision {
-  left: 0;
-  top: 0;
-
-  background:
-    linear-gradient(
-      135deg,
-      #f9fcff 0%,
-      #e9f3ff 100%
-    );
-
-  transform: rotate(-5deg);
-
-  z-index: 20;
+.mcx-line {
+  display: block;
 }
 
-
-/* =========================================
-   MISSION CARD
-========================================= */
-
-.vm-mission {
-  right: 0;
-  top: 12px;
-
-  background:
-    linear-gradient(
-      135deg,
-      #fbfffc 0%,
-      #eaf9f0 100%
-    );
-
-  transform: rotate(5deg);
-
-  z-index: 21;
-}
-
-
-/* =========================================
-   ICON
-========================================= */
-
-.vm-card-icon {
-  width: 50px;
-  height: 50px;
-
-  min-width: 50px;
-
-  display: flex;
+.mcx-line-1 {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 0.22em;
+}
 
-  border-radius: 13px;
+.mcx-hl-blue {
+  color: transparent;
+  background: linear-gradient(135deg, #0B4EA2 0%, #2f7de1 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
 
+.mcx-hl-green {
+  color: transparent;
+  background: linear-gradient(135deg, #079c4d 0%, #2fcf85 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.mcx-logo-tile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 0.98em;
+  height: 0.98em;
+  border-radius: 0.26em;
   background: #ffffff;
-
+  border: 1px solid rgba(11, 78, 162, 0.14);
   box-shadow:
-    0 7px 15px
-    rgba(30, 50, 75, 0.10);
-
-  color: #1763b5;
+    0 0.18em 0.5em rgba(11, 78, 162, 0.22),
+    0 0 0 0.1em rgba(255, 255, 255, 0.7),
+    inset 0 -0.08em 0.2em rgba(11, 78, 162, 0.06);
+  transform: rotate(-6deg);
+  animation: mcx-tile-float 6s ease-in-out infinite;
+}
+.mcx-logo-tile img {
+  width: 76%;
+  height: 76%;
+  object-fit: contain;
 }
 
-.vm-mission .vm-card-icon {
-  color: #08A957;
+.mcx-vm-sub {
+  margin: 22px auto 0;
+  max-width: 560px;
+  font-size: clamp(1rem, 2.4vw, 1.25rem);
+  line-height: 1.6;
+  color: var(--mcx-muted);
 }
-
-
-/* =========================================
-   CARD CONTENT
-========================================= */
-
-.vm-card-content {
-  min-width: 0;
-  padding-top: 1px;
-}
-
-
-/* =========================================
-   OUR
-========================================= */
-
-.vm-label {
-  display: block;
-
-  margin-bottom: 5px;
-
-  font-family: "Inter", sans-serif;
-
-  font-size: 8px;
-
-  line-height: 1;
-
+.mcx-vm-sub strong {
+  white-space: nowrap;
   font-weight: 600;
-
-  letter-spacing: 0.18em;
-
-  color: #737d8b;
+  color: var(--mcx-green-dark);
 }
 
+/* ---------- Envelope ---------- */
 
-/* =========================================
-   CARD TITLE
-========================================= */
+.mcx-stage {
+  width: 100%;
+  max-width: 1120px;
+  margin: 40px auto 0;
+}
 
-.vm-card h3 {
+.mcx-env {
+  --p: 0;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 780 / 620;
+  container-type: inline-size;
+  /* the mask also clips the cards while they are still inside the envelope */
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 90%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 0%, #000 90%, transparent 100%);
+}
+
+.mcx-env-back,
+.mcx-env-front {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.mcx-env-back  { top: 0; z-index: 1; }
+.mcx-env-front {
+  bottom: 0;
+  z-index: 3;
+  filter: drop-shadow(0 -10px 26px rgba(24, 56, 104, 0.10));
+}
+
+/* cards: driven by --p (scroll progress) */
+.mcx-card {
+  position: absolute;
+  z-index: 2;
+  width: 44%;
+  min-height: 42%;
+  will-change: translate, rotate;
+}
+
+.mcx-card-vision {
+  left: 5%;
+  top: 3%;
+  translate: 0 calc((1 - var(--p)) * 150%);
+  rotate: calc(var(--p) * -3deg);
+}
+.mcx-card-mission {
+  right: 5%;
+  top: 6%;
+  translate: 0 calc((1 - var(--p)) * 150%);
+  rotate: calc(var(--p) * 3.5deg);
+}
+
+.mcx-card-inner {
+  height: 100%;
+  min-height: inherit;
+  padding: clamp(10px, 2.4cqw, 28px);
+  border-radius: clamp(12px, 2.2cqw, 24px);
+  background: #ffffff;
+  border: 1px solid rgba(11, 78, 162, 0.10);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.8),
+    0 3cqw 6cqw -2.4cqw rgba(24, 56, 104, 0.30);
+}
+
+.mcx-card-top {
+  display: flex;
+  align-items: center;
+  gap: clamp(6px, 1.4cqw, 16px);
+  margin-bottom: clamp(6px, 1.6cqw, 18px);
+}
+
+.mcx-card-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(26px, 4.4cqw, 52px);
+  height: clamp(26px, 4.4cqw, 52px);
+  flex-shrink: 0;
+  border-radius: 30%;
+  color: var(--mcx-blue);
+  background: linear-gradient(145deg, #ffffff, #e8f1ff);
+  box-shadow: 0 6px 14px rgba(11, 78, 162, 0.14);
+}
+.mcx-card-icon svg {
+  width: 52%;
+  height: 52%;
+}
+.mcx-card-mission .mcx-card-icon {
+  color: var(--mcx-green);
+  background: linear-gradient(145deg, #ffffff, #e2f9ea);
+  box-shadow: 0 6px 14px rgba(8, 169, 87, 0.16);
+}
+
+.mcx-card-tag {
+  font-size: clamp(8px, 1.2cqw, 13px);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--mcx-blue);
+}
+.mcx-card-mission .mcx-card-tag { color: var(--mcx-green-dark); }
+
+.mcx-card-text {
   margin: 0;
-
   font-family: "Poppins", sans-serif;
-
-  font-size: 25px;
-
-  line-height: 1.1;
-
-  font-weight: 700;
-}
-
-.vm-vision h3 {
-  color: #125daa;
-}
-
-.vm-mission h3 {
-  color: #079c4d;
-}
-
-
-/* =========================================
-   DESCRIPTION
-========================================= */
-
-.vm-card p {
-  margin: 12px 0 0;
-
-  max-width: 225px;
-
-  font-family: "Inter", sans-serif;
-
-  font-size: 10.5px;
-
+  font-size: clamp(10.5px, 1.75cqw, 19px);
+  font-weight: 500;
   line-height: 1.5;
-
-  font-weight: 400;
-
-  color: #475569;
+  color: #1e2f4d;
 }
 
-
-/* =========================================
-   MAIN ENVELOPE
-========================================= */
-
-.vm-envelope {
+/* promise text printed on the envelope front */
+.mcx-env-promise {
   position: absolute;
-
+  z-index: 4;
   left: 50%;
-  bottom: 45px;
-
-  width: 720px;
-  height: 245px;
-
+  top: 77%;
   transform: translateX(-50%);
-
-  z-index: 50;
-
-  filter:
-    drop-shadow(
-      0 24px 32px
-      rgba(55, 88, 130, 0.17)
-    );
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1cqw;
+  text-align: center;
+  white-space: nowrap;
+}
+.mcx-env-promise-tag {
+  font-size: clamp(8px, 1.3cqw, 14px);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--mcx-green-dark);
+}
+.mcx-env-promise-text {
+  font-family: "Poppins", sans-serif;
+  font-size: clamp(0.8rem, 2.8cqw, 1.9rem);
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--mcx-navy);
 }
 
+/* ---------- Entrance ---------- */
 
-/* =========================================
-   ENVELOPE BODY
-========================================= */
-
-.vm-envelope-body {
-  position: absolute;
-
-  left: 0;
-  bottom: 0;
-
-  width: 100%;
-  height: 100%;
-
-  overflow: hidden;
-
-  border-radius:
-    0
-    0
-    30px
-    30px;
-
-  background:
-    linear-gradient(
-      145deg,
-      rgba(238, 245, 255, 0.82) 0%,
-      rgba(223, 235, 255, 0.66) 48%,
-      rgba(205, 223, 249, 0.55) 100%
-    );
-
-  backdrop-filter: blur(11px);
-  -webkit-backdrop-filter: blur(11px);
-
-  border:
-    1px solid
-    rgba(155, 184, 222, 0.30);
-
-  box-shadow:
-    inset 0 1px 0
-    rgba(255, 255, 255, 0.65),
-
-    inset 0 -20px 38px
-    rgba(126, 165, 220, 0.07);
+.mcx-vm .mcx-vm-head,
+.mcx-vm .mcx-stage {
+  opacity: 0;
+  transform: translateY(26px);
+  transition:
+    opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.mcx-vm .mcx-stage { transition-delay: 0.15s; }
+.mcx-vm.is-in .mcx-vm-head,
+.mcx-vm.is-in .mcx-stage {
+  opacity: 1;
+  transform: none;
 }
 
-
-/* =========================================
-   LEFT FOLD
-========================================= */
-
-.vm-left-fold {
-  position: absolute;
-
-  left: 0;
-  bottom: 0;
-
-  width: 54%;
-  height: 100%;
-
-  background:
-    linear-gradient(
-      145deg,
-      rgba(255, 255, 255, 0.65),
-      rgba(220, 235, 255, 0.38)
-    );
-
-  mix-blend-mode: soft-light;
-
-  clip-path:
-    polygon(
-      0 0,
-      100% 100%,
-      0 100%
-    );
+@keyframes mcx-tile-float {
+  0%, 100% { transform: rotate(-6deg) translateY(0); }
+  50%      { transform: rotate(-3deg) translateY(-4px); }
 }
 
+/* ---------- Tablet (>= 640px) ---------- */
 
-/* =========================================
-   RIGHT FOLD
-========================================= */
-
-.vm-right-fold {
-  position: absolute;
-
-  right: 0;
-  bottom: 0;
-
-  width: 54%;
-  height: 100%;
-
-  background:
-    linear-gradient(
-      215deg,
-      rgba(244, 249, 255, 0.65),
-      rgba(198, 220, 251, 0.40)
-    );
-
-  mix-blend-mode: soft-light;
-
-  clip-path:
-    polygon(
-      100% 0,
-      100% 100%,
-      0 100%
-    );
+@media (min-width: 640px) {
+  .mcx-vm { padding-top: 80px; }
+  .mcx-vm-wrap { padding: 0 24px; }
+  .mcx-vm-sub { margin-top: 26px; }
+  .mcx-stage { margin-top: 56px; }
+  .mcx-env {
+    aspect-ratio: 780 / 520;
+    -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 92%, transparent 100%);
+    mask-image: linear-gradient(180deg, #000 0%, #000 92%, transparent 100%);
+  }
+  .mcx-card { width: 44%; }
+  .mcx-card-vision  { left: 5%;  top: 2%; }
+  .mcx-card-mission { right: 5%; top: 5%; }
+  .mcx-env-promise { top: 72%; }
 }
 
+/* ---------- Desktop (>= 1024px) ---------- */
 
-/* =========================================
-   FRONT FLAP
-========================================= */
-
-.vm-front-flap {
-  position: absolute;
-
-  left: 0;
-  top: 0;
-
-  width: 100%;
-  height: 175px;
-
-  background:
-    linear-gradient(
-      145deg,
-      rgba(247, 250, 255, 0.88) 0%,
-      rgba(229, 239, 255, 0.72) 50%,
-      rgba(211, 228, 252, 0.62) 100%
-    );
-
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-
-  box-shadow:
-    inset 0 1px 0
-    rgba(255, 255, 255, 0.65),
-
-    inset 0 -14px 28px
-    rgba(126, 165, 220, 0.09);
-
-  clip-path:
-    polygon(
-      0 0,
-      50% 78%,
-      100% 0,
-      100% 100%,
-      0 100%
-    );
-
-  border-radius:
-    0
-    0
-    30px
-    30px;
-
-  z-index: 60;
-
-  pointer-events: none;
+@media (min-width: 1024px) {
+  .mcx-vm { padding-top: 96px; }
+  .mcx-vm-wrap { padding: 0 40px; }
+  .mcx-stage { margin-top: 64px; }
+  .mcx-env {
+    aspect-ratio: 780 / 440;
+    -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 86%, transparent 100%);
+    mask-image: linear-gradient(180deg, #000 0%, #000 86%, transparent 100%);
+  }
+  .mcx-card { width: 41%; }
+  .mcx-card-vision  { left: 6%; }
+  .mcx-card-mission { right: 6%; }
+  .mcx-env-promise { top: 68%; }
 }
 
+/* ---------- Reduced motion ---------- */
 
-/* =========================================
-   FRONT FLAP HIGHLIGHT
-========================================= */
-
-.vm-front-flap::after {
-  content: "";
-
-  position: absolute;
-
-  inset: 0;
-
-  background:
-    linear-gradient(
-      145deg,
-      rgba(255, 255, 255, 0.40) 0%,
-      rgba(255, 255, 255, 0.14) 45%,
-      rgba(180, 210, 248, 0.10) 100%
-    );
-
-  opacity: 0.85;
-
-  pointer-events: none;
-}
-
-
-/* =========================================
-   LARGE DESKTOP
-========================================= */
-
-@media (min-width: 1440px) {
-
-  .vision-mission-section {
-    height: 800px;
+@media (prefers-reduced-motion: reduce) {
+  .mcx-vm .mcx-vm-head,
+  .mcx-vm .mcx-stage {
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
-
-  .vm-heading {
-    top: 75px;
-    left: 7%;
-  }
-
-  .vm-heading h2 {
-    font-size: 2.5rem;
-  }
-
-  .vm-scene {
-    width: 1200px;
-    height: 680px;
-
-    margin-top: 80px;
-  }
-
-  .vm-open-envelope {
-    width: 820px;
-    height: 450px;
-
-    top: 125px;
-  }
-
-  .vm-open-flap {
-    height: 440px;
-  }
-
-  .vm-cards {
-    width: 850px;
-
-    top: 275px;
-  }
-
-  .vm-card {
-    width: 370px;
-    height: 185px;
-
-    padding: 21px 22px;
-  }
-
-  .vm-card-icon {
-    width: 52px;
-    height: 52px;
-    min-width: 52px;
-  }
-
-  .vm-card h3 {
-    font-size: 28px;
-  }
-
-  .vm-card p {
-    max-width: 260px;
-    font-size: 11px;
-  }
-
-  .vm-envelope {
-    width: 820px;
-    height: 260px;
-
-    bottom: 45px;
-  }
-
-  .vm-front-flap {
-    height: 160px;
+  .mcx-logo-tile {
+    animation: none;
   }
 }
-
-
-/* =========================================
-   TABLET
-========================================= */
-
-@media (max-width: 1023px) {
-
-  .vision-mission-section {
-    height: 650px;
-  }
-
-  .vm-heading {
-    top: 45px;
-    left: 6%;
-  }
-
-  .vm-heading h2 {
-    font-size: 2.25rem;
-  }
-
-  .vm-scene {
-    width: 760px;
-    height: 560px;
-
-    margin-top: 50px;
-  }
-
-  .vm-open-envelope {
-    width: 620px;
-    height: 340px;
-
-    top: 135px;
-  }
-
-  .vm-open-flap {
-    height: 330px;
-  }
-
-  .vm-cards {
-    width: 650px;
-
-    top: 260px;
-  }
-
-  .vm-card {
-    width: 290px;
-    height: 150px;
-
-    padding: 15px;
-
-    gap: 10px;
-  }
-
-  .vm-card-icon {
-    width: 43px;
-    height: 43px;
-    min-width: 43px;
-  }
-
-  .vm-card h3 {
-    font-size: 22px;
-  }
-
-  .vm-card p {
-    margin-top: 9px;
-    max-width: 205px;
-    font-size: 9.5px;
-  }
-
-  .vm-envelope {
-    width: 620px;
-    height: 200px;
-
-    bottom: 45px;
-  }
-
-  .vm-front-flap {
-    height: 125px;
-  }
-}
-
-
-/* =========================================
-   MOBILE
-========================================= */
-
-@media (max-width: 640px) {
-
-  .vision-mission-section {
-    height: 540px;
-  }
-
-  .vm-heading {
-    top: 28px;
-    left: 5%;
-  }
-
-  .vm-heading h2 {
-    font-size: 1.75rem;
-  }
-
-  .vm-scene {
-    width: 390px;
-    height: 450px;
-
-    margin-top: 45px;
-  }
-
-  .vm-glow {
-    width: 500px;
-    height: 340px;
-  }
-
-  .vm-open-envelope {
-    width: 350px;
-    height: 225px;
-
-    top: 120px;
-  }
-
-  .vm-open-flap {
-    height: 215px;
-  }
-
-  .vm-cards {
-    width: 365px;
-
-    top: 220px;
-  }
-
-  .vm-card {
-    width: 170px;
-    height: 120px;
-
-    padding: 11px;
-
-    gap: 7px;
-
-    border-radius: 12px;
-  }
-
-  .vm-card-icon {
-    width: 35px;
-    height: 35px;
-
-    min-width: 35px;
-
-    border-radius: 9px;
-  }
-
-  .vm-card-icon svg {
-    width: 18px;
-    height: 18px;
-  }
-
-  .vm-label {
-    font-size: 6px;
-    margin-bottom: 3px;
-  }
-
-  .vm-card h3 {
-    font-size: 17px;
-  }
-
-  .vm-card p {
-    margin-top: 6px;
-
-    max-width: 118px;
-
-    font-size: 7.3px;
-
-    line-height: 1.4;
-  }
-
-  .vm-envelope {
-    width: 350px;
-    height: 150px;
-
-    bottom: 45px;
-  }
-
-  .vm-front-flap {
-    height: 100px;
-  }
-}
-
-
-/* =========================================
-   SMALL MOBILE
-========================================= */
-
-@media (max-width: 380px) {
-
-  .vm-scene {
-    transform: scale(0.90);
-  }
-
-  .vm-heading h2 {
-    font-size: 1.6rem;
-  }
-}
-
       `}</style>
     </section>
   );

@@ -12,17 +12,10 @@ import {
 import { toast } from "sonner";
 import { DASHBOARD_PAGES } from "@/store/sidebarStore";
 import ModalPortal from "@/components/ui/ModalPortal";
-import { AlertTriangle, Eye, EyeOff } from "lucide-react";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import EmployeeDetailsDialog from "@/components/team/EmployeeDetailsDialog";
+import { Eye, EyeOff, Pencil, Trash2 } from "lucide-react";
+import { DeleteConfirmationDialog } from "@/components/ui/DeleteConfirmationDialog";
+import { useAuth } from "@/context/AuthContext";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -738,15 +731,35 @@ const TeamManagementPage = () => {
     return () => { document.body.style.overflow = prev; };
   }, [isModalOpen]);
 
+  // The employee whose details popup is open. Held by id and looked up from the
+  // live list, so the popup follows the data if it is refetched or edited.
+  const [detailsProfileId, setDetailsProfileId] = useState<string | null>(null);
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const detailsEmployee = useMemo(
+    () => employees.find((e) => e._id === detailsProfileId) ?? null,
+    [employees, detailsProfileId],
+  );
+
+  const openDetails = (emp: EmployeeProfile) => {
+    setDetailsProfileId(emp._id);
+    setDetailsOpen(true);
+  };
+
   const [editingProfileId, setEditingProfileId] = useState<string | null>(null);
   const [editingUserId, setEditingUserId] = useState<string | null>(null);
   const [form, setForm] = useState<FormState>(emptyForm());
   const [activeTab, setActiveTab] = useState<DeptTab>("ALL");
+  // Kept separate from the open flag so the dialog's text doesn't blank out
+  // while it fades away.
   const [deleteConfirm, setDeleteConfirm] = useState<{
     profileId: string;
     userId: string;
     name: string;
+    openTasks: number;
   } | null>(null);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const { user: currentUser } = useAuth();
 
   // Filter: only team members (have a departmentRole)
   const team = employees.filter((e) => {
@@ -862,17 +875,31 @@ const TeamManagementPage = () => {
     }
   };
 
+  const askDelete = (emp: EmployeeProfile) => {
+    const u = emp.userId;
+    if (!u) return;
+    setDeleteConfirm({
+      profileId: emp._id,
+      userId: u._id,
+      name: `${u.name ?? ""} ${u.lastName ?? ""}`.trim() || "this employee",
+      openTasks: taskCounts.get(String(u._id))?.pending ?? 0,
+    });
+    setDeleteOpen(true);
+  };
+
   const handleDelete = async () => {
     if (!deleteConfirm) return;
-    const { profileId, userId } = deleteConfirm;
-    const loadingToast = toast.loading("Deleting member…");
+    const { profileId, userId, name } = deleteConfirm;
+    setIsDeleting(true);
     try {
       if (profileId) await deleteEmployee.mutateAsync(profileId);
       if (userId) await deleteUser.mutateAsync(userId);
-      toast.success("Member removed", { id: loadingToast });
-      setDeleteConfirm(null);
+      toast.success(`${name} was removed`);
+      setDeleteOpen(false);
     } catch (err: any) {
-      toast.error(err.message, { id: loadingToast });
+      toast.error(err.message || "Failed to remove the employee");
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -893,7 +920,6 @@ const TeamManagementPage = () => {
           <table className="w-full text-sm">
             <thead className="bg-muted/40 border-b border-border">
               <tr>
-                <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground whitespace-nowrap">Employee ID</th>
                 <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground whitespace-nowrap">Name</th>
                 <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground whitespace-nowrap">Department</th>
                 <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground whitespace-nowrap">Designation</th>
@@ -903,6 +929,9 @@ const TeamManagementPage = () => {
                 <th className="px-4 py-3 text-center text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground whitespace-nowrap">Completed</th>
                 <th className="px-4 py-3 text-center text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground whitespace-nowrap">Pending</th>
                 <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground whitespace-nowrap">Status</th>
+                <th className="px-4 py-3 text-right text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground whitespace-nowrap">
+                  <span className="sr-only">Actions</span>
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
@@ -924,8 +953,19 @@ const TeamManagementPage = () => {
                   const initial = `${u.name?.[0] ?? ''}${u.lastName?.[0] ?? ''}`.toUpperCase();
 
                   return (
-                    <tr key={e._id} className="hover:bg-muted/30 transition-colors cursor-pointer" onClick={() => openEdit(e)}>
-                      <td className="px-4 py-3 font-mono text-xs text-muted-foreground whitespace-nowrap">{e.employeeId}</td>
+                    <tr
+                      key={e._id}
+                      className="hover:bg-muted/30 transition-colors cursor-pointer"
+                      onClick={() => openDetails(e)}
+                      onKeyDown={(event) => {
+                        if (event.target === event.currentTarget && (event.key === "Enter" || event.key === " ")) {
+                          event.preventDefault();
+                          openDetails(e);
+                        }
+                      }}
+                      tabIndex={0}
+                      aria-label={`View details for ${u.name} ${u.lastName ?? ""}`.trim()}
+                    >
                       <td className="px-4 py-3 whitespace-nowrap">
                         <div className="flex items-center gap-2.5">
                           <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-xs font-bold shrink-0">
@@ -951,6 +991,37 @@ const TeamManagementPage = () => {
                           {e.status === 'active' ? 'Active' : 'On Leave'}
                         </span>
                       </td>
+                      <td className="px-4 py-3 text-right whitespace-nowrap">
+                        {/* The rest of the row opens the details popup; these two act on the employee. */}
+                        <div className="inline-flex items-center gap-1.5">
+                          <button
+                            type="button"
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              openEdit(e);
+                            }}
+                            title="Edit profile"
+                            aria-label={`Edit ${u.name} ${u.lastName ?? ""}`.trim()}
+                            className="inline-flex items-center justify-center w-8 h-8 rounded-md border border-border bg-card text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                          >
+                            <Pencil className="w-4 h-4" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              askDelete(e);
+                            }}
+                            // Deleting the account you are signed in with would lock you out.
+                            disabled={String(u._id) === String(currentUser?._id)}
+                            title={String(u._id) === String(currentUser?._id) ? "You can't delete your own account" : "Delete employee"}
+                            aria-label={`Delete ${u.name} ${u.lastName ?? ""}`.trim()}
+                            className="inline-flex items-center justify-center w-8 h-8 rounded-md border border-border bg-card text-muted-foreground hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors disabled:opacity-40 disabled:pointer-events-none"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </td>
                     </tr>
                   );
                 })
@@ -959,6 +1030,13 @@ const TeamManagementPage = () => {
           </table>
         </div>
       </div>
+
+      <EmployeeDetailsDialog
+        employee={detailsEmployee}
+        tasks={tasks}
+        open={detailsOpen}
+        onOpenChange={setDetailsOpen}
+      />
 
       {isModalOpen && (
         <EmployeeModal
@@ -971,37 +1049,24 @@ const TeamManagementPage = () => {
         />
       )}
 
-      {/* Delete Confirmation Dialog */}
-      <AlertDialog
-        open={!!deleteConfirm}
-        onOpenChange={(open) => !open && setDeleteConfirm(null)}
-      >
-        <AlertDialogContent className="rounded-3xl max-w-md border-none shadow-2xl">
-          <AlertDialogHeader>
-            <div className="w-14 h-14 rounded-full bg-red-100 flex items-center justify-center mb-2">
-              <AlertTriangle className="w-7 h-7 text-red-600" />
-            </div>
-            <AlertDialogTitle className="text-xl font-bold">
-              Remove employee?
-            </AlertDialogTitle>
-            <AlertDialogDescription className="text-[14px]">
-              Remove {deleteConfirm?.name}? This will delete their profile and
-              account.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter className="mt-4 gap-2">
-            <AlertDialogCancel className="rounded-xl font-bold border-none bg-muted hover:bg-muted/80">
-              Cancel
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleDelete}
-              className="rounded-xl font-bold bg-red-600 hover:bg-red-700 shadow-lg shadow-red-600/20"
-            >
-              OK
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <DeleteConfirmationDialog
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        onConfirm={handleDelete}
+        isDeleting={isDeleting}
+        title="Delete employee?"
+        question={`Are you sure you want to delete "${deleteConfirm?.name ?? ""}"?`}
+        removalIntro="This action will permanently delete:"
+        bullets={[
+          "Their employee profile",
+          "Their login account — they will no longer be able to sign in",
+          ...(deleteConfirm && deleteConfirm.openTasks > 0
+            ? [`They have ${deleteConfirm.openTasks} open task${deleteConfirm.openTasks === 1 ? "" : "s"} — ${deleteConfirm.openTasks === 1 ? "it" : "they"} will be left without an assignee`]
+            : []),
+        ]}
+        confirmLabel="Delete Employee"
+        deletingLabel="Deleting..."
+      />
     </div>
   );
 };

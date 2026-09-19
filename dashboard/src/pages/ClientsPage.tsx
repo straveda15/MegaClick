@@ -3,13 +3,14 @@ import {
   CheckCircle2, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, ChevronsUpDown,
   Info, Loader2, RefreshCcw, Search, UserPlus, Receipt,
 } from 'lucide-react';
-import { generateInvoicePdf, invoiceNumber } from '@/lib/invoicePdf';
-import { buildParticulars } from '@/lib/invoiceParticulars';
+import { buildClientInvoice } from '@/lib/clientInvoice';
+import type { InvoiceData } from '@/lib/invoicePdf';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import ExportMenu from '@/components/ExportMenu';
 import DateRangeFilter, { isWithinRange, type DateRange } from '@/components/DateRangeFilter';
 import ClientDetailsDialog from '@/components/clients/ClientDetailsDialog';
+import InvoicePreviewDialog from '@/components/clients/InvoicePreviewDialog';
 import AssignServiceDialog from '@/components/leads/AssignServiceDialog';
 import AddClientDialog from '@/components/leads/AddClientDialog';
 import { TASK_STATUS_LABELS, TASK_STATUS_STYLES } from '@/data/clientStatus';
@@ -167,11 +168,10 @@ function StepStatus({ service }: { service: ClientService }) {
 }
 
 /** The per-service controls: assign/reassign and the invoice. */
-function ServiceActions({ service, onAssign, onInvoice, invoicing, compact = false }: {
+function ServiceActions({ service, onAssign, onInvoice, compact = false }: {
   service: ClientService;
   onAssign: () => void;
   onInvoice: () => void;
-  invoicing: boolean;
   compact?: boolean;
 }) {
   const assigned = Boolean(service.assignedTo);
@@ -196,12 +196,11 @@ function ServiceActions({ service, onAssign, onInvoice, invoicing, compact = fal
       <button
         type="button"
         onClick={onInvoice}
-        disabled={invoicing}
-        title={`Generate invoice for "${service.title}"`}
-        aria-label={`Generate invoice for ${service.title}`}
-        className="inline-flex items-center justify-center w-8 h-8 rounded-md border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-colors disabled:opacity-50"
+        title={`Preview invoice for "${service.title}"`}
+        aria-label={`Preview invoice for ${service.title}`}
+        className="inline-flex items-center justify-center w-8 h-8 rounded-md border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-colors"
       >
-        {invoicing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Receipt className="w-4 h-4" />}
+        <Receipt className="w-4 h-4" />
       </button>
     </div>
   );
@@ -218,7 +217,10 @@ const ClientsPage = () => {
   const [sortDir, setSortDir] = useState<SortDir>('asc');
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [detailsClient, setDetailsClient] = useState<Client | null>(null);
-  const [invoicing, setInvoicing] = useState<string | null>(null);
+  // The invoice being previewed. Held as state (not rebuilt on render) so the
+  // preview's edits aren't wiped by the board refreshing underneath it.
+  const [invoicePreview, setInvoicePreview] = useState<InvoiceData | null>(null);
+  const [invoiceOpen, setInvoiceOpen] = useState(false);
   const [addClientOpen, setAddClientOpen] = useState(false);
   const [dateRange, setDateRange] = useState<DateRange | undefined>();
   const [page, setPage] = useState(1);
@@ -310,39 +312,10 @@ const ClientsPage = () => {
     setAssignTarget({ leadId: client.leadId, service: toLeadService(service) });
   };
 
-  const handleInvoice = async (client: Client, service: ClientService) => {
-    setInvoicing(service._id);
-    try {
-      // The Particulars are the fields agreed when the lead was confirmed.
-      const particulars = buildParticulars(service);
-
-      const now = new Date();
-      const pad = (n: number) => String(n).padStart(2, '0');
-      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-      const invoiceDate = `${pad(now.getDate())}-${months[now.getMonth()]}-${String(now.getFullYear()).slice(2)}`;
-      // Financial-year form, e.g. "26-27/025" — see lib/invoicePdf.
-      const reference = invoiceNumber(client.clientId, now);
-
-      const addr = [client.address, client.city].filter(Boolean).join(', ');
-
-      await generateInvoicePdf({
-        invoiceNumber: reference,
-        invoiceDate,
-        consigneeName: client.company || client.name,
-        consigneeAddress: addr,
-        consigneeState: client.state || 'Maharashtra',
-        consigneeCode: '27',
-        buyerName: client.company || client.name,
-        buyerAddress: addr,
-        buyerState: client.state || 'Maharashtra',
-        buyerCode: '27',
-        particulars,
-      });
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Could not generate invoice.');
-    } finally {
-      setInvoicing(null);
-    }
+  // Opens the preview; the PDF is only made once it is downloaded from there.
+  const handleInvoice = (client: Client, service: ClientService) => {
+    setInvoicePreview(buildClientInvoice(client, [service]));
+    setInvoiceOpen(true);
   };
 
   const SortIcon = ({ colKey }: { colKey: NonNullable<SortKey> }) => {
@@ -508,7 +481,6 @@ const ClientsPage = () => {
                                 service={single}
                                 onAssign={() => openAssign(client, single)}
                                 onInvoice={() => handleInvoice(client, single)}
-                                invoicing={invoicing === single._id}
                               />
                               <button
                                 onClick={() => setDetailsClient(client)}
@@ -611,7 +583,6 @@ const ClientsPage = () => {
                                     service={service}
                                     onAssign={() => openAssign(client, service)}
                                     onInvoice={() => handleInvoice(client, service)}
-                                    invoicing={invoicing === service._id}
                                     compact
                                   />
                                 </div>
@@ -660,6 +631,13 @@ const ClientsPage = () => {
       />
 
       <AddClientDialog open={addClientOpen} onOpenChange={setAddClientOpen} />
+
+      {/* ── Invoice preview / edit / download ──────────────────────────────── */}
+      <InvoicePreviewDialog
+        invoice={invoicePreview}
+        open={invoiceOpen}
+        onOpenChange={setInvoiceOpen}
+      />
 
       {/* ── Assign a service to an employee ────────────────────────────────── */}
       <AssignServiceDialog

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CheckCircle2, IndianRupee, Loader2, Plus, Trash2, Wallet } from 'lucide-react';
+import { CheckCircle2, IndianRupee, Info, Loader2, Plus, Trash2, Wallet } from 'lucide-react';
 import { toast } from 'sonner';
 import {
   Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle,
@@ -53,6 +53,27 @@ const formatDate = (iso?: string | null) => {
     : d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
 };
 
+const formatDateLong = (iso?: string | null) => {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  return Number.isNaN(d.getTime())
+    ? '—'
+    : d.toLocaleDateString('en-IN', { day: '2-digit', month: 'long', year: 'numeric' });
+};
+
+/** The advance is listed with the receipts under an id of this form. */
+const isAdvance = (entry: LedgerEntry) => entry._id.startsWith('advance-');
+
+/**
+ * The ledger fills in a stand-in description when a receipt has no note of its
+ * own ("Advance Payment"). Those are labels, not something anyone wrote, so the
+ * details popup says there is no note rather than echoing them back.
+ */
+const ownNote = (entry: LedgerEntry) => {
+  const note = entry.note?.trim() ?? '';
+  return note === '' || (isAdvance(entry) && note === 'Advance Payment') ? '' : note;
+};
+
 const todayInput = () => {
   const d = new Date();
   const pad = (n: number) => String(n).padStart(2, '0');
@@ -72,6 +93,10 @@ export default function CustomerLedgerDialog({ target, open, onOpenChange }: Cus
   const [method, setMethod] = useState<PaymentMode>('cash');
   const [note, setNote] = useState('');
   const [paidAt, setPaidAt] = useState(todayInput());
+  // The receipt whose details popup is open. Kept beside its open flag so the
+  // popup's contents don't blank out while it fades away.
+  const [detailEntry, setDetailEntry] = useState<LedgerEntry | null>(null);
+  const [detailOpen, setDetailOpen] = useState(false);
 
   const addPayment = useAddPayment();
   const deletePayment = useDeletePayment();
@@ -269,18 +294,32 @@ export default function CustomerLedgerDialog({ target, open, onOpenChange }: Cus
                           {rupees(entry.amount)}
                         </td>
                         <td className="px-3 py-2 text-right">
-                          {entry.removable !== false && (
+                          <div className="flex items-center justify-end gap-1">
                             <button
                               type="button"
-                              onClick={() => handleDelete(entry._id)}
-                              disabled={deletePayment.isPending}
-                              title="Remove this payment"
-                              aria-label="Remove this payment"
-                              className="inline-flex items-center justify-center w-7 h-7 rounded-md text-muted-foreground hover:bg-muted hover:text-destructive transition-colors disabled:opacity-50"
+                              onClick={() => {
+                                setDetailEntry(entry);
+                                setDetailOpen(true);
+                              }}
+                              title="View payment details"
+                              aria-label="View payment details"
+                              className="inline-flex items-center justify-center w-7 h-7 rounded-md text-muted-foreground hover:bg-muted hover:text-primary transition-colors"
                             >
-                              <Trash2 className="w-3.5 h-3.5" />
+                              <Info className="w-3.5 h-3.5" />
                             </button>
-                          )}
+                            {entry.removable !== false && (
+                              <button
+                                type="button"
+                                onClick={() => handleDelete(entry._id)}
+                                disabled={deletePayment.isPending}
+                                title={isAdvance(entry) ? 'Remove the advance payment' : 'Remove this payment'}
+                                aria-label={isAdvance(entry) ? 'Remove the advance payment' : 'Remove this payment'}
+                                className="inline-flex items-center justify-center w-7 h-7 rounded-md text-muted-foreground hover:bg-muted hover:text-destructive transition-colors disabled:opacity-50"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            )}
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -389,6 +428,39 @@ export default function CustomerLedgerDialog({ target, open, onOpenChange }: Cus
           </section>
         </div>
       </DialogContent>
+
+      {/* ── One receipt in full: the amount, when, how, and any note ───────── */}
+      <Dialog open={detailOpen} onOpenChange={setDetailOpen}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>{detailEntry && isAdvance(detailEntry) ? 'Advance Payment' : 'Payment Details'}</DialogTitle>
+            <DialogDescription>{target?.clientName}</DialogDescription>
+          </DialogHeader>
+
+          {detailEntry && (
+            <dl className="rounded-lg border border-border divide-y divide-border">
+              {[
+                { label: 'Amount', value: rupees(detailEntry.amount), strong: true },
+                { label: 'Date', value: formatDateLong(detailEntry.paidAt) },
+                { label: 'Payment Method', value: PAYMENT_METHOD_LABELS[detailEntry.mode] ?? detailEntry.mode },
+              ].map((row) => (
+                <div key={row.label} className="flex items-center justify-between gap-4 px-3.5 py-2.5">
+                  <dt className="text-[11px] uppercase tracking-wider font-semibold text-muted-foreground">{row.label}</dt>
+                  <dd className={`text-[13px] text-right ${row.strong ? 'font-bold text-emerald-700' : 'text-foreground'}`}>
+                    {row.value}
+                  </dd>
+                </div>
+              ))}
+              <div className="px-3.5 py-2.5">
+                <dt className="text-[11px] uppercase tracking-wider font-semibold text-muted-foreground">Note</dt>
+                <dd className={`text-[13px] mt-1 whitespace-pre-line break-words ${ownNote(detailEntry) ? 'text-foreground' : 'text-muted-foreground italic'}`}>
+                  {ownNote(detailEntry) || 'No note added'}
+                </dd>
+              </div>
+            </dl>
+          )}
+        </DialogContent>
+      </Dialog>
     </Dialog>
   );
 }

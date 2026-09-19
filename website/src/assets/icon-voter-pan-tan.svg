@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="16.4 19.4 472.2 472.2" role="img" aria-label="Voter ID and PAN cards">
+  <defs>
+    <clipPath id="front-card"><rect x="150" y="216" width="300" height="190" rx="26"/></clipPath>
+  </defs>
+
+  <!-- back card (Voter ID) -->
+  <g transform="rotate(-9 210 172)">
+    <rect x="58" y="86" width="300" height="190" rx="26" fill="#CDD6E6"/>
+    <rect x="50" y="74" width="300" height="190" rx="26" fill="#F7F9FC"/>
+    <path d="M50 100a26 26 0 0 1 26-26h248a26 26 0 0 1 26 26v22H50z" fill="#FF9933"/>
+    <path d="M50 240h300v0a26 26 0 0 1-26 24H76a26 26 0 0 1-26-24z" fill="#138808"/>
+    <circle cx="112" cy="168" r="24" fill="#C3CDDD"/>
+    <path d="M66 240c0-30 20-46 46-46s46 16 46 46z" fill="#C3CDDD"/>
+    <rect x="184" y="146" width="126" height="14" rx="7" fill="#C9D2E0"/>
+    <rect x="184" y="176" width="96" height="14" rx="7" fill="#D6DDEA"/>
+    <rect x="184" y="206" width="116" height="14" rx="7" fill="#D6DDEA"/>
+  </g>
+
+  <!-- front card (PAN) -->
+  <g transform="rotate(7 300 311)">
+    <rect x="158" y="226" width="300" height="190" rx="26" fill="#2A8FCC" opacity=".35"/>
+    <g clip-path="url(#front-card)">
+      <rect x="150" y="216" width="300" height="190" fill="#5BCBFF"/>
+      <path d="M330 216h120v190H226z" fill="#33AEF0"/>
+      <rect x="150" y="216" width="300" height="34" fill="#2D6CDF"/>
+    </g>
+    <rect x="176" y="270" width="88" height="106" rx="12" fill="#FFFFFF"/>
+    <circle cx="220" cy="306" r="18" fill="#B4C3DA"/>
+    <path d="M186 376c0-28 15-42 34-42s34 14 34 42z" fill="#B4C3DA"/>
+    <rect x="288" y="274" width="140" height="14" rx="7" fill="#FFFFFF"/>
+    <rect x="288" y="304" width="104" height="14" rx="7" fill="#E4F5FF"/>
+    <rect x="288" y="334" width="124" height="14" rx="7" fill="#E4F5FF"/>
+    <circle cx="410" cy="376" r="16" fill="#FFC83D"/>
+    <circle cx="410" cy="376" r="8" fill="#FF9F1A"/>
+    <rect x="176" y="226" width="70" height="12" rx="6" fill="#FFFFFF" opacity=".9"/>
+  </g>
+
+  <!-- verified badge -->
+  <circle cx="416" cy="408" r="46" fill="#FFFFFF"/>
+  <circle cx="416" cy="408" r="38" fill="#22B573"/>
+  <path d="M398 408l14 14 26-30" fill="none" stroke="#FFFFFF" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

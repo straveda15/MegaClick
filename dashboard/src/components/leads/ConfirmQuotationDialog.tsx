@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Banknote, CheckCircle2, CreditCard, IndianRupee, Loader2, Plus, Trash2 } from 'lucide-react';
+import { Banknote, CheckCircle2, ChevronDown, CreditCard, IndianRupee, Loader2, Plus, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { sanitizeAmountInput } from '@/lib/amount';
 import {
@@ -28,6 +28,14 @@ interface DraftItem {
 
 const SERVICE_FEE_NAME = 'Service Fees';
 
+const PRESET_FEES = [
+  'Stamp Duty',
+  'Registration Fee',
+  'DHC',
+  'Agt. Ref. Fee',
+  'Other Govt. Payment',
+] as const;
+
 const rupees = (value: number) =>
   value.toLocaleString('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 2 });
 
@@ -52,6 +60,8 @@ export default function ConfirmQuotationDialog({ lead, open, onOpenChange }: Con
   const [draft, setDraft] = useState<Record<string, DraftItem[]>>({});
   const [advance, setAdvance] = useState('');
   const [advanceMode, setAdvanceMode] = useState<PaymentMode>('cash');
+  const [advanceNote, setAdvanceNote] = useState('');
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const confirmQuotation = useConfirmLeadQuotation();
 
   const services = useMemo(() => lead?.services ?? [], [lead]);
@@ -81,6 +91,7 @@ export default function ConfirmQuotationDialog({ lead, open, onOpenChange }: Con
     setDraft(initial);
     setAdvance(lead.advancePayment?.amount ? String(lead.advancePayment.amount) : '');
     setAdvanceMode(lead.advancePayment?.mode ?? 'cash');
+    setAdvanceNote(lead.advancePayment?.note ?? '');
   }, [open, lead]);
 
   const updateItem = (serviceId: string, key: string, patch: Partial<DraftItem>) =>
@@ -91,8 +102,13 @@ export default function ConfirmQuotationDialog({ lead, open, onOpenChange }: Con
       ),
     }));
 
-  const addItem = (serviceId: string) =>
-    setDraft((current) => ({ ...current, [serviceId]: [...(current[serviceId] ?? []), newItem()] }));
+  const addItem = (serviceId: string, name = '') =>
+    setDraft((current) => ({ ...current, [serviceId]: [...(current[serviceId] ?? []), newItem(name)] }));
+
+  const addPreset = (serviceId: string, name: string) => {
+    addItem(serviceId, name);
+    setOpenDropdown(null);
+  };
 
   const removeItem = (serviceId: string, key: string) =>
     setDraft((current) => {
@@ -163,7 +179,7 @@ export default function ConfirmQuotationDialog({ lead, open, onOpenChange }: Con
         services: payload,
         // Always sent, even at zero — this dialog is what edits the advance, so
         // clearing it here must actually clear it, not just leave the old figure.
-        advancePayment: { amount: advanceAmount, mode: advanceMode },
+        advancePayment: { amount: advanceAmount, mode: advanceMode, note: advanceNote.trim() || undefined },
       },
       {
         onSuccess: () => {
@@ -250,14 +266,58 @@ export default function ConfirmQuotationDialog({ lead, open, onOpenChange }: Con
                     })}
 
                     <div className="flex items-center justify-between gap-3">
-                      <button
-                        type="button"
-                        onClick={() => addItem(service._id)}
-                        className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
-                      >
-                        <Plus className="w-3.5 h-3.5" />
-                        Add field
-                      </button>
+                      {/* Add field controls — one row, one height, so both labels
+                          sit on the same line with a clear break between them. */}
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => addItem(service._id)}
+                          className="inline-flex items-center gap-1 h-7 text-xs font-medium leading-none text-primary hover:underline"
+                        >
+                          <Plus className="w-3.5 h-3.5 shrink-0" />
+                          Add field
+                        </button>
+
+                        <span aria-hidden className="h-4 w-px bg-border" />
+
+                        {/* Preset-fee dropdown */}
+                        <div className="relative flex items-center">
+                          <button
+                            type="button"
+                            title="Add a preset fee"
+                            aria-haspopup="menu"
+                            aria-expanded={openDropdown === service._id}
+                            onClick={() => setOpenDropdown(openDropdown === service._id ? null : service._id)}
+                            className="inline-flex items-center gap-1 h-7 text-xs font-medium leading-none text-primary hover:underline"
+                          >
+                            More
+                            <ChevronDown className={`w-3.5 h-3.5 shrink-0 transition-transform ${openDropdown === service._id ? 'rotate-180' : ''}`} />
+                          </button>
+
+                          {openDropdown === service._id && (
+                            <>
+                              {/* Backdrop to close when clicking outside */}
+                              <div
+                                className="fixed inset-0 z-10"
+                                onClick={() => setOpenDropdown(null)}
+                              />
+                              <div role="menu" className="absolute left-0 top-full mt-1 z-20 min-w-[180px] rounded-md border border-border bg-popover shadow-md py-1">
+                                {PRESET_FEES.map((fee) => (
+                                  <button
+                                    key={fee}
+                                    type="button"
+                                    role="menuitem"
+                                    onClick={() => addPreset(service._id, fee)}
+                                    className="w-full text-left px-3 py-1.5 text-xs text-foreground hover:bg-muted transition-colors"
+                                  >
+                                    {fee}
+                                  </button>
+                                ))}
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      </div>
 
                       <span className="text-sm">
                         <span className="text-muted-foreground">Final quotation </span>
@@ -316,6 +376,19 @@ export default function ConfirmQuotationDialog({ lead, open, onOpenChange }: Con
                     ))}
                   </div>
                 </div>
+              </div>
+
+              {/* Note field */}
+              <div className="space-y-1.5">
+                <Label htmlFor="advance-note">Note (optional)</Label>
+                <Input
+                  id="advance-note"
+                  type="text"
+                  placeholder="e.g. Paid via NEFT, ref #12345"
+                  value={advanceNote}
+                  onChange={(e) => setAdvanceNote(e.target.value)}
+                  className="h-9"
+                />
               </div>
 
               {advanceAmount > 0 && (

@@ -24,6 +24,8 @@ export interface InvoiceData {
   buyerState: string;
   buyerCode: string;
   particulars: InvoiceParticularItem[];
+  /** Free text for the Remarks box; left empty on a fresh invoice. */
+  remarks?: string;
 }
 
 // ─── Number helpers ──────────────────────────────────────────────────────────
@@ -77,7 +79,12 @@ function esc(value: string): string {
     .replace(/"/g, '&quot;');
 }
 
-function buildHtml(d: InvoiceData): string {
+/**
+ * The full invoice document. The PDF is rendered from exactly this markup, and
+ * the on-screen preview shows it in an iframe, so what is previewed is what is
+ * downloaded.
+ */
+export function buildInvoiceHtml(d: InvoiceData): string {
   const total = d.particulars.reduce((s, p) => s + p.amount, 0);
   const words = numberToWords(total);
 
@@ -386,9 +393,20 @@ function buildHtml(d: InvoiceData): string {
     border-right: 0.35mm solid #000;
   }
 
+  .remarks {
+    overflow: hidden;
+  }
+
   .remarks-label {
     font-size: 8pt;
     font-style: italic;
+  }
+
+  .remarks-text {
+    margin-top: 1.2mm;
+    font-size: 8pt;
+    line-height: 1.42;
+    overflow-wrap: anywhere;
   }
 
   .bank {
@@ -579,6 +597,7 @@ function buildHtml(d: InvoiceData): string {
       <div class="bottom-grid">
         <div class="remarks">
           <div class="remarks-label">Remarks:</div>
+          ${d.remarks?.trim() ? `<div class="remarks-text">${addrLines(esc(d.remarks.trim()))}</div>` : ''}
         </div>
 
         <div class="bank">
@@ -634,6 +653,12 @@ export function invoiceNumber(serial: string | number, date = new Date()): strin
   return `${fy}/${padded}`;
 }
 
+/** The invoice's "Dated" form, e.g. "22-Jul-26". */
+export function formatInvoiceDate(date = new Date()): string {
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  return `${String(date.getDate()).padStart(2, '0')}-${months[date.getMonth()]}-${String(date.getFullYear()).slice(2)}`;
+}
+
 /** "Invoice 26-27-025 Sneha Verma.pdf" — the number, then who it is for. */
 function invoiceFileName(data: InvoiceData): string {
   const ref = data.invoiceNumber.replace(/\//g, '-');
@@ -668,7 +693,7 @@ interface JsPdfHandle {
 export async function generateInvoicePdf(data: InvoiceData): Promise<void> {
   const html2pdf = (await import('html2pdf.js')).default;
 
-  const html = buildHtml(data);
+  const html = buildInvoiceHtml(data);
   const el = document.createElement('div');
   el.innerHTML = html;
   el.style.cssText = 'position:absolute;left:-9999px;top:0;';

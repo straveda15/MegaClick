@@ -241,7 +241,7 @@ const Team = () => {
                 </div>
 
                 {/* Name & role */}
-                <div className="px-0.5 text-left">
+                <div className="px-0.5 text-center">
                   <h3
                     style={{ fontFamily: "'Poppins', sans-serif" }}
                     className="team-name text-xs sm:text-sm font-bold text-[#0B4EA2] leading-snug"

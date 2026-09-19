@@ -54,7 +54,7 @@ export const saveTemplate = async (serviceSlug, { steps, serviceTitle }, actorId
   const slug = String(serviceSlug ?? "").trim();
   if (!slug) throw new AppError("A service slug is required.", 400);
 
-  const catalogService = listServices().find((service) => service.slug === slug);
+  const catalogService = (await listServices()).find((service) => service.slug === slug);
   if (!catalogService && !String(serviceTitle ?? "").trim()) {
     throw new AppError("That service is not in the catalog.", 400);
   }

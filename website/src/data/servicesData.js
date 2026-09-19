@@ -1,7 +1,7 @@
 // =====================================================
 // 1. LEGAL SERVICES ICONS (All 12 Images Imported)
 // =====================================================
-import marriageRegImg from "../assets/marrige_registration_logo.png";
+import marriageRegImg from "../assets/icon-marriage-registration.svg";
 import rentAgreementImg from "../assets/rent-agreement.png";
 import tenantVerificationImg from "../assets/tenant-police-verification.png";
 import govtGazetteImg from "../assets/govt-gazette.png";
@@ -11,14 +11,14 @@ import mortgageDeedImg from "../assets/mortgage-release-deed.png";
 import titleSearchImg from "../assets/title-search-report.png";
 import trademarkImg from "../assets/trademark-registration.png";
 import patentCopyrightImg from "../assets/patent-copyright.png";
-import digital712Img from "../assets/digital.webp";
+import digital712Img from "../assets/icon-digital-land-record.svg";
 import characterCertificateImg from "../assets/character-certificate.png";
 
 // =====================================================
 // 2. BUSINESS & FINANCIAL SERVICES ICONS (12 PNGs)
 // =====================================================
 import incomeTaxImg from "../assets/income-tax.png";
-import gstRegistrationImg from "../assets/gst-registration.jpg";
+import gstRegistrationImg from "../assets/icon-gst-registration.svg";
 import bankLoanImg from "../assets/bank-loan.png";
 import govtLiaisoningImg from "../assets/govt-liaisoning.png";
 import tenderConsultancyImg from "../assets/tender-consultancy.png";
@@ -27,8 +27,8 @@ import llpRegImg from "../assets/llp-registration.png";
 import accountingAuditImg from "../assets/accounting-audit.png";
 import projectReportImg from "../assets/project-report.png";
 import trustRegImg from "../assets/trust-registration.png";
-import iecCodeImg from "../assets/growth.jpg";
-import dscImg from "../assets/digital.webp";
+import iecCodeImg from "../assets/icon-import-export.svg";
+import dscImg from "../assets/icon-digital-signature-certificate.svg";
 
 // =====================================================
 // 3. OTHER SERVICES ICONS (12 PNGs)
@@ -43,7 +43,7 @@ import msmeUdyamImg from "../assets/msme.png";
 import shopActImg from "../assets/shop-act-license.png";
 import fssaiImg from "../assets/fssai-license.png";
 import passportImg from "../assets/passport-services.png";
-import voterPanTanImg from "../assets/hero2.jpg";
+import voterPanTanImg from "../assets/icon-voter-pan-tan.svg";
 import liquorLicenseImg from "../assets/liquor-license.png";
 
 // =====================================================
