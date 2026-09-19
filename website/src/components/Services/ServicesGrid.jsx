@@ -6,6 +6,7 @@ const ServicesGrid = ({
   categoriesData = [],
   services = [],
   searchTerm = "",
+  setSearchTerm,
   selectedCategory = "All Services",
   selectedService = null,
 }) => {
@@ -107,36 +108,59 @@ const ServicesGrid = ({
           .grid-category-title { font-size: 2.25rem !important; }
           .grid-category-badge { font-size: 1.35rem !important; padding: 0.75rem 1.6rem !important; }
         }
+          .search-box-animated {
+  position: relative;
+  padding: 2px;
+  border-radius: 16px;
+  background: linear-gradient(
+    90deg,
+    #0B4EA2,
+    #22C55E,
+    #0B4EA2
+  );
+  background-size: 200% 100%;
+  animation: searchBorderMove 3s linear infinite;
+}
+
+.search-input {
+  width: 100%;
+  height: 52px;
+  padding: 0 20px;
+  border: none;
+  outline: none;
+  border-radius: 14px;
+  background: white;
+  color: #111827;
+  font-size: 15px;
+}
+
+@keyframes searchBorderMove {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
       `}</style>
 
       {/* TOP SUMMARY BAR */}
-      <div className="grid-summary-bar bg-white border border-gray-200/80 rounded-2xl px-5 py-3.5 shadow-xs text-xs sm:text-sm text-gray-600 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
-        <div>
-          <span className="font-bold text-gray-900">{totalFilteredServicesCount}</span> services across{" "}
-          <span className="font-bold text-gray-900">{totalDisplayedCategoriesCount}</span>{" "}
-          {totalDisplayedCategoriesCount === 1 ? "category" : "categories"}
-        </div>
+      {/* SEARCH BAR */}
+<div className="search-box-animated">
+  <input
+    type="text"
+    value={searchTerm}
+    onChange={(e) => setSearchTerm(e.target.value)}
+    placeholder="Search services..."
+    className="search-input"
+  />
+</div>
 
-        {(selectedCategory !== "All Services" || selectedService || searchTerm) && (
-          <div className="flex items-center gap-2 flex-wrap">
-            {selectedCategory !== "All Services" && (
-              <span className="bg-blue-50 border border-blue-200/80 text-[#0B4EA2] px-3 py-1 rounded-full text-xs font-bold shadow-xs">
-                Category: {selectedCategory}
-              </span>
-            )}
-            {selectedService && (
-              <span className="bg-emerald-50 border border-emerald-200/80 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold shadow-xs">
-                Service: {selectedService}
-              </span>
-            )}
-            {searchTerm && (
-              <span className="bg-amber-50 border border-amber-200/80 text-amber-700 px-3 py-1 rounded-full text-xs font-bold shadow-xs">
-                Search: "{searchTerm}"
-              </span>
-            )}
-          </div>
-        )}
-      </div>
 
       {/* CATEGORIES ACCORDION */}
       <div className="space-y-6">

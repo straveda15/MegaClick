@@ -84,13 +84,6 @@ const popularServices = [
     description:
       "Assistance with passport applications, documentation and related services.",
   },
-  {
-    title: "Accounting / Audit Services",
-    description: "Accounting, bookkeeping and audit support.",
-    image: accountingAuditImg,
-    description:
-      "Bookkeeping, accounting and audit support for accurate financial records.",
-  },
 ];
 
 const PopularServices = ({ onSelectService }) => {
@@ -261,7 +254,18 @@ const PopularServices = ({ onSelectService }) => {
             style={{
               fontFamily: "'Poppins', sans-serif",
             }}
-            className="popular-heading text-lg sm:text-xl font-bold text-black flex items-center gap-2 text-left"
+             className="
+                hero-title
+                text-3xl
+                sm:text-4xl
+                md:text-4xl
+                xl:text-5xl
+                font-bold
+                leading-[1.18]
+                text-slate-900
+                text-left
+                w-full
+              "
           >
             Popular{" "}
             <span className="text-[#0B4EA2]">
