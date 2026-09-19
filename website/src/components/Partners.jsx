@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import qci from "../assets/hero.png";
-import iso from "../assets/iso.jpg";
+import iso from "../assets/iso.png";
 import msme from "../assets/msme.png";
 import startup from "../assets/H.png";
 import india from "../assets/legal.jpg";
@@ -91,10 +91,10 @@ const Partners = () => {
 
       {/* UNIFIED CONTAINER */}
       <div className="partners-container w-full max-w-[1380px] mx-auto px-4 sm:px-6 min-[1440px]:px-10">
-        
+
         {/* HEADING (EXACT FONT-BOLD WEIGHT) */}
         <div className="text-center mb-6 sm:mb-8">
-             <h2
+          <h2
             style={{ fontFamily: "'Poppins', serif" }}
             className="
               team-title
@@ -110,7 +110,7 @@ const Partners = () => {
               sm:mb-4
             "
           >
-        Trusted by Partners like
+            Trusted by Partners like
 
           </h2>
         </div>
