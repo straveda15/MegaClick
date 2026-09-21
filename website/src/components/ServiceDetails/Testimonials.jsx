@@ -1,12 +1,11 @@
-﻿import React, { useState, useEffect, useMemo } from "react";
-import { useParams } from "react-router-dom";
+﻿import React, { useState, useEffect } from "react";
 import {
   Quote,
   Star,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
-import { SERVICE_TESTIMONIALS_CATALOG } from "../../data/serviceTestimonialsData";
+import { defaultTestimonials } from "../Testimonials";
 
 /* =========================================================
    HELPER: EXTRACT SERVICES
@@ -22,153 +21,6 @@ const extractServices = (item) => {
       .split(/[,•|]/)
       .map((s) => s.trim())
       .filter(Boolean);
-  }
-
-  return [];
-};
-
-/* =========================================================
-   HELPER: NORMALIZE TEXT
-========================================================= */
-
-const normalizeText = (text) =>
-  (text || "")
-    .toLowerCase()
-    .replace(/[^\w\s]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-
-/* =========================================================
-   HELPER: CHECK SERVICE MATCH
-========================================================= */
-
-const isMatchingService = (testimonial, serviceObj, slug) => {
-  if (!serviceObj && !slug) return false;
-
-  const itemServices = extractServices(testimonial);
-
-  const allTestimonialServices = [
-    ...itemServices,
-    ...(testimonial?.service ? [testimonial.service] : []),
-  ];
-
-  const candidateTargetStrings = [
-    serviceObj?.title,
-    serviceObj?.name,
-    serviceObj?.heroTitle,
-    slug ? slug.replace(/-/g, " ") : "",
-  ].filter(Boolean);
-
-  for (const rawTestimonialService of allTestimonialServices) {
-    const normTestimonial = normalizeText(rawTestimonialService);
-
-    if (!normTestimonial) continue;
-
-    for (const target of candidateTargetStrings) {
-      const normTarget = normalizeText(target);
-
-      if (!normTarget) continue;
-
-      /* 1. Exact match */
-      if (normTestimonial === normTarget) {
-        return true;
-      }
-
-      /* 2. Contains match */
-      if (
-        normTarget.includes(normTestimonial) ||
-        normTestimonial.includes(normTarget)
-      ) {
-        return true;
-      }
-
-      /* 3. Meaningful word match */
-      const targetWords = normTarget
-        .split(" ")
-        .filter((w) => w.length > 3);
-
-      const testWords = normTestimonial
-        .split(" ")
-        .filter((w) => w.length > 3);
-
-      const sharedWords = targetWords.filter((w) =>
-        testWords.includes(w)
-      );
-
-      if (
-        sharedWords.length >= 2 ||
-        (sharedWords.length === 1 && targetWords.length === 1)
-      ) {
-        return true;
-      }
-
-      /* 4. Important service keywords */
-      const specificKeywords = [
-        "marriage",
-        "trademark",
-        "patent",
-        "copyright",
-        "gazette",
-        "mortgage",
-        "tenant",
-        "licence",
-        "license",
-        "deed",
-        "fssai",
-        "passport",
-        "liquor",
-        "udyam",
-        "msme",
-        "gst",
-        "itr",
-        "audit",
-        "dsc",
-        "llp",
-        "rera",
-        "incorporation",
-        "liaisoning",
-        "tender",
-        "light",
-        "mutation",
-      ];
-
-      if (
-        sharedWords.some((word) =>
-          specificKeywords.includes(word)
-        )
-      ) {
-        return true;
-      }
-    }
-  }
-
-  return false;
-};
-
-/* =========================================================
-   GET SERVICE-SPECIFIC DUMMY TESTIMONIALS
-========================================================= */
-
-const getSpecificDummyTestimonials = (serviceObj, slug) => {
-  const targetKey = slug || serviceObj?.slug;
-
-  if (
-    targetKey &&
-    SERVICE_TESTIMONIALS_CATALOG[targetKey]
-  ) {
-    return SERVICE_TESTIMONIALS_CATALOG[targetKey];
-  }
-
-  /* Look up by matching title if slug key isn't direct */
-  for (const [key, list] of Object.entries(
-    SERVICE_TESTIMONIALS_CATALOG
-  )) {
-    if (
-      list.length > 0 &&
-      isMatchingService(list[0], serviceObj, slug)
-    ) {
-      return list;
-    }
   }
 
   return [];
@@ -452,10 +304,8 @@ const TestimonialCard = ({ testimonial }) => {
    MAIN TESTIMONIALS COMPONENT
 ========================================================= */
 
-const Testimonials = ({ service: propService }) => {
-  const { slug } = useParams();
-
-  const [allTestimonials, setAllTestimonials] = useState([]);
+const Testimonials = () => {
+  const [activeTestimonials, setActiveTestimonials] = useState(defaultTestimonials);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   /*
@@ -502,7 +352,7 @@ const Testimonials = ({ service: propService }) => {
             ).values()
           );
 
-          setAllTestimonials(uniqueItems);
+          setActiveTestimonials(uniqueItems);
         }
       } catch (error) {
         console.error(
@@ -516,61 +366,12 @@ const Testimonials = ({ service: propService }) => {
   }, []);
 
   /* =======================================================
-      COMPUTE ACTIVE TESTIMONIALS
-  ======================================================= */
-
-  const activeTestimonials = useMemo(() => {
-    /* Dynamic backend testimonials matching current service */
-    const matchedBackend = allTestimonials.filter((item) =>
-      isMatchingService(item, propService, slug)
-    );
-
-    /* Dedicated dummy testimonials */
-    const specificDummy = getSpecificDummyTestimonials(
-      propService,
-      slug
-    );
-
-    /*
-      If backend testimonials exist,
-      prioritize them and append dummy testimonials.
-    */
-    if (matchedBackend.length > 0) {
-      const combined = [...matchedBackend];
-
-      for (const dummy of specificDummy) {
-        if (
-          !combined.some(
-            (c) =>
-              c.name?.toLowerCase() ===
-              dummy.name?.toLowerCase()
-          )
-        ) {
-          combined.push(dummy);
-        }
-      }
-
-      return combined;
-    }
-
-    /*
-      If no backend testimonials,
-      use service-specific dummy testimonials.
-    */
-    if (specificDummy.length > 0) {
-      return specificDummy;
-    }
-
-    return [];
-  }, [allTestimonials, propService, slug]);
-
-  /* =======================================================
-      RESET CAROUSEL WHEN SERVICE CHANGES
+      RESET CAROUSEL WHEN THE LIST CHANGES
   ======================================================= */
 
   useEffect(() => {
     setCurrentIndex(0);
-  }, [propService, slug, activeTestimonials.length]);
+  }, [activeTestimonials.length]);
 
   /* =======================================================
       RESPONSIVE VISIBLE CARDS

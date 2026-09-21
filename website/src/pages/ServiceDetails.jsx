@@ -173,7 +173,7 @@ const ServiceDetails = () => {
           TESTIMONIALS
       ========================================= */}
 
-      <Testimonials service={service} />
+      <Testimonials />
     </div>
   );
 };

@@ -166,6 +166,28 @@ const ContactSection = () => {
     <section className="relative w-full overflow-hidden bg-blue-100 py-8 sm:py-12 lg:py-16 lg:pt-12 min-[1920px]:py-20 min-[1920px]:pt-14 min-[3840px]:py-32 font-['Inter',sans-serif]">
       {/* DIRECT CSS RULES FOR 1440px, 1920px & 3840px RESPONSIVENESS */}
       <style>{`
+        /* Compact form card. Tailwind emits its min-[...] rules before sm:/lg:, so the
+           large-screen sizes are set here to make sure they apply. The service select
+           uses the same height as the other fields at every breakpoint. */
+        .service-select__control { min-height: 44px !important; }
+        @media (min-width: 640px)  { .service-select__control { min-height: 48px !important; } }
+
+        @media (min-width: 1440px) {
+          .contact-form-card { max-width: 560px !important; }
+        }
+        @media (min-width: 1920px) {
+          .contact-form-card { max-width: 640px !important; padding: 2.25rem !important; }
+          .contact-field { height: 3.25rem !important; }
+          .service-select__control { min-height: 3.25rem !important; }
+          .contact-textarea { min-height: 6.5rem !important; }
+        }
+        @media (min-width: 3840px) {
+          .contact-form-card { max-width: 1100px !important; padding: 3.5rem !important; }
+          .contact-field { height: 5rem !important; }
+          .service-select__control { min-height: 5rem !important; }
+          .contact-textarea { min-height: 11rem !important; }
+        }
+
         /* Standard Desktop (1440px) */
         @media (min-width: 1440px) {
           .contact-container {
@@ -306,7 +328,7 @@ const ContactSection = () => {
           {/* =====================================================
               FORM (right on desktop)
           ====================================================== */}
-          <div className="relative min-w-0 w-full mb-8 lg:mb-0 lg:col-start-2 lg:row-start-1 lg:row-span-5 overflow-hidden rounded-2xl sm:rounded-[26px] min-[1440px]:rounded-[30px] min-[1920px]:rounded-[36px] min-[3840px]:rounded-[50px] bg-white/95 p-4 sm:p-6 min-[1440px]:p-7 min-[1920px]:p-9 min-[3840px]:p-16 lg:max-w-[520px] min-[1440px]:max-w-[560px] min-[1920px]:max-w-[680px] min-[3840px]:max-w-[1200px] lg:justify-self-end shadow-[0_15px_50px_rgba(0,0,0,0.08)] backdrop-blur-xl border border-white/40">
+          <div className="contact-form-card relative min-w-0 w-full mb-8 lg:mb-0 lg:col-start-2 lg:row-start-1 lg:row-span-5 overflow-hidden rounded-2xl sm:rounded-[26px] min-[1440px]:rounded-[30px] min-[1920px]:rounded-[36px] min-[3840px]:rounded-[50px] bg-white/95 p-4 sm:p-6 min-[1440px]:p-7 min-[1920px]:p-9 min-[3840px]:p-16 lg:max-w-[520px] min-[1440px]:max-w-[560px] min-[1920px]:max-w-[680px] min-[3840px]:max-w-[1200px] lg:justify-self-end shadow-[0_15px_50px_rgba(0,0,0,0.08)] backdrop-blur-xl border border-white/40">
             <div className="pointer-events-none absolute -right-16 -top-16 h-32 w-32 min-[3840px]:h-60 min-[3840px]:w-60 rounded-full bg-blue-100 blur-3xl" />
 
             {/* FORM */}
@@ -322,13 +344,13 @@ const ContactSection = () => {
                     name="name"
                     required
                     placeholder="Full Name *"
-                    className="h-11 sm:h-12 min-[1920px]:h-14 min-[3840px]:h-20 w-full min-w-0 rounded-xl min-[3840px]:rounded-2xl border border-gray-200 min-[3840px]:border-2 bg-gray-50 pl-11 sm:pl-12 min-[3840px]:pl-16 pr-4 min-[3840px]:pr-8 text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#0B4EA2] focus:bg-white focus:ring-4 min-[3840px]:focus:ring-8 focus:ring-blue-100"
+                    className="contact-field h-11 sm:h-12 w-full min-w-0 rounded-xl min-[3840px]:rounded-2xl border border-gray-200 min-[3840px]:border-2 bg-gray-50 pl-11 sm:pl-12 min-[3840px]:pl-16 pr-4 min-[3840px]:pr-8 text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#0B4EA2] focus:bg-white focus:ring-4 min-[3840px]:focus:ring-8 focus:ring-blue-100"
                   />
                 </div>
 
                 {/* PHONE */}
                 <div className="relative min-w-0">
-                  <div className="pointer-events-none absolute left-0 top-0 z-10 flex h-11 sm:h-12 min-[1920px]:h-14 min-[3840px]:h-20 items-center gap-1.5 border-r border-gray-200 pl-4 pr-2 text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl font-medium text-gray-500">
+                  <div className="pointer-events-none absolute left-0 top-0 z-10 flex contact-field h-11 sm:h-12 items-center gap-1.5 border-r border-gray-200 pl-4 pr-2 text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl font-medium text-gray-500">
                     <Phone size={18} className="text-gray-400 min-[3840px]:w-8 min-[3840px]:h-8" />
                     +91
                   </div>
@@ -344,7 +366,7 @@ const ContactSection = () => {
                     }
                     maxLength={10}
                     placeholder="Phone Number *"
-                    className="h-11 sm:h-12 min-[1920px]:h-14 min-[3840px]:h-20 w-full min-w-0 rounded-xl min-[3840px]:rounded-2xl border border-gray-200 min-[3840px]:border-2 bg-gray-50 pl-24 min-[3840px]:pl-36 pr-4 min-[3840px]:pr-8 text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#0B4EA2] focus:bg-white focus:ring-4 min-[3840px]:focus:ring-8 focus:ring-blue-100"
+                    className="contact-field h-11 sm:h-12 w-full min-w-0 rounded-xl min-[3840px]:rounded-2xl border border-gray-200 min-[3840px]:border-2 bg-gray-50 pl-24 min-[3840px]:pl-36 pr-4 min-[3840px]:pr-8 text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#0B4EA2] focus:bg-white focus:ring-4 min-[3840px]:focus:ring-8 focus:ring-blue-100"
                   />
                 </div>
               </div>
@@ -358,7 +380,7 @@ const ContactSection = () => {
                     type="email"
                     name="email"
                     placeholder="Email Address (Optional)"
-                    className="h-11 sm:h-12 min-[1920px]:h-14 min-[3840px]:h-20 w-full min-w-0 rounded-xl min-[3840px]:rounded-2xl border border-gray-200 min-[3840px]:border-2 bg-gray-50 pl-11 sm:pl-12 min-[3840px]:pl-16 pr-4 min-[3840px]:pr-8 text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#0B4EA2] focus:bg-white focus:ring-4 min-[3840px]:focus:ring-8 focus:ring-blue-100"
+                    className="contact-field h-11 sm:h-12 w-full min-w-0 rounded-xl min-[3840px]:rounded-2xl border border-gray-200 min-[3840px]:border-2 bg-gray-50 pl-11 sm:pl-12 min-[3840px]:pl-16 pr-4 min-[3840px]:pr-8 text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#0B4EA2] focus:bg-white focus:ring-4 min-[3840px]:focus:ring-8 focus:ring-blue-100"
                   />
                 </div>
 
@@ -482,7 +504,7 @@ const ContactSection = () => {
                 rows={3}
                 required
                 placeholder="Tell us about your requirements *"
-                className="min-h-[88px] min-[1920px]:min-h-[120px] min-[3840px]:min-h-[190px] w-full resize-none rounded-xl min-[3840px]:rounded-2xl border border-gray-200 min-[3840px]:border-2 bg-gray-50 p-3.5 sm:p-4 min-[3840px]:p-7 text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#0B4EA2] focus:bg-white focus:ring-4 min-[3840px]:focus:ring-8 focus:ring-blue-100"
+                className="contact-textarea min-h-[88px] w-full resize-none rounded-xl min-[3840px]:rounded-2xl border border-gray-200 min-[3840px]:border-2 bg-gray-50 p-3.5 sm:p-4 min-[3840px]:p-7 text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#0B4EA2] focus:bg-white focus:ring-4 min-[3840px]:focus:ring-8 focus:ring-blue-100"
               />
 
               {/* SUBMIT BUTTON */}
@@ -490,7 +512,7 @@ const ContactSection = () => {
                 type="submit"
                 disabled={submitting}
                 style={{ fontFamily: "'Inter', sans-serif" }}
-                className="group flex h-11 sm:h-12 min-[1920px]:h-14 min-[3840px]:h-20 w-full items-center justify-center rounded-xl min-[3840px]:rounded-2xl bg-[#0B4EA2] text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl font-semibold text-white transition-all duration-300 hover:-translate-y-1 hover:bg-green-600 hover:shadow-xl disabled:pointer-events-none disabled:opacity-60 cursor-pointer"
+                className="group flex contact-field h-11 sm:h-12 w-full items-center justify-center rounded-xl min-[3840px]:rounded-2xl bg-[#0B4EA2] text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl font-semibold text-white transition-all duration-300 hover:-translate-y-1 hover:bg-green-600 hover:shadow-xl disabled:pointer-events-none disabled:opacity-60 cursor-pointer"
               >
                 <span className="flex items-center justify-center gap-2 min-[3840px]:gap-4">
                   {submitting ? "Sending…" : "Send Message"}
