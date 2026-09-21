@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Quote, Star } from "lucide-react";
 
 // Fallback seed data focused on services outcomes
-const defaultTestimonials = [
+export const defaultTestimonials = [
   {
     name: "Rajesh Sharma",
     service: "Income Tax Registration",
