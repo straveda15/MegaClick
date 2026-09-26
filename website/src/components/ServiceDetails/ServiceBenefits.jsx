@@ -18,7 +18,7 @@ const benefitsList = [
       "Clear financial guidance and support to help you understand the process, requirements, and related costs.",
     numberColor: "text-white",
     numberBorder: "border-white",
-    numberBg: "bg-[#6B879B]",
+    numberBg: "bg-[#A21CAF]",
   },
   {
     number: "3",
@@ -27,7 +27,7 @@ const benefitsList = [
       "Complete assistance with government approvals and documentation for a smoother and hassle-free process.",
     numberColor: "text-white",
     numberBorder: "border-white",
-    numberBg: "bg-[#D1AE24]",
+    numberBg: "bg-[#059669]",
   },
 ];
 

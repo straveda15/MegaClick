@@ -985,15 +985,18 @@ const Footer = () => {
                     sm:w-11
                     sm:h-11
                     rounded-full
-                    ${social.bgColor}
-                    ${social.iconColor}
+                    border
+                    border-white/25
+                    bg-white/5
+                    text-white
                     flex
                     items-center
                     justify-center
                     transition-all
                     duration-300
                     hover:scale-110
-                    ${social.hoverColor}
+                    hover:bg-white/15
+                    hover:border-white/50
                     cursor-pointer
                   `}
                 >
@@ -1219,15 +1222,18 @@ const Footer = () => {
                         min-[1440px]:w-10
                         min-[1440px]:h-10
                         rounded-full
-                        ${social.bgColor}
-                        ${social.iconColor}
+                        border
+                        border-white/25
+                        bg-white/5
+                        text-white
                         flex
                         items-center
                         justify-center
                         transition-all
                         duration-300
                         hover:scale-110
-                        ${social.hoverColor}
+                        hover:bg-white/15
+                        hover:border-white/50
                         cursor-pointer
                       `}
                     >
