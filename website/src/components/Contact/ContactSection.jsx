@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Select from "react-select";
-import { FaFacebookF, FaInstagram, FaWhatsapp } from "react-icons/fa";
+import { FaFacebook, FaWhatsapp, FaEnvelope } from "react-icons/fa";
 import {
   User,
   Phone,
@@ -8,6 +8,12 @@ import {
   Briefcase,
   ArrowRight,
   CheckCircle2,
+  Clock,
+  Users,
+  Lightbulb,
+  ShieldCheck,
+  Target,
+  Headphones,
 } from "lucide-react";
 import serviceCategories from "../../data/servicesData";
 import { submitContactForm } from "../../lib/api";
@@ -42,25 +48,66 @@ const filterServiceOption = (option, rawInput) => {
 // ---------------------------------------------
 // SOCIAL LINKS (icon + address)
 // ---------------------------------------------
+const CONTACT_HIGHLIGHTS = [
+  { icon: Clock, title: "Quick Response", desc: "Our team gets back to you within one business day." },
+  { icon: Users, title: "Expert Guidance", desc: "Talk to experienced CAs, advocates and consultants." },
+  { icon: Lightbulb, title: "Free Consultation", desc: "Share your requirement and get clear next steps at no cost." },
+  { icon: ShieldCheck, title: "Confidential & Secure", desc: "Your details stay private and are used only to assist you." },
+  { icon: Target, title: "Tailored Solutions", desc: "Advice matched to your business, not a one-size-fits-all plan." },
+  { icon: Headphones, title: "Support at Every Step", desc: "From the first call to the final filing, we stay with you." },
+];
+
+const CONTACT_EMAIL = "megaclickofficial@gmail.com";
+
+// Brand logos, drawn as the real app icons (full-colour, not tinted glyphs)
+const InstagramLogo = ({ className }) => (
+  <svg viewBox="0 0 48 48" className={className} aria-hidden="true">
+    <defs>
+      <radialGradient id="ig-grad" cx="0.3" cy="1.05" r="1.25">
+        <stop offset="0" stopColor="#FFD600" />
+        <stop offset="0.3" stopColor="#FF7A00" />
+        <stop offset="0.55" stopColor="#FF0069" />
+        <stop offset="0.8" stopColor="#D300C5" />
+        <stop offset="1" stopColor="#7638FA" />
+      </radialGradient>
+    </defs>
+    <rect width="48" height="48" rx="13" fill="url(#ig-grad)" />
+    <rect x="11.5" y="11.5" width="25" height="25" rx="7.5" fill="none" stroke="#fff" strokeWidth="3" />
+    <circle cx="24" cy="24" r="6" fill="none" stroke="#fff" strokeWidth="3" />
+    <circle cx="31.4" cy="16.6" r="1.9" fill="#fff" />
+  </svg>
+);
+
+const WhatsAppLogo = ({ className }) => (
+  <span className={`${className} flex items-center justify-center rounded-[28%] bg-[#25D366]`}>
+    <FaWhatsapp className="h-[64%] w-[64%] text-white" />
+  </span>
+);
+
+const FacebookLogo = ({ className }) => (
+  <FaFacebook className={`${className} text-[#1877F2]`} />
+);
+
+const EmailLogo = ({ className }) => (
+  <span className={`${className} flex items-center justify-center rounded-[28%] bg-[#EA4335]`}>
+    <FaEnvelope className="h-[50%] w-[50%] text-white" />
+  </span>
+);
+
+// Same Gmail compose link the footer's email uses
+const GMAIL_COMPOSE_URL = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(
+  CONTACT_EMAIL
+)}`;
+
 const SOCIAL_ROWS = [
+  { ...SOCIAL_PROFILES.instagram, Logo: InstagramLogo },
+  { ...SOCIAL_PROFILES.facebook, Logo: FacebookLogo },
+  { ...SOCIAL_PROFILES.whatsapp, onClick: openWhatsApp, Logo: WhatsAppLogo },
   {
-    ...SOCIAL_PROFILES.instagram,
-    icon: FaInstagram,
-    iconColor: "text-[#E1306C]",
-    tile: "bg-[#FCE7F3]",
-  },
-  {
-    ...SOCIAL_PROFILES.whatsapp,
-    onClick: openWhatsApp,
-    icon: FaWhatsapp,
-    iconColor: "text-[#16A34A]",
-    tile: "bg-[#E2F9EA]",
-  },
-  {
-    ...SOCIAL_PROFILES.facebook,
-    icon: FaFacebookF,
-    iconColor: "text-[#1877F2]",
-    tile: "bg-[#E8F1FF]",
+    label: "Email Us",
+    url: GMAIL_COMPOSE_URL,
+    handle: CONTACT_EMAIL,
+    Logo: EmailLogo,
   },
 ];
 
@@ -163,26 +210,23 @@ const ContactSection = () => {
   };
 
   return (
-    <section className="relative w-full overflow-hidden bg-blue-100 py-8 sm:py-12 lg:py-16 lg:pt-12 min-[1920px]:py-20 min-[1920px]:pt-14 min-[3840px]:py-32 font-['Inter',sans-serif]">
+    <section className="relative w-full overflow-hidden bg-blue-100 py-8 sm:py-12 lg:py-16 lg:pt-12 lg:pb-8 min-[1920px]:py-20 min-[1920px]:pt-14 min-[1920px]:pb-10 min-[3840px]:py-32 font-['Inter',sans-serif]">
       {/* DIRECT CSS RULES FOR 1440px, 1920px & 3840px RESPONSIVENESS */}
       <style>{`
-        /* Compact form card. Tailwind emits its min-[...] rules before sm:/lg:, so the
+        /* Form fields. Tailwind emits its min-[...] rules before sm:/lg:, so the
            large-screen sizes are set here to make sure they apply. The service select
            uses the same height as the other fields at every breakpoint. */
         .service-select__control { min-height: 44px !important; }
         @media (min-width: 640px)  { .service-select__control { min-height: 48px !important; } }
 
-        @media (min-width: 1440px) {
-          .contact-form-card { max-width: 560px !important; }
-        }
         @media (min-width: 1920px) {
-          .contact-form-card { max-width: 640px !important; padding: 2.25rem !important; }
+         
           .contact-field { height: 3.25rem !important; }
           .service-select__control { min-height: 3.25rem !important; }
           .contact-textarea { min-height: 6.5rem !important; }
         }
         @media (min-width: 3840px) {
-          .contact-form-card { max-width: 1100px !important; padding: 3.5rem !important; }
+         
           .contact-field { height: 5rem !important; }
           .service-select__control { min-height: 5rem !important; }
           .contact-textarea { min-height: 11rem !important; }
@@ -200,7 +244,7 @@ const ContactSection = () => {
             margin-bottom: 0.75rem !important;
           }
           .contact-title {
-            font-size: 2.4rem !important;
+            font-size: 2.8rem !important;
             line-height: 1.18 !important;
           }
           .contact-desc {
@@ -229,7 +273,7 @@ const ContactSection = () => {
             margin-bottom: 1rem !important;
           }
           .contact-title {
-            font-size: 3rem !important;
+            font-size: 3.5rem !important;
             line-height: 1.18 !important;
           }
           .contact-desc {
@@ -258,7 +302,7 @@ const ContactSection = () => {
             margin-bottom: 1.75rem !important;
           }
           .contact-title {
-            font-size: 5rem !important;
+            font-size: 5.75rem !important;
             line-height: 1.15 !important;
           }
           .contact-desc {
@@ -282,12 +326,12 @@ const ContactSection = () => {
 
       {/* UNIFIED CONTAINER */}
       <div className="contact-container relative z-10 w-full max-w-[1380px] mx-auto px-4 sm:px-6 min-[1440px]:px-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 lg:grid-rows-[auto_auto_auto_auto_1fr] gap-x-8 min-[1440px]:gap-x-10 min-[1920px]:gap-x-12 min-[3840px]:gap-x-20 gap-y-0 items-start w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-2 lg:grid-rows-[auto_auto_auto_1fr] gap-x-8 min-[1440px]:gap-x-12 min-[1920px]:gap-x-16 min-[3840px]:gap-x-24 gap-y-0 items-start w-full">
           
           {/* =====================================================
               TAGLINE (small heading above the title)
           ====================================================== */}
-          <div className="relative min-w-0 w-full lg:col-start-1 lg:row-start-1">
+          <div className="relative min-w-0 w-full lg:col-span-2 lg:col-start-1 lg:row-start-1">
             <p
               style={{ fontFamily: "'Inter', sans-serif" }}
               className="contact-tagline text-xs sm:text-sm font-semibold tracking-[0.25em] uppercase text-[#0B4EA2] mb-2.5 sm:mb-3 text-left"
@@ -306,7 +350,7 @@ const ContactSection = () => {
               {/* HEADING */}
               <h2
                 style={{ fontFamily: "'Poppins', serif" }}
-                className="contact-title text-2xl sm:text-3xl md:text-3xl lg:text-4xl font-bold leading-[1.18] text-black text-left mb-2.5 sm:mb-4"
+                className="contact-title text-[1.65rem] sm:text-[2rem] md:text-[2rem] lg:text-[2.6rem] font-bold leading-[1.18] text-black text-left mb-2 lg:mb-4 lg:whitespace-nowrap"
               >
                 Request Your Free <span className="text-[#0B4EA2]">Consultation</span>
               </h2>
@@ -314,22 +358,15 @@ const ContactSection = () => {
           </div>
 
           {/* =====================================================
-              DESCRIPTION (sits between the heading and the social links)
+              FORM (right on desktop, below the heading)
           ====================================================== */}
-          <div className="relative min-w-0 w-full mb-8 lg:mb-0 lg:col-start-1 lg:row-start-3">
-            <p
-              style={{ fontFamily: "'Inter', sans-serif" }}
-              className="contact-desc mt-3 sm:mt-4 lg:mt-1 text-slate-600 font-normal text-xs sm:text-sm lg:text-base leading-relaxed text-left w-full"
+          <div className="contact-form-card relative min-w-0 w-full mb-8 lg:mb-0 lg:col-start-2 lg:row-start-2 lg:row-span-3 lg:justify-self-end lg:max-w-[540px] min-[1920px]:max-w-[720px] min-[3840px]:max-w-[1300px] rounded-2xl sm:rounded-[26px] min-[1920px]:rounded-[36px] min-[3840px]:rounded-[50px] bg-white/95 p-4 sm:p-6 min-[1440px]:p-7 min-[1920px]:p-9 min-[3840px]:p-16 shadow-[0_15px_50px_rgba(0,0,0,0.08)] border border-white/40">
+            <h3
+              style={{ fontFamily: "'Poppins', serif" }}
+              className="mb-4 sm:mb-5 min-[1920px]:mb-6 min-[3840px]:mb-10 text-xl sm:text-2xl min-[1920px]:text-3xl min-[3840px]:text-5xl font-bold text-black text-left"
             >
-              Tell us about your business requirements and our experts will contact you with the best legal, financial and compliance solutions.
-            </p>
-          </div>
-
-          {/* =====================================================
-              FORM (right on desktop)
-          ====================================================== */}
-          <div className="contact-form-card relative min-w-0 w-full mb-8 lg:mb-0 lg:col-start-2 lg:row-start-1 lg:row-span-5 overflow-hidden rounded-2xl sm:rounded-[26px] min-[1440px]:rounded-[30px] min-[1920px]:rounded-[36px] min-[3840px]:rounded-[50px] bg-white/95 p-4 sm:p-6 min-[1440px]:p-7 min-[1920px]:p-9 min-[3840px]:p-16 lg:max-w-[520px] min-[1440px]:max-w-[560px] min-[1920px]:max-w-[680px] min-[3840px]:max-w-[1200px] lg:justify-self-end shadow-[0_15px_50px_rgba(0,0,0,0.08)] backdrop-blur-xl border border-white/40">
-            <div className="pointer-events-none absolute -right-16 -top-16 h-32 w-32 min-[3840px]:h-60 min-[3840px]:w-60 rounded-full bg-blue-100 blur-3xl" />
+              Message Us
+            </h3>
 
             {/* FORM */}
             <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-3.5 min-[1920px]:space-y-5 min-[3840px]:space-y-8">
@@ -400,6 +437,10 @@ const ContactSection = () => {
                     isSearchable
                     filterOption={filterServiceOption}
                     maxMenuHeight={320}
+                    menuPortalTarget={typeof document !== "undefined" ? document.body : null}
+                    menuPosition="fixed"
+                    menuPlacement="auto"
+                    menuShouldScrollIntoView={false}
                     placeholder="Search services *"
                     noOptionsMessage={() => "No service found."}
                     className="w-full text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl"
@@ -479,6 +520,7 @@ const ContactSection = () => {
                         overflow: "hidden",
                         textOverflow: "ellipsis",
                       }),
+                      menuPortal: (base) => ({ ...base, zIndex: 9999 }),
                       menu: (base) => ({
                         ...base,
                         zIndex: 9999,
@@ -547,70 +589,75 @@ const ContactSection = () => {
           </div>
 
           {/* =====================================================
-              SOCIAL LINKS (left on desktop, last on mobile)
+              CONTACT HIGHLIGHTS + SOCIAL LINKS (left on desktop, last on mobile)
           ====================================================== */}
-          <div className="relative z-10 min-w-0 w-full lg:col-start-1 lg:row-start-4 lg:mt-6 min-[1440px]:mt-8 min-[1920px]:mt-10 min-[3840px]:mt-16">
-              {/* SOCIAL LINKS */}
-              <div>
-                <ul className="flex w-full flex-col gap-3 min-[3840px]:gap-6">
-                  {SOCIAL_ROWS.map((item) => {
-                    const Icon = item.icon;
-                    const address = socialAddress(item);
-                    const rowClass =
-                      "group flex min-w-0 items-center gap-4 sm:gap-5 min-[1920px]:gap-6 min-[3840px]:gap-8";
+          <div className="relative z-10 min-w-0 w-full lg:col-start-1 lg:row-start-3 lg:mt-2 min-[1920px]:mt-3 min-[3840px]:mt-6">
+            {/* HIGHLIGHTS */}
+            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 min-[1920px]:gap-x-12 min-[3840px]:gap-x-20">
+              {CONTACT_HIGHLIGHTS.map((item, i) => {
+                const Icon = item.icon;
+                return (
+                  <li
+                    key={item.title}
+                    className={`flex items-start gap-3 min-[1920px]:gap-4 min-[3840px]:gap-6 py-4 min-[1920px]:py-5 min-[3840px]:py-8 border-blue-200/70 ${
+                      i < CONTACT_HIGHLIGHTS.length - 2 ? "border-b" : ""
+                    } ${i < CONTACT_HIGHLIGHTS.length - 1 ? "max-sm:border-b" : ""}`}
+                  >
+                    <span className="flex h-[3.25rem] w-[3.25rem] min-[1920px]:h-16 min-[1920px]:w-16 min-[3840px]:h-[6.5rem] min-[3840px]:w-[6.5rem] shrink-0 items-center justify-center rounded-[0.9rem] min-[1920px]:rounded-[1.1rem] min-[3840px]:rounded-[1.6rem] bg-blue-200/70 text-[#0B4EA2]">
+                      <Icon className="h-[1.4rem] w-[1.4rem] min-[1920px]:h-7 min-[1920px]:w-7 min-[3840px]:h-[2.9rem] min-[3840px]:w-[2.9rem]" />
+                    </span>
+                    <span className="min-w-0">
+                      <span
+                        style={{ fontFamily: "'Poppins', serif" }}
+                        className="block text-base min-[1440px]:text-[1.05rem] min-[1920px]:text-[1.3rem] min-[3840px]:text-[2.1rem] font-semibold text-[#0f1f3d] leading-[1.3]"
+                      >
+                        {item.title}
+                      </span>
+                      <span
+                        style={{ fontFamily: "'Inter', sans-serif" }}
+                        className="mt-[0.4rem] block text-[0.85rem] min-[1440px]:text-[0.9rem] min-[1920px]:text-[1.05rem] min-[3840px]:text-[1.7rem] text-[#566379] leading-[1.6]"
+                      >
+                        {item.desc}
+                      </span>
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
 
-                    const content = (
-                      <>
-                        <span
-                          className={`flex h-11 w-11 sm:h-12 sm:w-12 min-[1920px]:h-14 min-[1920px]:w-14 min-[3840px]:h-20 min-[3840px]:w-20 shrink-0 items-center justify-center rounded-full transition-transform duration-300 group-hover:scale-105 ${item.tile}`}
-                        >
-                          <Icon
-                            className={`h-5 w-5 min-[1920px]:h-6 min-[1920px]:w-6 min-[3840px]:h-9 min-[3840px]:w-9 ${item.iconColor}`}
-                          />
-                        </span>
-
-                        <span className="min-w-0 flex-1">
-                          <span
-                            style={{ fontFamily: "'Inter', sans-serif" }}
-                            className="block text-[11px] sm:text-xs min-[1920px]:text-sm min-[3840px]:text-xl font-semibold uppercase tracking-[0.18em] text-slate-500"
-                          >
-                            {item.label}
-                          </span>
-                          <span
-                            style={{ fontFamily: "'Poppins', serif" }}
-                            className={`mt-0.5 block truncate text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-3xl font-semibold transition-colors duration-300 ${
-                              address
-                                ? "text-gray-900 group-hover:text-[#0B4EA2]"
-                                : "text-slate-400"
-                            }`}
-                          >
-                            {address || "Coming soon"}
-                          </span>
-                        </span>
-                      </>
-                    );
-
-                    return (
-                      <li key={item.label}>
-                        {item.url ? (
-                          <a
-                            href={item.url}
-                            onClick={item.onClick}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            aria-label={`${item.label}: ${address}`}
-                            className={rowClass}
-                          >
-                            {content}
-                          </a>
-                        ) : (
-                          <div className={rowClass}>{content}</div>
-                        )}
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
+            {/* SOCIAL LINKS (one line) */}
+            <ul className="mt-5 min-[1920px]:mt-6 min-[3840px]:mt-10 grid grid-cols-2 gap-x-4 gap-y-4 sm:flex sm:flex-wrap sm:items-center sm:gap-y-3">
+              {SOCIAL_ROWS.map((item, idx) => {
+                const { Logo } = item;
+                const address = socialAddress(item);
+                return (
+                  <li key={item.label} className="flex items-center">
+                    {idx > 0 && (
+                      <span aria-hidden="true" className="hidden sm:inline mx-4 sm:mx-5 min-[1920px]:mx-7 min-[3840px]:mx-12 select-none text-lg min-[1920px]:text-xl min-[3840px]:text-4xl font-light leading-none text-slate-400">
+                        |
+                      </span>
+                    )}
+                    <a
+                      href={item.url}
+                      onClick={item.onClick}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      title={address}
+                      aria-label={`${item.label}: ${address}`}
+                      className="group flex items-center gap-2 min-[3840px]:gap-4"
+                    >
+                      <Logo className="h-9 w-9 min-[1920px]:h-10 min-[1920px]:w-10 min-[3840px]:h-16 min-[3840px]:w-16 shrink-0 transition-transform duration-300 group-hover:scale-105" />
+                      <span
+                        style={{ fontFamily: "'Inter', sans-serif" }}
+                        className="text-xs min-[1920px]:text-sm min-[3840px]:text-xl font-semibold text-slate-700 transition-colors duration-300 group-hover:text-[#0B4EA2]"
+                      >
+                        {item.label}
+                      </span>
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
           </div>
 
         </div>
