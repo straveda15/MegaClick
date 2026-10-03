@@ -7,6 +7,8 @@ import Services from "./pages/Services";
 import AssociateWithUs from "./pages/AssociateWithUs";
 import Contact from "./pages/Contact";
 import ServiceDetails from "./pages/ServiceDetails";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsConditions from "./pages/TermsConditions";
 
 // Components
 import WhatsAppButton from "./components/WhatsAppButton";
@@ -23,7 +25,7 @@ function App() {
       <ScrollToTop />
 
       <Routes>
-        {/* ================= LAYOUT ================= */}
+        {/* ================= MAIN LAYOUT ================= */}
         <Route element={<MainLayout />}>
 
           {/* ================= HOME ================= */}
@@ -62,10 +64,23 @@ function App() {
             element={<Contact />}
           />
 
+          {/* ================= PRIVACY POLICY ================= */}
+          <Route
+            path="/privacy-policy"
+            element={<PrivacyPolicy />}
+          />
+
+          {/* ================= TERMS AND CONDITIONS ================= */}
+<Route
+  path="/terms-and-conditions"
+  element={<TermsConditions />}
+/>
+
         </Route>
+      
       </Routes>
 
-      {/* ================= FLOATING BACK TO TOP (above WhatsApp) ================= */}
+      {/* ================= FLOATING BACK TO TOP ================= */}
       <BackToTop />
 
       {/* ================= FLOATING WHATSAPP ================= */}

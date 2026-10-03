@@ -1677,22 +1677,6 @@ const HowItWorks = () => {
                       z-20
                     "
                   >
-                    <Check
-                      size={12}
-                      className="text-green-600 shrink-0"
-                    />
-
-                    <span
-                      className="
-                        text-[10px]
-                        sm:text-[10.5px]
-                        font-semibold
-                        text-[#0B4EA2]
-                        whitespace-nowrap
-                      "
-                    >
-                      Fast &amp; Secure
-                    </span>
                   </div>
                 </div>
               );
