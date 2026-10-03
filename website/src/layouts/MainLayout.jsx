@@ -9,7 +9,7 @@ const MainLayout = () => {
 
   return (
     <>
-      <Navbar showTopBar={location.pathname === "/"} />
+      <Navbar showTopBar={true} />
 
       <Outlet />
 

@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Phone, Mail, MapPin } from "lucide-react";
 import {
@@ -6,7 +5,7 @@ import {
   FaInstagram,
   FaWhatsapp,
 } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { SOCIAL_PROFILES } from "../data/socialLinks";
 import { openWhatsApp } from "../lib/whatsapp";
@@ -14,20 +13,23 @@ import logo from "../assets/LOGO.png";
 import stravedalogo from "/straveda-logo-cropped.png";
 
 const FOOTER_LINKS = {
- EXPLORE: [
-  { label: "Home", path: "/" },
-  { label: "About Us", path: "/about" },
-  { label: "Associate With Us", path: "/associate-with-us" },
-  { label: "Privacy Policy", path: "/privacy-policy" },
-  { label: "Terms of Service", path: "/terms-of-service" },
-],
+  EXPLORE: [
+    { label: "Home", path: "/" },
+    { label: "About Us", path: "/about" },
+    { label: "Associate With Us", path: "/associate-with-us" },
+    { label: "Privacy Policy", path: "/privacy-policy" },
+    { label: "Terms & Conditions", path: "/terms-and-conditions" },
+  ],
 
   SERVICES: [
-  { label: "Legal Services", path: "/services?category=legal-services" },
-  { label: "Business & Financial Services", path: "/services?category=business-financial-services" },
-  { label: "IT Services", path: "/services?category=it-services" },
-  { label: "Other Services", path: "/services?category=other-services" },
-],
+    { label: "Legal Services", path: "/services?category=legal-services" },
+    {
+      label: "Business & Financial Services",
+      path: "/services?category=business-financial-services",
+    },
+    { label: "IT Services", path: "/services?category=it-services" },
+    { label: "Other Services", path: "/services?category=other-services" },
+  ],
 };
 
 /* =========================================================
@@ -72,6 +74,7 @@ const Footer = () => {
   /* =========================================================
      GMAIL
   ========================================================= */
+
   const openGmailCompose = () => {
     const email = "megaclickofficial@gmail.com";
 
@@ -85,6 +88,7 @@ const Footer = () => {
   /* =========================================================
      NAVIGATION
   ========================================================= */
+
   const handleNavigation = (path) => {
     navigate(path);
 
@@ -103,6 +107,7 @@ const Footer = () => {
       className="
         relative
         mt-auto
+        w-full
         overflow-hidden
         bg-gradient-to-br
         from-[#0e57ac]
@@ -128,165 +133,41 @@ const Footer = () => {
       {/* =====================================================
           RESPONSIVE FOOTER CSS
       ===================================================== */}
-      <style>{`
-        /* ===================================================
-           BASE CONTAINER
-        =================================================== */
 
+      <style>{`
         .footer-container {
           width: 100%;
           max-width: 100%;
-          margin-left: auto;
-          margin-right: auto;
-          padding-left: 1rem;
-          padding-right: 1rem;
+          margin: 0 auto;
+          padding-left: 24px;
+          padding-right: 24px;
+          box-sizing: border-box;
         }
 
-        /* ===================================================
-           SMALL MOBILE
-        =================================================== */
-
-        @media (min-width: 375px) {
-          .footer-container {
-            padding-left: 1.25rem;
-            padding-right: 1.25rem;
-          }
-        }
-
-        /* ===================================================
-           TABLET
-        =================================================== */
-
-        @media (min-width: 640px) {
-          .footer-container {
-            max-width: 640px;
-            padding-left: 1.5rem;
-            padding-right: 1.5rem;
-          }
-        }
+        /* =====================================================
+           TABLET / DESKTOP BASE
+        ===================================================== */
 
         @media (min-width: 768px) {
           .footer-container {
-            max-width: 768px;
-            padding-left: 2rem;
-            padding-right: 2rem;
+            max-width: 1500px;
+            margin-left: auto;
+            margin-right: auto;
           }
         }
 
-        /* ===================================================
-           SMALL LAPTOP
-        =================================================== */
-
-        @media (min-width: 1024px) {
-          .footer-container {
-            max-width: 1180px;
-            padding-left: 2rem;
-            padding-right: 2rem;
-          }
-
-          .footer-brand-column {
-            width: 235px !important;
-          }
-
-          .footer-brand-title {
-            font-size: 1.45rem !important;
-          }
-
-          .footer-brand-desc {
-            font-size: 0.82rem !important;
-            line-height: 1.5 !important;
-          }
-
-          .footer-col-heading {
-            font-size: 0.7rem !important;
-            margin-bottom: 0.75rem !important;
-          }
-
-          .footer-link-text {
-            font-size: 0.78rem !important;
-            line-height: 1.45 !important;
-          }
-
-          .footer-contact-icon {
-            width: 15px !important;
-            height: 15px !important;
-          }
-
-          .footer-social-btn {
-            width: 36px !important;
-            height: 36px !important;
-          }
-        }
-
-        /* ===================================================
-           1280px
-        =================================================== */
-
-        @media (min-width: 1280px) {
-          .footer-container {
-            max-width: 1280px;
-            padding-left: 2.5rem;
-            padding-right: 2.5rem;
-          }
-
-          .footer-brand-column {
-            width: 270px !important;
-          }
-
-          .footer-brand-title {
-            font-size: 1.55rem !important;
-          }
-
-          .footer-brand-desc {
-            font-size: 0.86rem !important;
-          }
-
-          .footer-link-text {
-            font-size: 0.84rem !important;
-          }
-        }
-
-        /* ===================================================
-           1366px / STANDARD LAPTOP
-        =================================================== */
-
-        @media (min-width: 1366px) {
-          .footer-container {
-            max-width: 1340px;
-            padding-left: 2.5rem;
-            padding-right: 2.5rem;
-          }
-
-          .footer-brand-column {
-            width: 285px !important;
-          }
-
-          .footer-brand-title {
-            font-size: 1.6rem !important;
-          }
-
-          .footer-brand-desc {
-            font-size: 0.88rem !important;
-          }
-
-          .footer-col-heading {
-            font-size: 0.73rem !important;
-          }
-
-          .footer-link-text {
-            font-size: 0.87rem !important;
-          }
-        }
-
-        /* ===================================================
-           1440px DESKTOP
-        =================================================== */
+        /* =====================================================
+           1440px
+        ===================================================== */
 
         @media (min-width: 1440px) {
           .footer-container {
-            max-width: 1440px;
-            padding-left: 3rem;
-            padding-right: 3rem;
+            width: 100%;
+            max-width: 1500px;
+            margin-left: auto;
+            margin-right: auto;
+            padding-left: 40px;
+            padding-right: 40px;
           }
 
           .footer-brand-column {
@@ -300,6 +181,7 @@ const Footer = () => {
           .footer-brand-desc {
             font-size: 0.9rem !important;
             line-height: 1.5 !important;
+            max-width: 280px !important;
           }
 
           .footer-col-heading {
@@ -309,6 +191,7 @@ const Footer = () => {
 
           .footer-link-text {
             font-size: 0.9rem !important;
+            line-height: 1.5 !important;
           }
 
           .footer-social-btn {
@@ -322,15 +205,18 @@ const Footer = () => {
           }
         }
 
-        /* ===================================================
-           1600px
-        =================================================== */
+        /* =====================================================
+           1920px
+        ===================================================== */
 
-        @media (min-width: 1600px) {
+        @media (min-width: 1920px) {
           .footer-container {
+            width: 100%;
             max-width: 1600px;
-            padding-left: 3.5rem;
-            padding-right: 3.5rem;
+            margin-left: auto;
+            margin-right: auto;
+            padding-left: 50px;
+            padding-right: 50px;
           }
 
           .footer-brand-column {
@@ -343,36 +229,58 @@ const Footer = () => {
 
           .footer-brand-desc {
             font-size: 0.95rem !important;
+            max-width: 320px !important;
+          }
+
+          .footer-col-heading {
+            font-size: 0.8rem !important;
           }
 
           .footer-link-text {
             font-size: 0.95rem !important;
           }
+
+          .footer-social-btn {
+            width: 42px !important;
+            height: 42px !important;
+          }
+
+          .footer-logo-img {
+            width: 44px !important;
+            height: 44px !important;
+          }
+
+          .footer-contact-icon {
+            width: 17px !important;
+            height: 17px !important;
+          }
         }
 
-        /* ===================================================
-           1920px FULL HD
-        =================================================== */
+        /* =====================================================
+           2560px
+        ===================================================== */
 
-        @media (min-width: 1920px) {
+        @media (min-width: 2560px) {
           .footer-container {
-            max-width: 1800px;
-            padding-left: 4rem;
-            padding-right: 4rem;
+            width: 100%;
+            max-width: 1750px;
+            margin-left: auto;
+            margin-right: auto;
+            padding-left: 60px;
+            padding-right: 60px;
           }
 
           .footer-brand-column {
-            width: 350px !important;
+            width: 340px !important;
           }
 
           .footer-brand-title {
-            font-size: 1.9rem !important;
+            font-size: 1.85rem !important;
           }
 
           .footer-brand-desc {
             font-size: 1rem !important;
             max-width: 340px !important;
-            line-height: 1.55 !important;
           }
 
           .footer-col-heading {
@@ -396,193 +304,113 @@ const Footer = () => {
           }
 
           .footer-contact-icon {
-            width: 17px !important;
-            height: 17px !important;
+            width: 18px !important;
+            height: 18px !important;
           }
         }
 
-        /* ===================================================
-           2200px
-        =================================================== */
+        /* =====================================================
+           3840px — 4K
+           
+           IMPORTANT:
+           Footer background remains full width.
+           Content also uses the complete viewport width instead
+           of being restricted to a narrow 1900px container.
+        ===================================================== */
 
-        @media (min-width: 2200px) {
+        @media (min-width: 3840px) {
           .footer-container {
-            max-width: 2100px;
-            padding-left: 4.5rem;
-            padding-right: 4.5rem;
+            width: 100%;
+            max-width: none !important;
+            margin-left: 0;
+            margin-right: 0;
+            padding-left: 5vw;
+            padding-right: 5vw;
           }
 
           .footer-brand-column {
-            width: 400px !important;
+            width: auto !important;
+            min-width: 0 !important;
           }
 
           .footer-brand-title {
-            font-size: 2.15rem !important;
+            font-size: 2rem !important;
           }
 
           .footer-brand-desc {
-            font-size: 1.1rem !important;
-            max-width: 390px !important;
-          }
-
-          .footer-col-heading {
-            font-size: 0.95rem !important;
-          }
-
-          .footer-link-text {
-            font-size: 1.1rem !important;
-          }
-
-          .footer-social-btn {
-            width: 48px !important;
-            height: 48px !important;
-          }
-        }
-
-        /* ===================================================
-           2560px QHD / 2K
-        =================================================== */
-
-        @media (min-width: 2560px) {
-          .footer-container {
-            max-width: 2300px;
-            padding-left: 5rem;
-            padding-right: 5rem;
-          }
-
-          .footer-brand-column {
-            width: 450px !important;
-          }
-
-          .footer-brand-title {
-            font-size: 2.5rem !important;
-          }
-
-          .footer-brand-desc {
-            font-size: 1.25rem !important;
-            max-width: 450px !important;
-            line-height: 1.6 !important;
-          }
-
-          .footer-col-heading {
             font-size: 1.05rem !important;
-            margin-bottom: 1.25rem !important;
+            line-height: 1.6 !important;
+            max-width: 380px !important;
+          }
+
+          .footer-col-heading {
+            font-size: 0.9rem !important;
+            margin-bottom: 1.1rem !important;
           }
 
           .footer-link-text {
-            font-size: 1.25rem !important;
+            font-size: 1.05rem !important;
             line-height: 1.55 !important;
           }
 
           .footer-social-btn {
-            width: 54px !important;
-            height: 54px !important;
+            width: 46px !important;
+            height: 46px !important;
           }
 
           .footer-logo-img {
-            width: 60px !important;
-            height: 60px !important;
+            width: 52px !important;
+            height: 52px !important;
           }
 
           .footer-contact-icon {
             width: 19px !important;
             height: 19px !important;
           }
+
+          .footer-desktop-content {
+            width: 100% !important;
+          }
+
+          .footer-desktop-content > .footer-main-row {
+            width: 100% !important;
+            grid-template-columns:
+              minmax(360px, 1fr)
+              minmax(0, 3fr) !important;
+          }
+
+          .footer-link-columns {
+            width: 100% !important;
+            grid-template-columns:
+              repeat(3, minmax(0, 1fr)) !important;
+          }
         }
 
-        /* ===================================================
-           3200px
-        =================================================== */
+        /* =====================================================
+           DESKTOP LAYOUT
+        ===================================================== */
 
-        @media (min-width: 3200px) {
-          .footer-container {
-            max-width: 2900px;
-            padding-left: 5.5rem;
-            padding-right: 5.5rem;
+        @media (min-width: 1024px) {
+          .footer-main-row {
+            grid-template-columns:
+              minmax(260px, 1.05fr)
+              minmax(0, 2.95fr) !important;
+            width: 100%;
           }
 
           .footer-brand-column {
-            width: 520px !important;
+            min-width: 0;
           }
 
-          .footer-brand-title {
-            font-size: 3rem !important;
-          }
-
-          .footer-brand-desc {
-            font-size: 1.45rem !important;
-            max-width: 520px !important;
-          }
-
-          .footer-col-heading {
-            font-size: 1.2rem !important;
-          }
-
-          .footer-link-text {
-            font-size: 1.45rem !important;
-          }
-
-          .footer-social-btn {
-            width: 62px !important;
-            height: 62px !important;
+          .footer-link-columns {
+            grid-column: 2 / -1;
+            display: grid;
+            grid-template-columns:
+              repeat(3, minmax(0, 1fr));
+            gap: 2.5rem;
+            min-width: 0;
           }
         }
-
-        /* ===================================================
-           3840px 4K
-        =================================================== */
-
-        @media (min-width: 3840px) {
-          .footer-container {
-            max-width: 3400px;
-            padding-left: 6rem;
-            padding-right: 6rem;
-          }
-
-          .footer-brand-column {
-            width: 600px !important;
-          }
-
-          .footer-logo-img {
-            width: 88px !important;
-            height: 88px !important;
-            border-width: 2px !important;
-          }
-
-          .footer-brand-title {
-            font-size: 3.5rem !important;
-          }
-
-          .footer-brand-desc {
-            font-size: 1.6rem !important;
-            max-width: 600px !important;
-            line-height: 1.6 !important;
-          }
-
-          .footer-col-heading {
-            font-size: 1.35rem !important;
-            margin-bottom: 1.75rem !important;
-          }
-
-          .footer-link-text {
-            font-size: 1.6rem !important;
-            line-height: 1.6 !important;
-          }
-
-          .footer-social-btn {
-            width: 72px !important;
-            height: 72px !important;
-          }
-
-          .footer-contact-icon {
-            width: 30px !important;
-            height: 30px !important;
-          }
-        }
-
-        /* ===================================================
-           DESKTOP CONTENT ALIGNMENT
-        =================================================== */
 
         @media (min-width: 768px) {
           .footer-desktop-content {
@@ -613,38 +441,9 @@ const Footer = () => {
           }
         }
 
-        /* ===================================================
-           MOBILE SAFETY / OVERFLOW
-        =================================================== */
-
-        @media (max-width: 767px) {
-          .footer-mobile-content {
-            width: 100%;
-            min-width: 0;
-          }
-
-          .footer-mobile-content > div {
-            min-width: 0;
-          }
-
-          .footer-mobile-contact {
-            width: 100%;
-            min-width: 0;
-          }
-
-          .footer-mobile-contact span {
-            min-width: 0;
-            overflow-wrap: anywhere;
-          }
-
-          .footer-watermark {
-            font-size: 21vw !important;
-          }
-        }
-
-        /* ===================================================
-           WATERMARK RESPONSIVE SCALING
-        =================================================== */
+        /* =====================================================
+           WATERMARK
+        ===================================================== */
 
         .footer-watermark {
           font-family:
@@ -654,7 +453,14 @@ const Footer = () => {
             "Segoe UI",
             Roboto,
             sans-serif;
+
           letter-spacing: -0.03em;
+        }
+
+        @media (max-width: 767px) {
+          .footer-watermark {
+            font-size: 21vw !important;
+          }
         }
 
         @media (min-width: 768px) {
@@ -665,25 +471,25 @@ const Footer = () => {
 
         @media (min-width: 1440px) {
           .footer-watermark {
-            font-size: 17vw !important;
+            font-size: 15vw !important;
           }
         }
 
         @media (min-width: 1920px) {
           .footer-watermark {
-            font-size: 15vw !important;
+            font-size: 13vw !important;
           }
         }
 
         @media (min-width: 2560px) {
           .footer-watermark {
-            font-size: 14vw !important;
+            font-size: 12vw !important;
           }
         }
 
         @media (min-width: 3840px) {
           .footer-watermark {
-            font-size: 13vw !important;
+            font-size: 11vw !important;
           }
         }
       `}</style>
@@ -691,6 +497,7 @@ const Footer = () => {
       {/* =====================================================
           MEGACLICK WATERMARK
       ===================================================== */}
+
       <div
         className="
           absolute
@@ -744,9 +551,12 @@ const Footer = () => {
           style={{
             WebkitMaskImage:
               "linear-gradient(to right, transparent 0%, black 18%, black 82%, transparent 100%), linear-gradient(to bottom, black 55%, transparent 100%)",
+
             WebkitMaskComposite: "source-in",
+
             maskImage:
               "linear-gradient(to right, transparent 0%, black 18%, black 82%, transparent 100%), linear-gradient(to bottom, black 55%, transparent 100%)",
+
             maskComposite: "intersect",
           }}
         >
@@ -757,10 +567,13 @@ const Footer = () => {
       {/* =====================================================
           MAIN FOOTER CONTENT
       ===================================================== */}
+
       <div className="relative z-10 footer-container">
+
         {/* ===================================================
             MOBILE VIEW
         =================================================== */}
+
         <div
           className="
             md:hidden
@@ -776,6 +589,7 @@ const Footer = () => {
           "
         >
           {/* LOGO & BRAND INFO */}
+
           <div className="w-full min-w-0">
             <div className="flex items-center justify-start gap-3 mb-2">
               <img
@@ -798,75 +612,134 @@ const Footer = () => {
                 "
               />
 
-              <h2 className=
-              
-              "text-2xl sm:text-[1.7rem] font-bold tracking-tight"
-              style={{ fontFamily: "'Poppins', sans-serif" }}
+              <h2
+                className="
+                  text-2xl
+                  sm:text-[1.7rem]
+                  font-bold
+                  tracking-tight
+                "
+                style={{ fontFamily: "'Poppins', sans-serif" }}
               >
                 <span className="text-white">Mega</span>
                 <span className="text-green-400">Click</span>
               </h2>
             </div>
-                 
-            <p className="text-[13px] sm:text-sm text-blue-100/90 font-medium text-left leading-relaxed">
+
+            <p
+              className="
+                text-[13px]
+                sm:text-sm
+                text-blue-100/90
+                font-medium
+                text-left
+                leading-relaxed
+              "
+            >
               Exceptional value. Cost effective solutions.
             </p>
           </div>
 
           {/* EXPLORE */}
-          <div className="w-full text-left"
-          >
-              
-            <h3 className="text-[11px] sm:text-xs font-black uppercase tracking-widest text-green-400 mb-2.5"
-            style={{ fontFamily: "'Poppins', sans-serif"}}
+
+          <div className="w-full text-left">
+            <h3
+              className="
+                text-[11px]
+                sm:text-xs
+                font-black
+                uppercase
+                tracking-widest
+                text-green-400
+                mb-2.5
+              "
+              style={{ fontFamily: "'Poppins', sans-serif" }}
             >
               EXPLORE
             </h3>
 
             <div className="flex flex-col items-start gap-2.5">
-              {FOOTER_LINKS.EXPLORE.map((link) =>
-  link.label === "Privacy Policy" || link.label === "Terms of Service" ? (
-    <span
-      key={link.label}
-      className="
-        text-[13.5px]
-        sm:text-sm
-        font-semibold
-        text-blue-100/90
-        text-left
-      "
-    >
-      {link.label}
-    </span>
-  ) : (
-    <button
-      key={link.label}
-      type="button"
-      onClick={() => handleNavigation(link.path)}
-      className="
-        text-[13.5px]
-        sm:text-sm
-        font-semibold
-        text-blue-100/90
-        hover:text-white
-        transition-colors
-        text-left
-        cursor-pointer
-        p-0
-        bg-transparent
-        border-none
-      "
-    >
-      {link.label}
-    </button>
-  
-              ))}
+              {FOOTER_LINKS.EXPLORE.map((link) => {
+                if (link.label === "Privacy Policy") {
+                  return (
+                    <Link
+                      key={link.label}
+                      to={link.path}
+                      className="
+                        text-[13.5px]
+                        sm:text-sm
+                        font-semibold
+                        text-blue-100/90
+                        hover:text-white
+                        transition-colors
+                        text-left
+                      "
+                    >
+                      {link.label}
+                    </Link>
+                  );
+                }
+
+                if (link.label === "Terms & Conditions") {
+                  return (
+                    <Link
+                      key={link.label}
+                      to={link.path}
+                      className="
+                        text-[13.5px]
+                        sm:text-sm
+                        font-semibold
+                        text-blue-100/90
+                        hover:text-white
+                        transition-colors
+                        text-left
+                      "
+                    >
+                      {link.label}
+                    </Link>
+                  );
+                }
+
+                return (
+                  <button
+                    key={link.label}
+                    type="button"
+                    onClick={() => handleNavigation(link.path)}
+                    className="
+                      text-[13.5px]
+                      sm:text-sm
+                      font-semibold
+                      text-blue-100/90
+                      hover:text-white
+                      transition-colors
+                      text-left
+                      cursor-pointer
+                      p-0
+                      bg-transparent
+                      border-none
+                    "
+                  >
+                    {link.label}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
           {/* CONTACT US */}
+
           <div className="w-full text-left">
-            <h3 className="text-[11px] sm:text-xs font-black uppercase tracking-widest text-green-400 mb-3">
+            <h3
+              className="
+                text-[11px]
+                sm:text-xs
+                font-black
+                uppercase
+                tracking-widest
+                text-green-400
+                mb-3
+              "
+            >
               CONTACT US
             </h3>
 
@@ -884,6 +757,7 @@ const Footer = () => {
               "
             >
               {/* EMAIL */}
+
               <button
                 type="button"
                 onClick={openGmailCompose}
@@ -907,7 +781,11 @@ const Footer = () => {
               >
                 <Mail
                   size={16}
-                  className="shrink-0 mt-0.5 text-green-400"
+                  className="
+                    shrink-0
+                    mt-0.5
+                    text-green-400
+                  "
                 />
 
                 <span className="break-all">
@@ -916,6 +794,7 @@ const Footer = () => {
               </button>
 
               {/* PHONE */}
+
               <a
                 href="tel:+919921611911"
                 className="
@@ -929,13 +808,17 @@ const Footer = () => {
               >
                 <Phone
                   size={16}
-                  className="shrink-0 text-green-400"
+                  className="
+                    shrink-0
+                    text-green-400
+                  "
                 />
 
                 <span>+91 9921611911</span>
               </a>
 
               {/* ADDRESS */}
+
               <a
                 href="https://www.google.com/maps/search/?api=1&query=4th+Floor+Tristar+Complex+Jehan+Circle+Gangapur+Road+Nashik+Maharashtra+422005"
                 target="_blank"
@@ -952,7 +835,11 @@ const Footer = () => {
               >
                 <MapPin
                   size={16}
-                  className="mt-1 shrink-0 text-green-400"
+                  className="
+                    mt-1
+                    shrink-0
+                    text-green-400
+                  "
                 />
 
                 <span className="leading-snug text-left">
@@ -967,6 +854,7 @@ const Footer = () => {
           </div>
 
           {/* SOCIAL ICONS */}
+
           <div className="flex justify-start items-center gap-3 pt-1">
             {SOCIAL_LINKS.map((social, index) => {
               const Icon = social.icon;
@@ -979,7 +867,7 @@ const Footer = () => {
                   rel="noopener noreferrer"
                   aria-label={social.label}
                   onClick={social.onClick}
-                  className={`
+                  className="
                     w-10
                     h-10
                     sm:w-11
@@ -998,62 +886,65 @@ const Footer = () => {
                     hover:bg-white/15
                     hover:border-white/50
                     cursor-pointer
-                  `}
+                  "
                 >
                   <Icon size={17} />
                 </a>
               );
             })}
           </div>
-          {/* MOBILE TECH PARTNER */}
-<a
-  href="https://stravedatech.com/"
-  target="_blank"
-  rel="noopener noreferrer"
-  className="
-    flex
-    flex-col
-    items-start
-    justify-center
-    gap-1
-    w-full
-    pt-1
-    pb-1
-    group
-    transition-opacity
-    hover:opacity-80
-  "
-  aria-label="Straveda Tech - Tech Partner"
->
-  <img
-    src={stravedalogo}
-    alt="Straveda"
-    className="
-      h-7
-      w-auto
-      object-contain
-      opacity-95
-      group-hover:opacity-100
-      transition-opacity
-    "
-  />
 
-  <span
-    className="
-      text-[9px]
-      font-semibold
-      text-white/50
-      uppercase
-      tracking-[0.25em]
-      group-hover:text-white/70
-      transition-colors
-    "
-  >
-    TECH PARTNER
-  </span>
-</a>
+          {/* MOBILE TECH PARTNER */}
+
+          <a
+            href="https://stravedatech.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="
+              flex
+              flex-col
+              items-start
+              justify-center
+              gap-1
+              w-full
+              pt-1
+              pb-1
+              group
+              transition-opacity
+              hover:opacity-80
+            "
+            aria-label="Straveda Tech - Tech Partner"
+          >
+            <img
+              src={stravedalogo}
+              alt="Straveda"
+              className="
+                h-7
+                w-auto
+                object-contain
+                opacity-95
+                group-hover:opacity-100
+                transition-opacity
+              "
+            />
+
+            <span
+              className="
+                text-[9px]
+                font-semibold
+                text-white/50
+                uppercase
+                tracking-[0.25em]
+                group-hover:text-white/70
+                transition-colors
+              "
+            >
+              TECH PARTNER
+            </span>
+          </a>
 
           {/* MOBILE BOTTOM BAR */}
+
           <div
             className="
               border-t
@@ -1066,13 +957,24 @@ const Footer = () => {
               text-left
             "
           >
-            <p className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-blue-100/70 text-left leading-relaxed">
+            <p
+              className="
+                text-[11px]
+                sm:text-xs
+                font-bold
+                uppercase
+                tracking-wider
+                text-blue-100/70
+                text-left
+                leading-relaxed
+              "
+            >
               &copy; {new Date().getFullYear()} MegaClick. All rights reserved.
             </p>
 
             <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
-              <a
-                href="/privacy-policy"
+              <Link
+                to="/privacy-policy"
                 className="
                   text-[11px]
                   sm:text-xs
@@ -1085,10 +987,10 @@ const Footer = () => {
                 "
               >
                 Privacy Policy
-              </a>
+              </Link>
 
-              <a
-                href="/terms-of-service"
+              <Link
+                to="/terms-and-conditions"
                 className="
                   text-[11px]
                   sm:text-xs
@@ -1100,8 +1002,8 @@ const Footer = () => {
                   transition-colors
                 "
               >
-                Terms of Service
-              </a>
+                Terms & Conditions
+              </Link>
             </div>
           </div>
         </div>
@@ -1109,26 +1011,37 @@ const Footer = () => {
         {/* ===================================================
             DESKTOP & LAPTOP VIEW
         =================================================== */}
+
         <div className="hidden md:block footer-desktop-content">
-          <div className="mx-auto w-full md:max-w-[1080px] min-[1440px]:max-w-[1200px] min-[1920px]:max-w-[1500px] min-[2560px]:max-w-[2000px] min-[3840px]:max-w-[3000px]">
+
           {/* MAIN DESKTOP ROW */}
+
           <div
             className="
               flex
+              w-full
               flex-col
-              lg:flex-row
+              lg:grid
+              lg:grid-cols-[
+                minmax(240px,1.25fr)
+                _minmax(150px,0.75fr)
+                _minmax(180px,0.85fr)
+                _minmax(300px,1.35fr)
+              ]
               lg:items-start
-              lg:justify-between
               gap-y-7
               gap-x-8
               min-[1440px]:gap-x-10
               min-[1920px]:gap-x-14
               min-[2560px]:gap-x-20
+              footer-main-row
               mb-4
               min-[1920px]:mb-6
             "
           >
+
             {/* BRAND */}
+
             <div
               className="
                 footer-brand-column
@@ -1139,7 +1052,15 @@ const Footer = () => {
               "
             >
               <div>
-                <div className="flex items-center gap-3 min-[1920px]:gap-4 mb-1.5">
+                <div
+                  className="
+                    flex
+                    items-center
+                    gap-3
+                    min-[1920px]:gap-4
+                    mb-1.5
+                  "
+                >
                   <img
                     src={logo}
                     alt="MegaClick"
@@ -1195,6 +1116,7 @@ const Footer = () => {
               </div>
 
               {/* SOCIAL ICONS */}
+
               <div
                 className="
                   flex
@@ -1214,8 +1136,8 @@ const Footer = () => {
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={social.label}
-                  onClick={social.onClick}
-                      className={`
+                      onClick={social.onClick}
+                      className="
                         footer-social-btn
                         w-9
                         h-9
@@ -1235,11 +1157,14 @@ const Footer = () => {
                         hover:bg-white/15
                         hover:border-white/50
                         cursor-pointer
-                      `}
+                      "
                     >
                       <Icon
                         size={16}
-                        className="min-[1920px]:w-[18px] min-[1920px]:h-[18px]"
+                        className="
+                          min-[1920px]:w-[18px]
+                          min-[1920px]:h-[18px]
+                        "
                       />
                     </a>
                   );
@@ -1248,13 +1173,15 @@ const Footer = () => {
             </div>
 
             {/* LINK COLUMNS */}
+
             <div
               className="
                 footer-link-columns
                 grid
                 grid-cols-2
                 sm:grid-cols-3
-                lg:contents
+                lg:grid
+                lg:grid-cols-3
                 gap-y-8
                 gap-x-6
                 lg:gap-x-10
@@ -1262,7 +1189,9 @@ const Footer = () => {
                 min-[2560px]:gap-x-24
               "
             >
+
               {/* EXPLORE */}
+
               <div className="footer-link-column space-y-2.5 min-w-0">
                 <h3
                   className="
@@ -1273,53 +1202,58 @@ const Footer = () => {
                     tracking-widest
                     text-green-400
                   "
-                   style={{ fontFamily: "'Poppins', sans-serif" }}
+                  style={{ fontFamily: "'Poppins', sans-serif" }}
                 >
                   EXPLORE
                 </h3>
 
                 <ul className="space-y-1.5 min-[1920px]:space-y-2">
-                 {FOOTER_LINKS.EXPLORE.map((link) => (
-  <li key={link.label}>
-    {link.label === "Privacy Policy" || link.label === "Terms of Service" ? (
-      <span
-        className="
-          footer-link-text
-          text-[13px]
-          font-semibold
-          text-blue-100/90
-          text-left
-        "
-      >
-        {link.label}
-      </span>
-    ) : (
-      <button
-        type="button"
-        onClick={() => handleNavigation(link.path)}
-        className="
-          footer-link-text
-          text-[13px]
-          font-semibold
-          text-blue-100/90
-          hover:text-white
-          transition-colors
-          text-left
-          cursor-pointer
-          p-0
-          bg-transparent
-          border-none
-        "
-      >
-        {link.label}
-      </button>
-    )}
-  </li>
-))}
+                  {FOOTER_LINKS.EXPLORE.map((link) => (
+                    <li key={link.label}>
+                      {link.label === "Privacy Policy" ||
+                      link.label === "Terms & Conditions" ? (
+                        <Link
+                          to={link.path}
+                          className="
+                            footer-link-text
+                            text-[13px]
+                            font-semibold
+                            text-blue-100/90
+                            hover:text-white
+                            transition-colors
+                            text-left
+                          "
+                        >
+                          {link.label}
+                        </Link>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => handleNavigation(link.path)}
+                          className="
+                            footer-link-text
+                            text-[13px]
+                            font-semibold
+                            text-blue-100/90
+                            hover:text-white
+                            transition-colors
+                            text-left
+                            cursor-pointer
+                            p-0
+                            bg-transparent
+                            border-none
+                          "
+                        >
+                          {link.label}
+                        </button>
+                      )}
+                    </li>
+                  ))}
                 </ul>
               </div>
 
               {/* SERVICES */}
+
               <div className="footer-link-column space-y-2.5 min-w-0">
                 <h3
                   className="
@@ -1330,7 +1264,7 @@ const Footer = () => {
                     tracking-widest
                     text-green-400
                   "
-                   style={{ fontFamily: "'Poppins', sans-serif" }}
+                  style={{ fontFamily: "'Poppins', sans-serif" }}
                 >
                   SERVICES
                 </h3>
@@ -1363,6 +1297,7 @@ const Footer = () => {
               </div>
 
               {/* CONTACT US */}
+
               <div className="footer-link-column space-y-2.5 min-w-0">
                 <h3
                   className="
@@ -1373,7 +1308,7 @@ const Footer = () => {
                     tracking-widest
                     text-green-400
                   "
-                   style={{ fontFamily: "'Poppins', sans-serif" }}
+                  style={{ fontFamily: "'Poppins', sans-serif" }}
                 >
                   CONTACT US
                 </h3>
@@ -1387,7 +1322,9 @@ const Footer = () => {
                     text-blue-100/90
                   "
                 >
+
                   {/* EMAIL */}
+
                   <button
                     type="button"
                     onClick={openGmailCompose}
@@ -1427,6 +1364,7 @@ const Footer = () => {
                   </button>
 
                   {/* PHONE */}
+
                   <a
                     href="tel:+919921611911"
                     className="
@@ -1453,6 +1391,7 @@ const Footer = () => {
                   </a>
 
                   {/* ADDRESS */}
+
                   <a
                     href="https://www.google.com/maps/search/?api=1&query=4th+Floor+Tristar+Complex+Jehan+Circle+Gangapur+Road+Nashik+Maharashtra+422005"
                     target="_blank"
@@ -1494,6 +1433,7 @@ const Footer = () => {
           {/* =================================================
               DESKTOP BOTTOM BAR
           ================================================= */}
+
           <div
             className="
               pt-3.5
@@ -1527,6 +1467,7 @@ const Footer = () => {
             </p>
 
             {/* Straveda Tech Partner Badge */}
+
             <a
               href="https://stravedatech.com/"
               target="_blank"
@@ -1542,7 +1483,6 @@ const Footer = () => {
               "
               aria-label="Straveda Tech - Tech Partner"
             >
-              {/* Straveda logo image (contains the STRAVEDA wordmark in full color) */}
               <img
                 src={stravedalogo}
                 alt="Straveda"
@@ -1558,6 +1498,7 @@ const Footer = () => {
                   transition-opacity
                 "
               />
+
               <span
                 className="
                   text-[9px]
@@ -1575,7 +1516,6 @@ const Footer = () => {
                 TECH PARTNER
               </span>
             </a>
-          </div>
           </div>
         </div>
       </div>
