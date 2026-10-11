@@ -919,7 +919,7 @@ const Footer = () => {
   <img
     src={stravedalogo}
     alt="Straveda"
-    className="h-6 w-auto max-w-[100px] object-contain shrink-0"
+    className="h-4 w-auto max-w-[100px] object-contain shrink-0"
   />
 
   <span className="text-[9px] font-semibold text-white/50 uppercase tracking-wider whitespace-nowrap">
