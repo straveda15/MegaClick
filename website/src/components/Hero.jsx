@@ -244,17 +244,39 @@ const Hero = () => {
            BASE / SMALL MOBILE
         ===================================================== */
 
-        /* Animated Hero Heading */
+      
+.hero-heading-slot {
+  overflow: hidden;
+  display: block;
+}
+
 .hero-heading-animated {
-  animation: heroHeadingEnter 0.65s ease both;
+  animation: heroHeadingEnter 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
   overflow-wrap: anywhere;
+  will-change: transform, opacity;
 }
 
 @keyframes heroHeadingEnter {
   from {
     opacity: 0;
-    transform: translateY(18px);
+    transform: translateY(100%);
+    filter: blur(4px);
   }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-heading-animated {
+    animation: none !important;
+    filter: none;
+  }
+}
+
 
   to {
     opacity: 1;
