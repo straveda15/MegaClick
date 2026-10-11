@@ -919,7 +919,7 @@ const Footer = () => {
   <img
     src={stravedalogo}
     alt="Straveda"
-    className="h-4 w-auto max-w-[100px] object-contain shrink-0"
+    className="h-4 w-auto max-w-[90px] object-contain shrink-0"
   />
 
   <span className="text-[8px] font-semibold text-white/50 uppercase tracking-wider whitespace-nowrap">
@@ -1503,7 +1503,7 @@ const Footer = () => {
     <img
       src={stravedalogo}
       alt="Straveda"
-      className="h-4 w-full max-w-[100px] object-contain"
+      className="h-4 w-full max-w-[90px] object-contain"
     />
     <span className="text-[7px] leading-4 font-semibold text-white/50 uppercase tracking-wider whitespace-nowrap">
       TECH PARTNER
