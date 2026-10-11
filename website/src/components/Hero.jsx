@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 
 import hero1 from "../assets/hero1.jpg";
-import hero2 from "../assets/hero2.jpg";
+import hero2 from "../assets/icon-marriage-registration.svg";
 import hero4 from "../assets/hero4.png";
 import hero3 from "../assets/hero3.webp";
 
@@ -98,15 +98,15 @@ const services = [
     borderColor: "border-sky-100",
   },
   {
-    id: 2,
-    title: "Voter ID, PAN & TAN Services",
-    desc: "Quick assistance for new PAN, TAN, and Voter ID cards, corrections, biometric updates, and timely government.",
-    image: hero2,
-    imgClass: "max-h-full max-w-[85%]",
-    fallbackIcon: <CreditCard className="w-8 h-8 text-amber-500" />,
-    gradient: "from-amber-100/60 via-orange-50/30 to-white",
-    borderColor: "border-amber-100",
-  },
+  id: 2,
+  title: "Marriage Registration",
+  desc: "Get assistance with marriage registration, document verification, and the application process with expert guidance.",
+  image: hero2,
+  imgClass: "max-h-full max-w-[85%]",
+  fallbackIcon: <CreditCard className="w-8 h-8 text-amber-500" />,
+  gradient: "from-amber-100/60 via-orange-50/30 to-white",
+  borderColor: "border-amber-100",
+},
   {
     id: 3,
     title: "Trademark Registration",
@@ -133,6 +133,30 @@ const CAROUSEL_INTERVAL_MS = 4500;
 
 const Hero = () => {
   let navigate;
+
+  const heroHeadings = [
+  "Business With Smart Solutions",
+  "Brand With Trademark Protection",
+  "Business With Expert Guidance",
+  "Dreams Into Real Growth",
+  "Success With Trusted Services",
+  "Business With Seamless Registration",
+  "Ideas Into Successful Ventures",
+  "Growth With Professional Support",
+];
+
+  const [activeHeading, setActiveHeading] = useState(0);
+
+  useEffect(() => {
+    const headingTimer = setInterval(() => {
+      setActiveHeading(
+        (prev) => (prev + 1) % heroHeadings.length
+      );
+    }, 3000);
+
+    return () => clearInterval(headingTimer);
+  }, []);
+
 
   try {
     navigate = useNavigate();
@@ -219,6 +243,30 @@ const Hero = () => {
         /* =====================================================
            BASE / SMALL MOBILE
         ===================================================== */
+
+        /* Animated Hero Heading */
+.hero-heading-animated {
+  animation: heroHeadingEnter 0.65s ease both;
+  overflow-wrap: anywhere;
+}
+
+@keyframes heroHeadingEnter {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-heading-animated {
+    animation: none !important;
+  }
+}
 
         .hero-container {
           width: 100%;
@@ -1246,28 +1294,33 @@ const Hero = () => {
           >
             {/* HEADING */}
             <h1
-              style={{
-                fontFamily: "'Poppins', serif",
-              }}
-              className="
-                hero-title
-                text-3xl
-                sm:text-4xl
-                md:text-4xl
-                xl:text-5xl
-                font-bold
-                leading-[1.18]
-                text-slate-900
-                text-left
-                w-full
-              "
-            >
-              Grow Your Business
-              <br />
-              <span className="text-[#0B4EA2]">
-                With Smart Solutions
-              </span>
-            </h1>
+  style={{ fontFamily: "'Montserrat', serif" }}
+  className="
+    hero-title
+    text-3xl sm:text-4xl md:text-4xl xl:text-5xl
+    font-bold leading-[1.18]
+    text-slate-900 text-left w-full
+  "
+>
+  <span className="block">
+    Grow Your{" "}
+    <span className="text-[#0B4EA2]">
+      {heroHeadings[activeHeading].split(" ")[0]}
+    </span>
+  </span>
+
+  <span className="hero-heading-slot block">
+    <span
+      key={activeHeading}
+      className="hero-heading-animated block text-[#0B4EA2]"
+    >
+      {heroHeadings[activeHeading]
+        .split(" ")
+        .slice(1)
+        .join(" ")}
+    </span>
+  </span>
+</h1>
 
             {/* DESCRIPTION */}
             <p
@@ -1439,6 +1492,46 @@ const Hero = () => {
                   Years Experience
                 </div>
               </div>
+
+{/* STAT 4 */}
+<div
+  className="flex flex-col items-start text-left"
+  style={{ minWidth: "130px" }}
+>
+  <h3
+    style={{ fontFamily: "'Inter', sans-serif" }}
+    className="
+      hero-stat-num
+      text-2xl
+      sm:text-3xl
+      font-bold
+      text-[#0B4EA2]
+      tracking-tight
+      leading-none
+    "
+  >
+    <LinearCountUp
+      end={100}
+      suffix="+"
+      duration={800}
+    />
+  </h3>
+
+  <div
+    className="
+      hero-stat-label
+      text-xs
+      sm:text-sm
+      font-medium
+      text-slate-600
+      mt-1
+      sm:mt-1.5
+    "
+  >
+    Professionals PAN India
+  </div>
+</div>
+
             </div>
 
             {/* =================================================

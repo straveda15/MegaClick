@@ -2,11 +2,13 @@
 import { useEffect, useState } from "react";
 import TopBar from "./TopBar";
 
-import { Menu, X, ArrowRight } from "lucide-react";
+import { Menu, X, ArrowRight, Download } from "lucide-react";
 
 import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 
 import logo from "../assets/LOGO.png";
+
+
 
 function Navbar({ showTopBar = true }) {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -541,19 +543,28 @@ function Navbar({ showTopBar = true }) {
               <img
                 src={logo}
                 alt="MegaClick"
-                className="nav-logo-img w-10 h-10 sm:w-11 sm:h-11 rounded-full object-contain p-1 border border-blue-200 shadow-xs transition-transform duration-300 hover:scale-105 shrink-0"
+                className="nav-logo-img w-12 h-12 sm:w-11 sm:h-11 rounded-full object-contain p-1 border border-blue-200 shadow-xs transition-transform duration-300 hover:scale-105 shrink-0"
               />
 
-              <div className="text-left min-w-0">
-                <h1 className="nav-logo-title text-base sm:text-lg lg:text-xl font-bold leading-tight whitespace-nowrap">
-                  <span className="text-[#0B4EA2]">Mega</span>
-                  <span className="text-emerald-600">Click</span>
-                </h1>
+              
+<div className="flex flex-col leading-none">
+  <h1 className="text-2xl font-bold tracking-tight">
+    <span className="text-[#2167A5]">MEGA</span>
+    <span className="text-[#60AD00]">CL</span>
+    <span className="text-[#2167A5]">i</span>
+    <span className="text-[#60AD00]">CK</span>
+    <sup className="text-black text-xs align-top ml-0.5">®</sup>
+  </h1>
+  
+<p className="mt-0 text-sm text-[#2167A5] whitespace-nowrap">
+  Everything on Mega
+  <span className="text-[#60AD00]">Cl</span>
+  <span className="text-[#2167A5]">i</span>
+  <span className="text-[#60AD00]">ck</span>
+</p>
 
-                <p className="nav-logo-sub text-[10px] sm:text-[11px] text-slate-500 font-medium tracking-wide whitespace-nowrap">
-                  Enterprises
-                </p>
-              </div>
+
+</div>
             </Link>
 
             {/* DESKTOP NAV LINKS */}
@@ -624,21 +635,30 @@ function Navbar({ showTopBar = true }) {
                 Contact Us
               </Link>
             </nav>
+                <div className="hidden lg:flex items-center gap-3 shrink-0">
+  <a
+    href="/MegaClick-Brochure.pdf"
+    download="MegaClick-Brochure.pdf"
+    className="inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-full font-semibold text-sm transition-all duration-200 cursor-pointer"
+  >
+    <Download size={15} />
+    <span>Download Brochure</span>
+  </a>
 
-            {/* DESKTOP GET FREE CONSULTATION BUTTON */}
-            <button
-              type="button"
-              onClick={handleConsultation}
-              className="nav-btn hidden lg:inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white px-5 py-2.5 rounded-full font-semibold text-xs sm:text-sm transition-all duration-200 hover:shadow-md cursor-pointer shrink-0"
-            >
-              <span>Get Free Consultation</span>
-              <ArrowRight
-                size={15}
-                className="nav-btn-icon shrink-0"
-              />
-            </button>
+  <button
+    type="button"
+    onClick={handleConsultation}
+    className="inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white px-5 py-2.5 rounded-full font-semibold text-sm transition-all duration-200 hover:shadow-md cursor-pointer"
+  >
+    <span>Get Free Consultation</span>
+    <ArrowRight size={15} />
+  </button>
+</div>
+            
+
 
             {/* MOBILE MENU TOGGLE BUTTON */}
+            
             <button
               type="button"
               className="lg:hidden p-1 text-slate-800 focus:outline-none cursor-pointer shrink-0"
@@ -720,16 +740,30 @@ function Navbar({ showTopBar = true }) {
               </Link>
 
               {/* MOBILE CONSULTATION BUTTON */}
-              <div className="pt-2 px-4">
-                <button
-                  type="button"
-                  onClick={handleConsultation}
-                  className="w-full flex justify-center items-center gap-2 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white py-3 rounded-xl font-semibold text-sm shadow-sm cursor-pointer"
-                >
-                  <span>Get Free Consultation</span>
-                  <ArrowRight size={16} />
-                </button>
-              </div>
+             
+{/* MOBILE DOWNLOAD BROCHURE BUTTON */}
+<div className="pt-2 px-4 space-y-3">
+  <a
+    href="/MegaClick-Brochure.pdf"
+    download="MegaClick-Brochure.pdf"
+    onClick={closeMenu}
+    className="w-full flex justify-center items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-3 rounded-xl font-semibold text-sm transition-all duration-200"
+  >
+    <Download size={16} />
+    <span>Download Brochure</span>
+  </a>
+
+  {/* MOBILE CONSULTATION BUTTON */}
+  <button
+    type="button"
+    onClick={handleConsultation}
+    className="w-full flex justify-center items-center gap-2 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white px-5 py-3 rounded-xl font-semibold text-sm transition-all duration-200"
+  >
+    <span>Get Free Consultation</span>
+    <ArrowRight size={16} />
+  </button>
+</div>
+
             </div>
           )}
         </div>

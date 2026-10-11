@@ -74,11 +74,22 @@ const FastCountUp = ({
 // =========================================================
 const STATS = [
   { end: 15, suffix: "K+", label: "Happy Clients", duration: 650 },
-  { end: 99, suffix: "%", label: "Success Rate", duration: 750, stepSize: 3 },
+  { end: 97, suffix: "%", label: "Success Rate", duration: 750, stepSize: 3 },
   { end: 25, suffix: "+", label: "Services", duration: 700 },
 ];
 
 const FEATURES = [
+
+  {
+    title: "Time & Cost Efficiency",
+    desc: "Streamlined processes that save your time and keep costs predictable.",
+    icon: WalletCards,
+  },
+  {
+    title: "Transparency & Accountability",
+    desc: "Clear updates, honest pricing and full accountability at every stage.",
+    icon: ShieldCheck,
+  },
   {
     title: "Expert Professional Network",
     desc: "Experienced CAs, advocates and consultants ready to guide you at every step.",
@@ -93,16 +104,6 @@ const FEATURES = [
     title: "End-to-End Professional Service",
     desc: "From the first consultation to the final filing, we handle the complete process.",
     icon: FileCheck2,
-  },
-  {
-    title: "Time & Cost Efficiency",
-    desc: "Streamlined processes that save your time and keep costs predictable.",
-    icon: WalletCards,
-  },
-  {
-    title: "Transparency & Accountability",
-    desc: "Clear updates, honest pricing and full accountability at every stage.",
-    icon: ShieldCheck,
   },
   {
     title: "Built for Everyone",

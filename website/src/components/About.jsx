@@ -257,7 +257,7 @@ const About = () => {
                 text-left
               "
             >
-              Helping Businesses
+              Helping Individuals
               <br />
               <span className="text-[#0B4EA2]">
                 With Smart Solutions
@@ -291,11 +291,7 @@ const About = () => {
                 max-w-2xl
               "
             >
-              MegaClick provides professional business services that
-              simplify registrations, compliance, taxation and financial
-              management. We help businesses with complete support,
-              transparent processes and expert guidance. Our goal is to
-              make every business process simple, reliable and hassle-free.
+            MegaClick is an integrated professional services platform simplifying legal, financial, banking, real estate, and business support services for individuals and businesses across India. Built on integrity, professionalism, and customer satisfaction, MegaClick brings essential services under one roof through streamlined processes, expert guidance, and a commitment to reliable, transparent, and efficient service delivery.
             </p>
           </div>
         </div>

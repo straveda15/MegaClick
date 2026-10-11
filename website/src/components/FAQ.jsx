@@ -3,29 +3,29 @@ import { ChevronDown } from "lucide-react";
 
 const faqs = [
   {
-    question: "What services does MegaClick provide?",
+    question: "How can I get started with MegaClick?",
     answer:
-      "MegaClick provides complete business solutions including company registration, GST registration, trademark registration, ISO certification, financial services and business compliance support.",
+      "Getting started is simple. Contact us to discuss your requirements, understand the available services, and identify the next steps for your needs.",
   },
   {
-    question: "How long does the registration process take?",
+    question: "Can I get professional services as an individual, or are they only for businesses?",
     answer:
-      "The timeline depends on the selected service. Our experts keep you updated throughout the process and complete your work as quickly as possible.",
+      "Yes. MegaClick provides professional services for both individuals and businesses, helping you find suitable solutions based on your specific requirements.",
   },
   {
-    question: "What documents are required?",
+    question: "Can someone guide me if I don't understand the process?",
     answer:
-      "The required documents depend on the selected service. Our team provides a complete checklist before starting your application.",
+      "Absolutely. Our team can guide you through the relevant steps, documentation, and process requirements so you can make informed decisions.",
   },
   {
-    question: "Do you provide consultation before starting?",
+    question: "What documents do I need, and how do I get started?",
     answer:
-      "Yes. We provide professional consultation to understand your business requirements and recommend the most suitable solution.",
+      "The required documents depend on the service you need. Contact our team to understand the documentation requirements and the steps to get started.",
   },
   {
-    question: "Why should I choose MegaClick?",
+    question: "How much will the service cost? Are there any hidden charges?",
     answer:
-      "MegaClick offers transparent processes, professional expertise, secure documentation and complete support from start to finish.",
+      "The cost depends on the type and scope of the service. Contact MegaClick for service-specific pricing and clarification of applicable charges before proceeding.",
   },
 ];
 
