@@ -5,6 +5,8 @@ import msme from "../assets/msme.png";
 import startup from "../assets/H.png";
 import india from "../assets/legal.jpg";
 import gst from "../assets/process.png";
+import dpiitLogo from "../assets/DPIIT.jpeg";
+import necLogo from "../assets/NEC.jpeg";
 
 const partners = [
   { name: "QCI", image: qci },
@@ -13,6 +15,8 @@ const partners = [
   { name: "Startup India", image: startup },
   { name: "Digital India", image: india },
   { name: "GST", image: gst },
+  { name: "DPIIT", image: dpiitLogo },
+  { name: "NEC's Innovation Incubation Centre", image: necLogo },
 ];
 
 const Partners = () => {
@@ -146,7 +150,7 @@ const Partners = () => {
                     alt={partner.name}
                     loading="lazy"
                     draggable="false"
-                    className="partner-logo-img max-h-12 sm:max-h-14 max-w-28 sm:max-w-32 object-contain pointer-events-none transition-transform duration-300 hover:scale-105"
+                    className="partner-logo-img w-28 h-16 sm:w-32 sm:h-20 object-contain pointer-events-none"
                     onError={(e) => {
                       e.currentTarget.style.display = "none";
                     }}

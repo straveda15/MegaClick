@@ -525,8 +525,8 @@ const Services = () => {
             style={{ fontFamily: "'Poppins', serif" }}
             className="services-title text-2xl sm:text-3xl md:text-3xl lg:text-4xl font-bold leading-[1.18] text-black text-left mb-2.5 sm:mb-4"
           >
-            Complete Business{" "}
-            <span className="text-[#0B4EA2]">Solutions</span>
+            Complete Professional{" "}
+            <span className="text-[#0B4EA2]">Service Solutions</span>
           </h2>
 
           <p

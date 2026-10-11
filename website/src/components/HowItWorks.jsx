@@ -1316,151 +1316,8 @@ const HowItWorks = () => {
           HOW IT WORKS
         </p>
 
-        {/* SOLUTION GRID */}
-        <div
-          className="
-            hiw-grid
-            grid
-            grid-cols-2
-            lg:grid-cols-5
-            gap-3
-            sm:gap-4.5
-            lg:gap-5
-            w-full
-            items-stretch
-          "
-        >
-          {/* FEATURED BLUE CARD */}
-          <div
-            className="
-              col-span-2
-              w-full
-              h-full
-              aspect-auto
-              sm:aspect-[2/1]
-              bg-gradient-to-br
-              from-[#0B4EA2]
-              via-[#093F83]
-              to-[#062752]
-              text-white
-              rounded-2xl
-              p-5
-              sm:p-6
-              lg:p-7
-              flex
-              flex-col
-              justify-between
-              shadow-lg
-              shadow-blue-900/20
-              relative
-              overflow-hidden
-              text-left
-              min-w-0
-            "
-          >
-            <div className="absolute -right-8 -bottom-8 w-44 h-44 rounded-full bg-blue-400/20 blur-2xl pointer-events-none" />
-
-            <div className="absolute top-0 right-1/4 w-32 h-32 rounded-full bg-cyan-400/10 blur-xl pointer-events-none" />
-
-            <div className="relative z-10 text-left min-w-0">
-              <h2
-                style={{
-                  fontFamily: "'Poppins', serif",
-                }}
-                className="
-                  hiw-featured-title
-                  text-3xl
-                  sm:text-3xl
-                  md:text-4xl
-                  lg:text-4xl
-                  xl:text-5xl
-                  font-bold
-                  leading-[1.18]
-                  text-white
-                  text-left
-                  break-words
-                "
-              >
-                Get Your{" "}
-                <span className="text-green-600">Solutions</span>
-              </h2>
-
-              <p
-                className="
-                  hiw-featured-desc
-                  mt-2
-                  text-xs
-                  sm:text-[13.5px]
-                  text-blue-100/90
-                  leading-relaxed
-                  max-w-lg
-                  text-justify
-                  [text-align-last:left]
-                  [text-wrap:pretty]
-                  break-words
-                "
-              >
-                We provide a fast, transparent process to help businesses
-                complete registrations, tax compliance, and legal filings
-                with zero hassle.
-              </p>
-            </div>
-
-            {/* VIEW ALL */}
-            <div className="relative z-10 mt-5 sm:mt-6 text-left">
-              <button
-                type="button"
-                onClick={handleViewAll}
-                className="
-                  inline-block
-                  group/link
-                  cursor-pointer
-                  bg-transparent
-                  border-none
-                  p-0
-                "
-              >
-                <span
-                  style={{ fontFamily: "'Inter', sans-serif" }}
-                  className="
-                    hiw-featured-btn
-                    text-xs
-                    sm:text-sm
-                    font-semibold
-                    tracking-[0.2em]
-                    uppercase
-                    text-white/90
-                    group-hover/link:text-white
-                    transition-colors
-                    duration-200
-                  "
-                >
-                  VIEW ALL
-                </span>
-
-                <div
-                  className="
-                    mt-1
-                    h-[1.5px]
-                    w-full
-                    bg-white/40
-                    group-hover/link:bg-white
-                    transition-colors
-                    duration-200
-                  "
-                />
-              </button>
-            </div>
-          </div>
-
-          {/* SOLUTION CARDS */}
-          {solutionCards.map((item) => (
-            <SolutionCardItem key={item.id} item={item} />
-          ))}
-        </div>
-
         {/* HOW IT WORKS STEPPER */}
-        <div className="hiw-stepper-box mt-10 sm:mt-12 lg:mt-14 w-full relative">
+        <div className="hiw-stepper-box mt-6 sm:mt-12 lg:mt-14 w-full relative">
           {/* DESKTOP CONNECTING LINE */}
           <div
             className="
@@ -1682,6 +1539,150 @@ const HowItWorks = () => {
               );
             })}
           </div>
+        </div>
+        
+        {/* SOLUTION GRID */}
+        <div
+          className="
+          mt-10
+            hiw-grid
+            grid
+            grid-cols-2
+            lg:grid-cols-5
+            gap-3
+            sm:gap-4.5
+            lg:gap-5
+            w-full
+            items-stretch
+          "
+        >
+          {/* FEATURED BLUE CARD */}
+          <div
+            className="
+              col-span-2
+              w-full
+              h-full
+              aspect-auto
+              sm:aspect-[2/1]
+              bg-gradient-to-br
+              from-[#0B4EA2]
+              via-[#093F83]
+              to-[#062752]
+              text-white
+              rounded-2xl
+              p-5
+              sm:p-6
+              lg:p-7
+              flex
+              flex-col
+              justify-between
+              shadow-lg
+              shadow-blue-900/20
+              relative
+              overflow-hidden
+              text-left
+              min-w-0
+            "
+          >
+            <div className="absolute -right-8 -bottom-8 w-44 h-44 rounded-full bg-blue-400/20 blur-2xl pointer-events-none" />
+
+            <div className="absolute top-0 right-1/4 w-32 h-32 rounded-full bg-cyan-400/10 blur-xl pointer-events-none" />
+
+            <div className="relative z-10 text-left min-w-0">
+              <h2
+                style={{
+                  fontFamily: "'Poppins', serif",
+                }}
+                className="
+                  hiw-featured-title
+                  text-3xl
+                  sm:text-3xl
+                  md:text-4xl
+                  lg:text-4xl
+                  xl:text-5xl
+                  font-bold
+                  leading-[1.18]
+                  text-white
+                  text-left
+                  break-words
+                "
+              >
+                Get Your{" "}
+                <span className="text-green-600">Solutions</span>
+              </h2>
+
+              <p
+                className="
+                  hiw-featured-desc
+                  mt-2
+                  text-xs
+                  sm:text-[13.5px]
+                  text-blue-100/90
+                  leading-relaxed
+                  max-w-lg
+                  text-justify
+                  [text-align-last:left]
+                  [text-wrap:pretty]
+                  break-words
+                "
+              >
+                We provide a fast, transparent process to help businesses
+                complete registrations, tax compliance, and legal filings
+                with zero hassle.
+              </p>
+            </div>
+
+            {/* VIEW ALL */}
+            <div className="relative z-10 mt-5 sm:mt-6 text-left">
+              <button
+                type="button"
+                onClick={handleViewAll}
+                className="
+                  inline-block
+                  group/link
+                  cursor-pointer
+                  bg-transparent
+                  border-none
+                  p-0
+                "
+              >
+                <span
+                  style={{ fontFamily: "'Inter', sans-serif" }}
+                  className="
+                    hiw-featured-btn
+                    text-xs
+                    sm:text-sm
+                    font-semibold
+                    tracking-[0.2em]
+                    uppercase
+                    text-white/90
+                    group-hover/link:text-white
+                    transition-colors
+                    duration-200
+                  "
+                >
+                  VIEW ALL
+                </span>
+
+                <div
+                  className="
+                    mt-1
+                    h-[1.5px]
+                    w-full
+                    bg-white/40
+                    group-hover/link:bg-white
+                    transition-colors
+                    duration-200
+                  "
+                />
+              </button>
+            </div>
+          </div>
+
+          {/* SOLUTION CARDS */}
+          {solutionCards.map((item) => (
+            <SolutionCardItem key={item.id} item={item} />
+          ))}
         </div>
       </div>
     </section>

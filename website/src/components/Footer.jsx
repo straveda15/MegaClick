@@ -5,12 +5,17 @@ import {
   FaInstagram,
   FaWhatsapp,
 } from "react-icons/fa";
+
+import { FaLinkedinIn } from "react-icons/fa";
+
 import { Link, useNavigate } from "react-router-dom";
 
 import { SOCIAL_PROFILES } from "../data/socialLinks";
 import { openWhatsApp } from "../lib/whatsapp";
 import logo from "../assets/LOGO.png";
 import stravedalogo from "/straveda-logo-cropped.png";
+import dpiitLogo from "../assets/DPIIT.jpeg";
+import necLogo from "../assets/NEC.jpeg";
 
 const FOOTER_LINKS = {
   EXPLORE: [
@@ -62,6 +67,15 @@ const SOCIAL_LINKS = [
     bgColor: "bg-[#FCE7F3]",
     hoverColor: "hover:bg-[#FBD5E7]",
   },
+  {
+  icon: FaLinkedinIn,
+  href: "https://www.linkedin.com/company/YOUR-COMPANY/",
+  label: "LinkedIn",
+  iconColor: "text-[#0A66C2]",
+  bgColor: "bg-[#E8F2FC]",
+  hoverColor: "hover:bg-[#D6E8FA]",
+},
+  
 ];
 
 /* =========================================================
@@ -590,55 +604,43 @@ const Footer = () => {
         >
           {/* LOGO & BRAND INFO */}
 
-          <div className="w-full min-w-0">
-            <div className="flex items-center justify-start gap-3 mb-2">
-              <img
-                src={logo}
-                alt="MegaClick"
-                className="
-                  w-10
-                  h-10
-                  sm:w-11
-                  sm:h-11
-                  rounded-full
-                  object-contain
-                  p-1
-                  border
-                  border-blue-300
-                  bg-white
-                  shadow-md
-                  shadow-blue-900/30
-                  shrink-0
-                "
-              />
 
-              <h2
-                className="
-                  text-2xl
-                  sm:text-[1.7rem]
-                  font-bold
-                  tracking-tight
-                "
-                style={{ fontFamily: "'Poppins', sans-serif" }}
-              >
-                <span className="text-white">Mega</span>
-                <span className="text-green-400">Click</span>
-              </h2>
-            </div>
+{/* LOGO & BRAND INFO */}
+<div className="w-full min-w-0">
+  <div className="flex items-center justify-start gap-3 mb-2">
+    <img
+      src={logo}
+      alt="MegaClick"
+      className="w-12 h-12 sm:w-11 sm:h-11 rounded-full object-contain p-1 border border-blue-200 bg-white shadow-xs transition-transform duration-300 hover:scale-105 shrink-0"
+    />
 
-            <p
-              className="
-                text-[13px]
-                sm:text-sm
-                text-blue-100/90
-                font-medium
-                text-left
-                leading-relaxed
-              "
-            >
-              Exceptional value. Cost effective solutions.
-            </p>
-          </div>
+    <div className="flex flex-col leading-none">
+      <h2
+        className="footer-brand-title text-2xl font-bold tracking-tight"
+        style={{ fontFamily: "'Poppins', sans-serif" }}
+      >
+        <span className="text-white">MEGA</span>
+        <span className="text-[#60AD00]">CL</span>
+        <span className="text-white">i</span>
+        <span className="text-[#60AD00]">CK</span>
+        <sup className="text-white text-xs align-top ml-0.5">®</sup>
+      </h2>
+
+      <p className="mt-0 text-sm text-white whitespace-nowrap">
+        Everything on Mega
+        <span className="text-[#60AD00]">Cl</span>
+        <span className="text-white">i</span>
+        <span className="text-[#60AD00]">ck</span>
+      </p>
+    </div>
+  </div>
+
+  <p className="text-[13px] sm:text-sm text-blue-100/90 font-medium text-left leading-relaxed">
+    Exceptional value. Cost effective solutions.
+  </p>
+</div>
+
+
 
           {/* EXPLORE */}
 
@@ -895,53 +897,35 @@ const Footer = () => {
           </div>
 
           {/* MOBILE TECH PARTNER */}
+<a
+  href="https://stravedatech.com/"
+  target="_blank"
+  rel="noopener noreferrer"
+  aria-label="Straveda Tech - Tech Partner"
+  className="flex flex-wrap items-center justify-start gap-3 w-full py-2"
+>
+  <img
+    src={dpiitLogo}
+    alt="DPIIT"
+    className="h-8 w-auto max-w-[64px] object-contain shrink-0"
+  />
 
-          <a
-            href="https://stravedatech.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="
-              flex
-              flex-col
-              items-start
-              justify-center
-              gap-1
-              w-full
-              pt-1
-              pb-1
-              group
-              transition-opacity
-              hover:opacity-80
-            "
-            aria-label="Straveda Tech - Tech Partner"
-          >
-            <img
-              src={stravedalogo}
-              alt="Straveda"
-              className="
-                h-7
-                w-auto
-                object-contain
-                opacity-95
-                group-hover:opacity-100
-                transition-opacity
-              "
-            />
+  <img
+    src={necLogo}
+    alt="NEC"
+    className="h-8 w-auto max-w-[64px] object-contain shrink-0"
+  />
 
-            <span
-              className="
-                text-[9px]
-                font-semibold
-                text-white/50
-                uppercase
-                tracking-[0.25em]
-                group-hover:text-white/70
-                transition-colors
-              "
-            >
-              TECH PARTNER
-            </span>
-          </a>
+  <img
+    src={stravedalogo}
+    alt="Straveda"
+    className="h-6 w-auto max-w-[100px] object-contain shrink-0"
+  />
+
+  <span className="text-[9px] font-semibold text-white/50 uppercase tracking-wider whitespace-nowrap">
+    TECH PARTNER
+  </span>
+</a>
 
           {/* MOBILE BOTTOM BAR */}
 
@@ -972,7 +956,7 @@ const Footer = () => {
               &copy; {new Date().getFullYear()} MegaClick. All rights reserved.
             </p>
 
-            <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 ">
               <Link
                 to="/privacy-policy"
                 className="
@@ -1052,67 +1036,75 @@ const Footer = () => {
               "
             >
               <div>
-                <div
-                  className="
-                    flex
-                    items-center
-                    gap-3
-                    min-[1920px]:gap-4
-                    mb-1.5
-                  "
-                >
-                  <img
-                    src={logo}
-                    alt="MegaClick"
-                    className="
-                      footer-logo-img
-                      w-9
-                      h-9
-                      min-[1440px]:w-10
-                      min-[1440px]:h-10
-                      rounded-full
-                      object-contain
-                      p-1
-                      border
-                      border-blue-300
-                      bg-white
-                      shadow-md
-                      shadow-blue-900/30
-                      shrink-0
-                    "
-                  />
+              
+<div className="mb-1.5">
+  <div className="flex items-start gap-3 min-[1920px]:gap-4">
+    {/* Logo */}
+    <img
+      src={logo}
+      alt="MegaClick"
+      className="
+        footer-logo-img
+        w-9 h-9
+        min-[1440px]:w-12
+        min-[1440px]:h-12
+        rounded-full
+        object-contain
+        p-1
+        border border-blue-300
+        bg-white
+        shadow-md shadow-blue-900/30
+        shrink-0
+      "
+    />
 
-                  <h2
-                    className="
-                      footer-brand-title
-                      text-xl
-                      min-[1440px]:text-2xl
-                      font-bold
-                      tracking-tight
-                      whitespace-nowrap
-                    "
-                  >
-                    <span className="text-white">Mega</span>
-                    <span className="text-green-400">Click</span>
-                  </h2>
-                </div>
+    {/* MegaClick + Tagline */}
+    <div className="flex flex-col items-start">
+      <h2
+        className="
+          footer-brand-title
+          text-xl
+          min-[1440px]:text-2xl
+          font-bold
+          tracking-tight
+          whitespace-nowrap
+          leading-tight
+        "
+      >
+        <span className="text-white">MEGA</span>
+        <span className="text-[#60AD00]">CL</span>
+        <span className="text-white">i</span>
+        <span className="text-[#60AD00]">CK</span>
+        <span className="text-white text-xs align-top ml-0.5">®</span>
+      </h2>
 
-                <p
-                  className="
-                    footer-brand-desc
-                    mt-1.5
-                    text-[13px]
-                    min-[1440px]:text-[14px]
-                    text-blue-100/90
-                    font-medium
-                    leading-snug
-                    max-w-[280px]
-                  "
-                >
-                  Exceptional value.
-                  <br />
-                  Cost effective solutions.
-                </p>
+      <p className="mt-0 text-sm whitespace-nowrap">
+        <span className="text-white">Everything on Mega</span>
+        <span className="text-[#60AD00]">Cl</span>
+        <span className="text-white">i</span>
+        <span className="text-[#60AD00]">ck.</span>
+      </p>
+    </div>
+  </div>
+</div>
+
+<p
+  className="
+    footer-brand-desc
+    mt-1.5
+    text-[13px]
+    min-[1440px]:text-[14px]
+    text-blue-100/90
+    font-medium
+    leading-snug
+    max-w-[280px]
+  "
+>
+  Exceptional value.
+  <br />
+  Cost effective solutions.
+</p>
+
               </div>
 
               {/* SOCIAL ICONS */}
@@ -1449,73 +1441,79 @@ const Footer = () => {
               min-[1920px]:gap-5
             "
           >
-            <p
-              className="
-                text-[11px]
-                min-[1920px]:text-xs
-                min-[2560px]:text-sm
-                min-[3840px]:text-lg
-                font-bold
-                text-white/50
-                uppercase
-                tracking-[0.15em]
-                text-center
-                md:text-left
-              "
-            >
-              &copy; {new Date().getFullYear()} MegaClick. All rights reserved.
-            </p>
+            
+<p
+  className="
+    text-[11px]
+    min-[1920px]:text-xs
+    min-[2560px]:text-sm
+    min-[3840px]:text-lg
+    font-bold
+    text-white/50
+    uppercase
+    tracking-[0.15em]
+    text-center
+    md:text-left
+    whitespace-nowrap
+    shrink-0
+  "
+>
+  &copy; {new Date().getFullYear()} MegaClick. All rights reserved.
+</p>
+
 
             {/* Straveda Tech Partner Badge */}
+              
+              
+{/* Partner Logos - Equal Spacing */}
+<div className="flex items-start justify-between gap-6 w-full">
 
-            <a
-              href="https://stravedatech.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="
-                flex
-                flex-col
-                items-center
-                gap-1
-                group
-                transition-opacity
-                hover:opacity-80
-              "
-              aria-label="Straveda Tech - Tech Partner"
-            >
-              <img
-                src={stravedalogo}
-                alt="Straveda"
-                className="
-                  h-6
-                  min-[1920px]:h-8
-                  min-[2560px]:h-10
-                  min-[3840px]:h-14
-                  w-auto
-                  object-contain
-                  opacity-95
-                  group-hover:opacity-100
-                  transition-opacity
-                "
-              />
+  {/* DPIIT */}
+  <div className="flex flex-col items-center text-center gap-2 flex-1 min-w-0">
+    <img
+      src={dpiitLogo}
+      alt="DPIIT"
+      className="h-8 w-[90px] object-contain"
+    />
+    <span className="text-[9px] leading-4 font-medium text-white/80">
+      Recognized by
+    </span>
+  </div>
 
-              <span
-                className="
-                  text-[9px]
-                  min-[1920px]:text-[11px]
-                  min-[2560px]:text-xs
-                  min-[3840px]:text-sm
-                  font-semibold
-                  text-white/50
-                  uppercase
-                  tracking-[0.25em]
-                  group-hover:text-white/70
-                  transition-colors
-                "
-              >
-                TECH PARTNER
-              </span>
-            </a>
+  {/* NEC */}
+  <div className="flex flex-col items-center text-center gap-2 flex-1 min-w-0">
+    <img
+      src={necLogo}
+      alt="NEC"
+      className="h-8 w-[90px] object-contain"
+    />
+    <span className="text-[9px] leading-4 font-medium text-white/80">
+      NEC's Innovation Incubation Centre
+    </span>
+  </div>
+
+  {/* Straveda */}
+  <a
+    href="https://stravedatech.com/"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Straveda Tech Partner"
+    className="flex flex-col items-center text-center gap-2 flex-1 min-w-0"
+  >
+    <img
+      src={stravedalogo}
+      alt="Straveda"
+      className="h-6 w-full max-w-[116px] object-contain"
+    />
+    <span className="text-[9px] leading-4 font-semibold text-white/50 uppercase tracking-wider whitespace-nowrap">
+      TECH PARTNER
+    </span>
+  </a>
+
+</div>
+
+
+
           </div>
         </div>
       </div>
