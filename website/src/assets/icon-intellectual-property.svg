@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="20 20 472 472" role="img" aria-label="Intellectual Property Compliance Certificate with Shield and Lightbulb">
+  <defs>
+    <linearGradient id="ipShieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3B82F6"/>
+      <stop offset="100%" stop-color="#1D4ED8"/>
+    </linearGradient>
+    <linearGradient id="bulbGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FDE047"/>
+      <stop offset="100%" stop-color="#EAB308"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Back page shadow/stack -->
+  <rect x="100" y="65" width="290" height="375" rx="32" fill="#D3E0F3"/>
+
+  <!-- Certificate Main Page -->
+  <rect x="75" y="45" width="290" height="375" rx="32" fill="#F8FAFC"/>
+
+  <!-- Header band -->
+  <path d="M75 77a32 32 0 0 1 32-32h226a32 32 0 0 1 32 32v65H75z" fill="#0B4EA2"/>
+  <rect x="110" y="70" width="130" height="15" rx="7.5" fill="#FFFFFF"/>
+  <rect x="110" y="95" width="85" height="11" rx="5.5" fill="#93C5FD"/>
+
+  <!-- Document Text lines -->
+  <rect x="110" y="160" width="160" height="13" rx="6.5" fill="#CBD5E1"/>
+  <rect x="110" y="185" width="130" height="13" rx="6.5" fill="#E2E8F0"/>
+  <rect x="110" y="210" width="110" height="13" rx="6.5" fill="#E2E8F0"/>
+
+  <!-- IP Shield Container in front -->
+  <g transform="translate(160, 130)">
+    <!-- Compliance Shield -->
+    <path d="M120 40 L220 80 V190 C220 260 120 310 120 310 C120 260 20 190 20 80 Z" fill="url(#ipShieldGrad)"/>
+    <path d="M120 55 L205 90 V185 C205 245 120 290 120 290 C120 245 35 185 35 90 Z" fill="#2563EB"/>
+
+    <!-- Lightbulb (Intellectual/Idea) -->
+    <!-- Bulb Glow Circle -->
+    <circle cx="120" cy="155" r="48" fill="#FEF08A" opacity="0.3"/>
+    <!-- Bulb Body -->
+    <path d="M120 115 C98 115 80 133 80 155 C80 172 90 186 104 193 V208 C104 212 108 215 112 215 H128 C132 215 136 212 136 208 V193 C150 186 160 172 160 155 C160 133 142 115 120 115 Z" fill="url(#bulbGrad)"/>
+    <!-- Bulb Filament/Brain accent -->
+    <path d="M110 148 C110 140 130 140 130 148 C130 156 110 156 110 164 H130" fill="none" stroke="#CA8A04" stroke-width="5" stroke-linecap="round"/>
+    <!-- Bulb Base -->
+    <rect x="108" y="220" width="24" height="7" rx="3.5" fill="#94A3B8"/>
+
+    <!-- Verified Checkmark Badge at bottom right of shield -->
+    <circle cx="195" cy="245" r="42" fill="#FFFFFF"/>
+    <circle cx="195" cy="245" r="35" fill="#16A34A"/>
+    <path d="M182 245 L192 255 L210 234" fill="none" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Left IP Ribbon / Seal -->
+  <g transform="translate(100, 260)">
+    <circle cx="45" cy="70" r="38" fill="#F59E0B"/>
+    <circle cx="45" cy="70" r="30" fill="#FBBF24"/>
+    <!-- IP Bold Text inside Seal -->
+    <text x="45" y="78" font-family="system-ui, -apple-system, sans-serif" font-size="22" font-weight="900" fill="#78350F" text-anchor="middle">IP</text>
+  </g>
+</svg>

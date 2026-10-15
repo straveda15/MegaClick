@@ -5,12 +5,12 @@ const categories = [
   {
     name: "All Services",
     icon: "🌐",
-    count: 42,
+    count: 54,
   },
   {
     name: "Legal Services",
     icon: "⚖️",
-    count: 12,
+    count: 24,
     services: [
       "Marriage Registration",
       "Leave & Licence / Rent Agreement",
@@ -43,6 +43,18 @@ const categories = [
       "Trust Registration & Audit",
       "Import Export Code (IEC)",
       "Digital Signature Certificate (DSC)",
+      "Land Acquisition",
+      "Title Report",
+      "Legal Notices",
+      "Reply to Legal Notices",
+      "Commercial Contracts",
+      "Legal Due Diligence",
+      "Legal Compliance",
+      "Legal Forensic Audit Report",
+      "Execution of Various Documents",
+      "Intellectual Property Compliances",
+      "Direct & Indirect Compliances",
+      "Compliance Before Registrar of Companies (ROC)",
     ],
   },
   {

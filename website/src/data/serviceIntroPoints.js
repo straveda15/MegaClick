@@ -89,6 +89,102 @@ const serviceIntroPoints = {
     "Verification follow-up",
     "Simple, professional process",
   ],
+  "land-acquisition": [
+    "Land acquisition documentation support",
+    "Property ownership record verification",
+    "Assistance with required legal documents",
+    "Guidance throughout the acquisition process",
+    "Professional legal assistance",
+  ],
+
+  "title-report": [
+    "Review of property title documents",
+    "Ownership record verification",
+    "Identification of potential title issues",
+    "Property documentation review",
+    "Professional legal guidance",
+  ],
+
+  "legal-notices": [
+    "Legal notice drafting assistance",
+    "Clear and professional documentation",
+    "Review of relevant facts and records",
+    "Guidance on notice requirements",
+    "Support throughout the drafting process",
+  ],
+
+  "reply-to-legal-notices": [
+    "Drafting replies to legal notices",
+    "Review of the notice and supporting documents",
+    "Clear presentation of relevant facts",
+    "Assistance with response documentation",
+    "Professional legal guidance",
+  ],
+
+  "commercial-contracts": [
+    "Commercial contract drafting support",
+    "Review of terms and conditions",
+    "Documentation of business obligations",
+    "Assistance with contract revisions",
+    "Professional legal guidance",
+  ],
+
+  "legal-due-diligence": [
+    "Review of legal documents and records",
+    "Verification of relevant business documents",
+    "Identification of potential legal risks",
+    "Documentation review and reporting",
+    "Professional due diligence support",
+  ],
+
+  "legal-compliance": [
+    "Guidance on applicable legal requirements",
+    "Review of compliance documentation",
+    "Assistance with compliance procedures",
+    "Identification of compliance gaps",
+    "Ongoing compliance support",
+  ],
+
+  "legal-forensic-audit-report": [
+    "Review of relevant records and documents",
+    "Examination of identified discrepancies",
+    "Documentation of audit observations",
+    "Preparation support for audit reports",
+    "Professional review and guidance",
+  ],
+
+  "execution-of-various-documents": [
+    "Assistance with document preparation",
+    "Guidance on signing requirements",
+    "Document verification support",
+    "Coordination for document execution",
+    "Professional documentation assistance",
+  ],
+
+  "intellectual-property-compliances": [
+    "Intellectual property compliance guidance",
+    "Support with IP-related documentation",
+    "Trademark and copyright compliance assistance",
+    "Review of applicable requirements",
+    "Professional compliance support",
+  ],
+
+  "direct-indirect-compliances": [
+    "Guidance on direct tax compliance",
+    "Assistance with indirect tax requirements",
+    "Review of relevant compliance records",
+    "Documentation and filing support",
+    "Professional compliance guidance",
+  ],
+
+  "roc-compliance": [
+    "Guidance on Registrar of Companies requirements",
+    "Assistance with statutory documentation",
+    "Support for applicable company filings",
+    "Compliance record review",
+    "Professional ROC compliance assistance",
+  ],
+
 
   // ── BUSINESS & FINANCIAL SERVICES ───────────────────────────
   "income-tax-services": [

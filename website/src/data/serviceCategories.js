@@ -210,7 +210,13 @@
 
 // export default serviceCategories;
 
-
+import landAcqImg from "../assets/LandAcq.png";
+import legalNoticesImg from "../assets/Legalnotices.png";
+import legalDueImg from "../assets/legaldue.png";
+import replyNoticesImg from "../assets/replattonotices.png";
+import titleReportImg from "../assets/TitleRepo.png";
+import titleSearchImg from "../assets/TitleSearch.png";
+import ipCompliancesImg from "../assets/icon-intellectual-property.svg";
 
 
 // Sequence: 1. Legal Services  2. Business & Financial Services  3. Other Services
@@ -258,10 +264,10 @@ const serviceCategories = [
         slug: "mortgage-release-deed",
       },
       {
-        title: "Title Search Report",
-        emoji: "🔍",
-        slug: "title-search-report",
-      },
+  title: "Title Search Report",
+  slug: "title-search-report",
+  image: titleSearchImg,
+},
       {
         title: "Trademark Registration",
         emoji: "™️",
@@ -281,6 +287,64 @@ const serviceCategories = [
         title: "Character Certificate by Police",
         emoji: "🪪",
         slug: "character-certificate",
+      },
+      
+     {
+  title: "Land Acquisition",
+  slug: "land-acquisition",
+  image: landAcqImg,
+},
+      {
+  title: "Title Report",
+  slug: "title-report",
+  image: titleReportImg,
+},
+      {
+  title: "Legal Notices",
+  slug: "legal-notices",
+  image: legalNoticesImg,
+},
+     
+     {
+  title: "Reply to Legal Notices",
+  slug: "reply-to-legal-notices",
+  image: replyNoticesImg,
+},
+      {
+  title: "Legal Due Diligence",
+  slug: "legal-due-diligence",
+  image: legalDueImg,
+},
+      {
+        title: "Legal Compliance",
+        emoji: "✅",
+        slug: "legal-compliance",
+      },
+      {
+        title: "Legal Forensic Audit Report",
+        emoji: "📊",
+        slug: "legal-forensic-audit-report",
+      },
+      {
+        title: "Execution of Various Documents",
+        emoji: "📑",
+        slug: "execution-of-various-documents",
+      },
+      {
+        title: "Intellectual Property Compliances",
+        emoji: "💡",
+        slug: "intellectual-property-compliances",
+        image: ipCompliancesImg,
+      },
+      {
+        title: "Direct & Indirect Compliances",
+        emoji: "🧾",
+        slug: "direct-indirect-compliances",
+      },
+      {
+        title: "Compliance Before Registrar of Companies (ROC)",
+        emoji: "🏢",
+        slug: "roc-compliance",
       },
     ],
   },
