@@ -8,11 +8,17 @@ import govtGazetteImg from "../assets/govt-gazette.png";
 import partnershipDeedImg from "../assets/partnership-deed.png";
 import saleWillGiftImg from "../assets/sale-will-gift-deed.png";
 import mortgageDeedImg from "../assets/mortgage-release-deed.png";
-import titleSearchImg from "../assets/title-search-report.png";
+import titleSearchImg from "../assets/TitleSearch.png";
 import trademarkImg from "../assets/trademark-registration.png";
 import patentCopyrightImg from "../assets/patent-copyright.png";
 import digital712Img from "../assets/icon-digital-land-record.svg";
 import characterCertificateImg from "../assets/character-certificate.png";
+import landAcqImg from "../assets/LandAcq.png";
+import legalNoticesImg from "../assets/Legalnotices.png";
+import legalDueImg from "../assets/legaldue.png";
+import replyNoticesImg from "../assets/replattonotices.png";
+import titleReportImg from "../assets/TitleRepo.png";
+import ipCompliancesImg from "../assets/icon-intellectual-property.svg";
 
 // =============================================================================
 // 2. BUSINESS & FINANCIAL SERVICES IMAGE IMPORTS (12 Images)
@@ -2217,6 +2223,305 @@ const serviceDetailsData = [
           "As databases expand, customer traffic climbs, and third-party APIs update, systems naturally experience slowdowns and new security vulnerabilities without continuous maintenance and tuning.",
       },
     ],
+  },
+    // 37. LAND ACQUISITION
+  {
+    slug: "land-acquisition",
+    title: "Land Acquisition",
+    category: "Legal Services",
+    image: landAcqImg,
+    heroTitle: "Land Acquisition Legal Assistance",
+    description: "Get assistance with land acquisition documentation, property records, and applicable legal procedures.",
+    highlights: [
+      { title: "Document Review", description: "Assistance reviewing relevant land and property documents." },
+      { title: "Legal Guidance", description: "Guidance on applicable land acquisition procedures." },
+      { title: "Record Support", description: "Help organizing land ownership and supporting records." }
+    ],
+    process: [
+      { step: "1", title: "Share Details", description: "Provide land details and the purpose of acquisition." },
+      { step: "2", title: "Document Review", description: "Review available property records and supporting documents." },
+      { step: "3", title: "Next Steps", description: "Get guidance on the applicable process." }
+    ],
+    documents: ["Land Records", "Ownership Documents", "Survey Details", "Property Records"],
+    benefits: ["Document review assistance", "Organized property records", "Procedural guidance"],
+    faq: [
+      { question: "What is land acquisition?", answer: "Land acquisition involves obtaining land rights or ownership through the applicable legal process." }
+    ]
+  },
+
+  // 38. TITLE REPORT
+  {
+    slug: "title-report",
+    title: "Title Report",
+    category: "Legal Services",
+    image: titleReportImg,
+    heroTitle: "Property Title Report Assistance",
+    description: "Get assistance reviewing property ownership records and preparing documentation for a title report.",
+    highlights: [
+      { title: "Record Review", description: "Review available property ownership records." },
+      { title: "Document Checks", description: "Assistance reviewing relevant property documents." },
+      { title: "Legal Guidance", description: "Guidance on title-related documentation." }
+    ],
+    process: [
+      { step: "1", title: "Share Property Details", description: "Provide property details and available ownership documents." },
+      { step: "2", title: "Review Records", description: "Review the supplied records and documents." },
+      { step: "3", title: "Report Assistance", description: "Get assistance with the title report process." }
+    ],
+    documents: ["Sale Deed", "Property Card or 7/12 Extract", "Previous Title Documents", "Property Tax Records"],
+    benefits: ["Ownership record review", "Property documentation support", "Title-related guidance"],
+    faq: [
+      { question: "What is a title report?", answer: "A title report summarizes relevant ownership and property information based on the records reviewed." }
+    ]
+  },
+
+  // 39. LEGAL NOTICES
+  {
+    slug: "legal-notices",
+    title: "Legal Notices",
+    category: "Legal Services",
+    image: legalNoticesImg,
+    heroTitle: "Legal Notice Drafting Assistance",
+    description: "Get assistance preparing legal notices based on the facts, documents, and nature of your concern.",
+    highlights: [
+      { title: "Notice Drafting", description: "Assistance preparing a notice for your matter." },
+      { title: "Document Review", description: "Review relevant facts and supporting documents." },
+      { title: "Process Guidance", description: "Guidance on applicable notice procedures." }
+    ],
+    process: [
+      { step: "1", title: "Explain the Matter", description: "Share the issue and relevant details." },
+      { step: "2", title: "Provide Documents", description: "Submit agreements and supporting records." },
+      { step: "3", title: "Prepare the Notice", description: "Get assistance with drafting and next steps." }
+    ],
+    documents: ["Party Details", "Relevant Agreements", "Correspondence", "Supporting Evidence"],
+    benefits: ["Structured notice drafting", "Document-based assistance", "Clear communication"],
+    faq: [
+      { question: "What is a legal notice?", answer: "A legal notice formally communicates a claim, demand, concern, or intended legal action." }
+    ]
+  },
+
+  // 40. REPLY TO LEGAL NOTICES
+  {
+    slug: "reply-to-legal-notices",
+    title: "Reply to Legal Notices",
+    category: "Legal Services",
+    image: replyNoticesImg,
+    heroTitle: "Reply to Legal Notice Assistance",
+    description: "Get assistance reviewing a legal notice and preparing a response based on the facts and available documents.",
+    highlights: [
+      { title: "Notice Review", description: "Review the notice and identify the issues raised." },
+      { title: "Response Drafting", description: "Assistance preparing a structured written response." },
+      { title: "Evidence Support", description: "Organize relevant records and correspondence." }
+    ],
+    process: [
+      { step: "1", title: "Share the Notice", description: "Provide a copy of the notice received." },
+      { step: "2", title: "Review the Facts", description: "Share your response and supporting documents." },
+      { step: "3", title: "Prepare the Reply", description: "Get assistance with the response and next steps." }
+    ],
+    documents: ["Legal Notice Received", "Relevant Agreements", "Correspondence", "Supporting Records"],
+    benefits: ["Structured response assistance", "Document review", "Guidance on next steps"],
+    faq: [
+      { question: "What should I do after receiving a legal notice?", answer: "Review the notice carefully, preserve relevant records, and seek legal guidance about the response and any applicable deadline." }
+    ]
+  },
+
+  // 41. COMMERCIAL CONTRACTS
+  {
+    slug: "commercial-contracts",
+    title: "Commercial Contracts",
+    category: "Legal Services",
+    image: partnershipDeedImg,
+    heroTitle: "Commercial Contract Drafting and Review",
+    description: "Get assistance drafting, reviewing, and organizing commercial contracts for business transactions.",
+    highlights: [
+      { title: "Contract Drafting", description: "Assistance preparing commercial contracts." },
+      { title: "Contract Review", description: "Review contractual terms and obligations." },
+      { title: "Business Support", description: "Documentation support for business arrangements." }
+    ],
+    process: [
+      { step: "1", title: "Share Requirements", description: "Explain the transaction and parties involved." },
+      { step: "2", title: "Review Terms", description: "Discuss the relevant terms and obligations." },
+      { step: "3", title: "Draft or Review", description: "Get assistance with contract documentation." }
+    ],
+    documents: ["Party Details", "Scope of Work", "Commercial Terms", "Existing Contract"],
+    benefits: ["Contract documentation support", "Review of key obligations", "Organized business records"],
+    faq: [
+      { question: "What are commercial contracts?", answer: "Commercial contracts establish terms and obligations between parties in business transactions." }
+    ]
+  },
+
+  // 42. LEGAL DUE DILIGENCE
+  {
+    slug: "legal-due-diligence",
+    title: "Legal Due Diligence",
+    category: "Legal Services",
+    image: legalDueImg,
+    heroTitle: "Legal Due Diligence Assistance",
+    description: "Get assistance reviewing legal documents and records to identify potential issues before a transaction or business decision.",
+    highlights: [
+      { title: "Document Review", description: "Review relevant agreements, records, and documents." },
+      { title: "Issue Identification", description: "Help identify issues requiring further review." },
+      { title: "Findings Summary", description: "Organize observations and supporting information." }
+    ],
+    process: [
+      { step: "1", title: "Define the Scope", description: "Explain the transaction or business decision." },
+      { step: "2", title: "Review Documents", description: "Provide the relevant legal and business records." },
+      { step: "3", title: "Discuss Findings", description: "Review observations and possible next steps." }
+    ],
+    documents: ["Business Registration Records", "Contracts", "Licences and Approvals", "Compliance Records"],
+    benefits: ["Structured document review", "Issue identification support", "Informed decision-making support"],
+    faq: [
+      { question: "What is legal due diligence?", answer: "Legal due diligence involves reviewing legal records and obligations to understand potential risks in a transaction or business activity." }
+    ]
+  },
+
+  // 43. LEGAL COMPLIANCE
+  {
+    slug: "legal-compliance",
+    title: "Legal Compliance",
+    category: "Legal Services",
+    image: companyRegImg,
+    heroTitle: "Legal Compliance Assistance",
+    description: "Get assistance understanding applicable legal requirements and organizing business compliance documents.",
+    highlights: [
+      { title: "Requirement Review", description: "Review applicable compliance requirements." },
+      { title: "Compliance Tracking", description: "Help organize compliance tasks and due dates." },
+      { title: "Record Management", description: "Organize supporting records and documents." }
+    ],
+    process: [
+      { step: "1", title: "Share Business Details", description: "Provide business activity and registration details." },
+      { step: "2", title: "Review Requirements", description: "Identify relevant compliance areas." },
+      { step: "3", title: "Organize Compliance", description: "Get guidance on records and next steps." }
+    ],
+    documents: ["Business Registration Details", "Licences", "Compliance Records", "Agreements"],
+    benefits: ["Compliance guidance", "Organized records", "Deadline planning support"],
+    faq: [
+      { question: "What does legal compliance mean?", answer: "Legal compliance means meeting the laws, regulations, and formal requirements applicable to a business." }
+    ]
+  },
+
+  // 44. LEGAL FORENSIC AUDIT REPORT
+  {
+    slug: "legal-forensic-audit-report",
+    title: "Legal Forensic Audit Report",
+    category: "Legal Services",
+    image: accountingAuditImg,
+    heroTitle: "Legal Forensic Audit Report Assistance",
+    description: "Get assistance organizing records and reviewing documentation for a legal forensic audit or investigation.",
+    highlights: [
+      { title: "Record Examination", description: "Organize and review relevant records." },
+      { title: "Findings Organization", description: "Structure observations and supporting information." },
+      { title: "Report Documentation", description: "Assistance organizing material for report preparation." }
+    ],
+    process: [
+      { step: "1", title: "Define the Requirement", description: "Explain the purpose and scope of the review." },
+      { step: "2", title: "Collect Records", description: "Provide relevant financial, legal, and business documents." },
+      { step: "3", title: "Organize Findings", description: "Review the material and discuss next steps." }
+    ],
+    documents: ["Financial Records", "Contracts", "Transaction Records", "Correspondence"],
+    benefits: ["Organized supporting records", "Structured review", "Findings documentation support"],
+    faq: [
+      { question: "What is a forensic audit report?", answer: "It documents findings from a focused review of records or transactions relevant to a legal or investigative matter." }
+    ]
+  },
+
+  // 45. EXECUTION OF VARIOUS DOCUMENTS
+  {
+    slug: "execution-of-various-documents",
+    title: "Execution of Various Documents",
+    category: "Legal Services",
+    image: saleWillGiftImg,
+    heroTitle: "Document Execution Assistance",
+    description: "Get assistance understanding signing, witnessing, and execution requirements for legal and business documents.",
+    highlights: [
+      { title: "Document Preparation", description: "Assistance organizing documents before execution." },
+      { title: "Signing Guidance", description: "Guidance on applicable signing and witnessing requirements." },
+      { title: "Process Support", description: "Help understanding the relevant execution process." }
+    ],
+    process: [
+      { step: "1", title: "Identify the Document", description: "Share the type and purpose of the document." },
+      { step: "2", title: "Review Requirements", description: "Check applicable signing and witnessing requirements." },
+      { step: "3", title: "Complete the Process", description: "Get guidance on the execution steps." }
+    ],
+    documents: ["Draft Document", "Identity Proof", "Party Details", "Supporting Agreements"],
+    benefits: ["Document preparation support", "Execution process guidance", "Organized records"],
+    faq: [
+      { question: "What does execution of a document mean?", answer: "Execution generally refers to completing the formal steps required to sign or complete a document." }
+    ]
+  },
+
+  // 46. INTELLECTUAL PROPERTY COMPLIANCES
+  {
+    slug: "intellectual-property-compliances",
+    title: "Intellectual Property Compliances",
+    category: "Legal Services",
+    image: ipCompliancesImg,
+    heroTitle: "Intellectual Property Compliance Assistance",
+    description: "Get assistance organizing intellectual property records and understanding registration, renewal, and compliance requirements.",
+    highlights: [
+      { title: "IP Documentation", description: "Organize intellectual property ownership and registration records." },
+      { title: "Renewal Guidance", description: "Help track relevant renewal dates." },
+      { title: "Compliance Support", description: "Guidance on applicable intellectual property formalities." }
+    ],
+    process: [
+      { step: "1", title: "Share IP Details", description: "Provide details of the relevant intellectual property." },
+      { step: "2", title: "Review Records", description: "Review available registrations and supporting documents." },
+      { step: "3", title: "Plan Next Steps", description: "Get guidance on applicable compliance or renewal steps." }
+    ],
+    documents: ["IP Registration Certificates", "Application Details", "Ownership Documents", "Renewal Records"],
+    benefits: ["IP record organization", "Renewal tracking support", "Documentation guidance"],
+    faq: [
+      { question: "What are intellectual property compliances?", answer: "They are the applicable formalities and ongoing requirements relating to intellectual property rights and registrations." }
+    ]
+  },
+
+  // 47. DIRECT & INDIRECT COMPLIANCES
+  {
+    slug: "direct-indirect-compliances",
+    title: "Direct & Indirect Compliances",
+    category: "Legal Services",
+    image: incomeTaxImg,
+    heroTitle: "Direct and Indirect Tax Compliance Assistance",
+    description: "Get assistance organizing tax-related records and understanding applicable direct and indirect tax compliance requirements.",
+    highlights: [
+      { title: "Tax Records", description: "Organize relevant tax documents and transaction records." },
+      { title: "Filing Guidance", description: "Guidance on applicable filing requirements." },
+      { title: "Compliance Support", description: "Assistance with compliance-related documentation." }
+    ],
+    process: [
+      { step: "1", title: "Share Business Details", description: "Provide business and relevant tax registration information." },
+      { step: "2", title: "Review Records", description: "Organize available returns, invoices, and tax records." },
+      { step: "3", title: "Next Steps", description: "Get guidance on applicable compliance requirements." }
+    ],
+    documents: ["PAN Details", "GST Registration", "Invoices", "Tax Returns", "Financial Records"],
+    benefits: ["Tax documentation support", "Filing requirement guidance", "Organized records"],
+    faq: [
+      { question: "What is the difference between direct and indirect taxes?", answer: "Direct taxes generally apply to income or profits, while indirect taxes generally apply to transactions, goods, or services." }
+    ]
+  },
+
+  // 48. ROC COMPLIANCE
+  {
+    slug: "roc-compliance",
+    title: "Compliance Before Registrar of Companies (ROC)",
+    category: "Legal Services",
+    image: companyRegImg,
+    heroTitle: "ROC Compliance Assistance",
+    description: "Get assistance with company documentation and understanding applicable filings and compliance requirements before the Registrar of Companies.",
+    highlights: [
+      { title: "Filing Guidance", description: "Guidance on applicable ROC filing requirements." },
+      { title: "Company Documentation", description: "Organize relevant company records and supporting documents." },
+      { title: "Compliance Support", description: "Assistance with applicable company compliance procedures." }
+    ],
+    process: [
+      { step: "1", title: "Share Company Details", description: "Provide company details and the compliance requirement." },
+      { step: "2", title: "Review Records", description: "Review available company records and documents." },
+      { step: "3", title: "Filing Assistance", description: "Get guidance on the applicable filing process." }
+    ],
+    documents: ["Company Registration Details", "CIN or LLPIN, if applicable", "Director Details", "Company Records", "Previous Filings"],
+    benefits: ["ROC filing guidance", "Company record organization", "Documentation support"],
+    faq: [
+      { question: "What is ROC compliance?", answer: "ROC compliance refers to applicable company-law filings and formalities with the Registrar of Companies." }
+    ]
   },
 ];
 

@@ -8,11 +8,17 @@ import govtGazetteImg from "../assets/govt-gazette.png";
 import partnershipDeedImg from "../assets/partnership-deed.png";
 import saleWillGiftImg from "../assets/sale-will-gift-deed.png";
 import mortgageDeedImg from "../assets/mortgage-release-deed.png";
-import titleSearchImg from "../assets/title-search-report.png";
+import titleSearchImg from "../assets/TitleSearch.png";
 import trademarkImg from "../assets/trademark-registration.png";
 import patentCopyrightImg from "../assets/patent-copyright.png";
 import digital712Img from "../assets/icon-digital-land-record.svg";
 import characterCertificateImg from "../assets/character-certificate.png";
+import landAcqImg from "../assets/LandAcq.png";
+import legalNoticesImg from "../assets/Legalnotices.png";
+import legalDueImg from "../assets/legaldue.png";
+import replyNoticesImg from "../assets/replattonotices.png";
+import titleReportImg from "../assets/TitleRepo.png";
+import ipCompliancesImg from "../assets/icon-intellectual-property.svg";
 
 // =====================================================
 // 2. BUSINESS & FINANCIAL SERVICES ICONS (12 PNGs)
@@ -124,6 +130,66 @@ const serviceCategories = [
         slug: "character-certificate",
         image: characterCertificateImg,
       },
+      {
+        title: "Land Acquisition",
+        slug: "land-acquisition",
+        image: landAcqImg,
+      },
+      {
+        title: "Title Report",
+        slug: "title-report",
+        image: titleReportImg,
+      },
+      {
+        title: "Legal Notices",
+        slug: "legal-notices",
+        image: legalNoticesImg,
+      },
+      {
+        title: "Reply to Legal Notices",
+        slug: "reply-to-legal-notices",
+        image: replyNoticesImg,
+      },
+      {
+        title: "Commercial Contracts",
+        slug: "commercial-contracts",
+        image: partnershipDeedImg,
+      },
+      {
+        title: "Legal Due Diligence",
+        slug: "legal-due-diligence",
+        image: legalDueImg,
+      },
+      {
+        title: "Legal Compliance",
+        slug: "legal-compliance",
+        image: companyRegImg,
+      },
+      {
+        title: "Legal Forensic Audit Report",
+        slug: "legal-forensic-audit-report",
+        image: accountingAuditImg,
+      },
+      {
+        title: "Execution of Various Documents",
+        slug: "execution-of-various-documents",
+        image: saleWillGiftImg,
+      },
+      {
+        title: "Intellectual Property Compliances",
+        slug: "intellectual-property-compliances",
+        image: ipCompliancesImg,
+      },
+      {
+        title: "Direct & Indirect Compliances",
+        slug: "direct-indirect-compliances",
+        image: incomeTaxImg,
+      },
+      {
+        title: "Compliance Before Registrar of Companies (ROC)",
+        slug: "roc-compliance",
+        image: companyRegImg,
+      },  
     ],
   },
 
