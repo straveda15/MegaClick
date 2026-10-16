@@ -44,7 +44,7 @@ const FOOTER_LINKS = {
 const SOCIAL_LINKS = [
   {
     icon: FaFacebookF,
-    href: SOCIAL_PROFILES.facebook.url || "#",
+    href:"https://www.facebook.com/share/1KG6E5Bopc/", 
     label: "Facebook",
     iconColor: "text-[#1877F2]",
     bgColor: "bg-[#E8F1FF]",
@@ -61,7 +61,7 @@ const SOCIAL_LINKS = [
   },
   {
     icon: FaInstagram,
-    href: SOCIAL_PROFILES.instagram.url || "#",
+    href: "https://www.instagram.com/megaclickofficial?xtok=MTJpd2xzM2QzZTdkMg%3D%3D",
     label: "Instagram",
     iconColor: "text-[#E1306C]",
     bgColor: "bg-[#FCE7F3]",
