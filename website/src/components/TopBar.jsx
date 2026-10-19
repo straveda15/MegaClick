@@ -141,7 +141,7 @@ const TopBar = () => {
               className="topbar-icon text-emerald-400 sm:w-4 sm:h-4 shrink-0"
             />
 
-            <span>Trusted Business Solutions</span>
+            <span>Trusted Professional Services Provider</span>
           </div>
 
         </div>

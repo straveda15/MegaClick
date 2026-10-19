@@ -1,6 +1,7 @@
 import React from "react";
 import { useParams, Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
+import serviceCategories from "../data/servicesData";
 
 // =========================================
 // DATA
@@ -19,6 +20,7 @@ import HowItWorks from "../components/ServiceDetails/HowItWorks";
 import ServiceBenefits from "../components/ServiceDetails/ServiceBenefits";
 import ServiceFAQ from "../components/ServiceDetails/ServiceFAQ";
 import Testimonials from "../components/ServiceDetails/Testimonials";
+import legalServices from "../data/Services/legalServices";
 
 const ServiceDetails = () => {
   const { slug } = useParams();
@@ -27,21 +29,44 @@ const ServiceDetails = () => {
   // COMBINE ALL SERVICE DETAILS
   // =========================================
 
-  const allServiceDetails = [
-    ...serviceDetailsData,
-    ...otherServices,
-    ...businessServices,
-  ];
+ const allServiceDetails = [
+  ...serviceDetailsData,
+  ...legalServices,
+  ...otherServices,
+  ...businessServices,
+  ...serviceCategories.flatMap((category) =>
+    (category.services || []).map((service) => ({
+      ...service,
+      category: category.title,
+      categorySlug: category.slug,
+    }))
+  ),
+];
 
-  // =========================================
-  // FIND SERVICE USING URL SLUG
-  // =========================================
+const normalizedSlug = slug
+  ?.trim()
+  .toLowerCase()
+  .replace(/-entries$/, "");
 
-  const service = allServiceDetails.find(
-    (item) => item.slug === slug
+
+const slugify = (value = "") =>
+  value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+
+const service = allServiceDetails.find((item) => {
+  const itemSlug = slugify(item.slug || "");
+  const titleSlug = slugify(item.title || "");
+
+  return (
+    itemSlug === normalizedSlug ||
+    titleSlug === normalizedSlug
   );
+});
 
-  // =========================================
+ 
   // SERVICE NOT FOUND
   // =========================================
 

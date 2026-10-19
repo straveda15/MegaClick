@@ -10,12 +10,11 @@ import team6 from "../assets/team6.jpg";
 
 /* ------------------- Team data ------------------- */
 const teamMembers = [
-  { image: team1, name: "Rahul Sharma", role: "Founder & CEO" },
-  { image: team2, name: "Priya Deshmukh", role: "Legal Consultant" },
-  { image: team3, name: "Amit Patil", role: "Financial Advisor" },
-  { image: team4, name: "Neha Kulkarni", role: "Business Consultant" },
-  { image: team5, name: "Vaibhav Verma", role: "Operations Lead" },
-  { image: team6, name: "Siddharth Rao", role: "Senior Consultant" },
+  { image: team1, name: "Adv. Rajendra Gharte", role: "Founder & CLO" },
+  { image: team2, name: "Radhika Tak", role: "CTO" },
+  { image: team3, name: "Ritvik Verma", role: "Brand Consultant" },
+  { image: team4, name: "Adv. Santosh Khandare", role: "Senior" },
+  
 ];
 
 const Team = () => {
@@ -223,7 +222,7 @@ const Team = () => {
           </p>
 
           {/* ----- TEAM GRID (2 COLUMNS ON MOBILE, 3 ON TABLET, 6 ON DESKTOP) ----- */}
-          <div className="team-grid grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5 sm:gap-4 lg:gap-5 w-full">
+          <div className="team-grid grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6 lg:gap-7 w-full">
             {teamMembers.map((member, idx) => (
               <div
                 key={idx}
@@ -231,7 +230,7 @@ const Team = () => {
                 onClick={() => setSelectedImage(member)}
               >
                 {/* Photo container */}
-                <div className="team-photo-box relative w-full h-[150px] sm:h-[180px] lg:h-[175px] xl:h-[185px] rounded-xl bg-blue-50/60 overflow-hidden p-1 sm:p-1.5 flex items-end justify-center transition-all duration-300 group-hover:bg-blue-100/60 border border-blue-100/60 shadow-xs">
+                <div className="team-photo-box relative w-full h-[150px] sm:h-[200px] lg:h-[200px] xl:h-[220px] rounded-xl bg-blue-50/60 overflow-hidden p-1.5 flex items-end justify-center transition-all duration-300 group-hover:bg-blue-100/60 border border-blue-100/60 shadow-xs">
                   <img
                     src={member.image}
                     alt={member.name}
@@ -244,14 +243,13 @@ const Team = () => {
                 <div className="px-0.5 text-center">
                   <h3
                     style={{ fontFamily: "'Poppins', sans-serif" }}
-                    className="team-name text-xs sm:text-sm font-bold text-[#0B4EA2] leading-snug"
+                    className="team-name mt-3 text-sm sm:text-base font-bold text-[#0B4EA2] leading-snug text-center"
                   >
                     {member.name}
                   </h3>
                   <p
                     style={{ fontFamily: "'Inter', sans-serif" }}
-                    className="team-role text-[10px] sm:text-[11px] font-medium text-[#0f172a] mt-0.5"
-                  >
+                    className="team-role text-xs sm:text-sm font-medium text-[#0f172a] mt-1 text-center">
                     {member.role}
                   </p>
                 </div>

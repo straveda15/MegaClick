@@ -5,6 +5,8 @@ import {
   FileText,
   Settings,
   CheckCircle2,
+   ChevronRight,
+   ChevronDown,
   Check,
 } from "lucide-react";
 
@@ -335,12 +337,6 @@ const solutionCards = [
     iconType: "consultation",
   },
   {
-    id: 2,
-    title: "100% Digital Upload",
-    desc: "Upload required documents online with zero paperwork.",
-    iconType: "digital",
-  },
-  {
     id: 3,
     title: "Flawless Verification",
     desc: "Thorough audit by legal experts ensuring zero rejections.",
@@ -351,24 +347,6 @@ const solutionCards = [
     title: "Priority Portal Filing",
     desc: "Fast-track application filing via government portals.",
     iconType: "filing",
-  },
-  {
-    id: 5,
-    title: "Live Status Tracking",
-    desc: "Real-time milestone alerts and transparent status tracking.",
-    iconType: "tracking",
-  },
-  {
-    id: 6,
-    title: "Certificate Delivery",
-    desc: "Instant digital certificates with full ongoing support.",
-    iconType: "delivery",
-  },
-  {
-    id: 7,
-    title: "Dedicated Support",
-    desc: "Connect with dedicated experts for fast, hands-on help.",
-    iconType: "support",
   },
   {
     id: 8,
@@ -382,7 +360,7 @@ const solutionCards = [
 // Solution Card Item
 // ─────────────────────────────────────────────
 const SolutionCardItem = ({ item }) => (
-  <div className="hiw-card group relative rounded-2xl hover:-translate-y-1.5 transition-all duration-300 w-full aspect-square flex min-w-0">
+  <div className="hiw-card group relative rounded-2xl hover:-translate-y-1.5 transition-all duration-300 w-full min-h-[160px] sm:min-h-[180px] lg:min-h-[160px] flex min-w-0">
     <div
       className="
         w-full
@@ -1181,10 +1159,7 @@ const HowItWorks = () => {
            MOBILE VERTICAL STEPPER LINE
            Only mobile/tablet
         ───────────────────────────────────────── */
-        @media (max-width: 1023px) {
-          .hiw-mobile-stepper-line {
-            display: block !important;
-            position: absolute;
+       
 
             /*
              * Center of the stepper.
@@ -1318,24 +1293,7 @@ const HowItWorks = () => {
 
         {/* HOW IT WORKS STEPPER */}
         <div className="hiw-stepper-box mt-6 sm:mt-12 lg:mt-14 w-full relative">
-          {/* DESKTOP CONNECTING LINE */}
-          <div
-            className="
-              hiw-stepper-line
-              hidden
-              lg:block
-              absolute
-              top-[36px]
-              left-[12.5%]
-              right-[12.5%]
-              h-[2px]
-              bg-gradient-to-r
-              from-blue-300/40
-              via-blue-200/50
-              to-green-300/40
-              z-0
-            "
-          />
+         
 
           {/* MOBILE VERTICAL CONNECTING LINE */}
           <div className="hiw-mobile-stepper-line hidden" />
@@ -1535,156 +1493,193 @@ const HowItWorks = () => {
                     "
                   >
                   </div>
+                  
+
+{/* ARROWS BETWEEN STEPS */}
+{index < steps.length - 1 && (
+  <>
+    {/* Desktop: Horizontal arrow */}
+    <div
+      aria-hidden="true"
+      className="hidden lg:flex absolute
+        right-[-1.1rem] top-[25px]
+        items-center justify-center z-30
+        pointer-events-none text-[#0B4EA2]"
+    >
+      <ChevronRight size={20} strokeWidth={2.5} />
+    </div>
+
+    {/* Mobile and Tablet: Vertical arrow */}
+    <div
+      aria-hidden="true"
+      className="flex lg:hidden items-center
+        justify-center w-full mt-2
+        text-[#0B4EA2]"
+    >
+      <ChevronDown size={20} strokeWidth={2.5} />
+    </div>
+  </>
+)}
+
+
                 </div>
               );
             })}
           </div>
         </div>
         
-        {/* SOLUTION GRID */}
-        <div
+       {/* SOLUTION GRID */}
+<div
+  className="
+    mt-10
+    hiw-grid
+    grid
+    grid-cols-1
+    lg:grid-cols-3
+    gap-4
+    lg:gap-5
+    w-full
+    items-stretch
+  "
+>
+  {/* FEATURED BLUE CARD */}
+  <div
+    className="
+      col-span-1
+      w-full
+      min-w-0
+      min-h-[280px]
+      lg:min-h-full
+      bg-gradient-to-br
+      from-[#0B4EA2]
+      via-[#093F83]
+      to-[#062752]
+      text-white
+      rounded-2xl
+      p-5
+      sm:p-6
+      lg:p-7
+      flex
+      flex-col
+      justify-between
+      shadow-lg
+      shadow-blue-900/20
+      relative
+      overflow-hidden
+      text-left
+    "
+  >
+    <div className="absolute -right-8 -bottom-8 w-44 h-44 rounded-full bg-blue-400/20 blur-2xl pointer-events-none" />
+
+    <div className="absolute top-0 right-1/4 w-32 h-32 rounded-full bg-cyan-400/10 blur-xl pointer-events-none" />
+
+    <div className="relative z-10 text-left min-w-0">
+      <h2
+        style={{ fontFamily: "'Poppins', serif" }}
+        className="
+          hiw-featured-title
+          text-3xl
+          sm:text-3xl
+          md:text-4xl
+          lg:text-4xl
+          xl:text-5xl
+          font-bold
+          leading-[1.18]
+          text-white
+          text-left
+          break-words
+        "
+      >
+        Get Your{" "}
+        <span className="text-green-600">Solutions</span>
+      </h2>
+
+     
+<p
+  className="
+    hiw-featured-desc
+    mt-2
+    text-xs
+    sm:text-[13.5px]
+    text-blue-100/90
+    leading-relaxed
+    max-w-lg
+    text-left
+    break-words
+  "
+>
+  We provide a fast, transparent process to help businesses
+  complete registrations, tax compliance, and legal filings
+  with zero hassle.
+</p>
+
+    </div>
+
+    {/* VIEW ALL */}
+    <div className="relative z-10 mt-5 sm:mt-6 text-left">
+      <button
+        type="button"
+        onClick={handleViewAll}
+        className="
+          inline-block
+          group/link
+          cursor-pointer
+          bg-transparent
+          border-none
+          p-0
+        "
+      >
+        <span
+          style={{ fontFamily: "'Inter', sans-serif" }}
           className="
-          mt-10
-            hiw-grid
-            grid
-            grid-cols-2
-            lg:grid-cols-5
-            gap-3
-            sm:gap-4.5
-            lg:gap-5
-            w-full
-            items-stretch
+            hiw-featured-btn
+            text-xs
+            sm:text-sm
+            font-semibold
+            tracking-[0.2em]
+            uppercase
+            text-white/90
+            group-hover/link:text-white
+            transition-colors
+            duration-200
           "
         >
-          {/* FEATURED BLUE CARD */}
-          <div
-            className="
-              col-span-2
-              w-full
-              h-full
-              aspect-auto
-              sm:aspect-[2/1]
-              bg-gradient-to-br
-              from-[#0B4EA2]
-              via-[#093F83]
-              to-[#062752]
-              text-white
-              rounded-2xl
-              p-5
-              sm:p-6
-              lg:p-7
-              flex
-              flex-col
-              justify-between
-              shadow-lg
-              shadow-blue-900/20
-              relative
-              overflow-hidden
-              text-left
-              min-w-0
-            "
-          >
-            <div className="absolute -right-8 -bottom-8 w-44 h-44 rounded-full bg-blue-400/20 blur-2xl pointer-events-none" />
+          VIEW ALL
+        </span>
 
-            <div className="absolute top-0 right-1/4 w-32 h-32 rounded-full bg-cyan-400/10 blur-xl pointer-events-none" />
+        <div
+          className="
+            mt-1
+            h-[1.5px]
+            w-full
+            bg-white/40
+            group-hover/link:bg-white
+            transition-colors
+            duration-200
+          "
+        />
+      </button>
+    </div>
+  </div>
 
-            <div className="relative z-10 text-left min-w-0">
-              <h2
-                style={{
-                  fontFamily: "'Poppins', serif",
-                }}
-                className="
-                  hiw-featured-title
-                  text-3xl
-                  sm:text-3xl
-                  md:text-4xl
-                  lg:text-4xl
-                  xl:text-5xl
-                  font-bold
-                  leading-[1.18]
-                  text-white
-                  text-left
-                  break-words
-                "
-              >
-                Get Your{" "}
-                <span className="text-green-600">Solutions</span>
-              </h2>
-
-              <p
-                className="
-                  hiw-featured-desc
-                  mt-2
-                  text-xs
-                  sm:text-[13.5px]
-                  text-blue-100/90
-                  leading-relaxed
-                  max-w-lg
-                  text-justify
-                  [text-align-last:left]
-                  [text-wrap:pretty]
-                  break-words
-                "
-              >
-                We provide a fast, transparent process to help businesses
-                complete registrations, tax compliance, and legal filings
-                with zero hassle.
-              </p>
-            </div>
-
-            {/* VIEW ALL */}
-            <div className="relative z-10 mt-5 sm:mt-6 text-left">
-              <button
-                type="button"
-                onClick={handleViewAll}
-                className="
-                  inline-block
-                  group/link
-                  cursor-pointer
-                  bg-transparent
-                  border-none
-                  p-0
-                "
-              >
-                <span
-                  style={{ fontFamily: "'Inter', sans-serif" }}
-                  className="
-                    hiw-featured-btn
-                    text-xs
-                    sm:text-sm
-                    font-semibold
-                    tracking-[0.2em]
-                    uppercase
-                    text-white/90
-                    group-hover/link:text-white
-                    transition-colors
-                    duration-200
-                  "
-                >
-                  VIEW ALL
-                </span>
-
-                <div
-                  className="
-                    mt-1
-                    h-[1.5px]
-                    w-full
-                    bg-white/40
-                    group-hover/link:bg-white
-                    transition-colors
-                    duration-200
-                  "
-                />
-              </button>
-            </div>
-          </div>
-
-          {/* SOLUTION CARDS */}
-          {solutionCards.map((item) => (
-            <SolutionCardItem key={item.id} item={item} />
-          ))}
-        </div>
-      </div>
+  {/* RIGHT SIDE: FOUR WHITE CARDS */}
+  <div
+    className="
+      grid
+      grid-cols-2
+      gap-3
+      sm:gap-4
+      lg:gap-5
+      lg:col-span-2
+      items-stretch
+    "
+  >
+    {solutionCards.map((item) => (
+      <SolutionCardItem key={item.id} item={item} />
+    ))}
+  </div>
+</div>
+</div>
     </section>
   );
 };

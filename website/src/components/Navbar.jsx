@@ -547,24 +547,23 @@ function Navbar({ showTopBar = true }) {
               />
 
               
+
 <div className="flex flex-col leading-none">
-  <h1 className="text-2xl font-bold tracking-tight">
+  <h1
+    className="text-2xl font-bold tracking-tight"
+    style={{ lineHeight: 0.88 }}
+  >
     <span className="text-[#2167A5]">MEGA</span>
+    <sup className="text-black text-xs align-top ml-0.5">®</sup>
+    <br />
     <span className="text-[#60AD00]">CL</span>
     <span className="text-[#2167A5]">i</span>
     <span className="text-[#60AD00]">CK</span>
-    <sup className="text-black text-xs align-top ml-0.5">®</sup>
   </h1>
+
   
-<p className="mt-0 text-sm text-[#2167A5] whitespace-nowrap">
-  Everything on Mega
-  <span className="text-[#60AD00]">Cl</span>
-  <span className="text-[#2167A5]">i</span>
-  <span className="text-[#60AD00]">ck</span>
-</p>
-
-
 </div>
+
             </Link>
 
             {/* DESKTOP NAV LINKS */}

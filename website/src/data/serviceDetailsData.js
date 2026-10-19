@@ -635,7 +635,7 @@ const serviceDetailsData = [
 
   // 12. CHARACTER CERTIFICATE
   {
-    slug: "character-certificate",
+    slug: "character-certificate-by-police",
     title: "Character Certificate by Police",
     category: "Legal Services",
     image: characterCertificateImg,

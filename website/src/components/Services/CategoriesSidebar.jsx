@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const categories = [
   {
@@ -24,6 +25,18 @@ const categories = [
       "Patent / Copyright Registration",
       "Digital 7/12 & Mutation Entries",
       "Character Certificate by Police",
+        "Land Acquisition",
+  "Title Report",
+  "Legal Notices",
+  "Reply to Legal Notices",
+  "Commercial Contracts",
+  "Legal Due Diligence",
+  "Legal Compliance",
+  "Legal Forensic Audit Report",
+  "Execution of Various Documents",
+  "Intellectual Property Compliances",
+  "Direct & Indirect Compliances",
+  "Compliance Before Registrar of Companies (ROC)",
     ],
   },
   {
@@ -43,18 +56,6 @@ const categories = [
       "Trust Registration & Audit",
       "Import Export Code (IEC)",
       "Digital Signature Certificate (DSC)",
-      "Land Acquisition",
-      "Title Report",
-      "Legal Notices",
-      "Reply to Legal Notices",
-      "Commercial Contracts",
-      "Legal Due Diligence",
-      "Legal Compliance",
-      "Legal Forensic Audit Report",
-      "Execution of Various Documents",
-      "Intellectual Property Compliances",
-      "Direct & Indirect Compliances",
-      "Compliance Before Registrar of Companies (ROC)",
     ],
   },
   {
@@ -101,11 +102,15 @@ const CategoriesSidebar = ({
   setSelectedService,
   selectedService,
 }) => {
+  const navigate = useNavigate();
+
   const [openCategory, setOpenCategory] = useState(
     selectedCategory && selectedCategory !== "All Services"
       ? selectedCategory
       : ""
   );
+
+  
 
   useEffect(() => {
     if (selectedCategory && selectedCategory !== "All Services") {
@@ -113,6 +118,7 @@ const CategoriesSidebar = ({
     }
   }, [selectedCategory]);
 
+  
   return (
     <aside className="cat-sidebar sticky  bg-white rounded-3xl border border-slate-200/80 shadow-sm p-4 sm:p-5 w-full font-['Inter',sans-serif]">
       <style>{`
@@ -417,10 +423,15 @@ const CategoriesSidebar = ({
                             <button
                               key={service}
                               type="button"
-                              onClick={() => {
-                                setSelectedCategory(group.name);
-                                setSelectedService(service);
-                              }}
+                            onClick={() => {
+  setSelectedService(service);
+  navigate(
+    `/services/${service
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "")}`
+  );
+}}
                               className={`
                                 cat-sub-btn
                                 w-full
@@ -475,9 +486,13 @@ const CategoriesSidebar = ({
                         key={service}
                         type="button"
                         onClick={() => {
-                          setSelectedCategory(category.name);
-                          setSelectedService(service);
-                        }}
+  const slug = service
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+
+  navigate(`/services/${slug}`);
+}}
                         className={`
                           cat-sub-btn
                           w-full
