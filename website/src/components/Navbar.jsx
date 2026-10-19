@@ -6,7 +6,7 @@ import { Menu, X, ArrowRight, Download } from "lucide-react";
 
 import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 
-import logo from "../assets/LOGO.png";
+import logo from "../assets/logo.jpg";
 
 
 

@@ -12,10 +12,10 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { SOCIAL_PROFILES } from "../data/socialLinks";
 import { openWhatsApp } from "../lib/whatsapp";
-import logo from "../assets/LOGO.png";
+import logo from "../assets/logo.jpg";
 import stravedalogo from "/straveda-logo-cropped.png";
-import dpiitLogo from "../assets/DPIIT.jpeg";
-import necLogo from "../assets/NEC.jpeg";
+import necLogo from "../assets/NEC_transparent_clean.png";
+import dpiitLogo from "../assets/DPIIT_transparent_clean.png";
 
 const FOOTER_LINKS = {
   EXPLORE: [
@@ -149,6 +149,10 @@ const Footer = () => {
           padding-right: 24px;
           box-sizing: border-box;
         }
+          .footer-partner-logo {
+  mix-blend-mode: multiply;
+  background: transparent;
+}
 
         /* =====================================================
            TABLET / DESKTOP BASE
@@ -1466,11 +1470,11 @@ className="
     <span className="text-[10px] sm:text-xs font-semibold text-white/90 uppercase tracking-wider">
       Recognized By
     </span>
-    <img
-      src={dpiitLogo}
-      alt="DPIIT Startup India"
-      className="h-8 sm:h-9 w-auto max-w-[100px] object-contain mix-blend-screen"
-    />
+   <img
+  src={dpiitLogo}
+  alt="DPIIT Startup India"
+  className="h-12 sm:h-9 w-auto max-w-[100px] object-contain mix-blend-screen"
+/>
   </div>
 
   {/* NEC - Services column */}
@@ -1478,11 +1482,11 @@ className="
     <span className="text-[10px] sm:text-xs font-semibold text-white/90 uppercase tracking-wider">
       Incubated By
     </span>
-    <img
-      src={necLogo}
-      alt="NEC Innovation Incubation Centre"
-      className="h-8 sm:h-9 w-auto max-w-[110px] object-contain mix-blend-screen"
-    />
+   <img
+  src={necLogo}
+  alt="NEC Innovation Incubation Centre"
+  className="h-8 sm:h-9 w-auto max-w-[110px] object-contain mix-blend-screen"
+/>
   </div>
 
   {/* Straveda - Contact Us column */}

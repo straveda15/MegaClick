@@ -136,15 +136,11 @@ const CAROUSEL_INTERVAL_MS = 2000;
 const Hero = () => {
   let navigate;
 
-  const heroHeadings = [
-  "Business With Smart Solutions",
-  "Brand With Trademark Protection",
-  "Business With Expert Guidance",
-  "Dreams Into Real Growth",
-  "Success With Trusted Services",
-  "Business With Seamless Registration",
-  "Ideas Into Successful Ventures",
-  "Growth With Professional Support",
+ const heroHeadings = [
+  "Legal & Documentation Services",
+  "Business & Financial Solutions",
+  "Banking & Real Estate Support",
+  "Professional Services, One Click Away",
 ];
 
   const [activeHeading, setActiveHeading] = useState(0);
@@ -1369,9 +1365,9 @@ const Hero = () => {
                 w-full
               "
             >
-              Complete business solutions to simplify your registrations, tax
-              <br />
-              compliance, and financial growth with trusted expert guidance.
+               Your trusted one-stop platform for legal, financial, banking,
+  real estate, and business services. We simplify complex processes
+  with expert guidance and reliable support for individuals and businesses.
             </p>
 
             {/* =================================================
