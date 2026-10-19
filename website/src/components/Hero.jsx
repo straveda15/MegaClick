@@ -6,6 +6,8 @@ import {
   CreditCard,
   Award,
   ReceiptText,
+  ChevronLeft,
+ChevronRight,
 } from "lucide-react";
 
 import hero1 from "../assets/hero1.jpg";
@@ -129,7 +131,7 @@ const services = [
   },
 ];
 
-const CAROUSEL_INTERVAL_MS = 4500;
+const CAROUSEL_INTERVAL_MS = 2000;
 
 const Hero = () => {
   let navigate;
@@ -228,13 +230,13 @@ const Hero = () => {
         bg-white
         font-['Inter',sans-serif]
         py-6
-        sm:py-10
-        md:py-12
-        lg:py-14
-        xl:py-16
-        min-[1920px]:py-20
-        min-[2560px]:py-24
-        min-[3840px]:py-32
+        sm:py-12
+        md:py-14
+        lg:py-16
+        xl:py-18
+        min-[1920px]:py-22
+        min-[2560px]:py-26
+        min-[3840px]:py-34
       "
     >
       <style>{`
@@ -1239,13 +1241,17 @@ const Hero = () => {
             min-height: 300px !important;
           }
 
-          #home .hero-indicators {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            margin-top: 0.9rem;
-          }
+          
+#home .hero-indicators {
+  position: relative;
+  top: auto;
+  left: auto;
+  right: auto;
+  margin-top: 1rem;
+  padding-bottom: 0.5rem;
+  flex-shrink: 0;
+}
+
         }
 
         /* =====================================================
@@ -1372,20 +1378,23 @@ const Hero = () => {
                 STATS
             ================================================== */}
             <div
-              className="
-                flex
-                gap-5
-                sm:gap-8
-                md:gap-10
-                flex-wrap
-                justify-start
-                w-full
-                pt-1
-              "
+             className="
+  grid
+  grid-cols-3
+  gap-x-3
+  gap-y-5
+  justify-start
+  w-full
+  pt-1
+  sm:flex
+  sm:flex-wrap
+  sm:gap-8
+  md:gap-10
+"
             >
               {/* STAT 1 */}
               <div
-                className="flex flex-col items-start text-left"
+                className="flex flex-col items-start text-left col-start-1 row-start-1"
                 style={{
                   minWidth: "90px",
                 }}
@@ -1429,7 +1438,7 @@ const Hero = () => {
 
               {/* STAT 2 */}
               <div
-                className="flex flex-col items-start text-left"
+                className="flex flex-col items-start text-left col-start-2 row-start-1"
                 style={{
                   minWidth: "70px",
                 }}
@@ -1473,7 +1482,7 @@ const Hero = () => {
 
               {/* STAT 3 */}
               <div
-                className="flex flex-col items-start text-left"
+                className="flex flex-col items-start text-left col-start-1 row-start-2"
                 style={{
                   minWidth: "100px",
                 }}
@@ -1517,7 +1526,7 @@ const Hero = () => {
 
 {/* STAT 4 */}
 <div
-  className="flex flex-col items-start text-left"
+  className="flex flex-col items-start text-left col-start-2 row-start-2"
   style={{ minWidth: "130px" }}
 >
   <h3
@@ -1865,42 +1874,40 @@ const Hero = () => {
               {/* =================================================
                   INDICATORS
               ================================================== */}
-              <div
-                role="tablist"
-                aria-label="Featured services"
-                className="
-                  hero-indicators
-                  flex
-                  items-center
-                  justify-center
-                  gap-2
-                  mt-4
-                  sm:mt-5
-                "
-              >
-                {services.map((service, index) => (
-                  <button
-                    key={service.id}
-                    type="button"
-                    role="tab"
-                    aria-selected={index === activeService}
-                    aria-label={`Show ${service.title}`}
-                    onClick={() => handleServiceSelect(index)}
-                    className={`
-                      h-2
-                      rounded-full
-                      transition-all
-                      duration-300
-                      cursor-pointer
-                      ${
-                        index === activeService
-                          ? "w-6 bg-green-600"
-                          : "w-2 bg-slate-300 hover:bg-slate-400"
-                      }
-                    `}
-                  />
-                ))}
-              </div>
+            
+{/* MANUAL CAROUSEL CONTROLS */}
+<div className="hero-indicators flex items-center justify-center gap-4 mt-4 sm:mt-5">
+  <button
+    type="button"
+    aria-label="Previous service"
+    onClick={() =>
+      handleServiceSelect(
+        (activeService - 1 + services.length) % services.length
+      )
+    }
+    className="w-10 h-10 flex items-center justify-center rounded-full
+      border border-slate-200 bg-white text-[#0B4EA2]
+      shadow-sm hover:bg-blue-50 hover:shadow-md transition"
+  >
+    <ChevronLeft size={22} />
+  </button>
+
+  <button
+    type="button"
+    aria-label="Next service"
+    onClick={() =>
+      handleServiceSelect(
+        (activeService + 1) % services.length
+      )
+    }
+    className="w-10 h-10 flex items-center justify-center rounded-full
+      border border-slate-200 bg-white text-[#0B4EA2]
+      shadow-sm hover:bg-blue-50 hover:shadow-md transition"
+  >
+    <ChevronRight size={22} />
+  </button>
+</div>
+
             </div>
           </div>
         </div>

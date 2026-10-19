@@ -10,15 +10,17 @@ const ServiceCard = ({ service }) => {
 
   const categoryName = service.category || "Service";
 
-  const slug =
-    service.slug ||
-    title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+ const slug =
+  typeof service === "string"
+    ? service.toLowerCase().replace(/[^a-z0-9]+/g, "-")
+    : service.slug ||
+      service.title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
 
   return (
-    <Link
-      to={`/services/${slug}`}
-      className="group block h-full font-['Inter',sans-serif]"
-    >
+   <Link
+  to={`/services/${slug}`}
+  className="group block h-full font-['Inter',sans-serif]"
+>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
 

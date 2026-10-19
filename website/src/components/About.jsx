@@ -316,15 +316,15 @@ const About = () => {
               relative
               z-10
               grid
-              grid-cols-1
-              sm:grid-cols-2
-              lg:grid-cols-3
-              items-center
-              justify-items-center
-              gap-6
-              sm:gap-8
-              lg:gap-6
-              w-full
+grid-cols-1
+sm:grid-cols-2
+lg:grid-cols-3
+items-center
+justify-items-center
+gap-4
+sm:gap-6
+lg:gap-6
+w-full
             "
           >
             {/* ===================================================
@@ -335,7 +335,7 @@ const About = () => {
                 about-card
                 relative
                 z-20
-                w-[220px]
+                w-[300px]
                 sm:w-[360px]
                 bg-[#0B4EA2]
                 text-white
@@ -372,7 +372,7 @@ const About = () => {
                 about-card
                 relative
                 z-10
-                w-[250px]
+                w-[280px]
                 sm:w-[330px]
                 bg-slate-100
                 text-slate-700
@@ -520,7 +520,7 @@ const About = () => {
                 about-card
                 relative
                 z-10
-                w-[260px]
+                w-[280px]
                 sm:w-[380px]
                 bg-slate-100
                 text-slate-700

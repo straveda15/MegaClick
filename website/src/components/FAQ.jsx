@@ -156,13 +156,6 @@ const FAQ = () => {
             </span>
           </h2>
 
-            <p
-              style={{ fontFamily: "'Inter', sans-serif" }}
-              className="faq-sub mt-3 sm:mt-4 text-slate-600 font-normal text-xs sm:text-sm lg:text-base leading-relaxed max-w-md min-[1920px]:max-w-lg min-[3840px]:max-w-2xl text-left"
-            >
-              Find answers to common questions about our business, legal,
-              financial, and registration services.
-            </p>
           </div>
 
           {/* RIGHT: ACCORDION LIST */}

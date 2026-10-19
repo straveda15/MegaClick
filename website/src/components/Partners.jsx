@@ -114,7 +114,7 @@ const Partners = () => {
               sm:mb-4
             "
           >
-            Trusted by Partners like
+            Trusted by Partners 
 
           </h2>
         </div>

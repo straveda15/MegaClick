@@ -67,14 +67,6 @@ const SOCIAL_LINKS = [
     bgColor: "bg-[#FCE7F3]",
     hoverColor: "hover:bg-[#FBD5E7]",
   },
-  {
-  icon: FaLinkedinIn,
-  href: "https://www.linkedin.com/company/YOUR-COMPANY/",
-  label: "LinkedIn",
-  iconColor: "text-[#0A66C2]",
-  bgColor: "bg-[#E8F2FC]",
-  hoverColor: "hover:bg-[#D6E8FA]",
-},
   
 ];
 
@@ -611,7 +603,7 @@ const Footer = () => {
     <img
       src={logo}
       alt="MegaClick"
-      className="w-12 h-12 sm:w-11 sm:h-11 rounded-full object-contain p-1 border border-blue-200 bg-white shadow-xs transition-transform duration-300 hover:scale-105 shrink-0"
+      className="w-11 h-11 rounded-full object-contain p-1 border border-blue-200 bg-white shrink-0"
     />
 
     <div className="flex flex-col leading-none">
@@ -619,19 +611,17 @@ const Footer = () => {
         className="footer-brand-title text-2xl font-bold tracking-tight"
         style={{ fontFamily: "'Poppins', sans-serif" }}
       >
-        <span className="text-white">MEGA</span>
-        <span className="text-[#60AD00]">CL</span>
-        <span className="text-white">i</span>
-        <span className="text-[#60AD00]">CK</span>
-        <sup className="text-white text-xs align-top ml-0.5">®</sup>
+        
+<span className="text-white">MEGA</span>
+<sup className="text-white text-xs align-top ml-0.5">®</sup>
+<br />
+<span className="text-[#60AD00]">CL</span>
+<span className="text-white">i</span>
+<span className="text-[#60AD00]">CK</span>
+
       </h2>
 
-      <p className="mt-0 text-sm text-white whitespace-nowrap">
-        Everything on Mega
-        <span className="text-[#60AD00]">Cl</span>
-        <span className="text-white">i</span>
-        <span className="text-[#60AD00]">ck</span>
-      </p>
+    
     </div>
   </div>
 
@@ -1038,7 +1028,7 @@ const Footer = () => {
               <div>
               
 <div className="mb-1.5">
-  <div className="flex items-start gap-3 min-[1920px]:gap-4">
+  <div className="flex items-center gap-3 min-[1920px]:gap-4">
     {/* Logo */}
     <img
       src={logo}
@@ -1071,19 +1061,17 @@ const Footer = () => {
           leading-tight
         "
       >
-        <span className="text-white">MEGA</span>
-        <span className="text-[#60AD00]">CL</span>
-        <span className="text-white">i</span>
-        <span className="text-[#60AD00]">CK</span>
-        <span className="text-white text-xs align-top ml-0.5">®</span>
+        
+<span className="text-white">MEGA</span>
+<sup className="text-white text-xs align-top ml-0.5">®</sup>
+<br />
+<span className="text-[#60AD00]">CL</span>
+<span className="text-white">i</span>
+<span className="text-[#60AD00]">CK</span>
+
       </h2>
 
-      <p className="mt-0 text-sm whitespace-nowrap">
-        <span className="text-white">Everything on Mega</span>
-        <span className="text-[#60AD00]">Cl</span>
-        <span className="text-white">i</span>
-        <span className="text-[#60AD00]">ck.</span>
-      </p>
+      
     </div>
   </div>
 </div>
@@ -1427,19 +1415,21 @@ const Footer = () => {
           ================================================= */}
 
           <div
-            className="
-              pt-3.5
-              min-[1920px]:pt-5
-              border-t
-              border-white/10
-              flex
-              flex-col
-              md:flex-row
-              justify-between
-              items-center
-              gap-3
-              min-[1920px]:gap-5
-            "
+            
+className="
+  pt-3.5
+  min-[1920px]:pt-5
+  border-t
+  border-white/10
+  flex
+  flex-col
+  md:flex-row
+  items-start
+  md:items-center
+  gap-4
+  min-[1920px]:gap-5
+"
+
           >
             
 <p
@@ -1465,52 +1455,56 @@ const Footer = () => {
             {/* Straveda Tech Partner Badge */}
               
               
-{/* Partner Logos - Equal Spacing */}
-<div className="flex items-start justify-between gap-6 w-full">
 
-  {/* DPIIT */}
-  <div className="flex flex-col items-center text-center gap-2 flex-1 min-w-0">
+
+{/* Partner Logos aligned with footer columns */}
+
+<div className="grid grid-cols-3 gap-4 w-full min-w-0 lg:-translate-x-8">
+
+  {/* DPIIT - Explore column */}
+  <div className="flex flex-col items-center text-center gap-2 min-w-0">
+    <span className="text-[10px] sm:text-xs font-semibold text-white/90 uppercase tracking-wider">
+      Recognized By
+    </span>
     <img
       src={dpiitLogo}
-      alt="DPIIT"
-      className="h-8 w-[90px] object-contain"
+      alt="DPIIT Startup India"
+      className="h-8 sm:h-9 w-auto max-w-[100px] object-contain mix-blend-screen"
     />
-    <span className="text-[9px] leading-4 font-medium text-white/80">
-      Recognized by
-    </span>
   </div>
 
-  {/* NEC */}
-  <div className="flex flex-col items-center text-center gap-2 flex-1 min-w-0">
+  {/* NEC - Services column */}
+  <div className="flex flex-col items-center text-center gap-2 min-w-0">
+    <span className="text-[10px] sm:text-xs font-semibold text-white/90 uppercase tracking-wider">
+      Incubated By
+    </span>
     <img
       src={necLogo}
-      alt="NEC"
-      className="h-8 w-[90px] object-contain"
+      alt="NEC Innovation Incubation Centre"
+      className="h-8 sm:h-9 w-auto max-w-[110px] object-contain mix-blend-screen"
     />
-    <span className="text-[9px] leading-4 font-medium text-white/80">
-      NEC's Innovation Incubation Centre
-    </span>
   </div>
 
-  {/* Straveda */}
+  {/* Straveda - Contact Us column */}
   <a
     href="https://stravedatech.com/"
     target="_blank"
     rel="noopener noreferrer"
     aria-label="Straveda Tech Partner"
-    className="flex flex-col items-center text-center gap-2 flex-1 min-w-0"
+    className="flex flex-col items-center text-center gap-2 min-w-0"
   >
+    <span className="text-[10px] sm:text-xs font-semibold text-white/90 uppercase tracking-wider">
+      Developed By
+    </span>
     <img
       src={stravedalogo}
       alt="Straveda"
-      className="h-4 w-full max-w-[90px] object-contain"
+      className="h-7 sm:h-8 w-auto max-w-[110px] object-contain"
     />
-    <span className="text-[7px] leading-4 font-semibold text-white/50 uppercase tracking-wider whitespace-nowrap">
-      TECH PARTNER
-    </span>
   </a>
-
 </div>
+
+
 
 
 

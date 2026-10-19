@@ -20,6 +20,7 @@ import replyNoticesImg from "../assets/replattonotices.png";
 import titleReportImg from "../assets/TitleRepo.png";
 import ipCompliancesImg from "../assets/icon-intellectual-property.svg";
 
+
 // =====================================================
 // 2. BUSINESS & FINANCIAL SERVICES ICONS (12 PNGs)
 // =====================================================

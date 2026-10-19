@@ -29,14 +29,6 @@ const popularServices = [
       "Complete assistance for marriage registration and required documentation.",
   },
   {
-    title: "GST Registration & Filing",
-    slug: "gst-registration-filing",
-    description: "GST registration and filing support for businesses.",
-    image: gstRegistrationImg,
-    description:
-      "GST registration and filing support for businesses and professionals.",
-  },
-  {
     title: "Trademark Registration",
     slug: "trademark-registration",
     description: "Professional assistance for trademark registration.",
@@ -52,14 +44,7 @@ const popularServices = [
     description:
       "Company incorporation and annual compliance support for businesses.",
   },
-  {
-    title: "Income Tax Services",
-    slug: "income-tax-services",
-    description: "Income tax filing and compliance assistance.",
-    image: incomeTaxImg,
-    description:
-      "Income tax filing and compliance assistance for individuals and businesses.",
-  },
+  
   {
     title: "MSME / UDYAM Registration",
     slug: "msme-registration",
@@ -75,14 +60,6 @@ const popularServices = [
     image: rentAgreementImg,
     description:
       "Prepare and register rental agreements with complete documentation support.",
-  },
-  {
-    title: "Digital Marketing",
-    slug: "digital-marketing",
-    description: "Digital marketing support to grow your online presence.",
-    image: digitalMarketingImg,
-    description:
-      "Build your online presence with practical digital marketing support.",
   },
   {
     title: "Passport Services",

@@ -2,14 +2,14 @@ import React, { useState, useRef, useEffect } from "react";
 import { Quote, Star } from "lucide-react";
 
 // Fallback seed data focused on services outcomes
-export const defaultTestimonials = [
+  export const defaultTestimonials = [
   {
     name: "Rajesh Sharma",
     service: "Income Tax Registration",
     services: ["Income Tax Registration"],
     location: "Nashik, Maharashtra",
     review:
-      "The Income Tax registration and filing process was handled seamlessly. Every document was verified accurately and processed without any delay.",
+      "I needed help with my income tax filing and wasn't sure about a few things. The team explained the process and helped me with the documents. It was a good experience overall.",
     rating: 5,
   },
   {
@@ -18,7 +18,7 @@ export const defaultTestimonials = [
     services: ["GST Registration"],
     location: "Pune, Maharashtra",
     review:
-      "Our GST registration was completed transparently with regular status updates. Expert guidance made the entire compliance process effortless.",
+      "We contacted the team for GST registration. They answered our questions and kept us updated about the process. Everything was easy to understand, and we're happy with the support.",
     rating: 5,
   },
   {
@@ -27,16 +27,19 @@ export const defaultTestimonials = [
     services: ["Trademark Registration"],
     location: "Mumbai, Maharashtra",
     review:
-      "Exceptional legal service for our trademark registration. All filing queries were answered promptly and completed well within the timeline.",
+      "I had a few questions about trademark registration, and the team helped me understand the steps. They were helpful whenever I needed clarification. Thanks for the support!",
     rating: 5,
   },
   {
     name: "Sneha Kulkarni",
     service: "Marriage Registration",
-    services: ["Marriage Registration", "Partnership Deed (Notary & Registration of Firm)"],
+    services: [
+      "Marriage Registration",
+      "Partnership Deed (Notary & Registration of Firm)",
+    ],
     location: "Nagpur, Maharashtra",
     review:
-      "Both our marriage registration and partnership deed documentation were completed smoothly with precise legal paperwork and fast turnarounds.",
+      "We needed some guidance with our registration documents. The team explained what was required and helped us whenever we had questions. Overall, the experience was good.",
     rating: 5,
   },
 ];
