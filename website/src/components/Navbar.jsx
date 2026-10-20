@@ -745,7 +745,7 @@ function Navbar({ showTopBar = true }) {
 {/* MOBILE DOWNLOAD BROCHURE BUTTON */}
 <div className="pt-2 px-4 space-y-3">
   <a
-    href="/Megaclick_broucher.pdf"
+    href={brochurePdf}
     download="MegaClick-Brochure.pdf"
     onClick={closeMenu}
     className="w-full flex justify-center items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-3 rounded-xl font-semibold text-sm transition-all duration-200"

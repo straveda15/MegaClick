@@ -326,9 +326,9 @@ const About = () => {
             <span className="text-[#0B4EA2]">
               Our Mission
             </span>
-            Your Success{" "}
+            
             <span className="text-[#0B4EA2]">
-              Our Mission
+              
             </span>
           </h2>
 
