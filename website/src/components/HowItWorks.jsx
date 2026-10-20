@@ -1531,7 +1531,9 @@ const HowItWorks = () => {
        {/* SOLUTION GRID */}
 <div
   className="
-    mt-10
+    mt-16
+    sm:mt-22
+    lg:mt-26
     hiw-grid
     grid
     grid-cols-1

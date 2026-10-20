@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { X } from "lucide-react";
 
-import team1 from "../assets/team1.webp";
-import team2 from "../assets/team2.jpg";
-import team3 from "../assets/team3.jpg";
-import team4 from "../assets/team4.jpg";
-import team5 from "../assets/team5.jpg";
-import team6 from "../assets/team6.jpg";
+import team1 from "../assets/Rajgharte.jpeg";
+import team2 from "../assets/Radhika.jpeg";
+import team3 from "../assets/Rhitvik.jpeg";
+import team4 from "../assets/santosh.jpeg";
+
 
 /* ------------------- Team data ------------------- */
 const teamMembers = [
   { image: team1, name: "Adv. Rajendra Gharte", role: "Founder & CLO" },
   { image: team2, name: "Radhika Tak", role: "CTO" },
-  { image: team3, name: "Ritvik Verma", role: "Brand Consultant" },
+  { image: team3, name: "Rhitvik Verma", role: "Cheif Branding Officer" },
   { image: team4, name: "Adv. Santosh Khandare", role: "Senior" },
   
 ];
@@ -230,12 +229,12 @@ const Team = () => {
                 onClick={() => setSelectedImage(member)}
               >
                 {/* Photo container */}
-                <div className="team-photo-box relative w-full h-[150px] sm:h-[200px] lg:h-[200px] xl:h-[220px] rounded-xl bg-blue-50/60 overflow-hidden p-1.5 flex items-end justify-center transition-all duration-300 group-hover:bg-blue-100/60 border border-blue-100/60 shadow-xs">
+                <div className="team-photo-box relative w-full h-[150px] sm:h-[200px] lg:h-[200px] xl:h-[220px] overflow-hidden p-0 flex items-end justify-center bg-transparent border-0 shadow-none">
                   <img
                     src={member.image}
                     alt={member.name}
                     loading="lazy"
-                    className="w-full h-full object-cover rounded-lg transition-transform duration-500 group-hover:scale-105"
+                    className="w-full h-full object-contain object-top transition-transform duration-300"
                   />
                 </div>
 

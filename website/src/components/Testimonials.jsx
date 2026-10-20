@@ -4,44 +4,44 @@ import { Quote, Star } from "lucide-react";
 // Fallback seed data focused on services outcomes
   export const defaultTestimonials = [
   {
-    name: "Rajesh Sharma",
-    service: "Income Tax Registration",
-    services: ["Income Tax Registration"],
-    location: "Nashik, Maharashtra",
-    review:
-      "I needed help with my income tax filing and wasn't sure about a few things. The team explained the process and helped me with the documents. It was a good experience overall.",
-    rating: 5,
-  },
-  {
-    name: "Priya Enterprises",
-    service: "GST Registration",
-    services: ["GST Registration"],
-    location: "Pune, Maharashtra",
-    review:
-      "We contacted the team for GST registration. They answered our questions and kept us updated about the process. Everything was easy to understand, and we're happy with the support.",
-    rating: 5,
-  },
-  {
-    name: "Amit Patil",
-    service: "Trademark Registration",
-    services: ["Trademark Registration"],
-    location: "Mumbai, Maharashtra",
-    review:
-      "I had a few questions about trademark registration, and the team helped me understand the steps. They were helpful whenever I needed clarification. Thanks for the support!",
-    rating: 5,
-  },
-  {
-    name: "Sneha Kulkarni",
-    service: "Marriage Registration",
-    services: [
-      "Marriage Registration",
-      "Partnership Deed (Notary & Registration of Firm)",
-    ],
-    location: "Nagpur, Maharashtra",
-    review:
-      "We needed some guidance with our registration documents. The team explained what was required and helped us whenever we had questions. Overall, the experience was good.",
-    rating: 5,
-  },
+  name: "Rajesh Sharma",
+  service: "Income Tax Registration",
+  services: ["Income Tax Registration"],
+  location: "Nashik, Maharashtra",
+  review:
+    "I had some questions about the documents required for my income tax work. The team explained what I needed to prepare and guided me through the process. Communication was clear, and I knew what to expect at each step.",
+  rating: 5,
+},
+{
+  name: "Priya Enterprises",
+  service: "GST Registration",
+  services: ["GST Registration"],
+  location: "Pune, Maharashtra",
+  review:
+    "We approached MegaClick for GST registration because we weren't sure about the documentation and process. The team answered our questions and kept us updated along the way. It was helpful having the requirements explained clearly.",
+  rating: 5,
+},
+{
+  name: "Amit Patil",
+  service: "Trademark Registration",
+  services: ["Trademark Registration"],
+  location: "Mumbai, Maharashtra",
+  review:
+    "I wanted to understand the trademark registration process before getting started. The team explained the steps and the information I needed to arrange. Whenever I had a question, I could get clarification and move forward with more confidence.",
+  rating: 5,
+},
+{
+  name: "Sneha Kulkarni",
+  service: "Marriage Registration",
+  services: [
+    "Marriage Registration",
+    "Partnership Deed (Notary & Registration of Firm)",
+  ],
+  location: "Nagpur, Maharashtra",
+  review:
+    "We needed guidance on the documents and steps involved in marriage registration. The team helped us understand the requirements and what we needed to prepare. Having the process explained clearly made things less confusing for us.",
+  rating: 5,
+},
 ];
 
 const Testimonials = () => {
