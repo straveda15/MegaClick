@@ -268,23 +268,24 @@ const AssociateWithUs = () => {
 
                 {/* HEADING */}
                 <h2
-                  className="
-                    text-xl
-                    sm:text-2xl
-                    min-[1440px]:text-3xl
-                    min-[1920px]:text-4xl
-                    min-[3840px]:text-6xl
-                    font-normal
-                    text-[#0B2545]
-                    leading-snug
-                    min-[3840px]:leading-tight
-                  "
+                 className="
+  text-xl
+  sm:text-2xl
+  min-[1440px]:text-3xl
+  min-[1920px]:text-4xl
+  min-[3840px]:text-6xl
+  font-semibold
+  text-[#0B2545]
+  leading-snug
+  text-left
+"
                   style={{
-                    fontFamily: '"Poppins", Georgia, serif',
-                  }}
+  fontFamily: "'Poppins', sans-serif",
+}}
                 >
                   We are currently onboarding a limited number of
-                  professionals as part of{" "}
+                  professionals  
+                  <br />as part of{" "}
                   <span className="text-[#0B4EA2]">Mega</span>
                   <span className="text-[#0A8F55]">Click</span>
                   's founding network.
@@ -297,13 +298,14 @@ const AssociateWithUs = () => {
                     sm:mt-5
                     min-[1920px]:mt-6
                     min-[3840px]:mt-10
-                    text-sm
-                    sm:text-base
-                    min-[1920px]:text-xl
-                    min-[3840px]:text-3xl
-                    text-gray-600
-                    font-light
-                    leading-relaxed
+                   text-sm
+sm:text-base
+min-[1920px]:text-xl
+min-[3840px]:text-3xl
+text-gray-600
+font-normal
+leading-relaxed
+text-left
                   "
                 >
                   If you are interested in being part of MegaClick's founding
@@ -348,7 +350,7 @@ const AssociateWithUs = () => {
                         Email
                       </strong>
 
-                      <span className="block mt-0.5 text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl text-gray-600 font-normal break-all">
+                      <span className="block mt-0.5 text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl text-gray-600 font-semibold break-all">
                         megaclickofficial@gmail.com
                       </span>
                     </div>
@@ -428,11 +430,57 @@ const AssociateWithUs = () => {
                         Status
                       </strong>
 
+
                       <span className="block mt-0.5 text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl text-gray-600 font-normal">
                         The MegaClick platform is currently being built
                       </span>
                     </div>
+                    
                   </div>
+                  {/* WHY PARTNER WITH US */}
+<div className="mt-8 border-t border-blue-100 pt-6 sm:pt-8">
+  <h3
+    className="text-lg sm:text-xl font-semibold text-[#0B2545]"
+    style={{ fontFamily: "'Poppins', sans-serif" }}
+  >
+    Why Partner With MegaClick?
+  </h3>
+
+  <div className="mt-5 space-y-4">
+    {[
+      {
+        title: "Professional Network",
+        description:
+          "Connect with professionals and businesses across India.",
+      },
+      {
+        title: "Meaningful Collaboration",
+        description:
+          "Build professional relationships and explore collaboration opportunities.",
+      },
+      {
+        title: "Grow Together",
+        description:
+          "Be part of MegaClick's growing professional network.",
+      },
+    ].map((item) => (
+      <div key={item.title} className="flex items-start gap-3">
+        <span className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-green-50 text-[#0A8F55] font-bold">
+          ✓
+        </span>
+
+        <div>
+          <h4 className="text-sm sm:text-base font-semibold text-gray-900">
+            {item.title}
+          </h4>
+          <p className="mt-1 text-sm leading-relaxed text-gray-600">
+            {item.description}
+          </p>
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
 
                 </div>
               </div>

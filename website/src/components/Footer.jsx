@@ -890,37 +890,55 @@ const Footer = () => {
             })}
           </div>
 
-          {/* MOBILE TECH PARTNER */}
-<a
-  href="https://stravedatech.com/"
-  target="_blank"
-  rel="noopener noreferrer"
-  aria-label="Straveda Tech - Tech Partner"
-  className="flex flex-wrap items-center justify-start gap-3 w-full py-2"
->
-  <img
-    src={dpiitLogo}
-    alt="DPIIT"
-    className="h-8 w-auto max-w-[64px] object-contain shrink-0"
-  />
+        {/* MOBILE PARTNER LOGOS */}
+<div className="grid grid-cols-3 gap-3 w-full py-2">
 
-  <img
-    src={necLogo}
-    alt="NEC"
-    className="h-8 w-auto max-w-[64px] object-contain shrink-0"
-  />
+  {/* DPIIT */}
+  <div className="flex flex-col items-center text-center gap-1 min-w-0 lg:-translate-x-12">
+    <span className="text-[11px] sm:text-xs font-bold text-blue-100/70 uppercase tracking-wider leading-tight">
+      Recognized By
+    </span>
 
-  <img
-    src={stravedalogo}
-    alt="Straveda"
-    className="h-4 w-auto max-w-[90px] object-contain shrink-0"
-  />
+    <img
+      src={dpiitLogo}
+      alt="DPIIT Startup India"
+      className="h-8 w-auto max-w-[76px] object-contain shrink-0"
+    />
+  </div>
 
-  <span className="text-[8px] font-semibold text-white/50 uppercase tracking-wider whitespace-nowrap">
-    TECH PARTNER
-  </span>
-</a>
+  {/* NEC */}
+  <div className="flex flex-col items-center text-center  min-w-0">
+    <span className="text-[11px] sm:text-xs font-bold text-blue-100/70 uppercase tracking-wider leading-tight">
+      Incubated By
+    </span>
 
+    <img
+      src={necLogo}
+      alt="NEC Innovation Incubation Centre"
+      className="h-8 w-auto max-w-[76px] object-contain shrink-0"
+    />
+  </div>
+
+  {/* Straveda */}
+  <a
+    href="https://stravedatech.com/"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Straveda Tech"
+    className="flex flex-col items-center text-center  min-w-0"
+  >
+    <span className="text-[11px] sm:text-xs font-bold text-blue-100/70 uppercase tracking-wider leading-tight">
+      Developed By
+    </span>
+
+    <img
+      src={stravedalogo}
+      alt="Straveda"
+      className="h-3.5 w-auto max-w-[75px] object-contain"
+    />
+  </a>
+
+</div>
           {/* MOBILE BOTTOM BAR */}
 
           <div
@@ -951,37 +969,9 @@ const Footer = () => {
             </p>
 
             <div className="flex flex-wrap items-center gap-x-5 gap-y-2 ">
-              <Link
-                to="/privacy-policy"
-                className="
-                  text-[11px]
-                  sm:text-xs
-                  font-bold
-                  uppercase
-                  tracking-wider
-                  text-blue-100/70
-                  hover:text-green-400
-                  transition-colors
-                "
-              >
-                Privacy Policy
-              </Link>
+             
 
-              <Link
-                to="/terms-and-conditions"
-                className="
-                  text-[11px]
-                  sm:text-xs
-                  font-bold
-                  uppercase
-                  tracking-wider
-                  text-blue-100/70
-                  hover:text-green-400
-                  transition-colors
-                "
-              >
-                Terms & Conditions
-              </Link>
+              
             </div>
           </div>
         </div>
@@ -1425,11 +1415,11 @@ className="
   min-[1920px]:pt-5
   border-t
   border-white/10
-  flex
-  flex-col
-  md:flex-row
+  grid
+  grid-cols-1
+  md:grid-cols-[minmax(260px,1.05fr)_minmax(0,2.95fr)]
+  min-[3840px]:grid-cols-[minmax(360px,1fr)_minmax(0,3fr)]
   items-start
-  md:items-center
   gap-4
   min-[1920px]:gap-5
 "
@@ -1463,30 +1453,36 @@ className="
 
 {/* Partner Logos aligned with footer columns */}
 
-<div className="grid grid-cols-3 gap-4 w-full min-w-0 lg:-translate-x-8">
+<div className="grid grid-cols-3 gap-4 flex-1 min-w-0 lg:-translate-x-18">
 
   {/* DPIIT - Explore column */}
-  <div className="flex flex-col items-center text-center gap-2 min-w-0">
-    <span className="text-[10px] sm:text-xs font-semibold text-white/90 uppercase tracking-wider">
+  <div className="flex flex-col items-center text-center  min-w-0">
+    <span className="text-[11px] min-[1920px]:text-xs min-[2560px]:text-sm min-[3840px]:text-lg font-bold text-white/50 uppercase tracking-[0.15em]">
       Recognized By
     </span>
-   <img
-  src={dpiitLogo}
-  alt="DPIIT Startup India"
-  className="h-12 sm:h-9 w-auto max-w-[100px] object-contain mix-blend-screen"
-/>
+
+    <div className="flex h-12 w-full items-end justify-center">
+      <img
+        src={dpiitLogo}
+        alt="DPIIT Startup India"
+        className="h-9 w-auto max-w-[100px] object-contain mix-blend-screen"
+      />
+    </div>
   </div>
 
   {/* NEC - Services column */}
-  <div className="flex flex-col items-center text-center gap-2 min-w-0">
-    <span className="text-[10px] sm:text-xs font-semibold text-white/90 uppercase tracking-wider">
+  <div className="flex flex-col items-center text-center  min-w-0">
+    <span className="text-[11px] min-[1920px]:text-xs min-[2560px]:text-sm min-[3840px]:text-lg font-bold text-white/50 uppercase tracking-[0.15em]">
       Incubated By
     </span>
-   <img
-  src={necLogo}
-  alt="NEC Innovation Incubation Centre"
-  className="h-8 sm:h-9 w-auto max-w-[110px] object-contain mix-blend-screen"
-/>
+
+    <div className="flex h-12 w-full items-end justify-center">
+      <img
+        src={necLogo}
+        alt="NEC Innovation Incubation Centre"
+        className="h-9 w-auto max-w-[110px] object-contain mix-blend-screen"
+      />
+    </div>
   </div>
 
   {/* Straveda - Contact Us column */}
@@ -1495,17 +1491,21 @@ className="
     target="_blank"
     rel="noopener noreferrer"
     aria-label="Straveda Tech Partner"
-    className="flex flex-col items-center text-center gap-2 min-w-0"
+    className="flex flex-col items-center text-center  min-w-0"
   >
-    <span className="text-[10px] sm:text-xs font-semibold text-white/90 uppercase tracking-wider">
+    <span className="text-[11px] min-[1920px]:text-xs min-[2560px]:text-sm min-[3840px]:text-lg font-bold text-white/50 uppercase tracking-[0.15em]">
       Developed By
     </span>
-    <img
-      src={stravedalogo}
-      alt="Straveda"
-      className="h-7 sm:h-8 w-auto max-w-[110px] object-contain"
-    />
+
+    <div className="flex h-12 w-full items-end justify-center">
+      <img
+        src={stravedalogo}
+        alt="Straveda"
+        className="h-5 sm:h-6 w-auto max-w-[110px] object-contain"
+      />
+    </div>
   </a>
+
 </div>
 
 

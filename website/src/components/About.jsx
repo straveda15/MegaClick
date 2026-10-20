@@ -25,12 +25,12 @@ const About = () => {
         /* =========================================================
            STANDARD DESKTOP — 1440px
         ========================================================= */
-        @media (min-width: 1440px) {
-          .about-container {
-            max-width: 1600px !important;
-            padding-left: 48px !important;
-            padding-right: 48px !important;
-          }
+       @media (min-width: 1440px) {
+  .about-container {
+    max-width: 1380px !important;
+    padding-left: 40px !important;
+    padding-right: 40px !important;
+  }
 
           .about-top {
             gap: 70px !important;
@@ -73,11 +73,11 @@ const About = () => {
            LARGE DESKTOP — 1920px
         ========================================================= */
         @media (min-width: 1920px) {
-          .about-container {
-            max-width: 2100px !important;
-            padding-left: 60px !important;
-            padding-right: 60px !important;
-          }
+  .about-container {
+    max-width: 1800px !important;
+    padding-left: 64px !important;
+    padding-right: 64px !important;
+  }
 
           .about-top {
             gap: 100px !important;
