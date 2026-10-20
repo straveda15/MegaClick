@@ -4,7 +4,7 @@ import { X } from "lucide-react";
 import team1 from "../assets/Rajgharte.jpeg";
 import team2 from "../assets/Radhika.jpeg";
 import team3 from "../assets/Rhitvik.jpeg";
-import team4 from "../assets/santosh.jpeg";
+import team4 from "../assets/Santosh.jpeg";
 
 
 /* ------------------- Team data ------------------- */
