@@ -2,12 +2,11 @@
 import { useEffect, useState } from "react";
 import TopBar from "./TopBar";
 
-import { Menu, X, ArrowRight, Download, Eye } from "lucide-react";
+import { Menu, X, ArrowRight, Download } from "lucide-react";
 
 import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 
 import brochurePdf from "../assets/MegaClick Profile 2026.pdf";
-import { useVisitorCount } from "../contexts/VisitorCountContext";
 
 
 
@@ -15,7 +14,6 @@ import { useVisitorCount } from "../contexts/VisitorCountContext";
 function Navbar({ showTopBar = true }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const visitorCount = useVisitorCount();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -637,29 +635,11 @@ function Navbar({ showTopBar = true }) {
     <span>Get Free Consultation</span>
     <ArrowRight size={15} />
   </button>
-  {visitorCount !== null && (
-    <div className="inline-flex items-center gap-1 text-slate-800" aria-label={`${visitorCount.toLocaleString()} or more website visitors`}>
-      <Eye size={18} className="shrink-0 text-[#2167A5]" aria-hidden="true" />
-      <span className="flex flex-col leading-[1.05]">
-        <span className="text-sm font-semibold">{visitorCount.toLocaleString()}+</span>
-        <span className="text-[11px] font-normal text-slate-500">visitors</span>
-      </span>
-    </div>
-  )}
 </div>
             
 
 
             {/* MOBILE MENU TOGGLE BUTTON */}
-            {visitorCount !== null && (
-              <div className="lg:hidden inline-flex items-center gap-1 text-slate-800" aria-label={`${visitorCount.toLocaleString()} or more website visitors`}>
-                <Eye size={16} className="shrink-0 text-[#2167A5]" aria-hidden="true" />
-                <span className="flex flex-col leading-[1.05]">
-                  <span className="text-xs font-semibold">{visitorCount.toLocaleString()}+</span>
-                  <span className="text-[9px] font-normal text-slate-500">visitors</span>
-                </span>
-              </div>
-            )}
             <button
               type="button"
               className="lg:hidden p-1 text-slate-800 focus:outline-none cursor-pointer shrink-0"

@@ -6,6 +6,8 @@ import { VisitorCountProvider } from "../contexts/VisitorCountContext";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
+const pendingPageViews = new Set();
+
 const MainLayout = () => {
 
   const location = useLocation();
@@ -28,8 +30,9 @@ const MainLayout = () => {
     window.sessionStorage.setItem("mcsite_last_active", String(now));
 
     const pageKey = `${sessionId}:${location.pathname}${location.search}`;
-    if (window.sessionStorage.getItem("mcsite_last_page_view") === pageKey) return;
-    window.sessionStorage.setItem("mcsite_last_page_view", pageKey);
+    const successMarker = "mcsite_last_successful_page_view";
+    if (window.sessionStorage.getItem(successMarker) === pageKey || pendingPageViews.has(pageKey)) return;
+    pendingPageViews.add(pageKey);
 
     fetch(`${API_BASE}/api/v1/marketing/track`, {
       method: "POST",
@@ -42,7 +45,14 @@ const MainLayout = () => {
         landingPage: location.pathname,
       }),
       keepalive: true,
-    }).catch(() => {});
+    })
+      .then((response) => {
+        pendingPageViews.delete(pageKey);
+        if (!response.ok) return;
+        window.sessionStorage.setItem(successMarker, pageKey);
+        window.dispatchEvent(new Event("mcsite:visitor-tracked"));
+      })
+      .catch(() => pendingPageViews.delete(pageKey));
   }, [location.pathname, location.search]);
 
   return (

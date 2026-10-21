@@ -26,6 +26,7 @@ import shipmentRoutes from "../modules/shipment/shipment.routes.js";
 import shipmentTierRoutes from "../modules/shipment/tier.routes.js";
 import shipmentRuleRoutes from "../modules/shipment/rule.routes.js";
 import testimonialRoutes from "../modules/websiteControl/testimonials/testimonial.routes.js";
+import marketingRoutes from "../modules/marketing/marketing.routes.js";
 
 const router = express.Router();
 
@@ -67,5 +68,6 @@ router.use("/v1/notifications", employeeNotificationRoutes);
 router.use("/v1/audit", auditRoutes);
 // ── Website Control ──────────────────────────────────────────────────────────
 router.use("/v1/website-control/testimonials", testimonialRoutes);
+router.use("/v1/marketing", marketingRoutes);
 
 export default router;

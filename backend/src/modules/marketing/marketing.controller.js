@@ -440,3 +440,16 @@ export const trackEvent = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+export const getWebsiteVisitorCount = async (_req, res) => {
+  try {
+    const [result] = await MarketingSession.aggregate([
+      { $match: { sessionId: /^mcsite_/, visitorId: { $type: "string" } } },
+      { $group: { _id: "$visitorId" } },
+      { $count: "visitors" },
+    ]);
+    res.json({ visitors: result?.visitors || 0 });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

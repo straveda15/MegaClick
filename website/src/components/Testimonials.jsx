@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Quote, Star } from "lucide-react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { ArrowLeft, ArrowRight, Quote, Star } from "lucide-react";
 
 // Fallback seed data focused on services outcomes
   export const defaultTestimonials = [
@@ -46,9 +46,18 @@ import { Quote, Star } from "lucide-react";
 
 const Testimonials = () => {
   const [testimonialsList, setTestimonialsList] = useState(defaultTestimonials);
-  const [isHovered, setIsHovered] = useState(false);
-  const [isFocused, setIsFocused] = useState(false);
-  const [isTouched, setIsTouched] = useState(false);
+  const [autoScrollPaused, setAutoScrollPaused] = useState(false);
+  const [visibleCards, setVisibleCards] = useState(3);
+  const carouselRef = useRef(null);
+
+  useEffect(() => {
+    const updateVisibleCards = () => {
+      setVisibleCards(window.innerWidth < 640 ? 1 : window.innerWidth < 1024 ? 2 : 3);
+    };
+    updateVisibleCards();
+    window.addEventListener("resize", updateVisibleCards);
+    return () => window.removeEventListener("resize", updateVisibleCards);
+  }, []);
 
   // 🔄 Fetch dynamic data from Backend API (with /v1)
   useEffect(() => {
@@ -70,28 +79,44 @@ const Testimonials = () => {
     fetchTestimonials();
   }, []);
 
-  // Repeat items for smooth continuous marquee loop
-  const extendedTestimonials = [
-    ...testimonialsList,
-    ...testimonialsList,
-    ...testimonialsList,
-    ...testimonialsList,
-  ];
+  const cardsInView = Math.min(visibleCards, testimonialsList.length);
+  const repeatCount = 8;
+  // Repeat the set for a loop, while keeping a single testimonial from
+  // appearing multiple times in the viewport when the list is very short.
+  const extendedTestimonials = testimonialsList.length > 1
+    ? Array.from({ length: repeatCount }, () => testimonialsList).flat()
+    : testimonialsList;
 
-  const shouldPause = isHovered || isFocused || isTouched;
+  const moveCarousel = useCallback((direction) => {
+    const carousel = carouselRef.current;
+    const firstCard = carousel?.firstElementChild?.firstElementChild;
+    if (!carousel || !firstCard || testimonialsList.length === 0) return;
+
+    const cardStep = firstCard.getBoundingClientRect().width;
+    const loopWidth = cardStep * testimonialsList.length;
+    const resetPoint = loopWidth * (repeatCount - 2);
+    if (direction < 0 && carousel.scrollLeft <= 0) {
+      carousel.scrollLeft = loopWidth;
+    } else if (direction > 0 && carousel.scrollLeft >= resetPoint - cardStep / 2) {
+      carousel.scrollBy({ left: cardStep, behavior: "smooth" });
+      window.setTimeout(() => {
+        if (carousel.scrollLeft >= resetPoint - cardStep / 2) carousel.scrollLeft = loopWidth;
+      }, 550);
+      return;
+    }
+    carousel.scrollBy({ left: cardStep * direction, behavior: "smooth" });
+  }, [testimonialsList.length]);
+
+  useEffect(() => {
+    if (autoScrollPaused || testimonialsList.length < 2) return undefined;
+    const timer = window.setInterval(() => moveCarousel(1), 2000);
+    return () => window.clearInterval(timer);
+  }, [autoScrollPaused, moveCarousel, testimonialsList.length]);
 
   return (
     <section className="w-full py-8 sm:py-12 lg:py-16 min-[1920px]:py-20 min-[3840px]:py-32 bg-white font-['Inter',sans-serif] overflow-hidden">
       {/* DIRECT CSS RULES FOR 1440px, 1920px & 3840px RESPONSIVENESS */}
       <style>{`
-        @keyframes continuous-scroll {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-        .animate-continuous-scroll {
-          animation: continuous-scroll 38s linear infinite;
-        }
-
         /* Standard Desktop (1440px) */
         @media (min-width: 1440px) {
           .testimonials-container {
@@ -126,7 +151,6 @@ const Testimonials = () => {
             line-height: 1.18 !important;
           }
           .testimonials-card {
-            width: 420px !important;
             padding: 1.75rem !important;
           }
           .testimonials-review {
@@ -153,7 +177,6 @@ const Testimonials = () => {
             margin-bottom: 2rem !important;
           }
           .testimonials-card {
-            width: 660px !important;
             padding: 2.75rem !important;
             border-radius: 2.5rem !important;
           }
@@ -207,34 +230,21 @@ const Testimonials = () => {
         </div>
 
         {/* MARQUEE CAROUSEL */}
-        <div className="relative w-full py-2">
+        <div className="flex w-full items-center gap-2 py-2 sm:gap-3">
+          <button type="button" onClick={() => { setAutoScrollPaused(true); moveCarousel(-1); }} aria-label="Previous testimonial" className="relative z-20 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#0B4EA2] bg-white text-[#0B4EA2] shadow-sm transition hover:bg-[#0B4EA2] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0B4EA2] sm:h-10 sm:w-10">
+            <ArrowLeft size={18} aria-hidden="true" />
+          </button>
           <div
+            ref={carouselRef}
             tabIndex={0}
             role="region"
-            aria-label="Client testimonials. Hover, focus, or touch and hold to pause scrolling."
-            className="relative overflow-hidden focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0B4EA2]"
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-            onTouchStart={() => setIsTouched(true)}
-            onTouchEnd={() => setIsTouched(false)}
-            onTouchCancel={() => setIsTouched(false)}
-            onFocusCapture={() => setIsFocused(true)}
-            onBlurCapture={(event) => {
-              if (!event.currentTarget.contains(event.relatedTarget)) {
-                setIsFocused(false);
-              }
-            }}
+            aria-label="Client testimonials. Use the arrows or swipe to browse; slides advance automatically."
+            className="min-w-0 flex-1 overflow-x-auto overflow-y-hidden snap-x snap-mandatory scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0B4EA2]"
           >
-          {/* Left Fade */}
-          <div className="absolute left-0 top-0 bottom-0 w-6 sm:w-12 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
-
-          {/* Right Fade */}
-          <div className="absolute right-0 top-0 bottom-0 w-6 sm:w-12 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
-
-          {/* SCROLLING TRACK */}
+          {/* CAROUSEL TRACK */}
           <div
-            className="flex w-max animate-continuous-scroll items-stretch"
-            style={{ animationPlayState: shouldPause ? "paused" : "running" }}
+            className="flex items-stretch"
+            style={{ width: `${(extendedTestimonials.length / cardsInView) * 100}%` }}
           >
             {extendedTestimonials.map((item, index) => {
               const starsCount = item.rating || 5;
@@ -248,17 +258,15 @@ const Testimonials = () => {
               return (
                 <div
                   key={`${item._id || item.name || "t"}-${index}`}
-                  className="pr-4 sm:pr-5 lg:pr-6 min-[1920px]:pr-7 min-[3840px]:pr-10 shrink-0 flex"
+                  className="shrink-0 snap-start px-1.5 sm:px-2 lg:px-2.5 min-[1920px]:px-3 min-[3840px]:px-4 flex"
+                  style={{ width: `${100 / extendedTestimonials.length}%` }}
                 >
                   <article
                     className="
                       testimonials-card
                       relative
-                      w-[280px]
-                      sm:w-[330px]
-                      md:w-[360px]
-                      min-[1920px]:w-[420px]
-                      min-[3840px]:w-[660px]
+                      w-full
+                      min-h-[280px]
                       bg-white
                       rounded-2xl
                       border
@@ -352,6 +360,9 @@ const Testimonials = () => {
             })}
           </div>
           </div>
+          <button type="button" onClick={() => { setAutoScrollPaused(true); moveCarousel(1); }} aria-label="Next testimonial" className="relative z-20 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#0B4EA2] bg-white text-[#0B4EA2] shadow-sm transition hover:bg-[#0B4EA2] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0B4EA2] sm:h-10 sm:w-10">
+            <ArrowRight size={18} aria-hidden="true" />
+          </button>
         </div>
       </div>
     </section>
