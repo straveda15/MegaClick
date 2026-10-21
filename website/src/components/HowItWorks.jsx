@@ -333,13 +333,13 @@ const solutionCards = [
   {
     id: 1,
     title: "Needs Assessment",
-    desc: "Expert legal consultation and tailored business planning.",
+    desc: "Expert team consultation and tailored business planning.",
     iconType: "consultation",
   },
   {
     id: 3,
     title: "Flawless Verification",
-    desc: "Thorough audit by legal experts ensuring zero rejections.",
+    desc: "Thorough audit by experts ensuring zero rejections.",
     iconType: "verification",
   },
   {
@@ -468,14 +468,14 @@ const steps = [
     number: "03",
     icon: Settings,
     title: "Expert Processing",
-    text: "Our legal team prepares, submits your application accurately.",
+    text: "Our expert team prepares, submits your application accurately.",
   },
   {
-    number: "04",
-    icon: CheckCircle2,
-    title: "Get Your Solution",
-    text: "Receive your certificate with ongoing compliance support.",
-  },
+  number: "04",
+  icon: CheckCircle2,
+  title: "Get Your Solutions",
+  text: "Receive your completed solution with ease.",
+},
 ];
 
 // ─────────────────────────────────────────────

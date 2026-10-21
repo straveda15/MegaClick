@@ -371,9 +371,12 @@ const ContactSection = () => {
           }
 
           .contact-form-card {
-            width: 100% !important;
-            max-width: 540px !important;
-          }
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  justify-self: stretch !important;
+  box-sizing: border-box !important;
+}
 
           .contact-title {
             font-size: 44px !important;
@@ -693,13 +696,14 @@ const ContactSection = () => {
         <div
           className="
             contact-main-grid
-            grid
-            grid-cols-1
-            gap-y-8
-            lg:grid-cols-[minmax(0,1fr)_540px]
-            lg:gap-x-12
-            lg:items-start
-            w-full
+grid
+grid-cols-1
+gap-y-8
+lg:grid-cols-[minmax(0,1fr)_540px]
+lg:gap-x-12
+lg:items-start
+w-full
+min-w-0
           "
         >
 
@@ -1037,29 +1041,30 @@ const ContactSection = () => {
               RIGHT FORM CARD
           ================================================== */}
 
-          <div
-            className="
-              contact-form-card
-              relative
-              min-w-0
-              w-full
-              justify-self-stretch
-              rounded-2xl
-              border
-              border-white/50
-              bg-white/95
-              p-4
-              shadow-[0_15px_50px_rgba(0,0,0,0.08)]
-              backdrop-blur-sm
-              sm:rounded-[26px]
-              sm:p-6
-              lg:max-w-[540px]
-              lg:justify-self-end
-              lg:p-7
-              min-[1920px]:rounded-[36px]
-              min-[1920px]:p-9
-            "
-          >
+         <div
+  className="
+    contact-form-card
+    relative
+    min-w-0
+    w-full
+    max-w-none
+    justify-self-stretch
+    lg:translate-y-6
+    box-border
+    rounded-2xl
+    border
+    border-white/50
+    bg-white/95
+    p-4
+    shadow-[0_15px_50px_rgba(0,0,0,0.08)]
+    backdrop-blur-sm
+    sm:rounded-[26px]
+    sm:p-6
+    lg:p-7
+    min-[1920px]:rounded-[36px]
+    min-[1920px]:p-9
+  "
+>
 
             {/* FORM TITLE */}
 

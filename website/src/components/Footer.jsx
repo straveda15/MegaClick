@@ -150,9 +150,82 @@ const Footer = () => {
           box-sizing: border-box;
         }
           .footer-partner-logo {
-  mix-blend-mode: multiply;
-  background: transparent;
+          display: block;
+          width: auto;
+          max-width: 100%;
+          height: auto;
+          max-height: 100%;
+          object-fit: contain;
+          object-position: center;
+        }
+
+        .footer-partner-heading {
+          color: rgb(255 255 255 / 55%);
+          font-size: 0.6875rem;
+          font-weight: 700;
+          line-height: 1.25;
+          letter-spacing: 0.15em;
+          text-align: center;
+          text-transform: uppercase;
+        }
+
+        .footer-partner-logo-frame {
+          display: flex;
+          width: 100%;
+          height: 2.75rem;
+          align-items: center;
+          justify-content: center;
+          padding: 0.375rem;
+        }
+
+        .footer-partner-logo-frame img {
+          width: 7rem;
+          max-width: 100%;
+          height: 1.75rem;
+          max-height: 100%;
+          object-fit: contain;
+          object-position: center;
+        }
+          
+.footer-partner-logos {
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
 }
+
+.footer-partner-logos > * {
+  min-width: 0;
+}
+
+@media (min-width: 1024px) {
+  .footer-partner-logos {
+    column-gap: 0 !important;
+    align-items: start;
+  }
+
+  .footer-partner-logos > * {
+    width: 100%;
+    min-width: 0;
+    justify-self: stretch;
+  }
+
+  .footer-partner-logos > * > .footer-partner-heading {
+    display: block;
+    width: 100%;
+    text-align: center;
+  }
+}
+ 
+        @media (max-width: 767px) {
+          .footer-partner-logo-frame {
+            height: 2.5rem;
+          }
+
+          .footer-partner-logo-frame img {
+            width: 5.5rem;
+            height: 1.5rem;
+          }
+        }
 
         /* =====================================================
            TABLET / DESKTOP BASE
@@ -421,6 +494,32 @@ const Footer = () => {
             min-width: 0;
           }
         }
+          @media (min-width: 1024px) {
+  .footer-partner-logos {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: 2.5rem;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .footer-partner-logos > * {
+    min-width: 0;
+    width: 100%;
+  }
+}
+
+@media (min-width: 1920px) {
+  .footer-partner-logos {
+    column-gap: 4rem;
+  }
+}
+
+@media (min-width: 2560px) {
+  .footer-partner-logos {
+    column-gap: 6rem;
+  }
+}
 
         @media (min-width: 768px) {
           .footer-desktop-content {
@@ -450,6 +549,18 @@ const Footer = () => {
             overflow-wrap: anywhere;
           }
         }
+          @media (min-width: 768px) {
+  .footer-partner-logos {
+    position: relative;
+    left: -88px;
+  }
+}
+
+@media (max-width: 767px) {
+  .footer-partner-logos {
+    left: auto;
+  }
+}
 
         /* =====================================================
            WATERMARK
@@ -891,32 +1002,23 @@ const Footer = () => {
           </div>
 
         {/* MOBILE PARTNER LOGOS */}
-<div className="grid grid-cols-3 gap-3 w-full py-2">
-
+<div className="footer-partner-logos grid w-full min-w-0 grid-cols-3 items-start gap-3 py-2 sm:gap-5">
   {/* DPIIT */}
-  <div className="flex flex-col items-center text-center gap-1 min-w-0 lg:-translate-x-12">
-    <span className="text-[11px] sm:text-xs font-bold text-blue-100/70 uppercase tracking-wider leading-tight">
+  <div className="flex min-w-0 flex-col items-center gap-1 text-center">
+    <span className="footer-partner-heading">
       Recognized By
     </span>
 
-    <img
-      src={dpiitLogo}
-      alt="DPIIT Startup India"
-      className="h-8 w-auto max-w-[76px] object-contain shrink-0"
-    />
+    <div className="footer-partner-logo-frame"><img className="footer-partner-logo" src={dpiitLogo} alt="DPIIT Startup India" /></div>
   </div>
 
   {/* NEC */}
-  <div className="flex flex-col items-center text-center  min-w-0">
-    <span className="text-[11px] sm:text-xs font-bold text-blue-100/70 uppercase tracking-wider leading-tight">
+  <div className="flex min-w-0 flex-col items-center gap-1 text-center">
+    <span className="footer-partner-heading">
       Incubated By
     </span>
 
-    <img
-      src={necLogo}
-      alt="NEC Innovation Incubation Centre"
-      className="h-8 w-auto max-w-[76px] object-contain shrink-0"
-    />
+    <div className="footer-partner-logo-frame"><img className="footer-partner-logo" src={necLogo} alt="NEC Innovation Incubation Centre" /></div>
   </div>
 
   {/* Straveda */}
@@ -925,17 +1027,13 @@ const Footer = () => {
     target="_blank"
     rel="noopener noreferrer"
     aria-label="Straveda Tech"
-    className="flex flex-col items-center text-center  min-w-0"
+    className="flex min-w-0 flex-col items-center gap-1 text-center"
   >
-    <span className="text-[11px] sm:text-xs font-bold text-blue-100/70 uppercase tracking-wider leading-tight">
+    <span className="footer-partner-heading">
       Developed By
     </span>
 
-    <img
-      src={stravedalogo}
-      alt="Straveda"
-      className="h-3.5 w-auto max-w-[75px] object-contain"
-    />
+    <div className="footer-partner-logo-frame"><img className="footer-partner-logo" src={stravedalogo} alt="Straveda" /></div>
   </a>
 
 </div>
@@ -1409,8 +1507,7 @@ const Footer = () => {
           ================================================= */}
 
           <div
-            
-className="
+  className="
   pt-3.5
   min-[1920px]:pt-5
   border-t
@@ -1423,8 +1520,7 @@ className="
   gap-4
   min-[1920px]:gap-5
 "
-
-          >
+>
             
 <p
   className="
@@ -1453,36 +1549,32 @@ className="
 
 {/* Partner Logos aligned with footer columns */}
 
-<div className="grid grid-cols-3 gap-4 flex-1 min-w-0 lg:-translate-x-18">
+<div
+  className="
+    footer-partner-logos
+    grid
+    w-full
+    min-w-0
+    grid-cols-3
+  "
+>
 
   {/* DPIIT - Explore column */}
-  <div className="flex flex-col items-center text-center  min-w-0">
-    <span className="text-[11px] min-[1920px]:text-xs min-[2560px]:text-sm min-[3840px]:text-lg font-bold text-white/50 uppercase tracking-[0.15em]">
+  <div className="flex min-w-0 flex-col items-center gap-1 text-center">
+    <span className="footer-partner-heading">
       Recognized By
     </span>
 
-    <div className="flex h-12 w-full items-end justify-center">
-      <img
-        src={dpiitLogo}
-        alt="DPIIT Startup India"
-        className="h-9 w-auto max-w-[100px] object-contain mix-blend-screen"
-      />
-    </div>
+    <div className="footer-partner-logo-frame"><img className="footer-partner-logo" src={dpiitLogo} alt="DPIIT Startup India" /></div>
   </div>
 
   {/* NEC - Services column */}
-  <div className="flex flex-col items-center text-center  min-w-0">
-    <span className="text-[11px] min-[1920px]:text-xs min-[2560px]:text-sm min-[3840px]:text-lg font-bold text-white/50 uppercase tracking-[0.15em]">
+  <div className="flex min-w-0 flex-col items-center gap-1 text-center">
+    <span className="footer-partner-heading">
       Incubated By
     </span>
 
-    <div className="flex h-12 w-full items-end justify-center">
-      <img
-        src={necLogo}
-        alt="NEC Innovation Incubation Centre"
-        className="h-9 w-auto max-w-[110px] object-contain mix-blend-screen"
-      />
-    </div>
+    <div className="footer-partner-logo-frame"><img className="footer-partner-logo" src={necLogo} alt="NEC Innovation Incubation Centre" /></div>
   </div>
 
   {/* Straveda - Contact Us column */}
@@ -1491,19 +1583,13 @@ className="
     target="_blank"
     rel="noopener noreferrer"
     aria-label="Straveda Tech Partner"
-    className="flex flex-col items-center text-center  min-w-0"
+    className="flex min-w-0 flex-col items-center gap-1 text-center"
   >
-    <span className="text-[11px] min-[1920px]:text-xs min-[2560px]:text-sm min-[3840px]:text-lg font-bold text-white/50 uppercase tracking-[0.15em]">
+    <span className="footer-partner-heading">
       Developed By
     </span>
 
-    <div className="flex h-12 w-full items-end justify-center">
-      <img
-        src={stravedalogo}
-        alt="Straveda"
-        className="h-5 sm:h-6 w-auto max-w-[110px] object-contain"
-      />
-    </div>
+    <div className="footer-partner-logo-frame"><img className="footer-partner-logo" src={stravedalogo} alt="Straveda" /></div>
   </a>
 
 </div>

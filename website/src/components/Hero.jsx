@@ -136,13 +136,13 @@ const CAROUSEL_INTERVAL_MS = 2000;
 const Hero = () => {
   let navigate;
 
- const heroHeadings = [
-  "Legal & Documentation Services",
-  "Business & Financial Solutions",
-  "Banking & Real Estate Support",
-  "Professional Services, One Click Away",
+const heroHeadings = [
+  "Startups",
+  "Professionals",
+  "Individuals",
+  "Businesses",
+  "Founders",
 ];
-
   const [activeHeading, setActiveHeading] = useState(0);
 
   useEffect(() => {
@@ -1317,33 +1317,23 @@ const Hero = () => {
             "
           >
             {/* HEADING */}
-            <h1
-  style={{ fontFamily: "'Montserrat', serif" }}
+          <h1
+  style={{ fontFamily: "'Poppins', serif" }}
   className="
-    hero-title
-    text-3xl sm:text-4xl md:text-4xl xl:text-5xl
-    font-bold leading-[1.18]
-    text-slate-900 text-left w-full
-  "
+  hero-title
+  text-3xl sm:text-4xl md:text-4xl xl:text-5xl
+  font-bold leading-[1.18]
+  text-slate-900 text-left
+  w-full max-w-full min-w-0
+  break-words
+"
 >
-  <span className="block">
-    Grow Your{" "}
-    <span className="text-[#0B4EA2]">
-      {heroHeadings[activeHeading].split(" ")[0]}
-    </span>
+<span className="block whitespace-normal sm:whitespace-nowrap">
+  Megaclick for&nbsp;
+  <span className="text-[#0B4EA2]">
+    {heroHeadings[activeHeading]}
   </span>
-
-  <span className="hero-heading-slot block">
-    <span
-      key={activeHeading}
-      className="hero-heading-animated block text-[#0B4EA2]"
-    >
-      {heroHeadings[activeHeading]
-        .split(" ")
-        .slice(1)
-        .join(" ")}
-    </span>
-  </span>
+</span>
 </h1>
 
             {/* DESCRIPTION */}
@@ -1367,7 +1357,8 @@ const Hero = () => {
             >
                Your trusted one-stop platform for legal, financial, banking,
   real estate, and business services. We simplify complex processes
-  with expert guidance and reliable support for individuals and businesses.
+  with expert guidance <br/>
+  and reliable support for individuals and businesses.
             </p>
 
             {/* =================================================
