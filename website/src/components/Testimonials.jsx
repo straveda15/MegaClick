@@ -46,9 +46,9 @@ import { Quote, Star } from "lucide-react";
 
 const Testimonials = () => {
   const [testimonialsList, setTestimonialsList] = useState(defaultTestimonials);
-  const [isPaused, setIsPaused] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
+  const [isTouched, setIsTouched] = useState(false);
 
   // 🔄 Fetch dynamic data from Backend API (with /v1)
   useEffect(() => {
@@ -78,7 +78,7 @@ const Testimonials = () => {
     ...testimonialsList,
   ];
 
-  const shouldPause = isPaused || isHovered || isFocused;
+  const shouldPause = isHovered || isFocused || isTouched;
 
   return (
     <section className="w-full py-8 sm:py-12 lg:py-16 min-[1920px]:py-20 min-[3840px]:py-32 bg-white font-['Inter',sans-serif] overflow-hidden">
@@ -208,36 +208,16 @@ const Testimonials = () => {
 
         {/* MARQUEE CAROUSEL */}
         <div className="relative w-full py-2">
-          <div className="mb-2 flex justify-end">
-            <button
-              type="button"
-              onClick={() => setIsPaused((paused) => !paused)}
-              aria-label={isPaused ? "Resume testimonial autoplay" : "Pause testimonial autoplay"}
-              aria-pressed={isPaused}
-              className="rounded-md border border-[#0B4EA2] px-3 py-1.5 text-xs font-semibold text-[#0B4EA2] transition-colors hover:bg-[#0B4EA2] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0B4EA2]"
-            >
-              {isPaused ? "Resume" : "Pause"}
-            </button>
-          </div>
-
           <div
             tabIndex={0}
             role="region"
-            aria-label="Client testimonials. Hover or focus to pause; click, tap, Space, or Enter to pause or resume."
+            aria-label="Client testimonials. Hover, focus, or touch and hold to pause scrolling."
             className="relative overflow-hidden focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0B4EA2]"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
-            onClick={() => {
-              setIsFocused(false);
-              setIsPaused((paused) => !paused);
-            }}
-            onKeyDown={(event) => {
-              if (event.key === " " || event.key === "Enter") {
-                event.preventDefault();
-                setIsFocused(false);
-                setIsPaused((paused) => !paused);
-              }
-            }}
+            onTouchStart={() => setIsTouched(true)}
+            onTouchEnd={() => setIsTouched(false)}
+            onTouchCancel={() => setIsTouched(false)}
             onFocusCapture={() => setIsFocused(true)}
             onBlurCapture={(event) => {
               if (!event.currentTarget.contains(event.relatedTarget)) {

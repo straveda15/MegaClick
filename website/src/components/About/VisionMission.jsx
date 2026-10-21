@@ -136,8 +136,8 @@ const VisionMission = () => {
                   <span className="mcx-card-tag">Our Vision</span>
                 </div>
                 <p className="mcx-card-text">
-                  To become India’s most trusted and accessible platform for integrated professional services, delivering simple and reliable solutions for individuals and businesses.
-                </p>
+  To become India’s most trusted platform for simple, reliable professional services for individuals and businesses.
+</p>
               </div>
             </article>
 
@@ -150,9 +150,9 @@ const VisionMission = () => {
                   </span>
                   <span className="mcx-card-tag">Our Mission</span>
                 </div>
-                <p className="mcx-card-text">
-                  To empower individuals and businesses through expert support, innovation, and seamless, transparent professional services.
-                </p>
+               <p className="mcx-card-text">
+  To empower individuals and businesses with expert support, innovation, and transparent professional services.
+</p>
               </div>
             </article>
 
