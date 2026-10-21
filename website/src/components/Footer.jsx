@@ -803,7 +803,7 @@ const Footer = () => {
     <img
       src="/megaclick-logo-footer.svg?v=6"
       alt="MegaClick logo, Everything on MegaClick"
-      className="w-[135px] h-auto shrink-0"
+        className="w-[104px] h-auto shrink-0"
     />
   </div>
 
@@ -1191,7 +1191,7 @@ const Footer = () => {
     <img
       src="/megaclick-logo-footer.svg?v=6"
       alt="MegaClick logo, Everything on MegaClick"
-      className="w-[125px] min-[1440px]:w-[145px] h-auto shrink-0"
+        className="w-[104px] h-auto shrink-0"
     />
   </div>
 </div>

@@ -546,7 +546,7 @@ function Navbar({ showTopBar = true }) {
               <img
                 src="/megaclick-logo-horizontal.svg?v=5"
                 alt="MegaClick — Everything on MegaClick"
-                className="h-auto w-[118px] sm:w-[132px] xl:w-[145px] shrink-0"
+                className="h-auto w-[104px] shrink-0"
               />
 
             </Link>
@@ -638,9 +638,12 @@ function Navbar({ showTopBar = true }) {
     <ArrowRight size={15} />
   </button>
   {visitorCount !== null && (
-    <div className="inline-flex items-center gap-1 rounded-full bg-[#0B4EA2] px-2 py-1 text-[10px] font-semibold text-white shadow-sm" aria-label={`${visitorCount.toLocaleString()} website visitors`}>
-      <Eye size={12} aria-hidden="true" />
-      <span>{visitorCount.toLocaleString()} visitors</span>
+    <div className="inline-flex items-center gap-1 text-slate-800" aria-label={`${visitorCount.toLocaleString()} or more website visitors`}>
+      <Eye size={18} className="shrink-0 text-[#2167A5]" aria-hidden="true" />
+      <span className="flex flex-col leading-[1.05]">
+        <span className="text-sm font-semibold">{visitorCount.toLocaleString()}+</span>
+        <span className="text-[11px] font-normal text-slate-500">visitors</span>
+      </span>
     </div>
   )}
 </div>
@@ -649,9 +652,12 @@ function Navbar({ showTopBar = true }) {
 
             {/* MOBILE MENU TOGGLE BUTTON */}
             {visitorCount !== null && (
-              <div className="lg:hidden inline-flex items-center gap-1 rounded-full bg-[#0B4EA2] px-2 py-1 text-[10px] font-semibold text-white shadow-sm" aria-label={`${visitorCount.toLocaleString()} website visitors`}>
-                <Eye size={12} aria-hidden="true" />
-                <span>{visitorCount.toLocaleString()} visitors</span>
+              <div className="lg:hidden inline-flex items-center gap-1 text-slate-800" aria-label={`${visitorCount.toLocaleString()} or more website visitors`}>
+                <Eye size={16} className="shrink-0 text-[#2167A5]" aria-hidden="true" />
+                <span className="flex flex-col leading-[1.05]">
+                  <span className="text-xs font-semibold">{visitorCount.toLocaleString()}+</span>
+                  <span className="text-[9px] font-normal text-slate-500">visitors</span>
+                </span>
               </div>
             )}
             <button
