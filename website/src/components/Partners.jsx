@@ -1,11 +1,6 @@
 import React, { useRef, useState } from "react";
-import qci from "../assets/hero.png";
-import iso from "../assets/iso.png";
 import msme from "../assets/msme.png";
-import startup from "../assets/H.png";
-import india from "../assets/legal.jpg";
-import gst from "../assets/process.png";
-import dpiitLogo from "../assets/DPIIT.jpeg";
+import dpiitLogo from "../assets/DPIIT_transparent_clean.png";
 import necLogo from "../assets/NEC.jpeg";
 import bakehouse from "../assets/bakehouse.png";
 import coffee from "../assets/coffee.png";
@@ -16,12 +11,7 @@ import uLogo from "../assets/u.png";
 import vivekanand from "../assets/vivekanand.png";
 
 const partners = [
-  { name: "QCI", image: qci },
-  { name: "ISO", image: iso },
   { name: "MSME", image: msme },
-  { name: "Startup India", image: startup },
-  { name: "Digital India", image: india },
-  { name: "GST", image: gst },
   { name: "DPIIT", image: dpiitLogo },
   { name: "NEC's Innovation Incubation Centre", image: necLogo },
    { name: "NEC", image: nec },
@@ -70,6 +60,20 @@ const Partners = () => {
   object-position: center;
   display: block;
 }
+
+.dpiit-partner-logo-item {
+  width: 250px;
+  height: 120px;
+  flex-basis: 250px;
+}
+
+.dpiit-partner-logo {
+  width: 235px;
+  height: auto;
+  max-width: 235px;
+  max-height: none;
+  object-fit: contain;
+}
   .coffee-waffle-logo {
   width: 160px !important;
   height: 100px !important;
@@ -106,9 +110,19 @@ const Partners = () => {
             width: 10rem !important;
             height: 5.5rem !important;
           }
+          .dpiit-partner-logo-item {
+            width: 17rem !important;
+            height: 8rem !important;
+            flex-basis: 17rem !important;
+          }
           .partner-logo-img {
             max-height: 4.5rem !important;
             max-width: 9rem !important;
+          }
+          .dpiit-partner-logo {
+            width: 16rem !important;
+            max-width: 16rem !important;
+            max-height: none !important;
           }
         }
 
@@ -127,9 +141,19 @@ const Partners = () => {
             width: 16rem !important;
             height: 9rem !important;
           }
+          .dpiit-partner-logo-item {
+            width: 23rem !important;
+            height: 12rem !important;
+            flex-basis: 23rem !important;
+          }
           .partner-logo-img {
             max-height: 7.5rem !important;
             max-width: 14rem !important;
+          }
+          .dpiit-partner-logo {
+            width: 22rem !important;
+            max-width: 22rem !important;
+            max-height: none !important;
           }
         }
       `}</style>
@@ -184,7 +208,7 @@ const Partners = () => {
               (partner, index) => (
                <div
   key={index}
-  className="partner-logo-item shrink-0"
+  className={`partner-logo-item shrink-0 ${partner.name === "DPIIT" ? "dpiit-partner-logo-item" : ""}`}
 >
   <img
     src={partner.image}
@@ -194,7 +218,9 @@ const Partners = () => {
     className={`partner-logo-img pointer-events-none ${
   partner.name === "Coffee Meets Waffle"
     ? "coffee-waffle-logo"
-    : ""
+    : partner.name === "DPIIT"
+      ? "dpiit-partner-logo"
+      : ""
 }`}
     onError={(e) => {
       e.currentTarget.style.display = "none";

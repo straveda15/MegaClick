@@ -528,7 +528,7 @@ const Services = () => {
   >
     We Provide{" "}
     <span className="text-[#0B4EA2]">
-      Professional Services
+      Professional Service Network
     </span>
   </h2>
 

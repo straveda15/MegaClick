@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="554" height="260" viewBox="0 0 554 260" role="img" aria-labelledby="title desc">
+  <title id="title">MegaClick</title>
+  <desc id="desc">Everything on MegaClick.</desc>
+  <defs>
+    <clipPath id="pyramid">
+      <path d="M104 37c8 0 15 4 19 11l95 164c9 16-2 21-17 21H19c-16 0-23-8-16-21L86 48c4-7 10-11 18-11Z"/>
+    </clipPath>
+  </defs>
+  <g clip-path="url(#pyramid)">
+    <path fill="#0c3f63" d="M104 37v135L0 233 0 33Z"/>
+    <path fill="#176198" d="M104 37 230 233 104 172Z"/>
+    <path fill="#236aa6" d="M0 233 104 172 230 233Z"/>
+  </g>
+  <g font-family="Arial, Helvetica, sans-serif" font-weight="700">
+    <text x="244" y="112" font-size="102" fill="#2167a5" letter-spacing="-2">MEGA</text>
+    <text x="525" y="55" font-size="24" fill="#111">&#174;</text>
+    <text x="244" y="199" font-size="102" letter-spacing="-1">
+      <tspan fill="#60ad00">CL</tspan><tspan fill="#2167a5" dx="5">i</tspan><tspan fill="#60ad00" dx="5">CK</tspan>
+    </text>
+    <text x="244" y="240" font-size="32" font-weight="400" fill="#2167a5" letter-spacing="-0.7" textLength="305" lengthAdjust="spacingAndGlyphs">Everything on <tspan fill="#2167a5">Mega</tspan><tspan fill="#60ad00">C</tspan><tspan fill="#60ad00">l</tspan><tspan fill="#2167a5">i</tspan><tspan fill="#60ad00">c</tspan><tspan fill="#60ad00">k</tspan>.</text>
+  </g>
+</svg>

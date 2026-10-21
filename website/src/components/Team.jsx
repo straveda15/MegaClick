@@ -205,9 +205,9 @@ const Team = () => {
               sm:mb-4
             "
           >
-            Consult with{" "}
+            Meet the{" "}
 <span className="text-[#0B4EA2]">
-  our expert
+  Experts
 </span>
           </h2>
 
@@ -216,7 +216,7 @@ const Team = () => {
             style={{ fontFamily: "'Inter', sans-serif" }}
             className="team-sub text-slate-600 font-normal text-xs sm:text-base leading-relaxed w-full mb-6 sm:mb-10 lg:mb-14 text-left"
           >
-            Connect with our expert to discuss your service needs
+            Get to know the people behind our work and connect with our experts for the right guidance and support.
           </p>
 
           {/* ----- TEAM GRID (2 COLUMNS ON MOBILE, 3 ON TABLET, 6 ON DESKTOP) ----- */}
