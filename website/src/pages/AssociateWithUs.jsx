@@ -350,9 +350,12 @@ text-left
                         Email
                       </strong>
 
-                      <span className="block mt-0.5 text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl text-gray-600 font-semibold break-all">
-                        megaclickofficial@gmail.com
-                      </span>
+                      <span
+  className="block mt-0.5 text-sm sm:text-base min-[1920px]:text-lg min-[3840px]:text-2xl text-gray-600 font-normal break-all"
+  style={{ fontFamily: "'Inter', sans-serif" }}
+>
+  megaclickofficial@gmail.com
+</span>
                     </div>
                   </div>
 

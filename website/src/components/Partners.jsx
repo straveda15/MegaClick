@@ -7,6 +7,13 @@ import india from "../assets/legal.jpg";
 import gst from "../assets/process.png";
 import dpiitLogo from "../assets/DPIIT.jpeg";
 import necLogo from "../assets/NEC.jpeg";
+import bakehouse from "../assets/bakehouse.png";
+import coffee from "../assets/coffee.png";
+import invomax from "../assets/invomax.png";
+import nec from "../assets/nec.png";
+import smartbuddy from "../assets/smartbuddy.png";
+import uLogo from "../assets/u.png";
+import vivekanand from "../assets/vivekanand.png";
 
 const partners = [
   { name: "QCI", image: qci },
@@ -17,6 +24,13 @@ const partners = [
   { name: "GST", image: gst },
   { name: "DPIIT", image: dpiitLogo },
   { name: "NEC's Innovation Incubation Centre", image: necLogo },
+   { name: "NEC", image: nec },
+  { name: "Invomax", image: invomax },
+  { name: "Smart Buddy", image: smartbuddy },
+  { name: "U Logo", image: uLogo },
+  { name: "Vivekanand Institute", image: vivekanand },
+  { name: "Le Lilac Bakehouse", image: bakehouse },
+  { name: "Coffee Meets Waffle", image: coffee },
 ];
 
 const Partners = () => {
@@ -35,8 +49,35 @@ const Partners = () => {
           100% { transform: translateX(-50%); }
         }
         .animate-partners-scroll {
-          animation: partners-scroll 28s linear infinite;
+          animation: partners-scroll 50s linear infinite;
         }
+
+      .partner-logo-item {
+  width: 160px;
+  height: 110px;
+  flex: 0 0 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.partner-logo-img {
+  width: 145px;
+  height: 100px;
+  max-width: 145px;
+  max-height: 100px;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+}
+  .coffee-waffle-logo {
+  width: 160px !important;
+  height: 100px !important;
+  max-width: 160px !important;
+  max-height: 100px !important;
+  object-fit: contain;
+  object-position: center;
+}
 
         /* Standard Desktop (1440px) */
         @media (min-width: 1440px) {
@@ -141,21 +182,25 @@ const Partners = () => {
           >
             {[...partners, ...partners, ...partners, ...partners].map(
               (partner, index) => (
-                <div
-                  key={index}
-                  className="partner-logo-item w-24 h-14 sm:w-28 sm:h-16 md:w-32 md:h-18 flex items-center justify-center shrink-0"
-                >
-                  <img
-                    src={partner.image}
-                    alt={partner.name}
-                    loading="lazy"
-                    draggable="false"
-                    className="partner-logo-img w-28 h-16 sm:w-32 sm:h-20 object-contain pointer-events-none"
-                    onError={(e) => {
-                      e.currentTarget.style.display = "none";
-                    }}
-                  />
-                </div>
+               <div
+  key={index}
+  className="partner-logo-item shrink-0"
+>
+  <img
+    src={partner.image}
+    alt={partner.name}
+    loading="lazy"
+    draggable="false"
+    className={`partner-logo-img pointer-events-none ${
+  partner.name === "Coffee Meets Waffle"
+    ? "coffee-waffle-logo"
+    : ""
+}`}
+    onError={(e) => {
+      e.currentTarget.style.display = "none";
+    }}
+  />
+</div>
               )
             )}
           </div>

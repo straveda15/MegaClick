@@ -10,9 +10,9 @@ import team4 from "../assets/Santosh.jpeg";
 /* ------------------- Team data ------------------- */
 const teamMembers = [
   { image: team1, name: "Adv. Rajendra Gharte", role: "Founder & CLO" },
-  { image: team2, name: "Radhika Tak", role: "CTO" },
-  { image: team3, name: "Rhitvik Verma", role: "Cheif Branding Officer" },
-  { image: team4, name: "Adv. Santosh Khandare", role: "Senior" },
+  { image: team2, name: "Radhika ", role: "CTO" },
+  { image: team3, name: "Rhitvik", role: "Cheif Branding Officer" },
+  { image: team4, name: "Santosh ", role: "Senior Advocate" },
   
 ];
 
@@ -205,10 +205,10 @@ const Team = () => {
               sm:mb-4
             "
           >
-            Meet The{" "}
-            <span className="text-[#0B4EA2]">
-              Experts
-            </span>
+            Consult with{" "}
+<span className="text-[#0B4EA2]">
+  our expert
+</span>
           </h2>
 
           {/* ----- SUB-HEADING ----- */}
@@ -216,8 +216,7 @@ const Team = () => {
             style={{ fontFamily: "'Inter', sans-serif" }}
             className="team-sub text-slate-600 font-normal text-xs sm:text-base leading-relaxed w-full mb-6 sm:mb-10 lg:mb-14 text-left"
           >
-            Our experienced professionals are dedicated to providing reliable
-            business solutions and expert guidance.
+            Connect with our expert to discuss your service needs
           </p>
 
           {/* ----- TEAM GRID (2 COLUMNS ON MOBILE, 3 ON TABLET, 6 ON DESKTOP) ----- */}

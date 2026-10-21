@@ -513,31 +513,34 @@ const Services = () => {
       <div className="services-container w-full max-w-[1380px] mx-auto px-4 sm:px-6 lg:px-8 min-[1440px]:px-10">
 
         {/* SECTION HEADER */}
-        <div className="services-header mb-8 sm:mb-10 lg:mb-12 w-full text-left">
-          <p
-            style={{ fontFamily: "'Inter', sans-serif" }}
-            className="services-tagline text-xs sm:text-sm font-semibold tracking-[0.25em] uppercase text-[#0B4EA2] mb-2.5 sm:mb-3 text-left"
-          >
-            WHAT WE OFFER
-          </p>
+      {/* SECTION HEADER */}
+<div className="services-header mb-8 sm:mb-10 lg:mb-12 w-full text-left">
+  <p
+    style={{ fontFamily: "'Inter', sans-serif" }}
+    className="services-tagline text-xs sm:text-sm font-semibold tracking-[0.25em] uppercase text-[#0B4EA2] mb-2.5 sm:mb-3 text-left"
+  >
+    WHAT WE OFFER
+  </p>
 
-          <h2
-            style={{ fontFamily: "'Poppins', serif" }}
-            className="services-title text-2xl sm:text-3xl md:text-3xl lg:text-4xl font-bold leading-[1.18] text-black text-left mb-2.5 sm:mb-4"
-          >
-            Complete Professional{" "}
-            <span className="text-[#0B4EA2]">Service Solutions</span>
-          </h2>
+  <h2
+    style={{ fontFamily: "'Poppins', serif" }}
+    className="services-title text-2xl sm:text-3xl md:text-3xl lg:text-4xl font-bold leading-[1.18] text-black text-left mb-2.5 sm:mb-4"
+  >
+    We Provide{" "}
+    <span className="text-[#0B4EA2]">
+      Professional Services
+    </span>
+  </h2>
 
-          <p
-            style={{ fontFamily: "'Inter', sans-serif" }}
-            className="services-desc mt-3 sm:mt-4 text-slate-600 font-normal text-xs sm:text-sm lg:text-base leading-relaxed text-left w-full"
-          >
-            From legal registrations and financial compliance to essential
-            business licenses, MegaClick delivers expert-led services with
-            transparent processes and end-to-end professional support.
-          </p>
-        </div>
+  <p
+    style={{ fontFamily: "'Inter', sans-serif" }}
+    className="services-desc mt-3 sm:mt-4 text-slate-600 font-normal text-xs sm:text-sm lg:text-base leading-relaxed text-left w-full"
+  >
+    We are providing a professional service network to support your
+    business needs with expert guidance, reliable services, and
+    transparent processes.
+  </p>
+</div>
 
         {/* SERVICE CARDS */}
         <div className="services-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6 lg:gap-6 min-[1920px]:gap-8 min-[3840px]:gap-12 items-stretch w-full">
