@@ -12,7 +12,6 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { SOCIAL_PROFILES } from "../data/socialLinks";
 import { openWhatsApp } from "../lib/whatsapp";
-import logo from "../assets/logo.jpg";
 import stravedalogo from "/straveda-logo-cropped.png";
 import necLogo from "../assets/NEC_transparent_clean.png";
 import dpiitLogo from "../assets/DPIIT_transparent_clean.png";
@@ -161,10 +160,10 @@ const Footer = () => {
 
         .footer-partner-heading {
           color: rgb(255 255 255 / 55%);
-          font-size: 0.6875rem;
+          font-size: 0.5625rem;
           font-weight: 700;
           line-height: 1.25;
-          letter-spacing: 0.15em;
+          letter-spacing: 0.1em;
           text-align: center;
           text-transform: uppercase;
         }
@@ -179,12 +178,23 @@ const Footer = () => {
         }
 
         .footer-partner-logo-frame img {
-          width: 7rem;
+          width: 7.5rem;
           max-width: 100%;
-          height: 1.75rem;
+          height: 1.9rem;
           max-height: 100%;
           object-fit: contain;
           object-position: center;
+        }
+
+        .footer-partner-logo-frame img.footer-partner-logo-dpiit {
+          width: 8.25rem;
+          height: 2.1rem;
+          filter: contrast(1.1) saturate(1.08);
+        }
+
+        .footer-partner-logo-frame img.footer-partner-logo-straveda {
+          width: 6.75rem;
+          height: 1.7rem;
         }
           
 .footer-partner-logos {
@@ -222,8 +232,18 @@ const Footer = () => {
           }
 
           .footer-partner-logo-frame img {
-            width: 5.5rem;
-            height: 1.5rem;
+            width: 6rem;
+            height: 1.65rem;
+          }
+
+          .footer-partner-logo-frame img.footer-partner-logo-dpiit {
+            width: 6.75rem;
+            height: 1.8rem;
+          }
+
+          .footer-partner-logo-frame img.footer-partner-logo-straveda {
+            width: 5.25rem;
+            height: 1.35rem;
           }
         }
 
@@ -283,8 +303,8 @@ const Footer = () => {
           }
 
           .footer-logo-img {
-            width: 40px !important;
-            height: 40px !important;
+            width: 46px !important;
+            height: 46px !important;
           }
         }
 
@@ -329,8 +349,8 @@ const Footer = () => {
           }
 
           .footer-logo-img {
-            width: 44px !important;
-            height: 44px !important;
+            width: 50px !important;
+            height: 50px !important;
           }
 
           .footer-contact-icon {
@@ -382,8 +402,8 @@ const Footer = () => {
           }
 
           .footer-logo-img {
-            width: 48px !important;
-            height: 48px !important;
+            width: 54px !important;
+            height: 54px !important;
           }
 
           .footer-contact-icon {
@@ -442,8 +462,8 @@ const Footer = () => {
           }
 
           .footer-logo-img {
-            width: 52px !important;
-            height: 52px !important;
+            width: 58px !important;
+            height: 58px !important;
           }
 
           .footer-contact-icon {
@@ -609,8 +629,73 @@ const Footer = () => {
         }
 
         @media (min-width: 3840px) {
+          .footer-desktop-content {
+            --footer-4k-outer-gap: 5rem;
+            --footer-4k-inner-gap: 6rem;
+          }
+
+          .footer-desktop-content > .footer-main-row {
+            column-gap: var(--footer-4k-outer-gap) !important;
+          }
+
+          .footer-desktop-content .footer-link-columns {
+            column-gap: var(--footer-4k-inner-gap) !important;
+          }
+
           .footer-watermark {
             font-size: 11vw !important;
+          }
+
+          .footer-bottom-bar {
+            grid-template-columns: minmax(360px, 1fr) minmax(0, 3fr) !important;
+            align-items: center !important;
+            column-gap: var(--footer-4k-outer-gap) !important;
+            padding-top: 2rem !important;
+            padding-bottom: 1rem;
+          }
+
+          .footer-bottom-bar > p {
+            font-size: 1.25rem !important;
+            letter-spacing: 0.1em !important;
+          }
+
+          .footer-bottom-bar .footer-partner-logos {
+            left: auto !important;
+            align-items: center !important;
+            column-gap: var(--footer-4k-inner-gap) !important;
+            grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+            justify-items: stretch !important;
+          }
+
+          .footer-bottom-bar .footer-partner-logos > * {
+            align-items: flex-start !important;
+            text-align: left !important;
+          }
+
+          .footer-bottom-bar .footer-partner-heading {
+            font-size: 1rem !important;
+            letter-spacing: 0.08em !important;
+            text-align: left !important;
+          }
+
+          .footer-bottom-bar .footer-partner-logo-frame {
+            height: 4rem !important;
+            justify-content: flex-start !important;
+          }
+
+          .footer-bottom-bar .footer-partner-logo-frame img {
+            width: 12rem !important;
+            height: 3rem !important;
+          }
+
+          .footer-bottom-bar .footer-partner-logo-frame img.footer-partner-logo-dpiit {
+            width: 13rem !important;
+            height: 3.25rem !important;
+          }
+
+          .footer-bottom-bar .footer-partner-logo-frame img.footer-partner-logo-straveda {
+            width: 10.5rem !important;
+            height: 2.75rem !important;
           }
         }
       `}</style>
@@ -714,33 +799,15 @@ const Footer = () => {
 
 {/* LOGO & BRAND INFO */}
 <div className="w-full min-w-0">
-  <div className="flex items-center justify-start gap-3 mb-2">
+  <div className="mb-2 inline-block">
     <img
-      src={logo}
-      alt="MegaClick"
-      className="w-11 h-11 rounded-full object-contain p-1 border border-blue-200 bg-white shrink-0"
+      src="/megaclick-logo-footer.svg?v=6"
+      alt="MegaClick logo, Everything on MegaClick"
+      className="w-[135px] h-auto shrink-0"
     />
-
-    <div className="flex flex-col leading-none">
-      <h2
-        className="footer-brand-title text-2xl font-bold tracking-tight"
-        style={{ fontFamily: "'Poppins', sans-serif" }}
-      >
-        
-<span className="text-white">MEGA</span>
-<sup className="text-white text-xs align-top ml-0.5">®</sup>
-<br />
-<span className="text-[#60AD00]">CL</span>
-<span className="text-white">i</span>
-<span className="text-[#60AD00]">CK</span>
-
-      </h2>
-
-    
-    </div>
   </div>
 
-  <p className="text-[13px] sm:text-sm text-blue-100/90 font-medium text-left leading-relaxed">
+  <p className="mt-1 text-[11px] sm:text-xs text-white/90 font-semibold text-left leading-snug whitespace-nowrap">
     Exceptional value. Cost effective solutions.
   </p>
 </div>
@@ -1002,14 +1069,14 @@ const Footer = () => {
           </div>
 
         {/* MOBILE PARTNER LOGOS */}
-<div className="footer-partner-logos grid w-full min-w-0 grid-cols-3 items-start gap-3 py-2 sm:gap-5">
+<div className="footer-partner-logos footer-partner-logos-mobile grid w-full min-w-0 grid-cols-3 items-start gap-3 py-2 sm:gap-5">
   {/* DPIIT */}
   <div className="flex min-w-0 flex-col items-center gap-1 text-center">
     <span className="footer-partner-heading">
       Recognized By
     </span>
 
-    <div className="footer-partner-logo-frame"><img className="footer-partner-logo" src={dpiitLogo} alt="DPIIT Startup India" /></div>
+    <div className="footer-partner-logo-frame"><img className="footer-partner-logo footer-partner-logo-dpiit" src={dpiitLogo} alt="DPIIT Startup India" /></div>
   </div>
 
   {/* NEC */}
@@ -1033,7 +1100,7 @@ const Footer = () => {
       Developed By
     </span>
 
-    <div className="footer-partner-logo-frame"><img className="footer-partner-logo" src={stravedalogo} alt="Straveda" /></div>
+    <div className="footer-partner-logo-frame"><img className="footer-partner-logo footer-partner-logo-straveda" src={stravedalogo} alt="Straveda" /></div>
   </a>
 
 </div>
@@ -1120,51 +1187,12 @@ const Footer = () => {
               <div>
               
 <div className="mb-1.5">
-  <div className="flex items-center gap-3 min-[1920px]:gap-4">
-    {/* Logo */}
+  <div className="inline-block">
     <img
-      src={logo}
-      alt="MegaClick"
-      className="
-        footer-logo-img
-        w-9 h-9
-        min-[1440px]:w-12
-        min-[1440px]:h-12
-        rounded-full
-        object-contain
-        p-1
-        border border-blue-300
-        bg-white
-        shadow-md shadow-blue-900/30
-        shrink-0
-      "
+      src="/megaclick-logo-footer.svg?v=6"
+      alt="MegaClick logo, Everything on MegaClick"
+      className="w-[125px] min-[1440px]:w-[145px] h-auto shrink-0"
     />
-
-    {/* MegaClick + Tagline */}
-    <div className="flex flex-col items-start">
-      <h2
-        className="
-          footer-brand-title
-          text-xl
-          min-[1440px]:text-2xl
-          font-bold
-          tracking-tight
-          whitespace-nowrap
-          leading-tight
-        "
-      >
-        
-<span className="text-white">MEGA</span>
-<sup className="text-white text-xs align-top ml-0.5">®</sup>
-<br />
-<span className="text-[#60AD00]">CL</span>
-<span className="text-white">i</span>
-<span className="text-[#60AD00]">CK</span>
-
-      </h2>
-
-      
-    </div>
   </div>
 </div>
 
@@ -1508,6 +1536,7 @@ const Footer = () => {
 
           <div
   className="
+  footer-bottom-bar
   pt-3.5
   min-[1920px]:pt-5
   border-t
@@ -1565,7 +1594,7 @@ const Footer = () => {
       Recognized By
     </span>
 
-    <div className="footer-partner-logo-frame"><img className="footer-partner-logo" src={dpiitLogo} alt="DPIIT Startup India" /></div>
+    <div className="footer-partner-logo-frame"><img className="footer-partner-logo footer-partner-logo-dpiit" src={dpiitLogo} alt="DPIIT Startup India" /></div>
   </div>
 
   {/* NEC - Services column */}
@@ -1589,7 +1618,7 @@ const Footer = () => {
       Developed By
     </span>
 
-    <div className="footer-partner-logo-frame"><img className="footer-partner-logo" src={stravedalogo} alt="Straveda" /></div>
+    <div className="footer-partner-logo-frame"><img className="footer-partner-logo footer-partner-logo-straveda" src={stravedalogo} alt="Straveda" /></div>
   </a>
 
 </div>

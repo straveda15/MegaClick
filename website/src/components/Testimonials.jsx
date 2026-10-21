@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Quote, Star } from "lucide-react";
 
 // Fallback seed data focused on services outcomes
@@ -47,7 +47,8 @@ import { Quote, Star } from "lucide-react";
 const Testimonials = () => {
   const [testimonialsList, setTestimonialsList] = useState(defaultTestimonials);
   const [isPaused, setIsPaused] = useState(false);
-  const pauseTimerRef = useRef(null);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
 
   // 🔄 Fetch dynamic data from Backend API (with /v1)
   useEffect(() => {
@@ -77,22 +78,7 @@ const Testimonials = () => {
     ...testimonialsList,
   ];
 
-  // Cleanup timeout on unmount
-  useEffect(() => {
-    return () => {
-      if (pauseTimerRef.current) clearTimeout(pauseTimerRef.current);
-    };
-  }, []);
-
-  // When card is clicked: pause for 2 seconds, then automatically resume
-  const handleCardClick = () => {
-    setIsPaused(true);
-    if (pauseTimerRef.current) clearTimeout(pauseTimerRef.current);
-
-    pauseTimerRef.current = setTimeout(() => {
-      setIsPaused(false);
-    }, 2000);
-  };
+  const shouldPause = isPaused || isHovered || isFocused;
 
   return (
     <section className="w-full py-8 sm:py-12 lg:py-16 min-[1920px]:py-20 min-[3840px]:py-32 bg-white font-['Inter',sans-serif] overflow-hidden">
@@ -221,7 +207,44 @@ const Testimonials = () => {
         </div>
 
         {/* MARQUEE CAROUSEL */}
-        <div className="relative overflow-hidden w-full py-2">
+        <div className="relative w-full py-2">
+          <div className="mb-2 flex justify-end">
+            <button
+              type="button"
+              onClick={() => setIsPaused((paused) => !paused)}
+              aria-label={isPaused ? "Resume testimonial autoplay" : "Pause testimonial autoplay"}
+              aria-pressed={isPaused}
+              className="rounded-md border border-[#0B4EA2] px-3 py-1.5 text-xs font-semibold text-[#0B4EA2] transition-colors hover:bg-[#0B4EA2] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0B4EA2]"
+            >
+              {isPaused ? "Resume" : "Pause"}
+            </button>
+          </div>
+
+          <div
+            tabIndex={0}
+            role="region"
+            aria-label="Client testimonials. Hover or focus to pause; click, tap, Space, or Enter to pause or resume."
+            className="relative overflow-hidden focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0B4EA2]"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            onClick={() => {
+              setIsFocused(false);
+              setIsPaused((paused) => !paused);
+            }}
+            onKeyDown={(event) => {
+              if (event.key === " " || event.key === "Enter") {
+                event.preventDefault();
+                setIsFocused(false);
+                setIsPaused((paused) => !paused);
+              }
+            }}
+            onFocusCapture={() => setIsFocused(true)}
+            onBlurCapture={(event) => {
+              if (!event.currentTarget.contains(event.relatedTarget)) {
+                setIsFocused(false);
+              }
+            }}
+          >
           {/* Left Fade */}
           <div className="absolute left-0 top-0 bottom-0 w-6 sm:w-12 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
 
@@ -230,8 +253,8 @@ const Testimonials = () => {
 
           {/* SCROLLING TRACK */}
           <div
-            className="flex w-max animate-continuous-scroll select-none items-stretch"
-            style={{ animationPlayState: isPaused ? "paused" : "running" }}
+            className="flex w-max animate-continuous-scroll items-stretch"
+            style={{ animationPlayState: shouldPause ? "paused" : "running" }}
           >
             {extendedTestimonials.map((item, index) => {
               const starsCount = item.rating || 5;
@@ -248,9 +271,6 @@ const Testimonials = () => {
                   className="pr-4 sm:pr-5 lg:pr-6 min-[1920px]:pr-7 min-[3840px]:pr-10 shrink-0 flex"
                 >
                   <article
-                    onClick={handleCardClick}
-                    onMouseEnter={() => setIsPaused(true)}
-                    onMouseLeave={() => setIsPaused(false)}
                     className="
                       testimonials-card
                       relative
@@ -273,7 +293,6 @@ const Testimonials = () => {
                       hover:border-blue-200
                       transition-all
                       duration-300
-                      cursor-pointer
                     "
                   >
                     {/* TOP: STARS & QUOTE */}
@@ -351,6 +370,7 @@ const Testimonials = () => {
                 </div>
               );
             })}
+          </div>
           </div>
         </div>
       </div>

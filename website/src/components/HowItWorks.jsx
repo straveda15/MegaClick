@@ -455,8 +455,8 @@ const steps = [
   {
     number: "01",
     icon: PhoneCall,
-    title: "Free Consultation",
-    text: "Connect with our legal experts to discuss your business needs.",
+    title: "Consult with our Expert",
+    text: "Connect with our team experts to discuss your service needs.",
   },
   {
     number: "02",

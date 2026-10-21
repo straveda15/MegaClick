@@ -2,19 +2,20 @@
 import { useEffect, useState } from "react";
 import TopBar from "./TopBar";
 
-import { Menu, X, ArrowRight, Download } from "lucide-react";
+import { Menu, X, ArrowRight, Download, Eye } from "lucide-react";
 
 import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 
 import brochurePdf from "../assets/MegaClick Profile 2026.pdf";
+import { useVisitorCount } from "../contexts/VisitorCountContext";
 
-import logo from "../assets/logo.jpg";
 
 
 
 function Navbar({ showTopBar = true }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const visitorCount = useVisitorCount();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -130,8 +131,8 @@ function Navbar({ showTopBar = true }) {
   }
 
   .nav-logo-img {
-    width: 3.5rem !important;
-    height: 3.5rem !important;
+    width: 3.9rem !important;
+    height: 3.9rem !important;
   }
 
   .nav-logo-title {
@@ -175,8 +176,8 @@ function Navbar({ showTopBar = true }) {
             }
 
             .nav-logo-img {
-              width: 4.25rem !important;
-              height: 4.25rem !important;
+              width: 4.6rem !important;
+              height: 4.6rem !important;
               border-width: 1.5px !important;
             }
 
@@ -220,8 +221,8 @@ function Navbar({ showTopBar = true }) {
             }
 
             .nav-logo-img {
-              width: 5rem !important;
-              height: 5rem !important;
+              width: 5.4rem !important;
+              height: 5.4rem !important;
               border-width: 2px !important;
             }
 
@@ -265,8 +266,8 @@ function Navbar({ showTopBar = true }) {
             }
 
             .nav-logo-img {
-              width: 5.75rem !important;
-              height: 5.75rem !important;
+              width: 6.2rem !important;
+              height: 6.2rem !important;
               border-width: 2px !important;
             }
 
@@ -311,8 +312,8 @@ function Navbar({ showTopBar = true }) {
             }
 
             .nav-logo-img {
-              width: 6.5rem !important;
-              height: 6.5rem !important;
+              width: 7rem !important;
+              height: 7rem !important;
               border-width: 2px !important;
             }
 
@@ -356,8 +357,8 @@ function Navbar({ showTopBar = true }) {
             }
 
             .nav-logo-img {
-              width: 7.25rem !important;
-              height: 7.25rem !important;
+              width: 7.75rem !important;
+              height: 7.75rem !important;
             }
 
             .nav-logo-title {
@@ -398,8 +399,8 @@ function Navbar({ showTopBar = true }) {
             }
 
             .nav-logo-img {
-              width: 2.35rem !important;
-              height: 2.35rem !important;
+              width: 2.6rem !important;
+              height: 2.6rem !important;
             }
 
             .nav-logo-title {
@@ -411,7 +412,7 @@ function Navbar({ showTopBar = true }) {
             }
 
             .nav-logo-gap {
-              gap: 0.45rem !important;
+              gap: 0.3rem !important;
             }
           }
 
@@ -429,8 +430,8 @@ function Navbar({ showTopBar = true }) {
             }
 
             .nav-logo-img {
-              width: 2.5rem !important;
-              height: 2.5rem !important;
+              width: 2.8rem !important;
+              height: 2.8rem !important;
             }
 
             .nav-logo-title {
@@ -456,8 +457,8 @@ function Navbar({ showTopBar = true }) {
             }
 
             .nav-logo-img {
-              width: 2.75rem !important;
-              height: 2.75rem !important;
+              width: 3.05rem !important;
+              height: 3.05rem !important;
             }
 
             .nav-logo-title {
@@ -483,8 +484,8 @@ function Navbar({ showTopBar = true }) {
             }
 
             .nav-logo-img {
-              width: 3rem !important;
-              height: 3rem !important;
+              width: 3.3rem !important;
+              height: 3.3rem !important;
             }
 
             .nav-logo-title {
@@ -540,31 +541,13 @@ function Navbar({ showTopBar = true }) {
             <Link
               to="/"
               onClick={closeMenu}
-              className="nav-logo-gap flex items-center gap-2.5 sm:gap-3 shrink-0 min-w-0"
+              className="flex items-center shrink-0 min-w-0"
             >
               <img
-                src={logo}
-                alt="MegaClick"
-                className="nav-logo-img w-12 h-12 sm:w-11 sm:h-11 rounded-full object-contain p-1 border border-blue-200 shadow-xs transition-transform duration-300 hover:scale-105 shrink-0"
+                src="/megaclick-logo-horizontal.svg?v=5"
+                alt="MegaClick — Everything on MegaClick"
+                className="h-auto w-[118px] sm:w-[132px] xl:w-[145px] shrink-0"
               />
-
-              
-
-<div className="flex flex-col leading-none">
-  <h1
-    className="text-2xl font-bold tracking-tight"
-    style={{ lineHeight: 0.88 }}
-  >
-    <span className="text-[#2167A5]">MEGA</span>
-    <sup className="text-black text-xs align-top ml-0.5">®</sup>
-    <br />
-    <span className="text-[#60AD00]">CL</span>
-    <span className="text-[#2167A5]">i</span>
-    <span className="text-[#60AD00]">CK</span>
-  </h1>
-
-  
-</div>
 
             </Link>
 
@@ -636,11 +619,11 @@ function Navbar({ showTopBar = true }) {
                 Contact Us
               </Link>
             </nav>
-                <div className="hidden lg:flex items-center gap-3 shrink-0">
+                <div className="hidden lg:flex items-center gap-2 shrink-0">
   <a 
     href={brochurePdf}
     download="MegaClick-Brochure.pdf"
-    className="inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-full font-semibold text-sm transition-all duration-200 cursor-pointer"
+    className="inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-full font-semibold text-sm transition-all duration-200 cursor-pointer"
   >
     <Download size={15} />
     <span>Download Brochure</span>
@@ -649,17 +632,28 @@ function Navbar({ showTopBar = true }) {
   <button
     type="button"
     onClick={handleConsultation}
-    className="inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white px-5 py-2.5 rounded-full font-semibold text-sm transition-all duration-200 hover:shadow-md cursor-pointer"
+    className="inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white px-4 py-2.5 rounded-full font-semibold text-sm transition-all duration-200 hover:shadow-md cursor-pointer"
   >
     <span>Get Free Consultation</span>
     <ArrowRight size={15} />
   </button>
+  {visitorCount !== null && (
+    <div className="inline-flex items-center gap-1 rounded-full bg-[#0B4EA2] px-2 py-1 text-[10px] font-semibold text-white shadow-sm" aria-label={`${visitorCount.toLocaleString()} website visitors`}>
+      <Eye size={12} aria-hidden="true" />
+      <span>{visitorCount.toLocaleString()} visitors</span>
+    </div>
+  )}
 </div>
             
 
 
             {/* MOBILE MENU TOGGLE BUTTON */}
-            
+            {visitorCount !== null && (
+              <div className="lg:hidden inline-flex items-center gap-1 rounded-full bg-[#0B4EA2] px-2 py-1 text-[10px] font-semibold text-white shadow-sm" aria-label={`${visitorCount.toLocaleString()} website visitors`}>
+                <Eye size={12} aria-hidden="true" />
+                <span>{visitorCount.toLocaleString()} visitors</span>
+              </div>
+            )}
             <button
               type="button"
               className="lg:hidden p-1 text-slate-800 focus:outline-none cursor-pointer shrink-0"

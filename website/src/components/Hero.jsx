@@ -1445,7 +1445,7 @@ const heroHeadings = [
                   "
                 >
                   <LinearCountUp
-                    end={25}
+                    end={100}
                     suffix="+"
                     duration={800}
                   />
