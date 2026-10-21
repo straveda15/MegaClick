@@ -13,17 +13,20 @@ export function VisitorCountProvider({ children }) {
         const response = await fetch(`${API_BASE}/api/v1/marketing/visitor-count`);
         if (!response.ok) return;
         const data = await response.json();
-        if (mounted && Number.isFinite(data.visitors)) setVisitorCount(1000 + data.visitors);
+        const count = Number(data.visitors ?? data.count ?? data.data?.visitors ?? data.data?.count);
+        if (mounted && Number.isFinite(count) && count >= 0) setVisitorCount(1000 + count);
       } catch {
         // Keep the site usable when the visitor counter API is unavailable.
       }
     };
 
     loadVisitorCount();
-    const interval = window.setInterval(loadVisitorCount, 10000);
+    const interval = window.setInterval(loadVisitorCount, 5000);
+    window.addEventListener("mcsite:visitor-tracked", loadVisitorCount);
     return () => {
       mounted = false;
       window.clearInterval(interval);
+      window.removeEventListener("mcsite:visitor-tracked", loadVisitorCount);
     };
   }, []);
 

@@ -44,6 +44,7 @@ router.post("/sync", marketingController.syncPlatformData);
 
 
 // ── Live Event Tracking (from website) ──
+router.get("/visitor-count", marketingController.getWebsiteVisitorCount);
 router.post("/track", marketingController.trackEvent);
 
 export default router;

@@ -1,7 +1,10 @@
 import React from "react";
-import { Phone, Mail, ShieldCheck } from "lucide-react";
+import { Eye, Phone, Mail, ShieldCheck } from "lucide-react";
+import { useVisitorCount } from "../contexts/VisitorCountContext";
 
 const TopBar = () => {
+  const visitorCount = useVisitorCount();
+
   return (
     <div className="bg-[#083A7A] text-white font-['Inter',sans-serif]">
       {/* DIRECT DESKTOP MEDIA QUERIES - MATCHED TO NAVBAR */}
@@ -99,6 +102,16 @@ const TopBar = () => {
 
           {/* CONTACT DETAILS (PHONE & EMAIL) */}
           <div className="topbar-contact-group flex items-center justify-center gap-3.5 sm:gap-5 w-full sm:w-auto min-w-0">
+
+            {/* LIVE VISITOR COUNT */}
+            <div
+              className="topbar-item inline-flex items-center gap-1.5 text-[10px] sm:text-xs lg:text-sm whitespace-nowrap shrink-0"
+              aria-label={visitorCount === null ? "Website visitor count loading" : `${visitorCount.toLocaleString()} or more website visitors`}
+              aria-live="polite"
+            >
+              <Eye size={13} className="topbar-icon text-emerald-400 sm:w-4 sm:h-4 shrink-0" aria-hidden="true" />
+              <span className="text-blue-100 font-semibold">{visitorCount === null ? "1,000+" : `${visitorCount.toLocaleString()}+`} visitors</span>
+            </div>
 
             {/* PHONE */}
             <a
