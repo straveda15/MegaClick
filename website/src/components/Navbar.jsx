@@ -542,7 +542,7 @@ function Navbar({ showTopBar = true }) {
               className="flex items-center shrink-0 min-w-0"
             >
               <img
-                src="/megaclick-logo-horizontal.svg?v=5"
+                src="/megaclick-logo-horizontal.svg?v=10"
                 alt="MegaClick — Everything on MegaClick"
                 className="h-auto w-[104px] shrink-0"
               />

@@ -1329,8 +1329,8 @@ const heroHeadings = [
 "
 >
 <span className="block whitespace-normal sm:whitespace-nowrap">
-  Megaclick for&nbsp;
-  <span className="text-[#0B4EA2]">
+  <span className="text-[#0B4EA2]">MegaClick for</span>&nbsp;
+  <span className="text-[#08A65A]">
     {heroHeadings[activeHeading]}
   </span>
 </span>
