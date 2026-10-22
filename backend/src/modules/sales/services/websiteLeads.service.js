@@ -181,25 +181,26 @@ export const createContactLead = async (contactData) => {
     // Wrapping both writes in one transaction ensures that a failed lead creation
     // cannot leave behind a customer record with no associated lead. Atlas is a
     // replica set so multi-document transactions are supported.
-    const session = await mongoose.startSession();
-    let newLead;
-    try {
-        await session.withTransaction(async () => {
-            // Always refresh name + email on repeat submissions
-            let customer = await SalesCustomer.findOne({ phone }).session(session);
-            if (!customer) {
-                [customer] = await SalesCustomer.create(
-                    // Email is optional on the form — don't store an empty string.
-                    [{ name, email: email || undefined, phone, source: "web" }],
-                    { session }
-                );
-            } else {
-                customer.name  = name  || customer.name;
-                customer.email = email || customer.email;
-                await customer.save({ session });
-            }
+    const createCustomerAndLead = async (session) => {
+        // Always refresh name + email on repeat submissions
+        let customerQuery = SalesCustomer.findOne({ phone });
+        if (session) customerQuery = customerQuery.session(session);
+        let customer = await customerQuery;
+        if (!customer) {
+            const createOptions = session ? { session } : undefined;
+            [customer] = await SalesCustomer.create(
+                // Email is optional on the form — don't store an empty string.
+                [{ name, email: email || undefined, phone, source: "web" }],
+                createOptions
+            );
+        } else {
+            customer.name  = name  || customer.name;
+            customer.email = email || customer.email;
+            await customer.save(session ? { session } : undefined);
+        }
 
-            [newLead] = await SalesLead.create([{
+        const leadOptions = session ? { session } : undefined;
+        const [createdLead] = await SalesLead.create([{
                 customer:        customer._id,
                 // Left unassigned and un-pooled so it shows as "Unassigned" on
                 // the Leads board and waits for a deliberate "Assign to".
@@ -221,17 +222,33 @@ export const createContactLead = async (contactData) => {
                     changedBy: ownerId,
                     note:      `Lead from Website Contact Form${serviceSummary ? ` — ${serviceSummary}` : ""}: ${message || "No message provided"}`,
                 }],
-            }], { session });
-        });
+        }], leadOptions);
+        return createdLead;
+    };
+
+    const session = await mongoose.startSession();
+    let newLead;
+    let transactionUnsupported = false;
+    try {
+        newLead = await session.withTransaction(() => createCustomerAndLead(session));
+    } catch (error) {
+        // Standalone local MongoDB servers do not support multi-document transactions.
+        transactionUnsupported = error.code === 20
+            || error.codeName === "IllegalOperation"
+            || /transaction numbers are only allowed|does not support transactions/i.test(error.message || "");
+        if (!transactionUnsupported) throw error;
     } finally {
         await session.endSession();
+    }
+    if (transactionUnsupported) {
+        newLead = await createCustomerAndLead();
     }
 
     // ── 4. Email notification (fire-and-forget — outside transaction) ─────────
     // The lead is already committed. A failed email does NOT roll back the lead
     // or affect the HTTP response.
     if (recipient) {
-        void sendContactNotification({ name, email, phone, message, smtpAccount, recipient });
+        void sendContactNotification({ name, email, phone, message, service: serviceSummary, smtpAccount, recipient });
     }
 
     return newLead;

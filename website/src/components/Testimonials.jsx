@@ -46,7 +46,6 @@ import { ArrowLeft, ArrowRight, Quote, Star } from "lucide-react";
 
 const Testimonials = () => {
   const [testimonialsList, setTestimonialsList] = useState(defaultTestimonials);
-  const [autoScrollPaused, setAutoScrollPaused] = useState(false);
   const [visibleCards, setVisibleCards] = useState(3);
   const carouselRef = useRef(null);
 
@@ -106,12 +105,6 @@ const Testimonials = () => {
     }
     carousel.scrollBy({ left: cardStep * direction, behavior: "smooth" });
   }, [testimonialsList.length]);
-
-  useEffect(() => {
-    if (autoScrollPaused || testimonialsList.length < 2) return undefined;
-    const timer = window.setInterval(() => moveCarousel(1), 2000);
-    return () => window.clearInterval(timer);
-  }, [autoScrollPaused, moveCarousel, testimonialsList.length]);
 
   return (
     <section className="w-full py-8 sm:py-12 lg:py-16 min-[1920px]:py-20 min-[3840px]:py-32 bg-white font-['Inter',sans-serif] overflow-hidden">
@@ -231,14 +224,14 @@ const Testimonials = () => {
 
         {/* MARQUEE CAROUSEL */}
         <div className="flex w-full items-center gap-2 py-2 sm:gap-3">
-          <button type="button" onClick={() => { setAutoScrollPaused(true); moveCarousel(-1); }} aria-label="Previous testimonial" className="relative z-20 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#0B4EA2] bg-white text-[#0B4EA2] shadow-sm transition hover:bg-[#0B4EA2] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0B4EA2] sm:h-10 sm:w-10">
+          <button type="button" onClick={() => moveCarousel(-1)} aria-label="Previous testimonial" className="relative z-20 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#0B4EA2] bg-white text-[#0B4EA2] shadow-sm transition hover:bg-[#0B4EA2] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0B4EA2] sm:h-10 sm:w-10">
             <ArrowLeft size={18} aria-hidden="true" />
           </button>
           <div
             ref={carouselRef}
             tabIndex={0}
             role="region"
-            aria-label="Client testimonials. Use the arrows or swipe to browse; slides advance automatically."
+            aria-label="Client testimonials. Use the arrows or swipe to browse."
             className="min-w-0 flex-1 overflow-x-auto overflow-y-hidden snap-x snap-mandatory scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0B4EA2]"
           >
           {/* CAROUSEL TRACK */}
@@ -360,7 +353,7 @@ const Testimonials = () => {
             })}
           </div>
           </div>
-          <button type="button" onClick={() => { setAutoScrollPaused(true); moveCarousel(1); }} aria-label="Next testimonial" className="relative z-20 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#0B4EA2] bg-white text-[#0B4EA2] shadow-sm transition hover:bg-[#0B4EA2] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0B4EA2] sm:h-10 sm:w-10">
+          <button type="button" onClick={() => moveCarousel(1)} aria-label="Next testimonial" className="relative z-20 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#0B4EA2] bg-white text-[#0B4EA2] shadow-sm transition hover:bg-[#0B4EA2] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0B4EA2] sm:h-10 sm:w-10">
             <ArrowRight size={18} aria-hidden="true" />
           </button>
         </div>
