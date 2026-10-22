@@ -1,49 +1,89 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { ArrowLeft, ArrowRight, Quote, Star } from "lucide-react";
 
-// Fallback seed data focused on services outcomes
-  export const defaultTestimonials = [
+// Fallback testimonials supplied for the services section.
+export const defaultTestimonials = [
   {
-  name: "Rajesh Sharma",
-  service: "Income Tax Registration",
-  services: ["Income Tax Registration"],
-  location: "Nashik, Maharashtra",
-  review:
-    "I wasn’t sure which documents to keep ready for my income tax work. The team explained what was needed and what I should do next. That made it much easier to get started.",
-  rating: 5,
-},
-{
-  name: "Priya Enterprises",
-  service: "GST Registration",
-  services: ["GST Registration"],
-  location: "Pune, Maharashtra",
-  review:
-    "We had questions about the GST registration paperwork and how to begin. MegaClick cleared up the requirements and kept us updated as we went along. It was helpful to know what to expect.",
-  rating: 5,
-},
-{
-  name: "Amit Patil",
-  service: "Trademark Registration",
-  services: ["Trademark Registration"],
-  location: "Mumbai, Maharashtra",
-  review:
-    "Before starting my trademark registration, I wanted to understand the steps and what information I’d need. The team talked me through it and answered my questions, so I could get my documents in order.",
-  rating: 5,
-},
-{
-  name: "Sneha Kulkarni",
-  service: "Marriage Registration",
-  services: [
-    "Marriage Registration",
-    "Partnership Deed (Notary & Registration of Firm)",
-  ],
-  location: "Nagpur, Maharashtra",
-  review:
-    "We weren’t sure what to prepare for marriage registration. The team explained the requirements and the next steps, which made the paperwork feel more manageable.",
-  rating: 5,
-},
+    name: "Sneha Kulkarni",
+    service: "Marriage Registration",
+    services: ["Marriage Registration"],
+    location: "Maharashtra",
+    review: "We were unsure which documents to prepare for our marriage registration. The clear instructions made each step easier to understand.",
+    rating: 3,
+  },
+  {
+    name: "Priya Enterprises",
+    service: "Leave & Licence Agreement",
+    services: ["Leave & Licence Agreement"],
+    location: "Pune, Maharashtra",
+    review: "I needed a rental agreement for my new flat. The important clauses and paperwork were explained clearly, so I knew what to check before signing.",
+    rating: 3,
+  },
+  {
+    name: "Santosh",
+    service: "GST Registration",
+    services: ["GST Registration"],
+    location: "Pune, Maharashtra",
+    review: "I was confused about the GST requirements for my new business. Now I have a much clearer idea of the documents and registration process.",
+    rating: 3,
+  },
+  {
+    name: "Rajesh Sharma",
+    service: "Income Tax Services",
+    services: ["Income Tax Services"],
+    location: "Nashik, Maharashtra",
+    review: "I had several doubts about filing my income tax return. The explanations were straightforward, and I felt more confident about preparing my documents.",
+    rating: 3,
+  },
+  {
+    name: "Adv. Ajinath",
+    service: "Partnership Deed",
+    services: ["Partnership Deed"],
+    location: "Ahmednagar, Maharashtra",
+    review: "Before launching our business together, we wanted clarity on the partnership deed. We now have a better understanding of the documentation and formalities involved.",
+    rating: 3,
+  },
+  {
+    name: "N.B. Kadu",
+    service: "Trademark Registration",
+    services: ["Trademark Registration"],
+    location: "Maharashtra",
+    review: "Protecting our brand name was important to us. We gained a better understanding of trademark registration and the steps involved in applying.",
+    rating: 3,
+  },
+  {
+    name: "Amit Patil",
+    service: "Rent Agreement",
+    services: ["Rent Agreement"],
+    location: "Pune, Maharashtra",
+    review: "I needed a rent agreement for my new flat. The process and paperwork were explained in simple words.",
+    rating: 3,
+  },
+  {
+    name: "New Business Owner",
+    service: "Company Registration",
+    services: ["Company Registration"],
+    location: "Mumbai, Maharashtra",
+    review: "We were planning to launch a new company and needed clarity on formalities. The team helped us understand the registration steps.",
+    rating: 3,
+  },
+  {
+    name: "Small Business Owner",
+    service: "MSME / UDYAM Registration",
+    services: ["MSME / UDYAM Registration"],
+    location: "Maharashtra",
+    review: "As a small business, we wanted to learn about UDYAM registration. The team explained the basic requirements and where to begin.",
+    rating: 3,
+  },
+  {
+    name: "Working Professional",
+    service: "Passport Services",
+    services: ["Passport Services"],
+    location: "Maharashtra",
+    review: "The team made my passport application process simple and helped me understand each step. Their guidance made the entire process easier and less stressful.",
+    rating: 3,
+  },
 ];
-
 const Testimonials = () => {
   const [testimonialsList, setTestimonialsList] = useState(defaultTestimonials);
   const [visibleCards, setVisibleCards] = useState(3);
@@ -58,7 +98,7 @@ const Testimonials = () => {
     return () => window.removeEventListener("resize", updateVisibleCards);
   }, []);
 
-  // 🔄 Fetch dynamic data from Backend API (with /v1)
+  // ðŸ”„ Fetch dynamic data from Backend API (with /v1)
   useEffect(() => {
     const fetchTestimonials = async () => {
       try {
@@ -89,35 +129,51 @@ const Testimonials = () => {
   // a single testimonial.
   const extendedTestimonials = Array.from({ length: repeatCount }, () => testimonialsList).flat();
 
+  const getLoopWidth = useCallback(() => {
+    const track = carouselRef.current?.firstElementChild;
+    const firstCard = track?.children[0];
+    const nextSetFirstCard = track?.children[testimonialsList.length];
+    if (!firstCard || !nextSetFirstCard) return 0;
+
+    // Measure the actual distance between repeated sets so fractional card
+    // widths and responsive layout changes do not accumulate a loop offset.
+    return nextSetFirstCard.offsetLeft - firstCard.offsetLeft;
+  }, [testimonialsList.length]);
+
   useEffect(() => {
     const carousel = carouselRef.current;
-    const firstCard = carousel?.firstElementChild?.firstElementChild;
-    if (!carousel || !firstCard || testimonialsList.length === 0) return;
+    if (!carousel || testimonialsList.length === 0) return;
 
     const frame = window.requestAnimationFrame(() => {
-      const loopWidth = firstCard.getBoundingClientRect().width * testimonialsList.length;
-      carousel.scrollLeft = loopWidth * 5;
+      const loopWidth = getLoopWidth();
+      if (loopWidth > 0) {
+        // Start in the middle copies, leaving room to loop in either direction.
+        carousel.scrollLeft = loopWidth * 5;
+      }
     });
     return () => window.cancelAnimationFrame(frame);
-  }, [testimonialsList.length, visibleCards]);
+  }, [getLoopWidth, testimonialsList.length, visibleCards]);
 
   const moveCarousel = useCallback((direction) => {
     const carousel = carouselRef.current;
-    const firstCard = carousel?.firstElementChild?.firstElementChild;
-    if (!carousel || !firstCard || testimonialsList.length === 0) return;
+    if (!carousel || testimonialsList.length === 0) return;
 
-    const cardStep = firstCard.getBoundingClientRect().width;
-    const loopWidth = cardStep * testimonialsList.length;
-    const rebaseDistance = loopWidth * (repeatCount - 6);
+    const track = carousel.firstElementChild;
+    const firstCard = track?.children[0];
+    const secondCard = track?.children[1];
+    const loopWidth = getLoopWidth();
+    if (!firstCard || !secondCard || loopWidth <= 0) return;
+
+    const cardStep = secondCard.offsetLeft - firstCard.offsetLeft;
     const safeStart = loopWidth * 3;
     const safeEnd = loopWidth * (repeatCount - 3);
     if (direction < 0 && carousel.scrollLeft <= safeStart + cardStep / 2) {
-      carousel.scrollLeft += rebaseDistance;
+      carousel.scrollLeft += loopWidth * (repeatCount - 6);
     } else if (direction > 0 && carousel.scrollLeft >= safeEnd - cardStep / 2) {
-      carousel.scrollLeft -= rebaseDistance;
+      carousel.scrollLeft -= loopWidth * (repeatCount - 6);
     }
     carousel.scrollBy({ left: cardStep * direction, behavior: "smooth" });
-  }, [testimonialsList.length]);
+  }, [getLoopWidth, testimonialsList.length]);
 
   return (
     <section className="w-full py-8 sm:py-12 lg:py-16 min-[1920px]:py-20 min-[3840px]:py-32 bg-white font-['Inter',sans-serif] overflow-hidden">
@@ -245,7 +301,7 @@ const Testimonials = () => {
             tabIndex={0}
             role="region"
             aria-label="Client testimonials. Use the arrow buttons to browse."
-            className="min-w-0 flex-1 overflow-x-hidden overflow-y-hidden snap-x snap-mandatory scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0B4EA2]"
+            className="min-w-0 flex-1 overflow-x-hidden overflow-y-hidden snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0B4EA2]"
           >
           {/* CAROUSEL TRACK */}
           <div
@@ -258,7 +314,7 @@ const Testimonials = () => {
                 Array.isArray(item.services) && item.services.length > 0
                   ? item.services
                   : item.service
-                  ? item.service.split(/[,•|]/).map((s) => s.trim()).filter(Boolean)
+                  ? item.service.split(/[,â€¢|]/).map((s) => s.trim()).filter(Boolean)
                   : [];
 
               return (
