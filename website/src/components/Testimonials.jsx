@@ -9,7 +9,7 @@ import { ArrowLeft, ArrowRight, Quote, Star } from "lucide-react";
   services: ["Income Tax Registration"],
   location: "Nashik, Maharashtra",
   review:
-    "I had some questions about the documents required for my income tax work. The team explained what I needed to prepare and guided me through the process. Communication was clear, and I knew what to expect at each step.",
+    "I wasn’t sure which documents to keep ready for my income tax work. The team explained what was needed and what I should do next. That made it much easier to get started.",
   rating: 5,
 },
 {
@@ -18,7 +18,7 @@ import { ArrowLeft, ArrowRight, Quote, Star } from "lucide-react";
   services: ["GST Registration"],
   location: "Pune, Maharashtra",
   review:
-    "We approached MegaClick for GST registration because we weren't sure about the documentation and process. The team answered our questions and kept us updated along the way. It was helpful having the requirements explained clearly.",
+    "We had questions about the GST registration paperwork and how to begin. MegaClick cleared up the requirements and kept us updated as we went along. It was helpful to know what to expect.",
   rating: 5,
 },
 {
@@ -27,7 +27,7 @@ import { ArrowLeft, ArrowRight, Quote, Star } from "lucide-react";
   services: ["Trademark Registration"],
   location: "Mumbai, Maharashtra",
   review:
-    "I wanted to understand the trademark registration process before getting started. The team explained the steps and the information I needed to arrange. Whenever I had a question, I could get clarification and move forward with more confidence.",
+    "Before starting my trademark registration, I wanted to understand the steps and what information I’d need. The team talked me through it and answered my questions, so I could get my documents in order.",
   rating: 5,
 },
 {
@@ -39,7 +39,7 @@ import { ArrowLeft, ArrowRight, Quote, Star } from "lucide-react";
   ],
   location: "Nagpur, Maharashtra",
   review:
-    "We needed guidance on the documents and steps involved in marriage registration. The team helped us understand the requirements and what we needed to prepare. Having the process explained clearly made things less confusing for us.",
+    "We weren’t sure what to prepare for marriage registration. The team explained the requirements and the next steps, which made the paperwork feel more manageable.",
   rating: 5,
 },
 ];
@@ -67,7 +67,12 @@ const Testimonials = () => {
         if (resData.success && Array.isArray(resData.data) && resData.data.length > 0) {
           // Deduplicate by _id or name to prevent identical cards side-by-side
           const uniqueItems = Array.from(
-            new Map(resData.data.map((item) => [item._id || item.name, item])).values()
+            new Map(
+              resData.data.map((item) => {
+                const normalizedName = String(item.name || "").trim().toLowerCase();
+                return [normalizedName || item._id, item];
+              })
+            ).values()
           );
           setTestimonialsList(uniqueItems);
         }
@@ -79,12 +84,22 @@ const Testimonials = () => {
   }, []);
 
   const cardsInView = Math.min(visibleCards, testimonialsList.length);
-  const repeatCount = 8;
-  // Repeat the set for a loop, while keeping a single testimonial from
-  // appearing multiple times in the viewport when the list is very short.
-  const extendedTestimonials = testimonialsList.length > 1
-    ? Array.from({ length: repeatCount }, () => testimonialsList).flat()
-    : testimonialsList;
+  const repeatCount = 12;
+  // Render repeated sets so the carousel can continue seamlessly, even with
+  // a single testimonial.
+  const extendedTestimonials = Array.from({ length: repeatCount }, () => testimonialsList).flat();
+
+  useEffect(() => {
+    const carousel = carouselRef.current;
+    const firstCard = carousel?.firstElementChild?.firstElementChild;
+    if (!carousel || !firstCard || testimonialsList.length === 0) return;
+
+    const frame = window.requestAnimationFrame(() => {
+      const loopWidth = firstCard.getBoundingClientRect().width * testimonialsList.length;
+      carousel.scrollLeft = loopWidth * 5;
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [testimonialsList.length, visibleCards]);
 
   const moveCarousel = useCallback((direction) => {
     const carousel = carouselRef.current;
@@ -93,15 +108,13 @@ const Testimonials = () => {
 
     const cardStep = firstCard.getBoundingClientRect().width;
     const loopWidth = cardStep * testimonialsList.length;
-    const resetPoint = loopWidth * (repeatCount - 2);
-    if (direction < 0 && carousel.scrollLeft <= 0) {
-      carousel.scrollLeft = loopWidth;
-    } else if (direction > 0 && carousel.scrollLeft >= resetPoint - cardStep / 2) {
-      carousel.scrollBy({ left: cardStep, behavior: "smooth" });
-      window.setTimeout(() => {
-        if (carousel.scrollLeft >= resetPoint - cardStep / 2) carousel.scrollLeft = loopWidth;
-      }, 550);
-      return;
+    const rebaseDistance = loopWidth * (repeatCount - 6);
+    const safeStart = loopWidth * 3;
+    const safeEnd = loopWidth * (repeatCount - 3);
+    if (direction < 0 && carousel.scrollLeft <= safeStart + cardStep / 2) {
+      carousel.scrollLeft += rebaseDistance;
+    } else if (direction > 0 && carousel.scrollLeft >= safeEnd - cardStep / 2) {
+      carousel.scrollLeft -= rebaseDistance;
     }
     carousel.scrollBy({ left: cardStep * direction, behavior: "smooth" });
   }, [testimonialsList.length]);
@@ -231,8 +244,8 @@ const Testimonials = () => {
             ref={carouselRef}
             tabIndex={0}
             role="region"
-            aria-label="Client testimonials. Use the arrows or swipe to browse."
-            className="min-w-0 flex-1 overflow-x-auto overflow-y-hidden snap-x snap-mandatory scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0B4EA2]"
+            aria-label="Client testimonials. Use the arrow buttons to browse."
+            className="min-w-0 flex-1 overflow-x-hidden overflow-y-hidden snap-x snap-mandatory scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0B4EA2]"
           >
           {/* CAROUSEL TRACK */}
           <div
@@ -327,7 +340,7 @@ const Testimonials = () => {
 
                         {/* Services: Blue, stacked vertically one by one (ek ke niche ek) */}
                         <div className="flex flex-col gap-0.5 mt-0.5">
-                          {serviceList.map((svc, sIdx) => (
+                          {serviceList.slice(0, 1).map((svc, sIdx) => (
                             <span
                               key={sIdx}
                               style={{ fontFamily: "'Inter', sans-serif" }}

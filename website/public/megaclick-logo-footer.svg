@@ -3,13 +3,14 @@
   <desc id="desc">Everything on MegaClick.</desc>
   <defs>
     <clipPath id="pyramid">
-      <path d="M104 37c8 0 15 4 19 11l95 164c9 16-2 21-17 21H19c-16 0-23-8-16-21L86 48c4-7 10-11 18-11Z"/>
+      <path d="M108.1 46 6.9 221Q0 233 13.9 233H216.1Q230 233 223.1 221L121.9 46Q115 34 108.1 46Z"/>
     </clipPath>
   </defs>
   <g clip-path="url(#pyramid)">
-    <path fill="#0c3f63" d="M104 37v135L0 233 0 33Z"/>
-    <path fill="#176198" d="M104 37 230 233 104 172Z"/>
-    <path fill="#236aa6" d="M0 233 104 172 230 233Z"/>
+    <path fill="#3b8fc8" d="M115 34v133L0 233 0 30Z"/>
+    <path fill="#236aa6" d="M115 34 230 233 115 167Z"/>
+    <path fill="#236aa6" d="M0 233 115 167 230 233Z"/>
+    <path d="M115 34V167" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="1"/>
   </g>
   <g font-family="Arial, Helvetica, sans-serif" font-weight="700">
     <text x="244" y="112" font-size="102" fill="#ffffff" letter-spacing="-2">MEGA</text>
