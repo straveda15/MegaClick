@@ -11,6 +11,7 @@ import brochurePdf from "../assets/MegaClick Profile 2026.pdf";
 
 
 
+
 function Navbar({ showTopBar = true }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -537,17 +538,16 @@ function Navbar({ showTopBar = true }) {
 
             {/* LOGO */}
             <Link
-              to="/"
-              onClick={closeMenu}
-              className="flex items-center shrink-0 min-w-0"
-            >
-              <img
-                src="/megaclick-logo-horizontal.svg?v=10"
-                alt="MegaClick — Everything on MegaClick"
-                className="h-auto w-[104px] shrink-0"
-              />
-
-            </Link>
+  to="/"
+  onClick={closeMenu}
+  className="flex items-center shrink-0 min-w-0"
+>
+  <img
+    src="/megaclick-logo-horizontal.svg?v=19"
+    alt="MegaClick — Everything on MegaClick"
+    className="block h-auto w-[104px] max-h-[50px] object-contain shrink-0"
+  />
+</Link>
 
             {/* DESKTOP NAV LINKS */}
             <nav className="nav-links hidden lg:flex items-center gap-6 xl:gap-8 text-sm font-medium whitespace-nowrap shrink-0">
