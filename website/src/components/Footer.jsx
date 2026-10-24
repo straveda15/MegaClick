@@ -801,7 +801,7 @@ const Footer = () => {
 <div className="w-full min-w-0">
   <div className="mb-2 inline-block">
     <img
-      src="/megaclick-logo-footer.svg?v=14"
+      src="/megaclick-logo-footer.svg?v=22"
       alt="MegaClick logo, Everything on MegaClick"
         className="w-[104px] h-auto shrink-0"
     />
@@ -1189,7 +1189,7 @@ const Footer = () => {
 <div className="mb-1.5">
   <div className="inline-block">
     <img
-      src="/megaclick-logo-footer.svg?v=14"
+      src="/megaclick-logo-footer.svg?v=22"
       alt="MegaClick logo, Everything on MegaClick"
         className="w-[104px] h-auto shrink-0"
     />
