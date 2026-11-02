@@ -1,15 +1,13 @@
+
 import React from "react";
-import { Eye, Phone, Mail, ShieldCheck } from "lucide-react";
-import { useVisitorCount } from "../contexts/VisitorCountContext";
+import { Phone, Mail, ShieldCheck } from "lucide-react";
 
 const TopBar = () => {
-  const visitorCount = useVisitorCount();
-
   return (
     <div className="bg-[#083A7A] text-white font-['Inter',sans-serif]">
-      {/* DIRECT DESKTOP MEDIA QUERIES - MATCHED TO NAVBAR */}
+
       <style>{`
-        /* 1. Laptop Screens (1024px to 1439px) */
+        /* 1. Laptop Screens */
         @media (min-width: 1024px) and (max-width: 1439px) {
           .topbar-container {
             max-width: 1350px !important;
@@ -22,7 +20,7 @@ const TopBar = () => {
           }
         }
 
-        /* 2. Standard Desktop (1440px x 900px) */
+        /* 2. Standard Desktop */
         @media (min-width: 1440px) {
           .topbar-container {
             max-width: 1400px !important;
@@ -35,7 +33,7 @@ const TopBar = () => {
           }
         }
 
-        /* 3. Large Desktop (1920px x 1080px Full HD) */
+        /* 3. Large Desktop */
         @media (min-width: 1920px) {
           .topbar-container {
             max-width: 1750px !important;
@@ -65,7 +63,7 @@ const TopBar = () => {
           }
         }
 
-        /* 4. 4K Ultra-Wide Desktop (3840px x 2160px) */
+        /* 4. 4K Ultra-Wide Desktop */
         @media (min-width: 3840px) {
           .topbar-container {
             max-width: 3000px !important;
@@ -98,25 +96,29 @@ const TopBar = () => {
 
       {/* MAIN CONTAINER */}
       <div className="topbar-container w-full max-w-[1400px] mx-auto px-5 sm:px-7 lg:px-10 py-2">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-1.5 sm:gap-4">
 
-          {/* CONTACT DETAILS (PHONE & EMAIL) */}
-          <div className="topbar-contact-group flex items-center justify-center gap-3.5 sm:gap-5 w-full sm:w-auto min-w-0">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-4">
 
-            {/* LIVE VISITOR COUNT */}
-            <div
-              className="topbar-item inline-flex items-center gap-1.5 text-[10px] sm:text-xs lg:text-sm whitespace-nowrap shrink-0"
-              aria-label={visitorCount === null ? "Website visitor count loading" : `${visitorCount.toLocaleString()} or more website visitors`}
-              aria-live="polite"
-            >
-              <Eye size={13} className="topbar-icon text-emerald-400 sm:w-4 sm:h-4 shrink-0" aria-hidden="true" />
-              <span className="text-blue-100 font-semibold">{visitorCount === null ? "1,000+" : `${visitorCount.toLocaleString()}+`} visitors</span>
-            </div>
+          {/* LEFT SIDE - TRUST BADGE */}
+          <div className="topbar-trust flex items-center justify-center sm:justify-start gap-1.5 text-[9.5px] sm:text-xs lg:text-sm text-blue-100 font-medium whitespace-nowrap">
+
+            <ShieldCheck
+              size={14}
+              className="topbar-icon text-emerald-400 sm:w-4 sm:h-4 shrink-0"
+            />
+
+            <span>
+              India's Trusted Professional Services Provider
+            </span>
+          </div>
+
+          {/* RIGHT SIDE - CONTACT DETAILS */}
+          <div className="topbar-contact-group flex items-center justify-center sm:justify-end gap-3.5 sm:gap-5 w-full sm:w-auto min-w-0">
 
             {/* PHONE */}
             <a
               href="tel:+919921611911"
-              className="topbar-item flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs lg:text-sm whitespace-nowrap min-w-0 hover:text-white transition-colors duration-200"
+              className="topbar-item flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs lg:text-sm whitespace-nowrap hover:text-white transition-colors duration-200"
             >
               <Phone
                 size={13}
@@ -134,7 +136,7 @@ const TopBar = () => {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Email MegaClick"
-              className="topbar-item flex items-center gap-1.5 sm:gap-2 text-[9.5px] sm:text-xs lg:text-sm whitespace-nowrap min-w-0 hover:text-white transition-colors duration-200"
+              className="topbar-item flex items-center gap-1.5 sm:gap-2 text-[9.5px] sm:text-xs lg:text-sm whitespace-nowrap hover:text-white transition-colors duration-200"
             >
               <Mail
                 size={13}
@@ -145,18 +147,8 @@ const TopBar = () => {
                 megaclickofficial@gmail.com
               </span>
             </a>
+
           </div>
-
-          {/* TRUST BADGE / TEXT */}
-          <div className="topbar-trust flex items-center justify-center gap-1.5 text-[9.5px] sm:text-xs lg:text-sm text-blue-100 font-medium whitespace-nowrap">
-            <ShieldCheck
-              size={14}
-              className="topbar-icon text-emerald-400 sm:w-4 sm:h-4 shrink-0"
-            />
-
-            <span>India'a Trusted Professional Services Provider</span>
-          </div>
-
         </div>
       </div>
     </div>

@@ -6,7 +6,7 @@ import { Menu, X, ArrowRight, Download } from "lucide-react";
 
 import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 
-import brochurePdf from "../assets/MegaClick Profile 2026.pdf";
+import brochurePdf from "../assets/Megaclick Services.pdf";
 
 
 
@@ -620,7 +620,7 @@ function Navbar({ showTopBar = true }) {
                 <div className="hidden lg:flex items-center gap-2 shrink-0">
   <a 
     href={brochurePdf}
-    download="MegaClick-Brochure.pdf"
+    download="Megaclick Services.pdf"
     className="inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-full font-semibold text-sm transition-all duration-200 cursor-pointer"
   >
     <Download size={15} />
@@ -726,7 +726,7 @@ function Navbar({ showTopBar = true }) {
 <div className="pt-2 px-4 space-y-3">
   <a
     href={brochurePdf}
-    download="MegaClick-Brochure.pdf"
+    download="Megaclick Services.pdf"
     onClick={closeMenu}
     className="w-full flex justify-center items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-3 rounded-xl font-semibold text-sm transition-all duration-200"
   >
