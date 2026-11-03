@@ -1318,7 +1318,7 @@ const Hero = () => {
   break-words
 "
 >
-<span className="block whitespace-nowrap">
+<span className="block whitespace-normal sm:whitespace-nowrap">
   <span className="text-[#0B4EA2]">Mega</span><span className="text-[#08A65A]">Cl</span><span className="text-[#0B4EA2]">i</span><span className="text-[#08A65A]">ck</span><span className="text-[#0B4EA2]"> for</span>{" "}
   <span className="text-[#08A65A]">{heroHeadings[activeHeading]}</span>
 </span>
@@ -1345,8 +1345,7 @@ const Hero = () => {
             >
                Your trusted one-stop platform for legal, financial, banking,
   real estate, and business services. We simplify complex processes
-  with expert guidance <br/>
-  and reliable support for individuals and businesses.
+  with expert guidance and reliable support for individuals and businesses.
             </p>
 
             {/* =================================================
@@ -1355,7 +1354,7 @@ const Hero = () => {
             <div
              className="
   grid
-  grid-cols-3
+  grid-cols-2
   gap-x-3
   gap-y-5
   justify-start
@@ -1371,7 +1370,7 @@ const Hero = () => {
               <div
                 className="flex flex-col items-start text-left col-start-1 row-start-1"
                 style={{
-                  minWidth: "90px",
+                    minWidth: 0,
                 }}
               >
                 <h3
@@ -1404,7 +1403,7 @@ const Hero = () => {
                     text-slate-600
                     mt-1
                     sm:mt-1.5
-                    whitespace-nowrap
+                    whitespace-normal
                   "
                 >
                   Happy customers
@@ -1415,7 +1414,7 @@ const Hero = () => {
               <div
                 className="flex flex-col items-start text-left col-start-2 row-start-1"
                 style={{
-                  minWidth: "70px",
+                    minWidth: 0,
                 }}
               >
                 <h3
@@ -1448,7 +1447,7 @@ const Hero = () => {
                     text-slate-600
                     mt-1
                     sm:mt-1.5
-                    whitespace-nowrap
+                    whitespace-normal
                   "
                 >
                   Services
@@ -1459,7 +1458,7 @@ const Hero = () => {
               <div
                 className="flex flex-col items-start text-left col-start-1 row-start-2"
                 style={{
-                  minWidth: "100px",
+                    minWidth: 0,
                 }}
               >
                 <h3
@@ -1492,7 +1491,7 @@ const Hero = () => {
                     text-slate-600
                     mt-1
                     sm:mt-1.5
-                    whitespace-nowrap
+                    whitespace-normal
                   "
                 >
                   Years Experience
@@ -1502,7 +1501,7 @@ const Hero = () => {
 {/* STAT 4 */}
 <div
   className="flex flex-col items-start text-left col-start-2 row-start-2"
-  style={{ minWidth: "130px" }}
+  style={{ minWidth: 0 }}
 >
   <h3
     style={{ fontFamily: "'Inter', sans-serif" }}

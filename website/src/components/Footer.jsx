@@ -809,7 +809,7 @@ const Footer = () => {
     />
   </div>
 
-  <p className="mt-1 text-[11px] sm:text-xs text-white/90 font-semibold text-left leading-snug whitespace-nowrap">
+  <p className="mt-1 text-[11px] sm:text-xs text-white/90 font-semibold text-left leading-snug break-words">
     Exceptional value. Cost effective solutions.
   </p>
 </div>
@@ -1570,7 +1570,7 @@ const Footer = () => {
     tracking-[0.15em]
     text-center
     md:text-left
-    whitespace-nowrap
+    whitespace-normal md:whitespace-nowrap
     shrink-0
   "
 >
