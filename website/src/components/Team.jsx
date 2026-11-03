@@ -43,7 +43,8 @@ const Team = () => {
   return (
     <>
       {/* ==================== MAIN SECTION ==================== */}
-      <section className="w-full py-8 sm:py-12 min-[1440px]:py-16 min-[1920px]:py-20 min-[3840px]:py-32 bg-blue-50 team-section font-['Inter',sans-serif]">
+      
+      <section className="hidden w-full py-8 sm:py-12 min-[1440px]:py-16 min-[1920px]:py-20 min-[3840px]:py-32 bg-blue-50 team-section font-['Inter',sans-serif]">
         {/* DIRECT CSS RULES FOR 1440px, 1920px & 3840px (4K) */}
         <style>{`
           .app-container {

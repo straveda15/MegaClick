@@ -7,6 +7,8 @@ import {
 } from "react-icons/fa";
 
 import { FaLinkedinIn } from "react-icons/fa";
+import { Eye } from "lucide-react";
+import { useVisitorCount } from "../contexts/VisitorCountContext";
 
 import { Link, useNavigate } from "react-router-dom";
 
@@ -72,9 +74,9 @@ const SOCIAL_LINKS = [
 /* =========================================================
    FOOTER
 ========================================================= */
-
 const Footer = () => {
   const navigate = useNavigate();
+  const visitorCount = useVisitorCount();
 
   /* =========================================================
      GMAIL
@@ -1133,6 +1135,11 @@ const Footer = () => {
               &copy; {new Date().getFullYear()} MegaClick. All rights reserved.
             </p>
 
+            <div className="flex items-center gap-2 text-blue-100/80 text-xs font-semibold leading-none">
+              <Eye size={15} className="text-emerald-400 shrink-0" />
+              <span>{`${(visitorCount ?? 1000).toLocaleString()}+ Visitors`}</span>
+            </div>
+
             <div className="flex flex-wrap items-center gap-x-5 gap-y-2 ">
              
 
@@ -1550,7 +1557,7 @@ const Footer = () => {
   min-[1920px]:gap-5
 "
 >
-            
+<div className="flex min-w-0 flex-col items-center gap-2 md:items-start">
 <p
   className="
     text-[11px]
@@ -1570,8 +1577,13 @@ const Footer = () => {
   &copy; {new Date().getFullYear()} MegaClick. All rights reserved.
 </p>
 
+<div className="flex items-center gap-2 text-blue-100/80 text-xs font-semibold leading-none md:text-[13px] min-[1920px]:text-sm min-[3840px]:text-base">
+  <Eye size={15} className="text-emerald-400 shrink-0" />
+  <span>{`${(visitorCount ?? 1000).toLocaleString()}+ Visitors`}</span>
+</div>
+</div>
 
-            {/* Straveda Tech Partner Badge */}
+{/* Straveda Tech Partner Badge */}
               
               
 
@@ -1587,7 +1599,6 @@ const Footer = () => {
     grid-cols-3
   "
 >
-
   {/* DPIIT - Explore column */}
   <div className="flex min-w-0 flex-col items-center gap-1 text-center">
     <span className="footer-partner-heading">
@@ -1620,13 +1631,7 @@ const Footer = () => {
 
     <div className="footer-partner-logo-frame"><img className="footer-partner-logo footer-partner-logo-straveda" src={stravedalogo} alt="Straveda" /></div>
   </a>
-
 </div>
-
-
-
-
-
           </div>
         </div>
       </div>

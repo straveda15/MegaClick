@@ -135,26 +135,16 @@ const CAROUSEL_INTERVAL_MS = 2000;
 
 const Hero = () => {
   let navigate;
-
-const heroHeadings = [
-  "Startups",
-  "Professionals",
-  "Individuals",
-  "Businesses",
-  "Founders",
-];
+  const heroHeadings = ["Startups", "Professionals", "Individuals", "Businesses", "Founders"];
   const [activeHeading, setActiveHeading] = useState(0);
 
   useEffect(() => {
     const headingTimer = setInterval(() => {
-      setActiveHeading(
-        (prev) => (prev + 1) % heroHeadings.length
-      );
+      setActiveHeading((prev) => (prev + 1) % heroHeadings.length);
     }, 3000);
 
     return () => clearInterval(headingTimer);
   }, []);
-
 
   try {
     navigate = useNavigate();
@@ -1328,11 +1318,9 @@ const heroHeadings = [
   break-words
 "
 >
-<span className="block whitespace-normal sm:whitespace-nowrap">
-  <span className="text-[#0B4EA2]">MegaClick for</span>&nbsp;
-  <span className="text-[#08A65A]">
-    {heroHeadings[activeHeading]}
-  </span>
+<span className="block whitespace-nowrap">
+  <span className="text-[#0B4EA2]">Mega</span><span className="text-[#08A65A]">Cl</span><span className="text-[#0B4EA2]">i</span><span className="text-[#08A65A]">ck</span><span className="text-[#0B4EA2]"> for</span>{" "}
+  <span className="text-[#08A65A]">{heroHeadings[activeHeading]}</span>
 </span>
 </h1>
 
