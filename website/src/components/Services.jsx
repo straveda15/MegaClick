@@ -254,7 +254,7 @@ const Services = () => {
           }
 
           .services-title {
-            font-size: 2.5rem !important;
+            font-size: 2.75rem !important;
             line-height: 1.2 !important;
           }
 
@@ -348,7 +348,7 @@ const Services = () => {
           }
 
           .services-title {
-            font-size: 3.25rem !important;
+            font-size: 3.5rem !important;
             line-height: 1.18 !important;
           }
 
@@ -435,7 +435,7 @@ const Services = () => {
           }
 
           .services-title {
-            font-size: 5rem !important;
+            font-size: 5.5rem !important;
             line-height: 1.15 !important;
           }
 
